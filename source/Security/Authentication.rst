@@ -804,7 +804,7 @@ Spring Securityにおけるセッション管理
          <constructor-arg index="1" value="/" />  <!-- (4) -->
       </bean>
 
-      <bean id="sessionAuthenticationStrategy"
+      <bean id="sessionStrategy"
           class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
           <constructor-arg index="0">
               <list>
@@ -863,7 +863,7 @@ Spring Securityにおけるセッション管理
          <constructor-arg index="1" value="/" />
       </bean>
 
-      <bean id="sessionAuthenticationStrategy"
+      <bean id="sessionStrategy"
           class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
           <constructor-arg index="0">
               <list>
