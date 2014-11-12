@@ -113,7 +113,7 @@ JSPをTiles化する場合は、
 利用するOSSのバージョン
 --------------------------------------------------------------------------------
 
-version 1.0.1.RELEASEで利用するOSSの一覧を以下に示す。
+version 1.0.2.RELEASEで利用するOSSの一覧を以下に示す。
 
 .. tabularcolumns:: |p{0.20\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|p{0.5\linewidth}|
 .. list-table::
@@ -129,62 +129,62 @@ version 1.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - Spring
       - org.springframework
       - spring-aop
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-aspects
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-beans
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-context
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-context-support
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-core
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-expression
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-jdbc
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-orm
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-tx
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-web
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-webmvc
-      - 3.2.10.RELEASE
+      - 3.2.12.RELEASE
       -
     * - Spring
       - org.springframework.data
