@@ -475,7 +475,7 @@ web.xmlの修正
 | 追加で設定する箇所をハイライトしている。
 
  .. code-block:: xml
-    :emphasize-lines: 73-84,86-90
+    :emphasize-lines: 74-84,86-90
 
     <?xml version="1.0" encoding="UTF-8"?>
     <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -1163,7 +1163,7 @@ Todoリソースを新規作成するAPI(POST Todos)の処理を、\ ``TodoRestC
       "todoTitle": "Hello World!"
     }
 
-また、「REQUEST」の「HEADERS」の「+」ボタンでHTTPヘッダーを追加し、「\ ``Content-Type``\」に「\ ``applicatio/json``\」を設定後、"Send"ボタンをクリックする。
+また、「REQUEST」の「HEADERS」の「+」ボタンでHTTPヘッダーを追加し、「\ ``Content-Type``\」に「\ ``application/json``\」を設定後、"Send"ボタンをクリックする。
 
  .. figure:: ./images_rest/post-todos1.png
    :width: 100%
@@ -2027,7 +2027,7 @@ HTTPレスポンスBODYにエラー情報を出力するための実装
       "todoTitle": null
     }
 
-また、「REQUEST」の「HEADERS」の「+」ボタンでHTTPヘッダーを追加し、「Content-Type」に「applicatio/json」を設定後、”Send”ボタンをクリックする。
+また、「REQUEST」の「HEADERS」の「+」ボタンでHTTPヘッダーを追加し、「Content-Type」に「application/json」を設定後、”Send”ボタンをクリックする。
 
 | "400 Bad Request"のHTTPステータスが返却され、「RESPONSE」の「Body」には、エラー情報のJSONが表示される。
 | \ ``todoTitle``\は必須項目なので、必須エラーが発生している。
