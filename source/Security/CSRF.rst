@@ -261,7 +261,7 @@ CSRFトークンを自動で埋め込む方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ :ref:`spring-mvc.xmlの設定<csrf_spring-mvc-setting>`\ の通り、\ ``CsrfRequestDataValueProcessor``\ が定義されている場合、
-\ ``<form:form>``\ タグを使うことで、CSRFトークンの埋め込まれた\ ``<input type="hidden">``\ タグが、自動的に追加される。
+\ ``<form:form>``\ タグを使うことで、CSRFトークンが埋め込まれた\ ``<input type="hidden">``\ タグが、自動的に追加される。
 
 JSPで、CSRFトークンを意識する必要はない。
 
@@ -278,10 +278,19 @@ JSPで、CSRFトークンを意識する必要はない。
 
     <form action="/terasoluna/csrfTokenCheckExample" method="POST">
       <input type="submit" name="second" value="second" />
-      <input type="hidden" name="_csrf" value="dea86ae8-58ea-4310-bde1-59805352dec7" />
+      <input type="hidden" name="_csrf" value="dea86ae8-58ea-4310-bde1-59805352dec7" /> <!-- (1) -->
     </form>
 
-自動で、\ ``_name``\ 属性が\ ``_csrf``\ である、\ ``<input type="hidden">``\ タグが追加され、CSRFトークンが埋め込まれているとわかる。
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+
+   * - 項番
+     - 説明
+   * - | (1)
+     - | Spring Securityのデフォルト実装では、\ ``name``\ 属性に\ ``_csrf``\ が設定されている \ ``<input type="hidden">``\ タグが追加され、CSRFトークンが埋め込まれる。
+
 
 CSRFトークンはログインのタイミングで生成される。
 
@@ -344,6 +353,16 @@ CSRFトークンを明示的に埋め込む方法
         <input type="hidden" name="${f:h(_csrf.parameterName)}" value="${f:h(_csrf.token)}"/>  <!-- (1) -->
     </form>
 
+以下のようなHTMLが、出力される。
+
+.. code-block:: html
+
+    <form action="/terasoluna/csrfTokenCheckExample" method="POST">
+      <input type="submit" name="second" value="second" />
+      <input type="hidden" name="_csrf" value="dea86ae8-58ea-4310-bde1-59805352dec7"/>  <!-- (2) -->
+    </form>
+
+
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
    :header-rows: 1
@@ -353,16 +372,8 @@ CSRFトークンを明示的に埋め込む方法
      - 説明
    * - | (1)
      - | \ ``_csrf.parameterName``\ でリクエストパラメータ名を、\ ``_csrf.token``\ で、CSRFトークンを設定する。
-
-以下のようなHTMLが、出力される。
-
-
-.. code-block:: html
-
-    <form action="/terasoluna/csrfTokenCheckExample" method="POST">
-      <input type="submit" name="second" value="second" />
-      <input type="hidden" name="_csrf" value="dea86ae8-58ea-4310-bde1-59805352dec7"/>  <!-- (2) -->
-    </form>
+   * - | (2)
+     - | Spring Securityのデフォルト実装では、\ ``name``\ 属性に\ ``_csrf``\ が設定されている \ ``<input type="hidden">``\ タグが追加され、CSRFトークンが埋め込まれる。
 
 .. note::
 
