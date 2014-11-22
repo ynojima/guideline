@@ -287,10 +287,15 @@ CSRFトークンはログインのタイミングで生成される。
 
 .. warning::
 
-  \ ``CsrfRequestDataValueProcessor``\ の設定をしている場合、すべてのリクエストにCSRFトークンを埋め込むため、\ ``<form:form method="GET" ...>...</form:form>``\ のように、
-  \ ``<form:form>``\ でGETを指定してフォームを送信した場合、ブラウザのアドレスバーのURLに、CSRFトークンが含まれ、ブックマークバーやアクセスログに残る。
-  
-  これを回避するためには、
+  \ ``CsrfRequestDataValueProcessor``\ を設定している状態で \ ``<form:form method="GET" ...>...</form:form>``\ とした場合(GETメソッドを指定してフォームを送信した場合)、
+
+  * ブラウザのアドレスバーにCSRFトークンが表示される
+  * ブックマークした場合、ブックマークにCSRFトークンが記録される
+  * WebサーバのアクセスログにCSRFトークンが記録される
+
+  ため、攻撃者にCSRFトークンを悪用されるリスクが高くなる。
+
+  この事象を回避するためには、
 
     .. code-block:: jsp
     
@@ -315,9 +320,12 @@ CSRFトークンはログインのタイミングで生成される。
       The unique token can also be included in the URL itself, or a URL parameter. However, such placement runs a greater risk that the URL will be exposed to an attacker, thus compromising the secret token.
   
   と説明されており、必須ではないが対応することが推奨される。
-  
-  Spring Securityのデフォルト実装は、CSRFトークンをUUIDとして生成し、Session IDは使用しないため、CSRFトークンが漏洩してもSession IDは漏洩することはない。またログインの度にCSRFトークンは変更される。
-  また、将来的にはSpring 4でこの問題は解消される(\ ``<form:form method="GET">``\ を使用してもCSRFトークンはURLに現れない)。
+
+  Spring Securityのデフォルト実装では、CSRFトークンの値としてランダムなUUIDを生成しているため、
+  仮にCSRFトークンが漏洩してもセッションハイジャックされる事はないという点を補足しておく。
+
+  また、Spring 4を使用すると、この問題は解消される。(\ ``<form:form method="GET">``\ を使用してもCSRFトークンはURLに現れない)。
+
 .. _csrf_formtag-use:
 
 CSRFトークンを明示的に埋め込む方法
@@ -459,11 +467,25 @@ JSONでリクエストを送信する場合も、同様にHTTPヘッダを設定
 * \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用する
 * クエリのパラメータでCSRFトークンを送信する
 
+.. note::
+
+    それぞれメリット・デメリットが存在するため、システム要件を考慮して、採用する対策方法を決めて頂きたい。
+
+ファイルアップロードの詳細については、\ :doc:`FileUpload <../ArchitectureInDetail/FileUpload>`\ を参照されたい。
+
+
 MultipartFilterを使用する方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | 通常、マルチパートリクエストの場合、formから送信された値は\ ``Filter``\ 内で取得できない。
 | \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用することで、マルチパートリクエストでも、\ ``Filter``\ 内で、
 | formから送信された値を取得することができる。
+
+
+.. warning::
+
+    \ ``MultipartFilter``\ を使用した場合、\ ``springSecurityFilterChain``\による認証・認可処理が行われる前にアップロード処理が行われるため、
+    認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容してしまう。
+
 
 \ ``MultipartFilter``\ を使用するには、以下のように設定すればよい。
 
@@ -534,6 +556,16 @@ MultipartFilterを使用する方法
 クエリパラメータでCSRFトークンを送る方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を防ぎたい場合は、
+\ ``MultipartFilter``\ は使用せず、クエリパラメータでCSRFトークンを送る必要がある。
+
+.. warning::
+
+  この方法でCSRFトークンを送った場合、\ ``<form:form method="GET" ...>...</form:form>``\ 使用時と同様に、CSRFトークンがURLに現れるという問題がある。
+
+
+以下に、CSRFトークンをクエリパラメータとして送る実装例を示す。
+
 **JSPの実装例**
 
 .. code-block:: jsp
@@ -562,15 +594,6 @@ MultipartFilterを使用する方法
        | \ ``?${f:h(_csrf.parameterName)}=${f:h(_csrf.token)}``\
        | \ ``<form>``\ タグを使用する場合も、同様の設定が必要である。
 
-| ファイルアップロードの詳細については、\ :doc:`FileUpload <../ArchitectureInDetail/FileUpload>`\ を参照されたい。
-
-.. warning::
-
-  この方法も前述したCSRFがURLに現れるという問題がある。
-  \ ``MultipartFilter``\ を使用する場合は\ ``springSecurityFilterChain``\ による処理がアップロードの後になるため、
-  認証されていないユーザーのアップロード(一時ファイル作成)を許容してしまう。これを防ぐ必要がある場合に、クエリパラメータでCSRFトークンを送る必要がある。
-  
-  
 .. raw:: latex
 
    \newpage
