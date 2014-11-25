@@ -4321,7 +4321,7 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
       - 説明
     * - | (1)
       - | 必要に応じてレスポンスコードによるエラーページの定義を追加する。
-        | 上記例では、\ ``"404 Not Found"``\が発生した際に、「\ ``/api/v1/error?errorCode=e.ex.fw.5001``\」というリクエストにマッピングされているController(\`` ApiErrorPageController``\)を呼び出してエラー応答を行っている。
+        | 上記例では、\ ``"404 Not Found"``\が発生した際に、「\ ``/api/v1/error?errorCode=e.ex.fw.5001``\」というリクエストにマッピングされているController(\ ``ApiErrorPageController``\ )を呼び出してエラー応答を行っている。
     * - | (2)
       - | 致命的なエラーをハンドリングするための定義を追加する。
         | 致命的なエラーが発生していた場合、レスポンス情報を作成する処理で二重障害が発生する可能性があるため、予め用意している静的なJSONを応答する事を推奨する。
