@@ -4321,7 +4321,7 @@ Settings for handling an error that is notified to Servlet Container are explain
       - Description
     * - | (1)
       - | If needed, error page definition for response code is added.
-        | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\`` ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error?errorCode=e.ex.fw.5001``\ " is called and error response is sent.
+        | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\ ``ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error?errorCode=e.ex.fw.5001``\ " is called and error response is sent.
     * - | (2)
       - | Definition for handling a fatal error is added.
         | When a fatal error occurs, it is recommended to respond with the static JSON provided in advance, as double failure may occur during the process that creates response information.

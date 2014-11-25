@@ -968,7 +968,7 @@ GET Todosの実装
 作成済みのTodoリソースを全件取得するAPI(GET Todos)の処理を、\ ``TodoRestController``\の\ ``getTodos``\メソッドに実装する。
 
  .. code-block:: java
-    :emphasize-lines: 3-9,12-18,23-38
+    :emphasize-lines: 3-10,13-18,23-38
 
     package todo.api.todo;
     
