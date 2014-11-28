@@ -177,7 +177,7 @@ About exception handling
     \ ``UncategorizedDataAccessException``\  that occurs in case of pessimistic locking error is classified as system error; hence handling it in the application is not recommended. However, there might be cases wherein this exception may need to be handled.
     This exception can be handled since exception notifying the occurrence of pessimistic locking error is saved as the cause of exception.
 
-    ÅÀ Further analysis
+    ‚áí Further analysis
 
     **The current behavior is as follows:**
 
@@ -683,7 +683,7 @@ Specifications of escaping of common library
 Specifications of escaping provided by common library are as follows:
 
 * Escape character is ``"~"`` .
-* Characters to be escaped are 4, namely ``"%"`` , ``"_"`` , ``"Åì"`` , ``"ÅQ"`` .
+* Characters to be escaped are 4, namely ``"%"`` , ``"_"`` , ``"ÔºÖ"`` , ``"Ôºø"`` .
 
 See the example of escaping below.
 
@@ -723,13 +723,13 @@ See the example of escaping below.
       - ON
       - Escaping done as the string contains characters to be escaped. When there are multiple characters to be escaped, escaping is done for all characters.
     * - 6.
-      - ``"aÅì"``
-      - ``"a~Åì"``
+      - ``"aÔºÖ"``
+      - ``"a~ÔºÖ"``
       - ON
       - Similar to No.3.
     * - 7.
-      - ``"aÅQ"``
-      - ``"a~ÅQ"``
+      - ``"aÔºø"``
+      - ``"a~Ôºø"``
       - ON
       - Similar to No.3.
     * - 8.
