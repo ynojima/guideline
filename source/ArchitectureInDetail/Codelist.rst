@@ -658,69 +658,6 @@ Javaクラスでのコードリスト使用
 
 |
 
-.. _codelist-validate:
-
-コードリストを用いたコード値の入力チェック
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| 入力値がコードリスト内に定義されたKey値であるかどうかチェックするような場合、
-| 共通ライブラリでは、BeanValidation用のアノテーション、 ``org.terasoluna.gfw.common.codelist.ExistInCodeList`` を提供している。
-
-| BeanValidationや、メッセージ出力方法の詳細については、 :doc:`Validation` を参照されたい。
-
-|
-
-@ExistInCodeList の設定例
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| コードリストを用いた入力チェック方法について、以下に実装例を示す。
-
-**bean定義ファイル**
-
-- xxx-codelist.xml
-
-.. code-block:: xml
-
-    <bean id="CL_GENDER" class="org.terasoluna.gfw.common.codelist.SimpleMapCodeList">
-        <property name="map">
-            <map>
-                <entry key="M" value="Male" />
-                <entry key="F" value="Female" />
-            </map>
-        </property>
-    </bean>
-
-**Formオブジェクト**
-
-.. code-block:: java
-
-    public class Person {
-        @ExistInCodeList(codeListId = "CL_GENDER")  // (1)
-        private String gender;
-
-        // getter and setter omitted
-    }
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | 入力チェックを行いたいフィールドに対して、 ``@ExistInCodeList`` アノテーションを設定し、
-       | codeListIdにチェック元となる、コードリストを指定する。
-
-上記の結果、 ``gender`` にM、F以外の文字が格納されている場合、エラーになる。
-
-|
-
-    .. tip::
-
-       ``@ExistInCodeList`` の入力チェックでサポートしている型は、 ``String`` または ``Character`` のみである。
-       そのため、 ``@ExistInCodeList`` をつけるフィールドは意味的に整数型であっても、Stringで定義する必要がある。(年・月・日等)
-
-|
-
 .. _codelisti18n:
 
 SimpleI18nCodeListの使用方法
@@ -1075,6 +1012,69 @@ Javaクラスでのコードリスト使用
      - 説明
    * - | (1)
      - | I18nCodeList#asMap(Locale)で対応したロケールのMapを取得することができる。
+
+|
+
+.. _codelist-validate:
+
+コードリストを用いたコード値の入力チェック
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+| 入力値がコードリスト内に定義されたKey値であるかどうかチェックするような場合、
+| 共通ライブラリでは、BeanValidation用のアノテーション、 ``org.terasoluna.gfw.common.codelist.ExistInCodeList`` を提供している。
+
+| BeanValidationや、メッセージ出力方法の詳細については、 :doc:`Validation` を参照されたい。
+
+|
+
+@ExistInCodeList の設定例
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+| コードリストを用いた入力チェック方法について、以下に実装例を示す。
+
+**bean定義ファイル**
+
+- xxx-codelist.xml
+
+.. code-block:: xml
+
+    <bean id="CL_GENDER" class="org.terasoluna.gfw.common.codelist.SimpleMapCodeList">
+        <property name="map">
+            <map>
+                <entry key="M" value="Male" />
+                <entry key="F" value="Female" />
+            </map>
+        </property>
+    </bean>
+
+**Formオブジェクト**
+
+.. code-block:: java
+
+    public class Person {
+        @ExistInCodeList(codeListId = "CL_GENDER")  // (1)
+        private String gender;
+
+        // getter and setter omitted
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+
+   * - 項番
+     - 説明
+   * - | (1)
+     - | 入力チェックを行いたいフィールドに対して、 ``@ExistInCodeList`` アノテーションを設定し、
+       | codeListIdにチェック元となる、コードリストを指定する。
+
+上記の結果、 ``gender`` にM、F以外の文字が格納されている場合、エラーになる。
+
+|
+
+    .. tip::
+
+       ``@ExistInCodeList`` の入力チェックでサポートしている型は、 ``String`` または ``Character`` のみである。
+       そのため、 ``@ExistInCodeList`` をつけるフィールドは意味的に整数型であっても、Stringで定義する必要がある。(年・月・日等)
 
 |
 
