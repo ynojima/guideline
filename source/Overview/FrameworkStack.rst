@@ -13,7 +13,7 @@ TERASOLUNA Global FrameworkのSoftware Framework概要
 TERASOLUNA Global Frameworkで使用するSoftware Frameworkは独自のフレームワークではなく、Spring Frameworkを中心としたOSSの組み合わせである。
 
 .. figure:: images/introduction-software-framework.png
-   :width: 80%
+   :width: 95%
 
 
 Software Frameworkの主な構成要素
@@ -22,7 +22,7 @@ Software Frameworkの主な構成要素
 TERASOLUNA Global Frameworkを構成するライブラリを以下に示す。
 
 .. figure:: images/introduction-software-stack.png
-   :width: 80%
+   :width: 95%
 
 DIコンテナ
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -49,10 +49,6 @@ O/R Mapper
 * `MyBatis 2.3.5 <https://mybatis.googlecode.com/files/MyBatis-SqlMaps-2_en.pdf>`_
 
   * ラッパーとして、\ `TERASOLUNA Framework <http://sourceforge.jp/projects/terasoluna/releases/?package_id=6896>`_\ のDAO(TERASOLUNA DAO)を使用する。
-
-.. todo::
-
-  今後、MyBatis 3にも対応する予定である。
 
 .. note::
 
