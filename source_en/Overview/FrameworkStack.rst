@@ -13,7 +13,7 @@ Summary of Software Framework of TERASOLUNA Global Framework
 Software Framework being used in TERASOLUNA Global Framework is not a proprietory Framework but a combination of various OSS technologies around \ `Spring Framework <http://projects.spring.io/spring-framework/>`_\ .
 
 .. figure:: images/introduction-software-framework.png
-   :width: 80%
+   :width: 95%
 
 
 Main Structural Elements of Software Framework
@@ -21,7 +21,7 @@ Main Structural Elements of Software Framework
 Libraries which constitute TERASOLUNA Global Framework are as follows:
 
 .. figure:: images/introduction-software-stack.png
-   :width: 80%
+   :width: 95%
 
 DI Container
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -48,10 +48,6 @@ This guideline assumes the use of **any one of the below**.
 * `MyBatis 2.3.5 <https://mybatis.googlecode.com/files/MyBatis-SqlMaps-2_en.pdf>`_
 
   * DAO(TERASOLUNA DAO) of \ `TERASOLUNA Framework <http://sourceforge.jp/projects/terasoluna/releases/?package_id=6896>`_\  is used as wrapper.
-
-.. todo::
-
-  MyBatis 3 is planned to be included here. 
 
 .. note::
 
