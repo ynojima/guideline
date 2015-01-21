@@ -585,8 +585,8 @@ Following example is about the Ajax communication of receiving two numbers and r
 
     <meta name="contextPath" content="${pageContext.request.contextPath}" />
 
-    <meta name="_csrf_token" content="${_csrf.token}" />
-    <meta name="_csrf_headerName" content="${_csrf.headerName}" />
+    <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
 
     <!-- omitted -->
 
