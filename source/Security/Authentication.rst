@@ -1630,7 +1630,7 @@ Spring Securityから提供されている\ `認証プロバイダ <http://docs.
 
         <!-- omitted -->
 
-        <sec:csrf token-repository-ref="csrfTokenRepository" />
+        <sec:custom-filter before="LOGOUT_FILTER" ref="csrfFilter" />
 
         <sec:logout
             logout-url="/logout"
@@ -1656,11 +1656,7 @@ Spring Securityから提供されている\ `認証プロバイダ <http://docs.
     <bean id="companyIdUsernamePasswordAuthenticationFilter"
         class="com.example.app.common.security.CompanyIdUsernamePasswordAuthenticationFilter">
         <!-- (5) -->
-        <property name="requiresAuthenticationRequestMatcher">
-            <bean class="org.springframework.security.web.authentication.logout.LogoutFilter$FilterProcessUrlRequestMatcher">
-                <constructor-arg value="/authentication" />
-            </bean>
-        </property>
+        <property name="filterProcessesUrl" value="/authentication" />
         <!-- (6) -->
         <property name="authenticationManager" ref="authenticationManager" />
         <!-- (7) -->
@@ -1703,6 +1699,10 @@ Spring Securityから提供されている\ `認証プロバイダ <http://docs.
     <bean id="csrfTokenRepository"
         class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository" />
 
+    <bean id="csrfFilter" class="org.springframework.security.web.csrf.CsrfFilter">
+        <constructor-arg ref="csrfTokenRepository" />
+    </bean>
+
 
     <!-- omitted -->
 
@@ -1731,7 +1731,7 @@ Spring Securityから提供されている\ `認証プロバイダ <http://docs.
 
         ここでは、拡張したサーブレットフィルタクラス(\ ``CompanyIdUsernamePasswordAuthenticationFilter``\ )のbeanを定義している。
     * - | (5)
-      - \ ``requiresAuthenticationRequestMatcher``\ プロパティに、認証処理を行うリクエストを検出するための\ ``RequestMatcher``\ インスタンスを指定する。
+      - \ ``filterProcessesUrl``\ プロパティに、認証処理用のパスを指定する。
 
         ここでは、\ ``/authentication``\ というパスにリクエストがあった場合に認証処理を行うように設定している。
         これは、\ ``form-login``\ 要素の\ ``login-processing-url``\ 属性に\ ``"/authentication"``\ を指定したのと同義である。
