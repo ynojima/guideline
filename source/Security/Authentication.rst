@@ -1191,12 +1191,35 @@ spring-security.xml
 \ ``<sec:remember-me>``\ 要素の設定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| 「\ `Remeber Me <http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle/#remember-me>`_\ 」とは、websiteに頻繁にアクセスするユーザの利便性を、高めるための機能の一つとして、
-| ログイン状態を保持する機能である。
-| 本機能は、ユーザがログイン状態を保持することを許可していた場合、ブラウザを閉じた後も
-| cookieにログイン情報を保持し、ユーザ名、パスワードを再入力しなくともログインすることができる機能である。
+| 「\ `Remeber Me <http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle/#remember-me>`_\ 」とは、Websiteに頻繁にアクセスするユーザの利便性を高めるための機能の一つとして、ログイン状態を保つための機能である。
+| 本機能を使用すると、ユーザがログイン状態を保つことを許可していた場合、ブラウザを閉じた後やセッションタイムが発生した後であっても、Cookieに保持しているログイン情報(Token)を使用して、ユーザ名とパスワードを再入力することなく自動でログインすることができる。
+
+Spring SecurityのRemember Me機能では、以下の2種類の認証方式を提供している。
+
+* | `Hash-Based Token <http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle/#remember-me-hash-token>`_ を使用した認証
+  | Hash-Based Tokenには、認証に必要な情報(ユーザ名、パスワード、有効期限など)が全て格納されている。
+  | この方式を使用した場合は、Token内に保持しているユーザ名とパスワードを使用して、自動的に認証処理が行われる。
+  | 認証処理時にパスワードの比較が行われるため、パスワードを変更するとTokenも無効になる点が特徴である。
+
+* | `Persistent Token <http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle/#remember-me-persistent-token>`_ を使用した認証
+  | Persistent Tokenには、Token情報をToken管理テーブルから取得するためのキーと認証トークン(セキュアなランダム値)が格納されている。
+  | この方式を使用した場合は、Token内に保持している認証トークンを使用して認証処理(テーブルで保持している認証トークンとの比較)が行われる。
+  | 認証処理時にパスワードの比較が行われないため、パスワードを変更してもTokenが無効にならない点が特徴である。Tokenの有効期間内にTokenを無効にしたい場合は、Token管理テーブルから該当レコードを削除すればよい。
+
+
+.. tip::
+
+    Persistent Token方式は、
+
+    * Cookieに保持するTokenの中にユーザ名とパスワードが格納されない
+    * 認証トークンとして推測が困難なランダム値が使用される
+
+    ため、Hash-Based Token方式に比べてセキュアな認証方式と言える。
+
+|
 
 | \ ``<sec:remember-me>``\ 要素の属性について、以下に示す。
+| ここでは、Hash-Based Tokenを使用する例になっている。
 
 spring-security.xml
 
@@ -1217,29 +1240,44 @@ spring-security.xml
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``key``\ 属性に、Remeber Me用のcookieを保持しておくためのユニークなキーを指定する。
-       | 指定が無い場合、ユニークなキーを起動時に生成するため、起動時間向上を考えた場合指定しておくことを推奨する。
+     - | \ ``key``\ 属性に、Remember Me用のCookie(Token)を生成したアプリケーションを識別するためのキーを指定する。
+       | Hash-Based Token方式で認証する場合は、Tokenで保持しているキーとサーバで保持しているキーの比較が行われるため、キーが一致しない場合は無効なTokenと判断される。
+
+       | 指定が無い場合、アプリケーション起動時に\ ``java.security.SecureRandom``\ のAPIを使用してランダムなキーが生成される。そのため、アプリケーションを再起動すると、無効なTokenと判断され自動でログインすることができなくなる。
    * - | (2)
-     - | 「\ ``token-validity-seconds``\ 属性に、Remeber Me用のcookieの有効時間を秒単位で指定する。この例では30日間を設定している。
+     - | \ ``token-validity-seconds``\ 属性に、Remember Me用のCookie(Token)の有効時間を秒単位で指定する。この例では30日間を設定している。
        | 指定が無い場合、デフォルトで14日間が有効期限になる。
 
 上記以外の属性については、\ `Spring Securityのマニュアル <http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle/#nsa-remember-me>`_\ を参照されたい。
 
-ログインフォームには以下のように「Remeber Me」機能を有効にするためのフラグを用意する必要がある。
+.. note::
+
+    本ガイドラインでは、
+
+    * アプリケーション再起動後も自動ログインできるようにする
+    * アプリケーションの起動時間を向上させる
+
+    ことを目的として、\ ``key``\ 属性を指定することを推奨する。
+
+    なお、Persistent Token方式で認証する場合は、認証処理時に\ ``key``\ 属性に指定した値は使用されない。
+
+|
+
+ログインフォームには、Remember Me機能の利用有無を指定するためのフィールドを用意する。
 
 .. code-block:: jsp
-  :emphasize-lines: 7-9
+  :emphasize-lines: 5-7
 
-  <form method="post"
-    action="${pageContext.request.contextPath}/authentication">
+  <form:form method="post"
+      action="${pageContext.request.contextPath}/authentication">
       <!-- omitted -->
-      <label for="_spring_security_remember_me">Remember Me : </label>
-      <input name="_spring_security_remember_me"
-        id="_spring_security_remember_me" type="checkbox"
-        checked="checked"> <!-- (1) -->
+          <label for="remember_me">Remember Me : </label>
+          <input name="_spring_security_remember_me"
+            id="remember_me" type="checkbox"
+            checked="checked"> <!-- (1) -->
       <input type="submit" value="LOGIN">
       <!-- omitted -->
-  </form>
+  </form:form>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -1249,8 +1287,86 @@ spring-security.xml
    * - 項番
      - 説明
    * - | (1)
-     - | HTTPパラメータに、\ ``_spring_security_remember_me``\ を設定することで、
-       | \ ``true``\ でリクエストされた場合、次回の認証を回避することができる。
+     - | Remember Me機能の利用有無を指定するためのフィールドの名前に、\ ``"_spring_security_remember_me"``\ を指定する。
+
+       Remember Me機能を利用する場合は、パラメータ値として、\ ``"true"``\ ,\ ``"on"``\ ,\ ``"yes"``\ , \ ``"1"``\ の何れかの値が送信されるようにする。
+
+.. warning:: **Remember Me用のリクエストパラメータ名とCookie名について**
+
+    本ガイドラインでは、Spring Securityが提供しているデフォルト値から変更することを推奨する。
+
+    デフォルト値を使用している場合、アプリケーションがSpring Securityを使用している事が露見してしまう。
+    そのため、Spring Securityの脆弱性が発見された場合、脆弱性をついた攻撃を受けるリスクが高くなる。
+
+    パラメータ名とCookie名を変更する方法を以下に示す。
+
+    * spring-security.xml
+
+     .. code-block:: xml
+
+        <sec:http auto-config="true" use-expressions="true">
+            <!-- omitted -->
+            <sec:remember-me
+                key="terasoluna-tourreservation-km/ylnHv"
+                services-ref="rememberMeServices" /> <!-- (2) -->
+            <!-- omitted -->
+        </sec:http>
+
+        <!-- (3) -->
+        <bean id="rememberMeServices"
+              class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+            <constructor-arg index="0" value="terasoluna-tourreservation-km/ylnHv" />
+            <constructor-arg index="1" ref="userDetailsService" />
+            <property name="parameter" value="remember_me" /> <!-- (4) -->
+            <property name="cookieName" value="remember_me" /> <!-- (5) -->
+            <property name="tokenValiditySeconds" value="#{30 * 24 * 60 * 60}" />
+        </bean>
+
+     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+     .. list-table::
+        :header-rows: 1
+        :widths: 10 90
+
+        * - 項番
+          - 説明
+        * - | (2)
+          - | \ ``services-ref``\ 属性に、カスタマイズした\ ``RememberMeServices``\ のbeanを指定する。
+        * - | (3)
+          - | Remember Me用のリクエストパラメータ名とCookie名をカスタマイズした\ ``RememberMeServices``\ のbeanを定義する。
+            | コンストラクタには、第一引数として\ ``<sec:remember-me>``\ 要素の\ ``key``\  属性と同じ値、第二引数として\ ``UserDetailsService``\ のbeanを指定する。
+        * - | (4)
+          - | \ ``parameter``\ プロパティには、Remember Me機能の利用有無を指定するためのリクエストパラメータの名前を指定する。
+            | 上記例では、デフォルト値(\ ``"_spring_security_remember_me"``\ )から\ ``"remember_me"``\ に変更している。
+        * - | (5)
+          - | \ ``cookieName``\ プロパティには、Remember Me用のTokenを保持するCookeの名前を指定する。
+            | 上記例では、デフォルト値(\ ``"SPRING_SECURITY_REMEMBER_ME_COOKIE"``\ )から\ ``"remember_me"``\ に変更している。
+
+    * ログインフォーム(JSP)
+
+     .. code-block:: jsp
+        :emphasize-lines: 5-7
+
+        <form:form method="post"
+            action="${pageContext.request.contextPath}/authentication">
+            <!-- omitted -->
+            <label for="remember_me">Remember Me : </label>
+            <input name="remember_me"
+                id="remember_me" type="checkbox"
+                checked="checked"> <!-- (6) -->
+            <input type="submit" value="LOGIN">
+            <!-- omitted -->
+        </form:form>
+
+     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+     .. list-table::
+        :header-rows: 1
+        :widths: 10 90
+
+        * - 項番
+          - 説明
+        * - | (6)
+          - | Remember Me機能の利用有無を指定するためのフィールドの名前に、変更したリクエストパラメータ名を指定する。
+
 
 How to extend
 --------------------------------------------------------------------------------
