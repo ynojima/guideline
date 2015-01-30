@@ -1711,6 +1711,7 @@ Commons FileUploadを使用する場合は以下の設定を行う。
     <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
+        <version>1.3.1</version>
     </dependency>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -1722,7 +1723,6 @@ Commons FileUploadを使用する場合は以下の設定を行う。
      - | 説明
    * - | (1)
      - | \ ``commons-fileupload``\ への依存関係を追加する。
-       | バージョンはSpring IO Platformによって定義されているため、:file:`pom.xml`\ で指定しなくてよい。
 
 .. warning::
 
@@ -1731,8 +1731,6 @@ Commons FileUploadを使用する場合は以下の設定を行う。
     使用するApache Commons FileUploadのバージョンに脆弱性がない事を確認されたい。
 
     Apache Commons FileUploadを使用する場合、1.2系は1.2.1以上、1.3系は1.3.1以上を使用する必要がある。
-
-    なお、Spring IO Platformで管理されているバージョンを使用すれば、CVE-2014-0050で報告されている脆弱性は発生しない。
 
 |
 
@@ -1761,7 +1759,7 @@ Commons FileUploadを使用する場合は以下の設定を行う。
    * - | (2)
      - | ファイルアップロードで許容する最大サイズを設定する。
        | Commons FileUploadに場合、最大値はヘッダ含めたリクエスト全体のサイズであることに注意すること。
-       | また、**デフォルト値は-1(無制限)なので、必ず値を設定すること。** その他のプロパティは\ `JavaDoc <http://docs.spring.io/spring-framework/docs/4.1.4.RELEASE/javadoc-api/org/springframework/web/multipart/commons/CommonsMultipartResolver.html>`_\ を参照されたい。
+       | また、**デフォルト値は-1(無制限)なので、必ず値を設定すること。** その他のプロパティは\ `JavaDoc <http://docs.spring.io/spring-framework/docs/3.2.13bu.RELEASE/javadoc-api/org/springframework/web/multipart/commons/CommonsMultipartResolver.html>`_\ を参照されたい。
 
 .. warning::
 
