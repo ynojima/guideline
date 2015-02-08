@@ -23,6 +23,10 @@
         記載内容の改善
 
         * 改善内容の詳細は、\ `1.0.2のIssue一覧(improvement) <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A1.0.2+label%3Aimprovement+is%3Aclosed>`_\ を参照されたい。
+
+        新規追加
+
+        * :doc:`../Appendix/TagLibAndELFunctions`
     * -
       - :doc:`../Overview/FrameworkStack`
       - Spring Frameworkのバグ(セキュリティ脆弱性)改修に伴い利用するOSSのバージョンを更新
@@ -112,6 +116,11 @@
           修正内容の詳細は、\ `guideline#754のIssue <https://github.com/terasolunaorg/guideline/issues/754>`_\ を参照されたい。
         * AuthenticationFilterの拡張方法を示すサンプルコードの修正(セッション・フィクセーション攻撃対策やCSRF対策を有効にするための設定を追加)。
           修正内容の詳細は、\ `guideline#765のIssue <https://github.com/terasolunaorg/guideline/issues/765>`_\ を参照されたい。
+    * -
+      - :doc:`../Appendix/TagLibAndELFunctions`
+      - 新規追加
+
+        * 共通ライブラリから提供しているJSPタグライブラリとEL関数の説明を追加。
     * -
       - 英語版
       - 以下の英語版を追加
