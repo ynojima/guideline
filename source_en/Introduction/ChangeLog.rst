@@ -98,7 +98,12 @@ Change Log
           For detail, refer to \ `Issue of guideline#374 <https://github.com/terasolunaorg/guideline/issues/374>`_\ .
     * -
       - :doc:`../ArchitectureInDetail/FileUpload`
-      - Added description
+      - Fixed error of guideline
+
+        * Fixed the version of Apache Commons FileUpload where \ `CVE-2014-0050 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0050>`_\ (File Upload Vulnerability) has been resolved.
+          For detail, refer to \ `Issue of guideline#846 <https://github.com/terasolunaorg/guideline/issues/846>`_\ .
+
+        Added description
 
         * Added a way to use the Apache Commons Fileupload as workaround, because request data is garbled in parts of application server when use the servlet 3's file upload functionality.
           For detail, refer to \ `Issue of guideline#778 <https://github.com/terasolunaorg/guideline/issues/778>`_\ .
@@ -107,7 +112,7 @@ Change Log
       - Added description
 
         * Added a usage of \ ``LocalDateTime``\ .
-          For detail, refer to \ `guideline#584のIssue <https://github.com/terasolunaorg/guideline/issues/584>`_\ .
+          For detail, refer to \ `Issue of guideline#584 <https://github.com/terasolunaorg/guideline/issues/584>`_\ .
     * -
       - :doc:`../Security/Authentication`
       - Fixed error of guideline
@@ -144,6 +149,7 @@ Change Log
         * :doc:`../ArchitectureInDetail/Utilities/Dozer`
         * :doc:`../Security/SpringSecurity`
         * :doc:`../Security/PasswordHashing`
+        * :doc:`../Security/Authorization`
         * :doc:`../Appendix/CreateProjectFromBlank`
         * :doc:`../Appendix/Nexus`
         * :doc:`../Appendix/EnvironmentIndependency`

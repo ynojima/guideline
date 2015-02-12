@@ -98,7 +98,12 @@
           改善内容の詳細は、\ `guideline#374のIssue <https://github.com/terasolunaorg/guideline/issues/374>`_\ を参照されたい。
     * -
       - :doc:`../ArchitectureInDetail/FileUpload`
-      - 記載内容の追加
+      - ガイドラインのバグ修正
+
+        * \ `CVE-2014-0050 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0050>`_\ (File Uploadの脆弱性)が解決されたApache Commons FileUploadのバージョンを修正。
+          修正内容の詳細は、\ `guideline#846のIssue <https://github.com/terasolunaorg/guideline/issues/846>`_\ を参照されたい。
+
+        記載内容の追加
 
         * 一部のアプリケーションサーバでServlet 3のファイルアップロード機能が文字化けする問題があるため、この事象の回避策としてApache Commons FileUploadを使用する方法を追加。
           追加内容の詳細は、\ `guideline#778のIssue <https://github.com/terasolunaorg/guideline/issues/778>`_\ を参照されたい。
@@ -144,6 +149,7 @@
         * :doc:`../ArchitectureInDetail/Utilities/Dozer`
         * :doc:`../Security/SpringSecurity`
         * :doc:`../Security/PasswordHashing`
+        * :doc:`../Security/Authorization`
         * :doc:`../Appendix/CreateProjectFromBlank`
         * :doc:`../Appendix/Nexus`
         * :doc:`../Appendix/EnvironmentIndependency`
