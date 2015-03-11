@@ -1,4 +1,4 @@
-# TERASOLUNA Server Framework for Java (5.x) Development Guideline
+# TERASOLUNA Global Framework Development Guideline
 
 This guideline provides best practices to develop highly maintainable Web applications using full stack framework focussing on Spring Framework, Spring MVC, Spring Security and MyBatis, JPA.
 
@@ -67,6 +67,7 @@ Linux or Mac:
 
 ```
 $ cd {your repository directory}
+$ git checkout 1.0.x
 $ ./build-html.sh
 ```
 
@@ -74,6 +75,7 @@ Windows:
 
 ```
 > cd {your repository directory}
+> git checkout 1.0.x
 > build-html.bat
 ```
 
@@ -86,6 +88,7 @@ Linux or Mac:
 
 ```
 $ cd {your repository directory}
+$ git checkout 1.0.x
 $ ./build-html_en.sh
 ```
 
@@ -93,29 +96,32 @@ Windows:
 
 ```
 > cd {your repository directory}
+> git checkout 1.0.x
 > build-html_en.bat
 ```
 
 ### Build a PDF file for the Japanese
 
 Please execute the `build-pdf.sh`.
-If build is successful, PDF file(`TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.pdf`) generate to the `{your repository}/build/latex/` directory.
+If build is successful, PDF file(`TERASOLUNAGlobalFrameworkDevelopmentGuideline.pdf`) generate to the `{your repository}/build/latex/` directory.
 
 ```
 $ cd {your repository directory}
+$ git checkout 1.0.x
 $ ./build-pdf.sh
 ```
 
 ### Build a PDF file for the English
 
 Please execute the `build-pdf_en.sh`.
-If build is successful, PDF file(`TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.pdf`) generate to the `{your repository}/build_en/latex/` directory.
+If build is successful, PDF file(`TERASOLUNAGlobalFrameworkDevelopmentGuideline.pdf`) generate to the `{your repository}/build_en/latex/` directory.
 
 ```
 $ cd {your repository directory}
+$ git checkout 1.0.x
 $ ./build-pdf_en.sh
 ```
 
 ## Terms of use
 
-Terms of use refer to [here](https://github.com/terasolunaorg/guideline/blob/master/source_en/Introduction/TermsOfUse.rst).
+Terms of use refer to [here](https://github.com/terasolunaorg/guideline/blob/1.0.x/source_en/Introduction/TermsOfUse.rst).
