@@ -67,6 +67,7 @@ Linux or Mac:
 
 ```
 $ cd {your repository directory}
+$ git checkout 5.0.x
 $ ./build-html.sh
 ```
 
@@ -74,6 +75,7 @@ Windows:
 
 ```
 > cd {your repository directory}
+> git checkout 5.0.x
 > build-html.bat
 ```
 
@@ -86,6 +88,7 @@ Linux or Mac:
 
 ```
 $ cd {your repository directory}
+$ git checkout 5.0.x
 $ ./build-html_en.sh
 ```
 
@@ -93,6 +96,7 @@ Windows:
 
 ```
 > cd {your repository directory}
+> git checkout 5.0.x
 > build-html_en.bat
 ```
 
@@ -103,6 +107,7 @@ If build is successful, PDF file(`TERASOLUNAServerFrameworkForJavaDevelopmentGui
 
 ```
 $ cd {your repository directory}
+$ git checkout 5.0.x
 $ ./build-pdf.sh
 ```
 
@@ -113,9 +118,10 @@ If build is successful, PDF file(`TERASOLUNAServerFrameworkForJavaDevelopmentGui
 
 ```
 $ cd {your repository directory}
+$ git checkout 5.0.x
 $ ./build-pdf_en.sh
 ```
 
 ## Terms of use
 
-Terms of use refer to [here](https://github.com/terasolunaorg/guideline/blob/master/source_en/Introduction/TermsOfUse.rst).
+Terms of use refer to [here](https://github.com/terasolunaorg/guideline/blob/5.0.x/source_en/Introduction/TermsOfUse.rst).
