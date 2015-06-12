@@ -24,15 +24,13 @@ Refer to the following for basic description of architecture, design and impleme
 * | ":ref:`RESTHowToUse`"
   | Application structure of RESTful Web Service and API implementation methods are explained.
 
-
-
 |
 
 .. _RESTOverviewAboutRESTfulWebService:
 
 What is RESTful Web Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| REST is an abbreviation of "\ **RE**\presentational \ **S**\tate \ **T**\ransfer", and is one of the \ **architecture styles**\  
+| REST is an abbreviation of "\ **RE**\presentational \ **S**\tate \ **T**\ransfer", and is one of the \ **architecture styles**\
 | for building an application, wherein data is exchanged between client and server.
 | REST architecture style consists of various important fundamental rules and the services which are in accordance with these rules (system etc.) are expressed as \ **RESTful**\ .
 | In other words, "RESTful Web Service" is a Web service that is built in accordance with the fundamental rules of REST.
@@ -118,31 +116,31 @@ RESTful Web Service is developed in TERASOLUNA Server Framework for Java (5.x) u
         | (Framework)
       - | Spring MVC receives a request from client and determines the REST API (processing method of Controller) to be called.
     * - | (2)
-      - | 
-        | 
+      - |
+        |
       - | Spring MVC converts the JSON format message specified in request BODY to Resource object by using \ ``HttpMessageConverter``\ .
     * - | (3)
-      - | 
-        | 
+      - |
+        |
       - | Spring MVC performs input validation for the value stored in Resource object using \ ``Validator``\ .
     * - | (4)
-      - | 
-        | 
+      - |
+        |
       - | Spring MVC calls REST API.
         | Here, the Resource that has been converted from JSON and for which input validation is carried out, is delivered to REST API.
     * - | (5)
       - | REST API
       - | REST API calls Service method and performs the process for DomainObject such as Entity etc.
     * - | (6)
-      - | 
+      - |
       - | Service method calls the Repository method and performs CRUD process for the DomainObject such as Entity etc.
     * - | (7)
       - | Spring MVC
         | (Framework)
       - | Spring MVC converts the Resource object returned from REST API to JSON format message, by using \ ``HttpMessageConverter``\ .
     * - | (8)
-      - | 
-        | 
+      - |
+        |
       - | Spring MVC sets JSON format message in response BODY and responds to client.
 
 
@@ -164,7 +162,7 @@ Configuration for RESTful Web Service module
      .. list-table::
         :header-rows: 1
         :widths: 10 20 70
-    
+
         * - Sr. No.
           - Module name
           - Description
@@ -199,7 +197,7 @@ Configuration for RESTful Web Service module
      .. list-table::
         :header-rows: 1
         :widths: 10 90
-    
+
         * - Sr. No.
           - Description
         * - | (5)
@@ -214,7 +212,7 @@ Configuration for RESTful Web Service module
      .. list-table::
         :header-rows: 1
         :widths: 10 90
-    
+
         * - Sr. No
           - Description
         * - | (6)
@@ -235,7 +233,7 @@ REST API implementation sample
 
     Aim of the tutorial is to emphasize the saying "Practice makes one perfect". Prior to detailed explanation, the user can gain the experience of actually practicing RESTful Web Service development using TERASOLUNA Server Framework for Java (5.x), with the help of this tutorial.
     When this firsthand experience of RESTful Web Service development is followed by reading the detailed explanation, the user gains a deeper understanding of the development.
-    
+
     Especially when the user does not have any experience of RESTful Web Service development, it is recommended to follow a process in the order namely,  "Tutorial practice" --> "Detailed explanation of architecture, design and development (described in subsequent sections) --> "Tutorial revision (Re-practice)".
 
 |
@@ -251,64 +249,64 @@ REST API implementation sample
         "todoTitle" : "Hello World!",
         "finished" : false,
         "createdAt" : "2014-02-25T02:21:48.493+0000"
-    } 
+    }
 
 |
 
 * Resource class implementation sample
 
  Resource class is created as the JavaBean representing the Todo resources shown above.
- 
+
 
  .. code-block:: java
 
     package todo.api.todo;
-    
+
     import java.util.Date;
-    
+
     import javax.validation.constraints.NotNull;
     import javax.validation.constraints.Size;
-    
+
     public class TodoResource {
 
         private String todoId;
-    
+
         @NotNull
         @Size(min = 1, max = 30)
         private String todoTitle;
-    
+
         private boolean finished;
-    
+
         private Date createdAt;
-    
+
         public String getTodoId() {
             return todoId;
         }
-    
+
         public void setTodoId(String todoId) {
             this.todoId = todoId;
         }
-    
+
         public String getTodoTitle() {
             return todoTitle;
         }
-    
+
         public void setTodoTitle(String todoTitle) {
             this.todoTitle = todoTitle;
         }
-    
+
         public boolean isFinished() {
             return finished;
         }
-    
+
         public void setFinished(boolean finished) {
             this.finished = finished;
         }
-    
+
         public Date getCreatedAt() {
             return createdAt;
         }
-    
+
         public void setCreatedAt(Date createdAt) {
             this.createdAt = createdAt;
         }
@@ -336,41 +334,41 @@ REST API implementation sample
     * - | (1)
       - | GET Todos
       - | GET
-      - | \ ``/api/v1/todos``\ 
+      - | \ ``/api/v1/todos``\
       - | 200
         | (OK)
       - | All Todo resources are fetched.
     * - | (2)
       - | POST Todos
       - | POST
-      - | \ ``/api/v1/todos``\ 
+      - | \ ``/api/v1/todos``\
       - | 201
         | (Created)
       - | A new Todo resource is created.
     * - | (3)
       - | GET Todo
       - | GET
-      - | \ ``/api/v1/todos/{todoId}``\ 
+      - | \ ``/api/v1/todos/{todoId}``\
       - | 200
         | (OK)
       - | One Todo resource is fetched.
     * - | (4)
       - | PUT Todo
       - | PUT
-      - | \ ``/api/v1/todos/{todoId}``\ 
+      - | \ ``/api/v1/todos/{todoId}``\
       - | 200
         | (OK)
       - | Todo resource is updated to "completed".
     * - | (5)
       - | DELETE Todo
       - | DELETE
-      - | \ ``/api/v1/todos/{todoId}``\ 
+      - | \ ``/api/v1/todos/{todoId}``\
       - | 204
         | (No Content)
       - | Todo resource is deleted.
 
  .. code-block:: java
-    :emphasize-lines: 31-35, 44-48, 54-58, 64-68, 74-78
+    :emphasize-lines: 30-34, 42-45, 51-55, 59-63, 68-72
 
     package todo.api.todo;
 
@@ -382,19 +380,20 @@ REST API implementation sample
 
     import org.dozer.Mapper;
     import org.springframework.http.HttpStatus;
-    import org.springframework.stereotype.Controller;
+
     import org.springframework.validation.annotation.Validated;
     import org.springframework.web.bind.annotation.PathVariable;
     import org.springframework.web.bind.annotation.RequestBody;
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RequestMethod;
-    import org.springframework.web.bind.annotation.ResponseBody;
+
     import org.springframework.web.bind.annotation.ResponseStatus;
+    import org.springframework.web.bind.annotation.RestController;
 
     import todo.domain.model.Todo;
     import todo.domain.service.todo.TodoService;
 
-    @Controller
+    @RestController
     @RequestMapping("todos")
     public class TodoRestController {
         @Inject
@@ -404,7 +403,7 @@ REST API implementation sample
 
         // (1)
         @RequestMapping(method = RequestMethod.GET)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public List<TodoResource> getTodos() {
             Collection<Todo> todos = todoService.findAll();
@@ -417,7 +416,7 @@ REST API implementation sample
 
         // (2)
         @RequestMapping(method = RequestMethod.POST)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.CREATED)
         public TodoResource postTodos(@RequestBody @Validated TodoResource todoResource) {
             Todo createdTodo = todoService.create(beanMapper.map(todoResource, Todo.class));
@@ -427,7 +426,7 @@ REST API implementation sample
 
         // (3)
         @RequestMapping(value="{todoId}", method = RequestMethod.GET)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public TodoResource getTodo(@PathVariable("todoId") String todoId) {
             Todo todo = todoService.findOne(todoId);
@@ -437,17 +436,17 @@ REST API implementation sample
 
         // (4)
         @RequestMapping(value="{todoId}", method = RequestMethod.PUT)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public TodoResource putTodo(@PathVariable("todoId") String todoId) {
             Todo finishedTodo = todoService.finish(todoId);
             TodoResource finishedTodoResource = beanMapper.map(finishedTodo, TodoResource.class);
             return finishedTodoResource;
         }
-        
+
         // (5)
         @RequestMapping(value="{todoId}", method = RequestMethod.DELETE)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.NO_CONTENT)
         public void deleteTodo(@PathVariable("todoId") String todoId) {
             todoService.delete(todoId);
@@ -516,7 +515,7 @@ Following two architectural elements are applied depending on the characteristic
       - | This element enables to perform the process only by the information requested from client, without retaining the application status on the server.
     * - | (7)
       - | :ref:`RESTOverviewHyperMediaLinksToRelatedResources`
-      - | It includes links to other resources (URI) inside a resource, that are related to the specified resource.
+      - | It includes links to other resources (URI) inside a resource that are related to the specified resource.
 
 
 |
@@ -554,7 +553,7 @@ Identifying the resource using URI
 | URI assigned to RESTful Web Service is a combination of "\ **a noun that indicates the type of resource**\" and "\ **a value (ID etc.) that uniquely identifies a resource**\ ".
 | For example, URI of product information handled by a Web system that provides a shopping site, is given below.
 
-* | \ `http://example.com/api/v1/items`\ 
+* | \ `http://example.com/api/v1/items`\
   | "**items**" portion is the "noun that represents the type of resource". If there are multiple resources, a plural noun is used.
   | In the above example, a plural noun is specified to indicate the product information. It forms the URI for batch operation of product information. If replaced to a file system, it corresponds to a directory.
 
@@ -565,14 +564,14 @@ Identifying the resource using URI
 |
 
 .. warning::
- 
+
    \ **Verbs that indicate operations cannot be included**\  in the URI assigned to RESTful Web Service are as shown below.
-    
+
     * \ `http://example.com/api/v1/items?get&itemId=I312-535-01216`\
     * \ `http://example.com/api/v1/items?delete&itemId=I312-535-01216`\
-    
+
     URI mentioned in the above example is not suitable to be assigned to RESTful Web Service since it includes verbs like \ **get**\  or \ **delete**\ .
-    
+
     In RESTful Web Service, \ **Resource related operations are represented by using HTTP methods (GET, POST, PUT and DELETE).**\
 
 |
@@ -628,7 +627,7 @@ The association of resource operations assigned to HTTP methods and the post-con
       - | Safety, idempotency.
 
  .. note:: **Ensuring safety and idempotency**
- 
+
     When resource operation is performed using HTTP method, it is necessary to ensure "safety" and "idempotency" as post conditions.
 
     **[Safety]**
@@ -641,32 +640,32 @@ The association of resource operations assigned to HTTP methods and the post-con
             It ensures that even if a value is multiplied a number of times by 0, the value remains 0 (for example, if 10 is multiplied a number of times or just once by 0, the result remains 0).
             This signifies that once an operation is performed, resource status does not change even if the same operation is performed later for a number of times.
             However, when another client is modifying the status of the same resource, idempotency need not be ensured and can be handled as a precondition error.
-    
+
 
  .. tip:: **When client specifies the URI assigned to a resource for creating a resource**
- 
+
     To create a resource, when the URI to be assigned to the resource is specified by client, \ **PUT method is called for the URI assigned to the resource to be created.**\
 
     When creating a resource using PUT method, the general operation is to,
-    
+
      * Create a resource when no resource exists in the specified URI
      * Modify resource status when a resource already exists
-    
-    
-    
+
+
+
     Following is the difference in process images while creating a resource using PUT and POST methods.
-    
+
     **[Process image while creating a resource using PUT method]**
 
          .. figure:: ./images_REST/RESTCreatedNewResourceUsingByPutMethod.png
-           :alt: Image of processing for create new resource using by PUT method
+           :alt: Image of processing for creating new resource using by PUT method
            :width: 70%
 
          .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
          .. list-table::
             :header-rows: 1
             :widths: 10 90
-        
+
             * - Sr. No.
               - Description
             * - | (1)
@@ -700,7 +699,7 @@ The association of resource operations assigned to HTTP methods and the post-con
             * - | (4)
               - | Created resource is sent as a response.
                 | URI for accessing the generated resource is set in the Location header of response.
-  
+
 |
 
 .. _RESTOverviewResourceRepresentationFormat:
@@ -722,7 +721,7 @@ Using an appropriate format
   | The reasons for recommending this format are, responding format can be easily specified and as the responding format is included in URI, it results in an intuitive URI.
 
  .. note:: **Examples of URI where format is changed using extension**
-    
+
     * \ `http://example.com/api/v1/items.json`\
     * \ `http://example.com/api/v1/items.xml`\
     * \ `http://example.com/api/v1/items/I312-535-01216.json`\
@@ -738,7 +737,7 @@ Using an appropriate format
      .. list-table::
         :header-rows: 1
         :widths: 10 30 60
-    
+
         * - Sr. No.
           - Format
           - MIME type
@@ -762,7 +761,7 @@ Using the appropriate HTTP status code
 | \ **This is an HTTP specification and it is recommended to conform to the HTTP specifications wherever possible.**\
 
  .. tip:: **HTTP Specifications**
- 
+
     Refer to `RFC 2616 (Hypertext Transfer Protocol -- HTTP/1.1) - 6.1.1 Status Code and Reason Phrase <http://tools.ietf.org/search/rfc2616#section-6.1.1>`_.
 
 |
@@ -798,31 +797,31 @@ Stateless communication between client and server
 | In this guideline, \ **it is recommended to retain "stateless" state wherever possible.**\
 
  .. note:: **Application status**
- 
+
     Web page transition status, selection status for input value, pull down/checkbox/radio buttons and authentication status etc. are included in application status.
 
  .. note:: **Relation with CSRF measures**
- 
+
     Please note that the "Stateless" state between client and server cannot be retained when the CSRF measures described in this guideline are implemented for RESTful Web Service as, the token values for CRSF measures are stored in HTTP sessions.
 
     As a result, system availability must be considered while implementing CSRF measures.
-    
+
     Following measures need to be implemented for a system that requires high availability.
-    
+
     * Perform AP server clustering and session replication.
     * Use a destination other than AP server memory for storing a session.
-    
-    
+
+
     However, above measures may affect the performance. Hence, it is necessary to consider performance requirements as well.
-    
+
     For CSRF measures, refer to \ :doc:`../Security/CSRF`\ .
 
  .. todo:: **TBD**
 
     When high availability is required, it is advisable to review an architecture wherein, "token values for CSRF measures are stored in a destination other than the AP server memory (HTTP session)".
-    
+
     Basic architecture is currently under review and will be documented in subsequent versions.
-    
+
 |
 
 .. _RESTOverviewHyperMediaLinksToRelatedResources:
@@ -882,12 +881,12 @@ Connectivity of resources is described below, with the example of member informa
 
          .. code-block:: json
             :emphasize-lines: 10-11,22-23,30-31
-        
+
             {
                 "orders" : [
                     {
                         "orderId" : "029b49d7-0efa-411b-bc5a-6570ce40ead8",
-                        "orderDatetime" : "2013-12-27T20:34:50.897Z", 
+                        "orderDatetime" : "2013-12-27T20:34:50.897Z",
                         "orderName" : "Note PC",
                         "shopName" : "Global PC Shop",
                         "links" : [
@@ -899,7 +898,7 @@ Connectivity of resources is described below, with the example of member informa
                     },
                     {
                         "orderId" : "79bf991d-d42d-4546-9265-c5d4d59a80eb",
-                        "orderDatetime" : "2013-12-03T19:01:44.109Z", 
+                        "orderDatetime" : "2013-12-03T19:01:44.109Z",
                         "orderName" : "Orange Juice 100%",
                         "shopName" : "Global Food Shop",
                         "links" : [
@@ -922,21 +921,21 @@ Connectivity of resources is described below, with the example of member informa
         | In the above example, connectivity is retained between the resource for owner member of order history and the order history resource.
     * - | (3)
       - | Following JSON is returned when the resource for owner member of order history is fetched again (\ ``GET http://example.com/api/v1/memebers/M000000001``\ ) and the resource for authentication history is fetched (\ ``GET http://example.com/api/v1/memebers/M000000001/authentications/``\ ) using hypermedia link (URI) set in the returned JSON.
-        
+
          .. code-block:: json
             :emphasize-lines: 18-19
-        
+
             {
                 "authentications" : [
                     {
                         "authenticationId" : "6ae9613b-85b6-4dd1-83da-b53c43994433",
-                        "authenticationDatetime" : "2013-12-27T20:34:50.897Z", 
+                        "authenticationDatetime" : "2013-12-27T20:34:50.897Z",
                         "clientIpaddress" : "230.210.3.124",
                         "authenticationResult" : true
                     },
                     {
                         "authenticationId" : "103bf3c5-7707-46eb-b2d8-c00ce6243d5f",
-                        "authenticationDatetime" : "2013-12-26T10:03:45.001Z", 
+                        "authenticationDatetime" : "2013-12-26T10:03:45.001Z",
                         "clientIpaddress" : "230.210.3.124",
                         "authenticationResult" : false
                     }
@@ -948,7 +947,7 @@ Connectivity of resources is described below, with the example of member informa
                     }
                 ]
             }
-        
+
         | Highlighted portion is the hypermedia link (URI) to other linked resource.
         | In the above example, connectivity is retained with respect to the resource for owner member of authentication history.
 
@@ -981,15 +980,15 @@ Whether to provide a hypermedia link (URI) to other resources should be determin
     HATEOAS is an abbreviation for "\ **H**\ypermedia \ **A**\s \ **T**\he \ **E**\ngine \ **O**\f \ **A**\pplication \ **S**\tate" and is one of the architectures for creating a RESTful Web application.
 
     HATEOAS architecture includes the following processes.
-    
+
     * In the resources (JSON or XML) that are exchanged between client and server, the server includes a hypermedia link (URI) to an accessible resource.
     * Client fetches required resources from the server through the hypermedia link in the resource display (JSON or XML), and changes application status (screen status etc.).
-    
+
     Therefore, providing a link for related resources is consistent with the HATEOAS architecture.
-    
+
     When loose coupling between server and client is to be enhanced, please review if using the HATEOAS architecture would be beneficial.
-    
-    
+
+
 
 |
 
@@ -1015,7 +1014,7 @@ Precautions while extracting a resource are as given below.
     * - Sr. No.
       - Precautions while extracting a resource
     * - | (1)
-      - | Resource published on the web is used as the information managed by database. However, \ **data model of the database must not be published as resource as it is, without careful consideration.**\ 
+      - | Resource published on the web is used as the information managed by database. However, \ **data model of the database must not be published as resource as it is, without careful consideration.**\
         | It should be closely investigated, as the fields stored in the database may include some fields that should not be disclosed to the client.
     * - | (2)
       - | \ **When information type is different in spite of being managed by the same table of the database, publishing it as a separate resource may be considered.**\
@@ -1023,7 +1022,7 @@ Precautions while extracting a resource are as given below.
     * - | (3)
       - | In RESTful Web Service, the information operated by an event is extracted as a resource.
         | \ **The event itself should not be extracted as a resource.**\
-        | 
+        |
         | For example, when creating RESTful Web Service to be called from the events (approve, deny, return etc.) generated by work flow functionality, information for managing the workflow status or the workflow itself, is extracted as a resource.
 
 |
@@ -1036,15 +1035,15 @@ URI is assigned to the extracted resource for identifying it.
 
 It is recommended to use following formats for the URI.
 
-* ``http(s)://{Domain name (:Port number)}/{A value indicating REST API}/{API version}/{path for identifying a resource}``\ 
+* ``http(s)://{Domain name (:Port number)}/{A value indicating REST API}/{API version}/{path for identifying a resource}``\
 
-* ``http(s)://{Domain name indicating REST API(:Port number)}/{API version}/{path for identifying a resource}``\ 
+* ``http(s)://{Domain name indicating REST API(:Port number)}/{API version}/{path for identifying a resource}``\
 
 A typical example is given below.
 
-* ``http://example.com/api/v1/members/M000000001``\ 
+* ``http://example.com/api/v1/members/M000000001``\
 
-* ``http://api.example.com/v1/members/M000000001``\ 
+* ``http://api.example.com/v1/members/M000000001``\
 
 |
 
@@ -1056,8 +1055,8 @@ It is recommended to include  \ ``api``\  within the URI domain or path, to clea
 
 Typically, the URI is as given below.
 
-* ``http://example.com/api/...``\ 
-* ``http://api.example.com/...``\ 
+* ``http://example.com/api/...``\
+* ``http://api.example.com/...``\
 
 |
 
@@ -1069,11 +1068,11 @@ It is recommended to include a value that identifies the API version, in the URI
 
 Typically, the URI format is as follows.
 
-* ``http://example.com/api/{API version}/{path for identifying a resource}``\ 
-* ``http://api.example.com/{API version}/{path for identifying a resource}``\ 
+* ``http://example.com/api/{API version}/{path for identifying a resource}``\
+* ``http://api.example.com/{API version}/{path for identifying a resource}``\
 
 .. todo:: **TBD**
- 
+
     Whether API version should be included in URI, is currently being investigated.
 
 |
@@ -1108,12 +1107,12 @@ Assigning a path for identifying resource
 
 | The URI for related resources published on Web are nested and then displayed.
 | Following example describes the URI for publishing order information for each member on the Web.
-    
+
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.35\linewidth}|p{0.25\linewidth}|p{0.30\linewidth}|
  .. list-table::
     :header-rows: 1
     :widths: 10 35 25 30
-    
+
     * - Sr. No.
       - URI format
       - Typical example of URI
@@ -1155,9 +1154,9 @@ Assigning HTTP methods
 CRUD operation for resources is published as REST API by assigning the following HTTP methods for the URI assigned to each resource.
 
  .. note:: **HEAD and OPTIONS method**
- 
+
     Hereafter, HEAD and OPTIONS methods are described as well. However, providing them for REST API is optional.
-    
+
     While creating the REST API conforming to HTTP specifications, it is necessary to provide the HEAD and OPTIONS methods as well. However, it is actually used very rarely and is not required in most of the cases.
 
 |
@@ -1321,8 +1320,8 @@ Hypermedia link format
     }
 
  * Link object consisting of 2 fields - \ ``"rel"``\  and \ ``"href"``\  is retained in collection format.
- * Link name for identifying the link is specified in \ ``"rel"``\  .
- * URI to access the resource is specified in \ ``"href"``\  .
+ * Link name for identifying the link is specified in \ ``"rel"``\ .
+ * URI to access the resource is specified in \ ``"href"``\ .
  * \ ``"links"``\  is the field which retains the Link object in collection format.
 
 |
@@ -1387,7 +1386,7 @@ HTTP status code is sent as the response, in accordance with the following guide
 HTTP status codes when the request is successful
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 When the request is successful, following HTTP status codes are sent as responses, depending on status.
- 
+
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.20\linewidth}|p{0.30\linewidth}|p{0.40\linewidth}|
  .. list-table::
     :header-rows: 1
@@ -1416,7 +1415,7 @@ When the request is successful, following HTTP status codes are sent as response
       - | It is sent as a response when the resource information corresponding to request is not output in the entity body of response, as a result of successful request.
 
  .. tip::
- 
+
     The difference between \ ``"200 OK``\  and \ ``"204 No Content"``\  is whether the resource information is output/not output in the response body.
 
 |
@@ -1520,7 +1519,7 @@ Authentication and Authorization
 .. todo:: **TBD**
 
     The guidelines for authentication and authorization control are explained here.
-    
+
     Performing authentication and authorization using OAuth2 protocol will be described in subsequent versions.
 
 |
@@ -1531,7 +1530,7 @@ Conditional update control of resource
 .. todo:: **TBD**
 
     The process for conditional update (exclusive control) of a resource using HTTP header is explained here.
-    
+
     Conditional update using headers like Etag/Last-Modified-Since etc. will be described in subsequent versions.
 
 |
@@ -1553,7 +1552,7 @@ Cache control of resource
 .. todo:: **TBD**
 
     Cache control of resources which use HTTP header, is explained here.
-    
+
     Cache control of resources that use headers such as Cache-Control/Pragma/Expires etc. shall be described in subsequent versions.
 
 |
@@ -1564,7 +1563,7 @@ Versioning
 .. todo:: **TBD**
 
     Version control of RESTful Web Service and details on performing parallel operations in multiple versions, will be described in subsequent versions.
-    
+
 |
 
 .. _RESTHowToUse:
@@ -1589,12 +1588,12 @@ Web application configuration
       - Configuration
       - Description
     * - | (1)
-      - | An exclusive Web application for RESTful Web Service is built.
+      - | Build an exclusive Web application for RESTful Web Service.
       - | It is recommended to build an exclusive Web application (war) for RESTful Web Service when an independence with client application (UI layer application) that uses RESTful Web Service, is to be ensured (is necessary).
         |
         | This method can be used to create RESTful Web Service when there are multiple client applications using RESTful Web Service.
     * - | (2)
-      - | It is built by providing \ ``DispatcherServlet``\  for RESTful Web Service.
+      - | Build by providing \ ``DispatcherServlet``\  for RESTful Web Service.
       - | When it is not necessary to ensure independence of client application (UI layer application) that uses RESTful Web Service, both the client application and RESTful Web Service can be built as a single Web application (war).
         |
         | However, it is strongly recommended to build it by dividing \ ``DispatcherServlet``\  that receives the requests for RESTful Web Service and \ ``DispatcherServlet``\  that receives client application requests.
@@ -1606,9 +1605,9 @@ Web application configuration
 
  .. note:: **Why division of DispatcherServlet is recommended**
 
-    In Spring MVC, operation settings of the application are defined for each \ ``DispatcherServlet``\  .
-    Therefore, when the requests of RESTful Web Service and client application (UI layer application) are configured to be received from the same \ ``DispatcherServlet``\  , specific operation settings for RESTful Web Service or client application cannot be defined, thus resulting in complex or cumbersome settings.
-    
+    In Spring MVC, operation settings of the application are defined for each \ ``DispatcherServlet``\ .
+    Therefore, when the requests of RESTful Web Service and client application (UI layer application) are configured to be received from the same \ ``DispatcherServlet``\ , specific operation settings for RESTful Web Service or client application cannot be defined, thus resulting in complex or cumbersome settings.
+
     In this guideline, when RESTful Web Service and client application are to be configured as same Web application, it is recommended to divide \ ``DispatcherServlet``\  to avoid occurrence of the issues described above.
 
 |
@@ -1639,7 +1638,7 @@ Application settings for RESTful Web Service are explained below.
 
 Settings for activating the Spring MVC components necessary for RESTful Web Service
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| A bean definition file is created for RESTful Web Service.
+| Create a bean definition file for RESTful Web Service.
 | Definitions that are required to operate the sample indicated in the explanation hereafter, are as follows:
 
 - :file:`spring-mvc-rest.xml`
@@ -1648,7 +1647,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
     :emphasize-lines: 22, 30-32, 39-41, 44-47, 51, 61, 65
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <beans xmlns="http://www.springframework.org/schema/beans" 
+    <beans xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:mvc="http://www.springframework.org/schema/mvc"
@@ -1669,9 +1668,9 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
 
         <!-- Load properties files for placeholder. -->
         <!-- (1) -->
-        <context:property-placeholder 
+        <context:property-placeholder
             location="classpath*:/META-INF/spring/*.properties" />
-    
+
         <bean id="jsonMessageConverter"
             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
             <property name="objectMapper">
@@ -1683,7 +1682,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
                 </bean>
             </property>
         </bean>
-    
+
         <!-- Register components of Spring MVC. -->
         <!-- (3) -->
          <mvc:annotation-driven>
@@ -1695,7 +1694,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
                 <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
-        
+
         <!-- Register components of interceptor. -->
         <!-- (5) -->
         <mvc:interceptors>
@@ -1705,14 +1704,14 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
             </mvc:interceptor>
             <!-- omitted -->
         </mvc:interceptors>
-    
+
         <!-- Scan & register components of RESTful Web Service. -->
         <!-- (6) -->
         <context:component-scan base-package="com.example.project.api" />
 
         <!-- Register components of AOP. -->
         <!-- (7) -->
-        <bean id="handlerExceptionResolverLoggingInterceptor" 
+        <bean id="handlerExceptionResolverLoggingInterceptor"
             class="org.terasoluna.gfw.web.exception.HandlerExceptionResolverLoggingInterceptor">
             <property name="exceptionLogger" ref="exceptionLogger" />
         </bean>
@@ -1734,49 +1733,49 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
       - | When the value defined in the property file needs to be referred by an application layer component, the property file should be read by using \ ``<context:property-placeholder>``\  element.
         | For the details of fetching a value from property file, refer to ":doc:`PropertyManagement`".
     * - | (2)
-      - | The settings for handling the JSON date field format as extended ISO-8601 format, are added.
+      - | Add the settings for handling the JSON date field format as extended ISO-8601 format.
     * - | (3)
-      - | Bean registration for the Spring MVC framework component necessary for providing RESTful Web Service, is performed.
+      - | Perform bean registration for the Spring MVC framework component necessary for providing RESTful Web Service.
         | JSON can be used as a resource format by performing these settings.
         | In the above example, resource format is restricted to JSON since the register-defaults attribute of \ ``<mvc:message-converters``>\  element is set as \ ``false``\ .
         |
         | To use XML as resource format, \ ``MessageConverter``\  for XML, that performs the XXE Injection countermeasure, should be specified. For details on designated methods, refer to "\ :ref:`RESTAppendixEnabledXXEInjectProtection`\" .
     * - | (4)
-      - | Settings to enable page search functionality are added.
+      - | Add the settings to enable page search functionality.
         | For page search details, refer to ":doc:`Pagination`".
         | This setting is not required if page search is unnecessary, however, it is alright if defined.
     * - | (5)
-      - | Bean registration is performed for Spring MVC interceptor.
+      - | Perform bean registration for Spring MVC interceptor.
         | In the above example, only the \ ``TraceLoggingInterceptor``\  provided by common library is defined. However, when using JPA as data access, \ ``OpenEntityManagerInViewInterceptor``\  setting needs to be added separately.
         | Refer to \ :doc:`DataAccessJpa`\  for \ ``OpenEntityManagerInViewInterceptor``\ .
     * - | (6)
-      - | Application layer components for RESTful Web Service (Controller or Helper class etc.) are scanned and bean registration is performed.
+      - | Scan the application layer components for RESTful Web Service (Controller or Helper class etc.) and perform bean registration.
         | The \ ``"com.example.project.api"``\  part is the \ **package name for each project.**\
     * - | (7)
-      - | AOP definition to output the exception handled by Spring MVC framework to a log, is specified.
+      - | Specify AOP definition to output the exception handled by Spring MVC framework to a log.
         | Refer to \ :doc:`ExceptionHandling`\  for \ ``HandlerExceptionResolverLoggingInterceptor``\ .
 
 .. _REST_note_changed_jackson_version:
 
 .. note::
 
-    **Notice If you change from jackson version 1.xx to jackson version 2.xx**
+    **Points to be noted when changing the jackson version from 1.x.x to 2.x.x**
 
-    * changed package
+    * Changed package
 
      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
      .. list-table::
         :header-rows: 1
         :widths: 10 90
 
-        * - verision
+        * - version
           - package
         * - | 1.x.x
           - | `org.codehaus.jackson`
         * - | 2.x.x
           - | `com.fasterxml.jackson`
 
-     * Notice. Configuration of subordinate package also has been changed.
+     * Please note that configuration of subordinate package also is also changed.
 
     * Deprecated List
 
@@ -1827,27 +1826,27 @@ Servlet settings for RESTful Web Service
     * - Sr. No.
       - Description
     * - | (1)
-      - | A name which shows that it is a  RESTful Web Service servlet, is specified in \ ``<servlet-name>``\  element.
+      - | Specify a name which shows that it is a  RESTful Web Service servlet, in \ ``<servlet-name>``\  element.
         | In the above example, \ ``"restAppServlet"``\  is specified as the servlet name.
     * - | (2)
-      - | A Spring MVC bean definition file used to build \ ``DispatcherServlet``\  for RESTful Web Service, is specified.
+      - | Specify a Spring MVC bean definition file used to build \ ``DispatcherServlet``\  for RESTful Web Service.
         | In the above example, \ :file:`META-INF/spring/spring-mvc-rest.xml`\  in class path, is specified as the Spring MVC bean definition file.
     * - | (3)
-      - | Servlet path pattern to be mapped with the \ ``DispatcherServlet``\  of RESTful Web Service, is specified.
+      - | Specify a servlet path pattern to be mapped with the \ ``DispatcherServlet``\  of RESTful Web Service.
         | In the above example, the servlet path under \ ``"/api/v1/"``\  is mapped with the  \ ``DispatcherServlet``\  for RESTful Web Service.
         | Typically, servlet paths like
-        |   \ ``"/api/v1/"``\ 
-        |   \ ``"/api/v1/members"``\ 
-        |   \ ``"/api/v1/members/xxxxx"``\ 
+        |   \ ``"/api/v1/"``\
+        |   \ ``"/api/v1/members"``\
+        |   \ ``"/api/v1/members/xxxxx"``\
         | are mapped in the \ ``DispatcherServlet``\ (\ ``"restAppServlet"``\ ) for RESTful Web Service.
 
  .. tip:: **Value specified in the value attribute of @RequestMapping annotation**
 
-   For the value to be specified in value attribute of \ ``@RequestMapping``\  annotation, value assigned to the part of wild card (\ ``*``\) in \ ``<url-pattern>``\  element, is specified.
-   
+   For the value to be specified in value attribute of \ ``@RequestMapping``\  annotation, specify the value assigned to the part of wild card (\ ``*``\) in \ ``<url-pattern>``\  element.
+
    For example, when \ ``@RequestMapping(value = "members")``\  is specified, it is deployed as the method to perform a process for path \ ``"/api/v1/members"``\ .
    Therefore, it is not necessary to specify the path  (\ ``"api/v1"``\) in value attribute of \ ``@RequestMapping``\  annotation for mapping to divided servlets.
-   
+
    When \ ``@RequestMapping(value = "api/v1/members")``\  is specified, it gets deployed as the method that performs a process for the \ ``"/api/v1/api/v1/members"``\  path. Hence, please take note of same.
 
 |
@@ -1873,7 +1872,7 @@ REST API specifications used in this explanation are as shown below.
 
 **Resource format**
 
- | The resource format of member information is the following JSON format.
+ | The resource format of member information should be the following JSON format.
  | In the following example, although all the fields are displayed, they are not used in the requests and responses of all API.
  | For example, \ ``"password"``\  is used only in requests whereas \ ``"createdAt"``\  or \ ``"lastModifiedAt"``\  are used only in responses.
 
@@ -1900,16 +1899,16 @@ REST API specifications used in this explanation are as shown below.
     }
 
  .. note::
- 
+
      This section illustrates an example wherein a hypermedia link for related resource is not provided.
-     For details on implementation with hypermedia link, refer to ":ref:`RESTAppendixHyperMediaLink`". 
+     For details on implementation with hypermedia link, refer to ":ref:`RESTAppendixHyperMediaLink`".
 
 |
 
 **Specifications of resource fields**
- 
+
  The specifications for each field of a resource (JSON) are as shown below.
- 
+
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.20\linewidth}|p{0.10\linewidth}|p{0.10\linewidth}|p{0.15\linewidth}|p{0.25\linewidth}|
  .. list-table::
     :header-rows: 1
@@ -2042,7 +2041,7 @@ REST API specifications used in this explanation are as shown below.
 **REST APIs List**
 
  APIs given below are used as the REST API to be implemented.
- 
+
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.15\linewidth}|p{0.10\linewidth}|p{0.25\linewidth}|p{0.15\linewidth}|p{0.25\linewidth}|
  .. list-table::
     :header-rows: 1
@@ -2059,41 +2058,41 @@ REST API specifications used in this explanation are as shown below.
     * - | (1)
       - :ref:`GET Members <RESTHowToUseApiImplementationOfGetCollection>`
       - GET
-      - \ ``/api/v1/members``\ 
+      - \ ``/api/v1/members``\
       - | 200
         | (OK)
       - | Page is searched for Member resource that matches the condition.
     * - | (2)
       - :ref:`POST Members <RESTHowToUseApiImplementationOfPostCollection>`
       - POST
-      - \ ``/api/v1/members``\ 
+      - \ ``/api/v1/members``\
       - | 201
         | (Created)
       - One Member resource is created.
     * - | (3)
       - :ref:`GET Member <RESTHowToUseApiImplementationOfGetSpecifiedResource>`
       - GET
-      - \ ``/api/v1/members/{memberId}``\ 
+      - \ ``/api/v1/members/{memberId}``\
       - | 200
         | (OK)
       - One Member resource is fetched.
     * - | (4)
       - :ref:`PUT Member <RESTHowToUseApiImplementationOfPutSpecifiedResource>`
       - PUT
-      - \ ``/api/v1/members/{memberId}``\ 
+      - \ ``/api/v1/members/{memberId}``\
       - | 200
         | (OK)
       - One Member resource is updated.
     * - | (5)
       - :ref:`DELETE Member <RESTHowToUseApiImplementationOfDeleteSpecifiedResource>`
       - DELETE
-      - \ ``/api/v1/members/{memberId}``\ 
+      - \ ``/api/v1/members/{memberId}``\
       - | 204
         | (No Content)
       - One Member resource is deleted.
 
  .. note::
- 
+
      This section focuses on the details of CRUD operation for a resource. Hence, HEAD and OPTIONS methods are not explained.
      To create the RESTful Web Service conforming to HTTP specifications, refer to ":ref:`RESTAppendixRestApiOfHTTPCompliance`".
 
@@ -2103,7 +2102,7 @@ REST API specifications used in this explanation are as shown below.
 
 Creating REST API packages
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Package to store REST API class is created.
+Create a package to store REST API class.
 
 | It is recommended to assign \ ``api``\  as the package name for the route package that stores REST API class and to create a package for each resource (lower case of resource name) under the same.
 | Resource name in the explanation is \ ``Member``\ . Hence, the package name is \ ``org.terasoluna.examples.rest.api.member``\ .
@@ -2113,19 +2112,19 @@ Package to store REST API class is created.
     Usually, following 4 types of classes are stored in the created package.
     It is recommended to use the following naming rules for name of the class to be created.
 
-     * \ ``[Resource name]Resource``\ 
-     * \ ``[Resource name]RestController``\ 
+     * \ ``[Resource name]Resource``\
+     * \ ``[Resource name]RestController``\
      * \ ``[Resource name]Validator``\  (created when required)
      * \ ``[Resource name]Helper``\  (created when required)
 
      In the explanation, name of the resource is \ ``Member``\ . As a result, the respective names will be as below.
 
-     * \ ``MemberResource``\ 
-     * \ ``MemberRestController``\ 
-     * \ ``MemberValidator``\ 
-     * \ ``MemberHelper``\ 
+     * \ ``MemberResource``\
+     * \ ``MemberRestController``\
+     * \ ``MemberValidator``\
+     * \ ``MemberHelper``\
 
-    
+
 
     When handling a related resource, it is advisable to place the class for related resource also in the same package.
 
@@ -2139,7 +2138,7 @@ Package to store REST API class is created.
 
     As long as it is clear that the package is storing common parts, it can have a name other than \ ``common``\ .
 
-| 
+|
 
 
 .. _RESTHowToUseResourceClass:
@@ -2153,13 +2152,13 @@ Creating Resource class
 
   The reason for creating a Resource class regardless of DomainObject class (for example, Entity class) being available is,
   user interface information (UI) which is used in the I/O with client and information handled by business process do not necessarily match.
-  
+
   If these are mixed and then used, the application layer may affect the domain layer, resulting in deteriorated maintainability.
   It is recommended to create the DomainObject and Resource class separately and convert data by using BeanMapper like Dozer etc.
 
 |
 
-Role of Resource class is as follows.
+Role of Resource class is as follows:
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.30\linewidth}|p{0.60\linewidth}|
  .. list-table::
@@ -2171,17 +2170,59 @@ Role of Resource class is as follows.
       - Description
     * - | (1)
       - | To define the data structure of a resource.
-      - | Data structure of the resource published on Web is defined.
+      - | Define a data structure of the resource published on Web.
         | Generally, it is very rare to publish the data structure managed by persistence layer of database etc. as it is, as a resource on Web.
     * - | (2)
       - | To define format.
-      - | Definition related to resource format is specified using annotation.
+      - | Specify a definition related to resource format using annotation.
         | Annotation to be used differs according to the resource format (JSON/XML etc.). Jackson annotation is used for JSON format whereas JAXB annotation is used for XML format.
     * - | (3)
       - | To define input validation rules.
-      - | The input validation rules for single item of each field are specified by using Bean Validation annotation.
+      - | Specify input validation rules for single item of each field by using Bean Validation annotation.
         | For input validation details, refer to "\ :doc:`Validation`\" .
 
+
+ .. warning:: **Measures to circular reference**
+
+     When you serialize a Resource class (JavaBean) in JSON or XML format and if property holds an object of cross reference relationship,
+     the \ ``StackOverflowError``\  and \ ``OutOfMemoryError``\  occur due to circular reference, hence it is necessary to exercise caution.
+
+     In order to avoid a circular reference,
+
+     * \ ``@com.fasterxml.jackson.annotation.JsonIgnore`` \  annotation to exclude the property from serialization in case of serialized in JSON format using the Jackson
+     * \ ``@javax.xml.bind.annotation.XmlTransient`` \  annotation to exclude the property from serialization in case of serialized in XML format using the JAXB
+
+     can be added.
+
+     An example to exclude specific field from serialization while serializing in JSON format using Jackson is given below.
+
+      .. code-block:: java
+
+          public class Order {
+              private String orderId;
+              private List<OrderLine> orderLines;
+              // ...
+          }
+
+      .. code-block:: java
+
+          public class OrderLine {
+              @JsonIgnore
+              private Order order;
+              private String itemCode;
+              private int quantity;
+              // ...
+          }
+
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+          :header-rows: 1
+          :widths: 10 90
+
+          * - Sr. No.
+            - Description
+          * - | (1)
+            - Add \ ``@JsonIgnore``\  annotation to exclude the property from serialization.
 
 |
 
@@ -2193,82 +2234,82 @@ Example of Resource class creation is shown below.
     :emphasize-lines: 17, 22-27, 67
 
     package org.terasoluna.examples.rest.api.member;
-    
+
     import java.io.Serializable;
-    
+
     import javax.validation.Valid;
     import javax.validation.constraints.NotNull;
     import javax.validation.constraints.Null;
     import javax.validation.constraints.Past;
     import javax.validation.constraints.Size;
-    
+
     import org.hibernate.validator.constraints.Email;
     import org.hibernate.validator.constraints.NotEmpty;
     import org.joda.time.DateTime;
     import org.joda.time.LocalDate;
     import org.terasoluna.gfw.common.codelist.ExistInCodeList;
-    
+
     // (1)
     public class MemberResource implements Serializable {
-    
+
         private static final long serialVersionUID = 1L;
-    
+
         // (2)
         interface PostMembers {
         }
-    
+
         interface PutMember {
         }
-    
+
         @Null(groups = PostMembers.class)
         @NotEmpty(groups = PutMember.class)
         @Size(min = 10, max = 10, groups = PutMember.class)
         private String memberId;
-    
+
         @NotEmpty
         @Size(max = 128)
         private String firstName;
-    
+
         @NotEmpty
         @Size(max = 128)
         private String lastName;
-    
+
         @NotEmpty
         @ExistInCodeList(codeListId = "CL_GENDER")
         private String genderCode;
-    
+
         @NotNull
         @Past
         private LocalDate dateOfBirth;
-    
+
         @NotEmpty
         @Size(max = 256)
         @Email
         private String emailAddress;
-    
+
         @Size(max = 20)
         private String telephoneNumber;
-    
+
         @Size(max = 20)
         private String zipCode;
-    
+
         @Size(max = 256)
         private String address;
-    
+
         @NotNull(groups = PostMembers.class)
         @Null(groups = PutMember.class)
         @Valid
         // (3)
         private MemberCredentialResource credential;
-    
+
         @Null
         private DateTime createdAt;
-    
+
         @Null
         private DateTime lastModifiedAt;
-    
+
         // omitted setter and getter
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2293,25 +2334,26 @@ Example of Resource class creation is shown below.
 * :file:`MemberCredentialResource.java`
 
  .. code-block:: java
-    :emphasize-lines: 14, 23
+    :emphasize-lines: 13, 22
 
     package org.terasoluna.examples.rest.api.member;
-    
+
     import java.io.Serializable;
-    
+
     import javax.validation.constraints.NotNull;
     import javax.validation.constraints.Null;
     import javax.validation.constraints.Size;
-    
+
     import com.fasterxml.jackson.annotation.JsonInclude;
+
     import org.hibernate.validator.constraints.Email;
     import org.joda.time.DateTime;
 
     // (4)
     public class MemberCredentialResource implements Serializable {
-    
+
         private static final long serialVersionUID = 1L;
-    
+
         @Size(max = 256)
         @Email
         private String signId;
@@ -2321,15 +2363,15 @@ Example of Resource class creation is shown below.
         @NotNull
         @Size(min = 8, max = 32)
         private String password;
-    
+
         @Null
         private DateTime passwordLastChangedAt;
-    
+
         @Null
         private DateTime lastModifiedAt;
-    
+
         // omitted setter and getter
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2342,9 +2384,9 @@ Example of Resource class creation is shown below.
     * - | (4)
       - | JavaBean that represents Credential resource which is the related resource of Member resource.
     * - | (5)
-      - | An annotation is specified so that the field itself is not output in JSON when the value is \ ``null``\.
+      - | An annotation is specified so that the field itself is not output in JSON when the value is \ ``null``\ .
         | It is specified so that the field 'password' is not output in responding JSON.
-        | In the above example, it is restricted to (\ ``Inclusion.NON_NULL``\ ) for NULL value, however it can also be specified as (\ ``Inclusion.NON_EMPTY``\) in case of an empty value.
+        | In the above example, it is restricted to (\ ``Inclusion.NON_NULL``\ ) for NULL value, however it can also be specified as (\ ``Inclusion.NON_EMPTY``\ ) in case of an empty value.
 
 |
 
@@ -2359,18 +2401,20 @@ Example of Resource class creation is shown below.
 
 Creating Controller class
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Controller class is created for each resource.
+| Create controller class for each resource.
 | Refer to \ :ref:`Appendix <RESTAppendixSoruceCodesOfMemberRestController>`\  for the source code when implementation of all APIs is completed.
 
  .. code-block:: java
-    :emphasize-lines: 5
+    :emphasize-lines: 7-8
 
     package org.terasoluna.examples.rest.api.member;
-    
+
+    // omitted
+    import org.springframework.web.bind.annotation.RestController;
     // omitted
 
     @RequestMapping("members") // (1)
-    @Controller
+    @RestController // (2)
     public class MemberRestController {
 
         // omitted ...
@@ -2385,9 +2429,46 @@ Creating Controller class
     * - Sr. No.
       - Description
     * - | (1)
-      - | Resource collection URI (Servlet path) is mapped for Controller.
-        | Typically, a servlet path indicating a collection of resources is specified in the value attribute of \ ``@RequestMapping``\  annotation.
+      - | Map resource collection URI (Servlet path) for Controller.
+        | Typically, specify a servlet path indicating a collection of resources in the value attribute of \ ``@RequestMapping``\  annotation.
         | In the above example, a servlet path called \ ``/api/v1/members``\  is mapped.
+    * - | (2)
+      - Assign \ ``@RestController``\  annotation for Controller.
+
+        Assigning \ ``@RestController``\  annotation has same meaning of:
+
+        * Assigning \ ``org.springframework.stereotype.Controller``\  annotation in a class
+        * Assigning \ ``@org.springframework.web.bind.annotation.ResponseBody``\  annotation in Controller method which is described later.
+
+
+        By assigning \ ``@ResponseBody``\  to Controller method, the returned Resource object is marshalled in JSON or XML and set in response body.
+
+ .. tip::
+
+    \ ``@RestController``\  is an annotation added from Spring Framework 4.0.
+
+    Due to \ ``@RestController``\  annotation, it is not necessary to assign \ ``@ResponseBody``\  annotation to each method of Controller.
+    Hence, it is possible to create Controller for REST API in a simple way.
+    For details about \ ``@RestController``\  annotation refer to: \ `Here <http://docs.spring.io/spring/docs/4.1.4.RELEASE/javadoc-api/org/springframework/web/bind/annotation/RestController.html>`_\ .
+
+    An example to create a Controller for REST API by combining \ ``@Controller``\  annotation and \ ``@ResponseBody``\  annotation in a conventional way is given below.
+
+     .. code-block:: java
+
+        @RequestMapping("members")
+        @Controller
+        public class MemberRestController {
+
+            @RequestMapping(method = RequestMethod.GET)
+            @ResponseStatus(HttpStatus.OK)
+            @ResponseBody
+            public Page<MemberResource> getMembers() {
+                // ...
+            }
+
+            // ...
+
+        }
 
 |
 
@@ -2395,10 +2476,10 @@ Creating Controller class
 
 Implementing REST API that fetches collection of resources
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Implementing the REST API wherein a page search is performed for member resource collection specified by URI.
+Example to implement the REST API wherein a page search is performed for member resource collection specified by URI.
 
 - | Creating the JavaBean for receiving search conditions
-  | When search conditions are necessary to fetch resource collection, a JavaBean is created for receiving the search conditions.
+  | When search conditions are necessary to fetch resource collection, create a JavaBean for receiving the search conditions.
 
  .. code-block:: java
     :emphasize-lines: 1, 5
@@ -2406,19 +2487,19 @@ Implementing the REST API wherein a page search is performed for member resource
     // (1)
     public class MembersSearchQuery implements Serializable {
         private static final long serialVersionUID = 1L;
-    
+
         // (2)
         @NotEmpty
         private String name;
-    
+
         public String getName() {
             return name;
         }
-    
+
         public void setName(String name) {
             this.name = name;
         }
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2429,56 +2510,55 @@ Implementing the REST API wherein a page search is performed for member resource
     * - Sr. No.
       - Description
     * - | (1)
-      - | A JavaBean for receiving search conditions is created.
+      - | Create a JavaBean for receiving search conditions.
         | When search conditions are not necessary, JavaBean need not be created.
     * - | (2)
-      - | Property name is matched with the parameter name of request parameter.
+      - | Match the property name with the parameter name of request parameter.
         | In the above example, value \ ``"John"``\  is set in the name property of JavaBean for request \ ``/api/v1/members?name=John``\ .
 
 |
 
 * | REST API implementation
-  | A process wherein page search is performed for a collection of Member resources is implemented.
-  
+  | Implement a process wherein page search is performed for a collection of Member resources.
+
  .. code-block:: java
-    :emphasize-lines: 13, 15, 17, 20, 22, 25, 28, 36
+    :emphasize-lines: 13, 15, 18, 20, 23, 26, 34
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
-    
+
         // omitted
 
         @Inject
         MemberService memberService;
-    
+
         @Inject
         Mapper beanMapper;
-    
+
         // (3)
         @RequestMapping(method = RequestMethod.GET)
         // (4)
-        @ResponseBody
-        // (5)
+
         @ResponseStatus(HttpStatus.OK)
         public Page<MemberResource> getMembers(
-                // (6)
+                // (5)
                 @Validated MembersSearchQuery query,
-                // (7)
+                // (6)
                 Pageable pageable) {
-    
-            // (8)
+
+            // (7)
             Page<Member> page = memberService.searchMembers(query.getName(), pageable);
-    
-            // (9)
+
+            // (8)
             List<MemberResource> memberResources = new ArrayList<>();
             for (Member member : page.getContent()) {
                 memberResources.add(beanMapper.map(member, MemberResource.class));
             }
-            Page<MemberResource> responseResource = new PageImpl<>(memberResources, 
+            Page<MemberResource> responseResource = new PageImpl<>(memberResources,
                     pageable, page.getTotalElements());
-    
-            // (10)
+
+            // (9)
             return responseResource;
         }
 
@@ -2494,57 +2574,54 @@ Implementing the REST API wherein a page search is performed for member resource
     * - Sr. No.
       - Description
     * - | (3)
-      - | \ ``RequestMethod.GET``\  is specified in method attribute of \ ``@RequestMapping``\  annotation.
+      - | Specify \ ``RequestMethod.GET``\  in method attribute of \ ``@RequestMapping``\  annotation.
     * - | (4)
-      - | \ ``@org.springframework.web.bind.annotation.ResponseBody``\  is assigned as method annotation.
-        | By assigning this annotation, the returned Resource object is marshalled in JSON or XML and set in response BODY.
-    * - | (5)
-      - | \ ``@org.springframework.web.bind.annotation.ResponseStatus``\  is assigned as method annotation and the status code returned as response, is specified.
-        | 200 (OK) is set in the value attribute of \ ``@ResponseStatus``\  annotation.
-        
+      - | Assign \ ``@org.springframework.web.bind.annotation.ResponseStatus``\  as method annotation and specify the status code returned as response.
+        | Set 200 (OK) in the value attribute of \ ``@ResponseStatus``\  annotation.
+
         .. tip:: **How to specify the status code**
-        
+
             A fixed status code sent as response is specified in this example using \ ``@ResponseStatus``\  annotation. However, it can also be specified in Controller logic.
 
              .. code-block:: java
-            
+
                 public ResponseEntity<Page<MemberResource>> getMembers(
                         @Validated MembersSearchQuery query,
                         Pageable pageable) {
-                
+
                     // omitted
-                    
+
                     return ResponseEntity.ok().body(responseResource);
                 }
 
             When it is necessary to change the responding status codes based on process details or process results, \ ``org.springframework.http.ResponseEntity``\  is used, as shown in the above implementation.
 
 
+    * - | (5)
+      - | Specify a JavaBean for receiving search conditions as an argument.
+        | When input validation is necessary, assign \ ``@Validated``\  as argument annotation. For input validation details, refer to "\ :doc:`Validation`\ ".
     * - | (6)
-      - | A JavaBean for receiving search conditions is specified as an argument.
-        | When input validation is necessary, \ ``@Validated``\  is assigned as argument annotation. For input validation details, refer to "\ :doc:`Validation`\ ".
-    * - | (7)
-      - | When page search is necessary, \ ``org.springframework.data.domain.Pageable``\  is specified as an argument.
+      - | When page search is necessary, specify \ ``org.springframework.data.domain.Pageable``\  as an argument.
         | For page search details, refer to ":doc:`Pagination`".
-    * - | (8)
-      - | Service method of domain layer is called and resource information (Entity etc.) matching with the condition is fetched.
+    * - | (7)
+      - | Call Service method of domain layer and fetch resource information (Entity etc.) matching with the condition.
         | For domain layer implementation, refer to ":doc:`../ImplementationAtEachLayer/DomainLayer`".
-    * - | (9)
-      - | Resource object that retains information published on the Web based on the resource information matching with the conditions (Entity etc.), is generated.
+    * - | (8)
+      - | Generate resource object that retains information published on the Web based on the resource information matching with the conditions (Entity etc.).
         | By using \ ``org.springframework.data.domain.PageImpl``\  class while sending page search result as response, the fields that are necessary as response at the time of page search, can be sent to the client.
         |
-        | In the above example, a Resource object is generated from Entity by using Bean mapping library. For details on Bean mapping library, refer to "\ :doc:`Utilities/Dozer`\" .
+        | In the above example, a Resource object is being generated from Entity by using Bean mapping library. For details on Bean mapping library, refer to "\ :doc:`Utilities/Dozer`\" .
         | **When the quantity of code for generating Resource objects is more, it is recommended to create a method for generating Resource object in Helper class.**
-    * - | (10)
-      - | Resource object generated in (9) is returned.
+    * - | (9)
+      - | Return a Resource object generated in (8).
         | The object returned here is marshalled in JSON or XML and set in response body.
 
  | Response at the time of using \ ``PageImpl``\  class is as below.
  | Highlighted portion shows the fields specific for page search.
- 
+
  .. code-block:: json
-    :emphasize-lines: 37-49
-    
+    :emphasize-lines: 37-50
+
     {
       "content" : [ {
         "memberId" : "M000000001",
@@ -2581,20 +2658,34 @@ Implementing the REST API wherein a page search is performed for member resource
         "createdAt" : "2014-03-13T10:18:08.003Z",
         "lastModifiedAt" : "2014-03-13T10:18:08.003Z"
       } ],
+      "last" : false,
+      "totalPages" : 13,
+      "totalElements" : 25,
+      "size" : 2,
+      "number" : 1,
       "sort" : [ {
         "direction" : "DESC",
         "property" : "lastModifiedAt",
         "ignoreCase" : false,
+        "nullHandling": "NATIVE",
         "ascending" : false
       } ],
-      "lastPage" : false,
-      "firstPage" : false,
-      "totalElements" : 25,
       "numberOfElements" : 2,
-      "totalPages" : 13,
-      "size" : 2,
-      "number" : 1
+      "first" : false
     }
+
+ .. note:: **Points to be noted due to changes in API specifications of Spring Data Commons**
+
+    In case of "terasoluna-gfw-common 5.0.0.RELEASE or later version" dependent spring-data-commons (1.9.1 RELEASE or later),
+    there is a change in API specifications of interface for page search functionality (\ ``org.springframework.data.domain.Page``\ ) and class (\ ``org.springframework.data.domain.PageImpl``\  and \ ``org.springframework.data.domain.Sort.Order``\ ).
+
+    Specifically,
+
+    * In \ ``Page``\  interface and \ ``PageImpl``\  class, \ ``isFirst()``\  and \ ``isLast()``\  methods are added in spring-data-commons 1.8.0.RELEASE, and \ ``isFirstPage()``\  and \ ``isLastPage()``\  methods are deleted from spring-data-commons 1.9.0.RELEASE.
+    * In \ ``Sort.Order``\  class, \ ``nullHandling``\  property is added in spring-data-commons 1.8.0.RELEASE.
+
+    When using \ ``Page``\  interface (\ ``PageImpl``\  class) as resource object of REST API,
+    that application may also need to be modified, as JSON and XML format get changed.
 
 |
 
@@ -2605,13 +2696,13 @@ Implementing the REST API wherein a page search is performed for member resource
 
  .. code-block:: xml
     :emphasize-lines: 1, 10-14
-  
+
     <!-- (11) -->
     <?xml version="1.0" encoding="UTF-8"?>
     <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://dozer.sourceforge.net
               http://dozer.sourceforge.net/schema/beanmapping.xsd">
-    
+
         <mapping type="one-way">
             <class-a>org.terasoluna.examples.rest.domain.model.MemberCredential</class-a>
             <class-b>org.terasoluna.examples.rest.api.member.MemberCredentialResource</class-b>
@@ -2621,7 +2712,7 @@ Implementing the REST API wherein a page search is performed for member resource
                 <b>password</b>
             </field-exclude>
         </mapping>
-    
+
     </mappings>
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2632,9 +2723,9 @@ Implementing the REST API wherein a page search is performed for member resource
     * - Sr. No.
       - Description
     * - | (11)
-      - | A file that defines mapping rules for \ ``Member``\  object and \ ``MemberResource``\  object is created.
+      - | Create a file that defines mapping rules for \ ``Member``\  object and \ ``MemberResource``\  object.
         | It is recommended to create a mapping definition file of Dozer for each resource.
-        | 
+        |
         | In this implementation, it is stored in \ :file:`/xxx-web/src/main/resources/META-INF/dozer/memberResource-mapping.xml`\ .
     * - | (12)
       - | In the above example, \ ``password``\  field is not copied while copying the details of ``MemberCredential``\  which is a related entity of \ ``Member``\ , to ``MemberCredentialResource``\ , a related resource of \ ``MemberResource``\ .
@@ -2666,13 +2757,13 @@ Implementing the REST API wherein a page search is performed for member resource
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Thu, 13 Mar 2014 11:10:43 GMT
-    
-    {"content":[{"memberId":"M000000001","firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-13","emailAddress":"user1394709042120@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394709042120@test.com","passwordLastChangedAt":"2014-03-13T11:10:43.066Z","lastModifiedAt":"2014-03-13T11:10:43.066Z"},"createdAt":"2014-03-13T11:10:43.066Z","lastModifiedAt":"2014-03-13T11:10:43.066Z"},{"memberId":"M000000002","firstName":"Sophia","lastName":"Smith","genderCode":"2","dateOfBirth":"2013-03-13","emailAddress":"user1394709043663@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394709043663@test.com","passwordLastChangedAt":"2014-03-13T11:10:43.678Z","lastModifiedAt":"2014-03-13T11:10:43.678Z"},"createdAt":"2014-03-13T11:10:43.678Z","lastModifiedAt":"2014-03-13T11:10:43.678Z"}],"sort":null,"firstPage":true,"lastPage":true,"totalPages":1,"numberOfElements":2,"totalElements":2,"size":2,"number":0}
+
+    {"content":[{"memberId":"M000000001","firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-13","emailAddress":"user1394709042120@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394709042120@test.com","passwordLastChangedAt":"2014-03-13T11:10:43.066Z","lastModifiedAt":"2014-03-13T11:10:43.066Z"},"createdAt":"2014-03-13T11:10:43.066Z","lastModifiedAt":"2014-03-13T11:10:43.066Z"},{"memberId":"M000000002","firstName":"Sophia","lastName":"Smith","genderCode":"2","dateOfBirth":"2013-03-13","emailAddress":"user1394709043663@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394709043663@test.com","passwordLastChangedAt":"2014-03-13T11:10:43.678Z","lastModifiedAt":"2014-03-13T11:10:43.678Z"},"createdAt":"2014-03-13T11:10:43.678Z","lastModifiedAt":"2014-03-13T11:10:43.678Z"}],"last":true,"totalPages":1,"totalElements":2,"size":2,"number":0,"sort":null,"numberOfElements":2,"first":true}
 
 |
 
  .. tip::
- 
+
     When page search is not necessary, Resource class list may be handled directly.
 
     Following is the definition of the Controller method used when handling the list of Resource class directly.
@@ -2681,7 +2772,7 @@ Implementing the REST API wherein a page search is performed for member resource
         :emphasize-lines: 4
 
         @RequestMapping(method = RequestMethod.GET)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public List<MemberResource> getMembers(
                 @Validated MembersSearchQuery query) {
@@ -2689,7 +2780,7 @@ Implementing the REST API wherein a page search is performed for member resource
         }
 
     JSON is as follows when list of Resource class is directly handled.
-    
+
      .. code-block:: json
 
         [ {
@@ -2738,25 +2829,24 @@ Implementing REST API that adds a resource to collection
 Example of implementation of REST API wherein a specified Member resource is created and added to the collection is given below.
 
 * | REST API implementation
-  | Process that creates specified Member resource and adds it to the collection, is implemented.
+  | Implement a process that creates specified Member resource and adds it to the collection.
 
  .. code-block:: java
-    :emphasize-lines: 7, 10, 13, 17
+    :emphasize-lines: 7, 9, 12, 16
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
-    
+
         // omitted
 
         // (1)
         @RequestMapping(method = RequestMethod.POST)
-        @ResponseBody
         // (2)
         @ResponseStatus(HttpStatus.CREATED)
         public MemberResource postMember(
                 // (3)
-                @RequestBody @Validated({ PostMembers.class, Default.class }) 
+                @RequestBody @Validated({ PostMembers.class, Default.class })
                 MemberResource requestedResource) {
 
             // (4)
@@ -2781,18 +2871,18 @@ Example of implementation of REST API wherein a specified Member resource is cre
     * - Sr. No.
       - Description
     * - | (1)
-      - | \ ``RequestMethod.POST``\  is specified in the method attribute of \ ``@RequestMapping``\  annotation.
+      - | Specify \ ``RequestMethod.POST``\  in the method attribute of \ ``@RequestMapping``\  annotation.
     * - | (2)
-      - | \ ``@ResponseStatus``\  annotation is assigned as method annotation and responding status code is specified.
-        | \ **201(Created)**\  is set in the value attribute of \ ``@ResponseStatus``\  annotation.
+      - | Assign \ ``@ResponseStatus``\  annotation as method annotation and specify responding status code.
+        | Set \ **201(Created)**\  in the value attribute of \ ``@ResponseStatus``\  annotation.
     * - | (3)
-      - | JavaBean (Resource class) that receives information of newly created resource, is specified as an argument.
-        | ``@org.springframework.web.bind.annotation.RequestBody``\  is assigned as argument annotation.
+      - | Specify JavaBean (Resource class) that receives information of newly created resource as an argument.
+        | Assign ``@org.springframework.web.bind.annotation.RequestBody``\  as argument annotation.
         | By assigning \ ``@RequestBody``\  annotation, JSON or XML data set in request Body is unmarshalled in Resource object.
         |
-        | \ ``@Validated``\  annotation is assigned as argument annotation to enable input validation. For details on input validation, refer to "\ :doc:`Validation`\" .
+        | Assign \ ``@Validated``\  annotation as argument annotation to enable input validation. For details on input validation, refer to "\ :doc:`Validation`\" .
     * - | (3)
-      - | Service method of domain layer is called and a new resource is created.
+      - | Call Service method of domain layer and create a new resource.
         | For domain layer implementation, refer to ":doc:`../ImplementationAtEachLayer/DomainLayer`".
 
 |
@@ -2809,12 +2899,12 @@ Example of implementation of REST API wherein a specified Member resource is cre
     Host: localhost:8080
     Connection: keep-alive
     Content-Length: 248
-    
+
     {"firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-13","emailAddress":"user1394708306056@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":null,"password":"zaq12wsx"}}
 
 |
 
-* Response example 
+* Response example
 
  .. code-block:: guess
     :emphasize-lines: 1
@@ -2825,7 +2915,7 @@ Example of implementation of REST API wherein a specified Member resource is cre
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Thu, 13 Mar 2014 10:58:26 GMT
-    
+
     {"memberId":"M000000023","firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-13","emailAddress":"user1394708306056@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394708306056@test.com","passwordLastChangedAt":"2014-03-13T10:58:26.324Z","lastModifiedAt":"2014-03-13T10:58:26.324Z"},"createdAt":"2014-03-13T10:58:26.324Z","lastModifiedAt":"2014-03-13T10:58:26.324Z"}
 
 |
@@ -2837,32 +2927,33 @@ Implementing REST API that fetches specified resource
 Implementation of REST API that fetches the Member resource specified by URI, is shown below.
 
 * | REST API implementation
-  | Process that fetches the Member resource specified by URI is implemented.
+  | Implement a process that fetches the Member resource specified by URI.
 
  .. code-block:: java
-    :emphasize-lines: 7, 10, 13, 16
+    :emphasize-lines: 7, 9, 12, 15
+
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
 
         // omitted
 
         // (1)
         @RequestMapping(value = "{memberId}", method = RequestMethod.GET)
-        @ResponseBody
+
         // (2)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMember(
                 // (3)
                 @PathVariable("memberId") String memberId) {
-    
+
             // (4)
             Member member = memberService.getMember(memberId);
-    
+
             MemberResource responseResource = beanMapper.map(member,
                     MemberResource.class);
-    
+
             return responseResource;
         }
 
@@ -2878,18 +2969,18 @@ Implementation of REST API that fetches the Member resource specified by URI, is
     * - Sr. No.
       - Description
     * - | (1)
-      - | Path variable (\ ``{memberId}``\  in the example above) is specified in value attribute whereas \ ``RequestMethod.GET``\  is specified in method attribute of \ ``@RequestMapping``\  annotation.
+      - | Specify path variable (\ ``{memberId}``\  in the example above) in value attribute whereas \ ``RequestMethod.GET``\  in method attribute of \ ``@RequestMapping``\  annotation.
         | A value that uniquely identifies the resource is specified in \ ``{memberId}``\ .
     * - | (2)
-      - | \ ``@ResponseStatus``\  annotation is assigned as method annotation and responding status code is specified.
-        | 200 (OK) is set in value attribute of \ ``@ResponseStatus``\  annotation.
+      - | Assign \ ``@ResponseStatus``\  annotation as method annotation and specify the responding status code.
+        | Set 200 (OK) in value attribute of \ ``@ResponseStatus``\  annotation.
     * - | (3)
-      - | Value that uniquely identifies the resource is fetched from path variable.
+      - | Fetch the value that uniquely identifies the resource from path variable.
         | Value specified in path variable (\ ``{memberId}``\) can be received as method argument by specifying \ ``@PathVariable("memberId")``\  as argument annotation.
         | For details on path variable, refer to ":ref:`controller_method_argument-pathvariable-label`".
         | In the above example, when URI is \ ``/api/v1/members/M12345``\ , \ ``"M12345"``\  is stored in \ ``memberId``\  of argument.
     * - | (4)
-      - | Service method of domain layer is called and resource information (Entity etc.) that matches with the ID fetched from path variable is acquired.
+      - | Call Service method of domain layer and acquire the resource information (Entity etc.) that matches with the ID fetched from path variable.
         | For domain layer implementation, refer to ":doc:`../ImplementationAtEachLayer/DomainLayer`".
 
 |
@@ -2918,7 +3009,7 @@ Implementation of REST API that fetches the Member resource specified by URI, is
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Thu, 13 Mar 2014 11:25:13 GMT
-    
+
     {"memberId":"M000000003","firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-13","emailAddress":"user1394709913496@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394709913496@test.com","passwordLastChangedAt":"2014-03-13T11:25:13.762Z","lastModifiedAt":"2014-03-13T11:25:13.762Z"},"createdAt":"2014-03-13T11:25:13.762Z","lastModifiedAt":"2014-03-13T11:25:13.762Z"}
 
 |
@@ -2930,20 +3021,20 @@ Implementing REST API that updates specified resource
 Implementation of REST API that updates the Member resource specified in URI, is shown below.
 
 * | REST API implementation
-  | Process that updates the Member resource specified in URI, is implemented.
+  | Implement a process that updates the Member resource specified in URI.
 
  .. code-block:: java
-    :emphasize-lines: 7, 10, 14, 18
+    :emphasize-lines: 7, 9, 13, 17
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
 
         // omitted
 
         // (1)
         @RequestMapping(value = "{memberId}", method = RequestMethod.PUT)
-        @ResponseBody
+
         // (2)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource putMember(
@@ -2951,21 +3042,21 @@ Implementation of REST API that updates the Member resource specified in URI, is
                 // (3)
                 @RequestBody @Validated({ PutMember.class, Default.class })
                 MemberResource requestedResource) {
-    
+
             // (4)
             Member inputMember = beanMapper.map(
                 requestedResource, Member.class);
             Member updatedMember = memberService.updateMember(
                 memberId, inputMember);
-    
+
             MemberResource responseResource = beanMapper.map(updatedMember,
                     MemberResource.class);
-    
+
             return responseResource;
         }
 
         // omitted
-        
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2976,19 +3067,19 @@ Implementation of REST API that updates the Member resource specified in URI, is
     * - Sr. No.
       - Description
     * - | (1)
-      - | Path variable (\ ``{memberId}``\ in the example above) is specified in value attribute whereas \ ``RequestMethod.PUT``\  is specified in "method" attribute of \ ``@RequestMapping``\  annotation.
+      - | Specify path variable (\ ``{memberId}``\ in the example above) in value attribute whereas \ ``RequestMethod.PUT``\  in "method" attribute of \ ``@RequestMapping``\  annotation.
         | Value that uniquely identifies the resource is specified in \ ``{memberId}``\ .
     * - | (2)
-      - | \ ``@ResponseStatus``\ annotation is assigned as method annotation and responding status code is specified.
-        | 200 (OK) is specified in value attribute of \ ``@ResponseStatus``\  annotation.
+      - | Assign \ ``@ResponseStatus``\ annotation as method annotation and specify the responding status code.
+        | Set 200 (OK) in value attribute of \ ``@ResponseStatus``\  annotation.
     * - | (3)
-      - | JavaBean (Resource class) for receiving the details of resource update is specified as an argument.
+      - | Specify JavaBean (Resource class) for receiving the details of resource update as an argument.
         | By assigning \ ``@RequestBody``\  annotation as argument annotation, JSON or XML data set in request Body is unmarshalled in Resource object.
         |
-        | \ ``@Validated``\  annotation is assigned as argument annotation to enable input validation.
+        | Assign \ ``@Validated``\  annotation as argument annotation to enable input validation.
         | For details on input validation, refer to "\ :doc:`Validation`\" .
     * - | (4)
-      - | Service method of domain layer is called and resource information (Entity etc.) matching with the ID fetched from path variable, is updated.
+      - | Call Service method of domain layer and update the resource information (Entity etc.) matching with the ID fetched from path variable.
         | For domain layer implementation, refer to ":doc:`../ImplementationAtEachLayer/DomainLayer`".
 
 |
@@ -3005,7 +3096,7 @@ Implementation of REST API that updates the Member resource specified in URI, is
     Host: localhost:8080
     Connection: keep-alive
     Content-Length: 221
-    
+
     {"memberId":"M000000004","firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-08","emailAddress":"user1394710559584@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo"}
 
 |
@@ -3021,7 +3112,7 @@ Implementation of REST API that updates the Member resource specified in URI, is
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Thu, 13 Mar 2014 11:35:59 GMT
-    
+
     {"memberId":"M000000004","firstName":"John","lastName":"Smith","genderCode":"1","dateOfBirth":"2013-03-08","emailAddress":"user1394710559584@test.com","telephoneNumber":"09012345678","zipCode":"1710051","address":"Tokyo","credential":{"signId":"user1394710559584@test.com","passwordLastChangedAt":"2014-03-13T11:35:59.847Z","lastModifiedAt":"2014-03-13T11:35:59.847Z"},"createdAt":"2014-03-13T11:35:59.847Z","lastModifiedAt":"2014-03-13T11:36:00.122Z"}
 
 |
@@ -3036,32 +3127,32 @@ Implementing REST API that deletes specified resource
 Implementation of REST API that deletes the Member resource specified by URI is as follows:
 
 * | REST API implementation
-  | Process that deletes the Member resource specified by URI is implemented.
+  | Implement a process that deletes the Member resource specified by URI.
 
  .. code-block:: java
-    :emphasize-lines: 7, 10, 15
+    :emphasize-lines: 7, 9, 14
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
 
         // omitted
 
         // (1)
         @RequestMapping(value = "{memberId}", method = RequestMethod.DELETE)
-        @ResponseBody
+
         // (2)
         @ResponseStatus(HttpStatus.NO_CONTENT)
         public void deleteMember(
                 @PathVariable("memberId") String memberId) {
-    
+
             // (3)
             memberService.deleteMember(memberId);
-            
+
         }
 
         // omitted
-        
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -3072,17 +3163,17 @@ Implementation of REST API that deletes the Member resource specified by URI is 
     * - Sr. No.
       - Description
     * - | (1)
-      - | Path variable (\ ``{memberId}``\ in the example above) is specified in value attribute and \ ``RequestMethod.DELETE``\  is specified in method attribute of \ ``@RequestMapping``\  annotation.
+      - | Specify path variable (\ ``{memberId}``\ in the example above) in value attribute and \ ``RequestMethod.DELETE``\  in method attribute of \ ``@RequestMapping``\  annotation.
     * - | (2)
-      - | \ ``@ResponseStatus``\ annotation is assigned as method annotation and responding status code is specified.
-        | \ **204 (NO_CONTENT)**\  is set in value attribute of \ ``@ResponseStatus``\  annotation.
+      - | Assign \ ``@ResponseStatus``\  annotation as method annotation and specify the responding status code.
+        | Set \ **204 (NO_CONTENT)**\  in value attribute of \ ``@ResponseStatus``\  annotation.
     * - | (3)
-      - | Service method of domain layer is called and resource information (Entity etc.) matching with the ID fetched from path variable, is deleted.
+      - | Call Service method of domain layer and delete resource information (Entity etc.) matching with the ID fetched from path variable.
         | For domain layer implementation, refer to ":doc:`../ImplementationAtEachLayer/DomainLayer`".
 
  .. note::
- 
-    To set deleted resource information in response BODY, (200) OK is set in the status code.
+
+    To set deleted resource information in response BODY, set (200) OK in the status code.
 
 |
 
@@ -3152,13 +3243,13 @@ How to handle the exceptions occurring in RESTful Web Service is explained below
         | (Framework)
       - | Spring MVC receives a request from client and calls REST API.
     * - | (3)
-      - | 
-        | 
+      - |
+        |
       - | An exception occurs during REST API process.
         | The exception occurred is caught by Spring MVC.
     * - | (4)
-      - | 
-        | 
+      - |
+        |
       - | Spring MVC delegates the process to exception handling class.
     * - | (5)
       - | Custom Exception Handler
@@ -3169,8 +3260,8 @@ How to handle the exceptions occurring in RESTful Web Service is explained below
         | (Framework)
       - | Spring MVC converts the error object to JSON format message using \ ``HttpMessageConverter``\ .
     * - | (7)
-      - | 
-        | 
+      - |
+        |
       - | Spring MVC sets the JSON format error message in response BODY and sends response to the client.
 
 
@@ -3180,7 +3271,7 @@ How to handle the exceptions occurring in RESTful Web Service is explained below
 
 Implementation to output error information in response Body
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-* Error information is in the following JSON format.
+* Error information should be in the following JSON format.
 
  .. code-block:: json
     :emphasize-lines: 10, 20, 23
@@ -3197,64 +3288,64 @@ Implementation to output error information in response Body
 
 |
 
-* JavaBean that retains error information is created.
+* Create JavaBean that retains error information.
 
  .. code-block:: java
-    :emphasize-lines: 10, 20, 23
+    :emphasize-lines: 9, 19, 22
 
     package org.terasoluna.examples.rest.api.common.error;
-    
+
     import java.io.Serializable;
     import java.util.ArrayList;
     import java.util.List;
-    
+
     import com.fasterxml.jackson.annotation.JsonInclude;
 
     // (1)
     public class ApiError implements Serializable {
-    
+
         private static final long serialVersionUID = 1L;
-    
+
         private final String code;
-    
+
         private final String message;
-    
+
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private final String target; // (2)
-    
+
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private final List<ApiError> details = new ArrayList<>(); // (3)
-    
+
         public ApiError(String code, String message) {
             this(code, message, null);
         }
-    
+
         public ApiError(String code, String message, String target) {
             this.code = code;
             this.message = message;
             this.target = target;
         }
-    
+
         public String getCode() {
             return code;
         }
-    
+
         public String getMessage() {
             return message;
         }
-    
+
         public String getTarget() {
             return target;
         }
-    
+
         public List<ApiError> getDetails() {
             return details;
         }
-    
+
         public void addDetail(ApiError detail) {
             details.add(detail);
         }
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -3265,7 +3356,7 @@ Implementation to output error information in response Body
     * - Sr. No.
       - Description
     * - | (1)
-      - | Class is created for retaining error information.
+      - | Create a class for retaining error information.
         | In the above example, it is the class that retains lists of error codes, error messages, error targets and detailed error information.
     * - | (2)
       - | Field that retains the value for identifying the target where error has occurred.
@@ -3276,14 +3367,14 @@ Implementation to output error information in response Body
         | When an error occurs in input validation, it is necessary to return all the error information to the client as there are cases with multiple error causes.
         | In such cases, a field that lists and retains detailed error information is necessary.
 
- .. tip::   
- 
-    When the value is \ ``null``\  or empty, it is possible to avoid fields being output to JSON  by specifying \ ``@JsonInclude(JsonInclude.Include.NON_EMPTY)``\  in field.
+ .. tip::
+
+    When the value is \ ``null``\  or empty, it is possible to avoid fields being output to JSON  by specifying \ ``@JsonInclude(JsonInclude.Include.NON_EMPTY)``\  in the field.
     When the condition to disable field output is to be restricted to ``null``\ , it is advisable to specify \ ``@JsonInclude(JsonInclude.Include.NON_NULL)``\ .
 
 |
 
-* A class for generating JavaBean that retains error information is created.
+* Create a class for generating JavaBean that retains error information.
 
  Refer to \ :ref:`Appendix <RESTAppendixSoruceCodesOfApiErrorCreator>`\  for the source code when implementation of all exception handling is completed.
 
@@ -3293,7 +3384,7 @@ Implementation to output error information in response Body
     // (4)
     @Component
     public class ApiErrorCreator {
-    
+
         @Inject
         MessageSource messageSource;
 
@@ -3301,12 +3392,12 @@ Implementation to output error information in response Body
                 String defaultErrorMessage, Object... arguments) {
             // (5)
             String localizedMessage = messageSource.getMessage(errorCode,
-                    arguments, defaultErrorMessage, request.getLocale()); 
+                    arguments, defaultErrorMessage, request.getLocale());
             return new ApiError(errorCode, localizedMessage);
         }
-    
+
         // omitted
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -3317,17 +3408,17 @@ Implementation to output error information in response Body
     * - Sr. No.
       - Description
     * - | (4)
-      - | If needed, class that provides the method for generating error information is created.
+      - | If needed, create a class that provides the method for generating error information.
         | Creating this class is not mandatory. However, it is recommended to create it so as to clearly define the role division.
     * - | (5)
-      - | Error message is fetched by \ ``MessageSource``\ .
+      - | Fetch the error message from \ ``MessageSource``\ .
         | For message management methods, refer to "\ :doc:`MessageManagement`\".
 
  .. tip::
 
     In the above example, \ ``org.springframework.web.context.request.WebRequest``\  is received as an argument to support localization of messages.
     \ ``WebRequest``\  is not necessary when message localization is not required.
-    
+
     The reason for using \ ``WebRequest``\  as an argument instead of \ ``java.util.Locale``\  is due to an additional requirement wherein, HTTP request details are to be embedded in the error message.
     When there is no such requirement to embed HTTP request details in error, \ ``Locale``\  can also be used.
 
@@ -3342,13 +3433,13 @@ Implementation to output error information in response Body
 
     @ControllerAdvice // (6)
     public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
         @Inject
         ApiErrorCreator apiErrorCreator;
-    
+
         @Inject
         ExceptionCodeResolver exceptionCodeResolver;
-    
+
         // (7)
         @Override
         protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
@@ -3366,7 +3457,7 @@ Implementation to output error information in response Body
             // (9)
             return ResponseEntity.status(status).headers(headers).body(apiError);
         }
-        
+
         // omitted
 
     }
@@ -3380,22 +3471,39 @@ Implementation to output error information in response Body
     * - Sr. No.
       - Description
     * - | (6)
-      - | A class that inherits \ ``ResponseEntityExceptionHandler``\  provided by Spring MVC is created and \ ``@ControllerAdvice``\  annotation is assigned.
+      - | Create a class that inherits \ ``ResponseEntityExceptionHandler``\  provided by Spring MVC and assign \ ``@ControllerAdvice``\  annotation.
     * - | (7)
-      - | handleExceptionInternal method of \ ``ResponseEntityExceptionHandler``\  is overridden.
+      - | Override handleExceptionInternal method of \ ``ResponseEntityExceptionHandler``\ .
     * - | (8)
-      - | When the JavaBean output to response Body is not specified, a JavaBean object that retains error information is generated.
+      - | When the JavaBean output to response Body is not specified, generate a JavaBean object that retains error information.
         | In the above example, the exception class changes the error code by using \ ``ExceptionCodeResolver``\  provided by common library.
         | For setting example of \ ``ExceptionCodeResolver``\ ,  refer to "\ :ref:`RESTHowToUseExceptionHandlingSettingsOfExceptionCodeResolver`\" .
         |
-        | When the JavaBean output to response Body is specified, the specified JavaBean is used as it is.
+        | When the JavaBean output to response Body is specified, use the specified JavaBean as it is.
         | This process is implemented considering that error information is generated individually in the error handling process for each exception.
     * - | (9)
-      - | Error information generated in (8) is set in the 'Body' of HTTP Entity for response and then returned.
+      - | Set the error information generated in (8) in the 'Body' of HTTP Entity for response and then return the same.
         | Error information thus returned is converted to JSON using framework and sent as a response.
         |
         | Appropriate values are set in the status code by ``ResponseEntityExceptionHandler``\  provided by Spring MVC.
         | Refer to "\ :ref:`exception-handling-appendix-defaulthandlerexceptionresolver-label`\"  for status codes that are set.
+
+ .. tip:: **Attribute of @ControllerAdvice annotation added in Spring Framework 4.0**
+
+    By specifying an attribute of \ ``@ControllerAdvice``\  annotation,
+    it has been improved to allow flexibility in specifying Controller to apply a method implemented in the class wherein \ ``@ControllerAdvice``\  is assigned.
+    For details about attribute refer to: \ :ref:`Attribute of @ControllerAdvice <application_layer_controller_advice_attribute>`\ .
+
+ .. note:: **Points to be noted while using an attribute of @ControllerAdvice annotation**
+
+    By using an attribute of \ ``@ControllerAdvice``\  annotation, it is possible to share exception handling in respective granularity,
+    however, it is advisable not to specify attribute of \ ``@ControllerAdvice``\  annotation for exception handling of common application (class corresponding to \ ``ApiGlobalExceptionHandler``\  class in the above example).
+
+   When an attribute is specified in \ ``@ControllerAdvice``\  annotation assigned in \ ``ApiGlobalExceptionHandler``\  , a part of exception handling may not be possible that occurs in framework process provided by Spring MVC.
+
+    Specifically, in ``ApiGlobalExceptionHandler``\  class, exception handling is not possible for the exceptions that occur when REST API (process method of Controller) corresponding to the request could not be found,
+    hence, it is not possible to correctly respond to errors such as "405 Method Not Allowed", etc.
+
 
 |
 
@@ -3411,7 +3519,7 @@ Implementation to output error information in response Body
     Transfer-Encoding: chunked
     Date: Thu, 13 Mar 2014 12:16:55 GMT
     Connection: close
-    
+
     {"code":"e.ex.fw.7001","message":"Validation error occurred on item in the request body.","details":[{"code":"ExistInCodeList","message":"\"genderCode\" must exist in code list of CL_GENDER.","target":"genderCode"}]}
 
 |
@@ -3449,18 +3557,18 @@ Following three exceptions need to be handled in order to respond to input error
         | Basically, it occurs in cases such as invalid JSON or XML syntax or violation of schema definition.
 
  .. note::
- 
+
     \ ``org.springframework.beans.TypeMismatchException``\  occurs when there is a type conversion error for value while fetching values from request parameter, request header and path variable, by using annotation provided by Spring Framework.
-    
+
     When following annotations are specified as arguments of Controller processing method (argument other than \ ``String``\ ), \ ``TypeMismatchException``\  may occur.
-    
+
      * \ ``@org.springframework.web.bind.annotation.RequestParam``\
      * \ ``@org.springframework.web.bind.annotation.RequestHeader``\
      * \ ``@org.springframework.web.bind.annotation.Pathvariable``\
      * \ ``@org.springframework.web.bind.annotation.MatrixVariable``\
-     
+
     \ ``TypeMismatchException``\  is handled by \ ``ResponseEntityExceptionHandler``\  resulting in 400 (Bad Request). As a result, individual handling is not required.
-    
+
     Refer to "\ :ref:`RESTHowToUseExceptionHandlingSettingsOfExceptionCodeResolver`\" in order to resolve the error codes and error messages to be set in error information.
 
 |
@@ -3472,7 +3580,7 @@ Following three exceptions need to be handled in order to respond to input error
 
     @Component
     public class ApiErrorCreator {
-    
+
         @Inject
         MessageSource messageSource;
 
@@ -3494,7 +3602,7 @@ Following three exceptions need to be handled in order to respond to input error
             }
             return apiError;
         }
-    
+
         // (2)
         private ApiError createApiError(WebRequest request,
                 DefaultMessageSourceResolvable messageResolvable, String target) {
@@ -3530,13 +3638,13 @@ Following three exceptions need to be handled in order to respond to input error
 
     @ControllerAdvice
     public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
         @Inject
         ApiErrorCreator apiErrorCreator;
-    
+
         @Inject
         ExceptionCodeResolver exceptionCodeResolver;
-    
+
         // omitted
 
         // (3)
@@ -3547,7 +3655,7 @@ Following three exceptions need to be handled in order to respond to input error
             return handleBindingResult(ex, ex.getBindingResult(), headers, status,
                     request);
         }
-    
+
         // (4)
         @Override
         protected ResponseEntity<Object> handleBindException(BindException ex,
@@ -3555,7 +3663,7 @@ Following three exceptions need to be handled in order to respond to input error
             return handleBindingResult(ex, ex.getBindingResult(), headers, status,
                     request);
         }
-    
+
         // (5)
         @Override
         protected ResponseEntity<Object> handleHttpMessageNotReadable(
@@ -3594,26 +3702,26 @@ Following three exceptions need to be handled in order to respond to input error
     * - Sr. No.
       - Description
     * - | (3)
-      - | handleMethodArgumentNotValid method of \ ``ResponseEntityExceptionHandler``\  is overridden and error handling for \ ``MethodArgumentNotValidException``\  is extended.
+      - | Override handleMethodArgumentNotValid method of \ ``ResponseEntityExceptionHandler``\  and extend error handling for \ ``MethodArgumentNotValidException``\ .
         | In the above example, the process is delegated to a common method (6) that handles input validation errors.
         | When it is not necessary to output error information for each item, overriding is not required.
-        | 
+        |
         | \ **400 (Bad Request)**\  is set in the status code and presence of some flaw in the field value of the specified resource is notified.
     * - | (4)
-      - | handleBindException method of \ ``ResponseEntityExceptionHandler``\ is overridden and error handling for \ ``BindException``\  is extended.
+      - | Override handleBindException method of \ ``ResponseEntityExceptionHandler``\  and extend error handling for \ ``BindException``\ .
         | In the above example, the process is delegated to a common method (6) that handles input validation error.
         | When it is not necessary to output error information for each item, overriding is not required.
-        | 
+        |
         | \ **400 (Bad Request)**\  is set in the status code and presence of flaw in the specified request parameter is notified.
     * - | (5)
-      - | handleHttpMessageNotReadable method of \ ``ResponseEntityExceptionHandler``\  is overridden and error handling for \ ``HttpMessageNotReadableException``\  is extended.
+      - | Override handleHttpMessageNotReadable method of \ ``ResponseEntityExceptionHandler``\  and extend error handling for \ ``HttpMessageNotReadableException``\ .
         | In the above example, detailed error handling is performed by using cause exception.
         | If a detailed error handling is not necessary, overriding is not required.
-        | 
+        |
         | **400 (Bad Request)**\  is set in the status code and presence of flaw in the specified resource format etc. is notified
     * - | (6)
-      - | A JavaBean object that retains error information for input validation error is generated.
-        | In the above example, a common method is created as same process is implemented in handleMethodArgumentNotValid and handleBindException.
+      - | Generate a JavaBean object that retains error information for input validation error.
+        | In the above example, this method is created as a common method since same process is implemented in handleMethodArgumentNotValid and handleBindException.
 
  .. tip:: **Error handling when using JSON**
 
@@ -3623,7 +3731,7 @@ Following three exceptions need to be handled in order to respond to input error
      .. list-table::
         :header-rows: 1
         :widths: 10 35 55
-    
+
         * - Sr. No.
           - Exception class
           - Description
@@ -3654,7 +3762,7 @@ Following three exceptions need to be handled in order to respond to input error
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 05:08:28 GMT
     Connection: close
-    
+
     {"code":"e.ex.fw.7002","message":"Validation error occurred on item in the request parameters.","details":[{"code":"NotEmpty","message":"\"{0}\" may not be empty.","target":"name"}]}
 
 |
@@ -3671,7 +3779,7 @@ Following three exceptions need to be handled in order to respond to input error
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 13:32:24 GMT
     Connection: close
-    
+
     {"code":"e.ex.fw.7003","message":"Request body format error occurred."}
 
 |
@@ -3682,13 +3790,13 @@ Implementing exception handling for "Resource not found" error
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 When a resource does not exist, implementation for responding to the "resource not found" error, is explained below.
 
-| When a resource matching with the ID fetched from path variable is not found, an exception notifying "resource not found" is generated.
+| When a resource matching with the ID fetched from path variable is not found, generate an exception notifying "resource not found" .
 | \ ``org.terasoluna.gfw.common.exception.ResourceNotFoundException``\  is provided by common library as an exception notifying "resource not found".
 | Implementation is as given below.
 
 |
 
-* When a resource matching with the ID fetched from path variable is not found, \ ``ResourceNotFoundException``\ is generated.
+* When a resource matching with the ID fetched from path variable is not found, generate \ ``ResourceNotFoundException``\ .
 
  .. code-block:: java
     :emphasize-lines: 4-5
@@ -3704,7 +3812,7 @@ When a resource does not exist, implementation for responding to the "resource n
 
 |
 
-* A method is created to generate error information for \ ``ResultMessages``\ .
+* Create a method to generate error information for \ ``ResultMessages``\ .
 
  .. code-block:: java
     :emphasize-lines: 6-7
@@ -3739,9 +3847,9 @@ When a resource does not exist, implementation for responding to the "resource n
             }
             return apiError;
         }
-    
+
         // omitted
-        
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -3752,12 +3860,12 @@ When a resource does not exist, implementation for responding to the "resource n
     * - Sr. No.
       - Description
     * - | (1)
-      - | A method for generating error information from process results is created.
+      - | Create a method for generating error information from process results.
         | In the above example, the message information retained by \ ``ResultMessages``\  is set in error information.
-        | 
-        
+        |
+
  .. note::
- 
+
     In the above example, as \ ``ResultMessages``\  can retain multiple messages, the process is divided as per when a single message is stored and when multiple messages are stored.
 
     When it is not necessary to support multiple messages, the process wherein the message at the start is generated as error information, may be implemented.
@@ -3765,17 +3873,17 @@ When a resource does not exist, implementation for responding to the "resource n
 
 |
 
-* A method for handling the exception that notifies "resource not found" error is created, in the class that performs error handling.
+* Create a method for handling the exception that notifies "resource not found" error, in the class that performs error handling.
 
  .. code-block:: java
     :emphasize-lines: 12-13, 17, 22-23
 
     @ControllerAdvice
     public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
         @Inject
         ApiErrorCreator apiErrorCreator;
-    
+
         @Inject
         ExceptionCodeResolver exceptionCodeResolver;
 
@@ -3800,7 +3908,7 @@ When a resource does not exist, implementation for responding to the "resource n
                     request, errorCode, ex.getResultMessages(), ex.getMessage());
             return handleExceptionInternal(ex, apiError, headers, status, request);
         }
-        
+
         // omitted
 
     }
@@ -3813,14 +3921,14 @@ When a resource does not exist, implementation for responding to the "resource n
     * - Sr. No.
       - Description
     * - | (2)
-      - | A method for handling \ ``ResourceNotFoundException``\  is added.
+      - | Add a method for handling \ ``ResourceNotFoundException``\ .
         | \ ``ResourceNotFoundException``\  exception can be handled if \ ``@ExceptionHandler(ResourceNotFoundException.class)``\  is specified as method annotation.
         | In the above example, the process is delegated to method that handles exception of the parent class (\ ``ResultMessagesNotificationException``\ ) of \ ``ResourceNotFoundException``\ .
         |
-        | \ **404 (Not Found)**\  is set in the status code and a message stating, 'specified resource does not exist in the server' is notified.
+        | Set \ **404 (Not Found)**\  in the status code and notify a message stating, 'specified resource does not exist in the server'.
     * - | (3)
-      - | A JavaBean object that retains error information for "resource not found" error and business error is generated.
-        | In the above example, a common method is created since the process is same as that for error handling of business error discussed hereafter.
+      - | Generate a JavaBean object that retains error information for "resource not found" error and business error.
+        | In the above example, this method is created as a common method since the process is same as that for error handling of business error discussed hereafter.
 
 |
 
@@ -3835,7 +3943,7 @@ When a resource does not exist, implementation for responding to the "resource n
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 08:46:18 GMT
-    
+
     {"code":"e.ex.mm.5001","message":"Specified member not found. member id : M000000001"}
 
 |
@@ -3846,10 +3954,10 @@ Implementing exception handling for business errors
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 An implementation wherein business error is sent as a response on detecting violation of business rule, is explained here.
 
-Business rule check is performed as Service process and business exception is generated when a business rule violation is detected.
-For the details on detecting business errors, refer to "\ :ref:`service-return-businesserrormessage-label`\".
+Perform business rule check as Service process and generate business exception when a business rule violation is detected.
+For details on how to detect business error, refer to "\ :ref:`service-return-businesserrormessage-label`\".
 
-* A method to handle business exception is created in the class that performs error handling.
+* Create a method to handle business exception in the class that performs error handling.
 
  .. code-block:: java
     :emphasize-lines: 6-7, 11
@@ -3880,11 +3988,11 @@ For the details on detecting business errors, refer to "\ :ref:`service-return-b
     * - Sr. No.
       - Description
     * - | (1)
-      - | A method for handling \ ``BusinessException``\  is added.
+      - | Add a method for handling \ ``BusinessException``\ .
         | \ ``BusinessException``\  can be handled if \ ``@ExceptionHandler(BusinessException.class)``\  is specified as method annotation.
-        | In the above example, the process is delegated to the method that handles the exception of parent class (\ ``ResultMessagesNotificationException``\ ) of \ ``BusinessException``\.
+        | In the above example, the process is delegated to the method that handles the exception of parent class (\ ``ResultMessagesNotificationException``\ ) of \ ``BusinessException``\ .
         |
-        | **409 (Conflict)**\ is set in the status code and a message stating that although there are no errors in the resource itself specified by client, all the conditions necessary for operating the resource stored by the server are not in place.
+        | Set **409 (Conflict)**\ in the status code and send a message notifying although there are no errors in the resource itself specified by client, all the conditions necessary for operating the resource stored by the server are not in place.
 
 |
 
@@ -3899,7 +4007,7 @@ For the details on detecting business errors, refer to "\ :ref:`service-return-b
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 09:03:26 GMT
-    
+
     {"code":"e.ex.mm.8001","message":"Cannot use specified sign id. sign id : user1@test.com"}
 
 |
@@ -3912,14 +4020,14 @@ Implementing exception handling for exclusive errors
 | Exclusive error handling is necessary when performing exclusive control.
 | For details of exclusive control, refer to "\ :doc:`ExclusionControl`\" .
 
-* A method for exclusive error handling in created in the class that performs error handling.
+* Create a method for exclusive error handling in the class that performs error handling.
 
  .. code-block:: java
     :emphasize-lines: 6-8, 12
 
     @ControllerAdvice
     public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
         // omitted
 
         // (1)
@@ -3930,9 +4038,9 @@ Implementing exception handling for exclusive errors
             return handleExceptionInternal(ex, null, new HttpHeaders(),
                     HttpStatus.CONFLICT, request);
         }
-    
+
         // omitted
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -3943,10 +4051,10 @@ Implementing exception handling for exclusive errors
     * - Sr. No.
       - Description
     * - | (1)
-      - | A method for handling exclusive errors (\ ``OptimisticLockingFailureException``\  and \ ``PessimisticLockingFailureException``\ ) is added.
+      - | Add a method for handling exclusive errors (\ ``OptimisticLockingFailureException``\  and \ ``PessimisticLockingFailureException``\ ).
         | If \ ``@ExceptionHandler({ OptimisticLockingFailureException.class, PessimisticLockingFailureException.class })``\  is specified as method annotation, exception handling of exclusive errors (\ ``OptimisticLockingFailureException``\  and \ ``PessimisticLockingFailureException``\ ) can be performed.
         |
-        | \ **409(Conflict)**\  is set in status code and a message stating that, 'although there are no flaws in the resource itself specified by client, the conditions for operating the resource could not be fulfilled due to conflict in the process' is notified.
+        | Set \ **409(Conflict)**\  in status code and send a message notifying that, 'although there are no flaws in the resource itself specified by client, the conditions for operating the resource could not be fulfilled due to conflict in the process'.
 
 |
 
@@ -3961,7 +4069,7 @@ Implementing exception handling for exclusive errors
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 16:32:45 GMT
-    
+
     {"code":"e.ex.fw.8002","message":"Conflict with other processing occurred."}
 
 |
@@ -3972,17 +4080,17 @@ Implementing exception handling for system errors
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 An implementation wherein system error is sent as a response on detecting system abnormality, is explained here.
 
-System exception is generated when any system abnormality is detected.
+Generate system exception when any system abnormality is detected.
 Refer to "\ :ref:`service-return-systemerrormessage-label`\" for the details on how to detect system errors.
 
-* A method to handle system exceptions is created in the class that performs error handling.
+* Create a method to handle system exceptions in the class that performs error handling.
 
  .. code-block:: java
     :emphasize-lines: 6-7, 11
 
     @ControllerAdvice
     public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
         // omitted
 
         // (1)
@@ -3992,9 +4100,9 @@ Refer to "\ :ref:`service-return-systemerrormessage-label`\" for the details on 
             return handleExceptionInternal(ex, null, new HttpHeaders(),
                     HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-    
+
         // omitted
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4005,11 +4113,11 @@ Refer to "\ :ref:`service-return-systemerrormessage-label`\" for the details on 
     * - Sr. No.
       - Description
     * - | (1)
-      - | A method for handling \ ``Exception``\  is added.
+      - | Add a method for handling \ ``Exception``\ .
         | \ ``Exception``\  can be handled if \ ``@ExceptionHandler(Exception.class)``\  is specified as method annotation.
         | In the above example, the system exceptions generated from dependent libraries being used, are also handled.
         |
-        | **500 (Internal Server Error)**\  is set in the status code.
+        | Set **500 (Internal Server Error)**\  in status code.
 
 |
 
@@ -4025,7 +4133,7 @@ Refer to "\ :ref:`service-return-systemerrormessage-label`\" for the details on 
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 12:22:33 GMT
     Connection: close
-    
+
     {"code":"e.ex.fw.9003","message":"System error occurred."}
 
 
@@ -4033,7 +4141,7 @@ Refer to "\ :ref:`service-return-systemerrormessage-label`\" for the details on 
 
     When system error occurs, it is recommended that a simple error message that does not specify the error cause, is set as the message to be returned to the client.
     If an error message specifying the cause of error is set, it may expose system vulnerabilities to the client resulting in security issues.
-    
+
     Cause of error is output to a log, for error analysis.
     This log is output by \ ``ExceptionLogger``\  provided by common library as the default setting of Blank project. As a result, the settings and implementation for log output are not required.
 
@@ -4050,7 +4158,7 @@ Resolving error codes and messages using ExceptionCodeResolver
   | Mapping exception class and error code (exception code).
 
  .. code-block:: xml
-    
+
     <!-- omitted -->
 
     <bean id="exceptionCodeResolver"
@@ -4094,21 +4202,21 @@ Resolving error codes and messages using ExceptionCodeResolver
     # Application common messages
     # ---
     e.ex.fw.5001 = Resource not found.
-    
+
     e.ex.fw.6001 = Request method not supported.
     e.ex.fw.6002 = Specified representation format not supported.
     e.ex.fw.6003 = Specified media type in the request body not supported.
-    
+
     e.ex.fw.7001 = Validation error occurred on item in the request body.
     e.ex.fw.7002 = Validation error occurred on item in the request parameters.
     e.ex.fw.7003 = Request body format error occurred.
     e.ex.fw.7004 = Unknown field exists in JSON.
     e.ex.fw.7005 = Type mismatch error occurred in JSON field.
     e.ex.fw.7006 = Type mismatch error occurred in request parameter or header or path variable.
-    
+
     e.ex.fw.8001 = Business error occurred.
     e.ex.fw.8002 = Conflict with other processing occurred.
-    
+
     e.ex.fw.9001 = System error occurred.
     e.ex.fw.9002 = System error occurred.
     e.ex.fw.9003 = System error occurred.
@@ -4116,14 +4224,14 @@ Resolving error codes and messages using ExceptionCodeResolver
     # omitted
 
 - | :file:`xxx-web/src/main/resources/ValidationMessages.properties`
-  | Message corresponding to error code is set for the error that occurs in the input validation performed using Bean Validation.
+  | Set a message corresponding to error code for the error that occurs in the input validation performed using Bean Validation.
 
  .. code-block:: properties
 
     # ---
     # Bean Validation common messages
     # ---
-    
+
     # for bean validation of standard
     javax.validation.constraints.AssertFalse.message = "{0}" must be false.
     javax.validation.constraints.AssertTrue.message  = "{0}" must be true.
@@ -4159,12 +4267,12 @@ Resolving error codes and messages using ExceptionCodeResolver
     org.hibernate.validator.constraints.br.CNPJ.message                 = "{0}" invalid Brazilian corporate taxpayer registry number (CNPJ).
     org.hibernate.validator.constraints.br.CPF.message                  = "{0}" invalid Brazilian individual taxpayer registry number (CPF).
     org.hibernate.validator.constraints.br.TituloEleitoral.message      = "{0}" invalid Brazilian Voter ID card number.
-    
+
     # for common library
-    org.terasoluna.gfw.common.codelist.ExistInCodeList.message = "{0}" must exist in code list of {codeListId}.
+    org.terasoluna.gfw.common.codelist.ExistInCodeList.message   = "{0}" must exist in code list of {codeListId}.
 
 - | :file:`xxx-domain/src/main/resources/i18n/domain-messages.properties`
-  | Message corresponding to error code (exception code) is set for the error in domain layer.
+  | Set a message corresponding to error code (exception code) for the error in domain layer.
 
  .. code-block:: properties
 
@@ -4172,7 +4280,6 @@ Resolving error codes and messages using ExceptionCodeResolver
 
     e.ex.mm.5001 = Specified member not found. member id : {0}
     e.ex.mm.8001 = Cannot use specified sign id. sign id : {0}
-
     # omitted
 
 |
@@ -4206,11 +4313,11 @@ This section explains how to handle the errors notified to Servlet Container.
       - | Servlet Container receives a request from the client and performs process.
         | Servlet Container detects an error during the process.
     * - | (2)
-      - | 
+      - |
       - | Servlet Container performs error handling according to the error page definition in \ ``web.xml``\ .
         | If the error is not fatal, Controller for error handling is called and the error is handled.
     * - | (2')
-      - | 
+      - |
       - | In case of a fatal error, a static JSON file provided in advance is fetched and a response is sent to the client.
     * - | (3)
       - | Spring MVC
@@ -4225,43 +4332,44 @@ This section explains how to handle the errors notified to Servlet Container.
         | (Framework)
       - | Spring MVC converts the error object to JSON format message by using \ ``HttpMessageConverter``\ .
     * - | (6)
-      - | 
+      - |
       - | Spring MVC sets the JSON format error message in response BODY and sends a response to client.
 
 |
 
 Implementing the Controller that sends error response
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Controller that sends the error response for the error notified to Servlet Container, is created.
+Create a controller that sends the error response for the error notified to Servlet Container.
 
  .. code-block:: java
-    :emphasize-lines: 15-28, 20-21, 23, 27, 29, 33, 36
+    :emphasize-lines: 14-17, 19-20, 22-27, 31, 34
 
     package org.terasoluna.examples.rest.api.common.error;
-    
+
     import javax.inject.Inject;
     import javax.servlet.RequestDispatcher;
-    
+
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
-    import org.springframework.stereotype.Controller;
+
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RequestParam;
-    import org.springframework.web.bind.annotation.ResponseBody;
+
     import org.springframework.web.context.request.RequestAttributes;
+    import org.springframework.web.bind.annotation.RestController;
     import org.springframework.web.context.request.WebRequest;
 
     // (1)
     @RequestMapping("error")
-    @Controller
+    @RestController
     public class ApiErrorPageController {
-    
+
         @Inject
         ApiErrorCreator apiErrorCreator; // (2)
-    
+
         // (3)
         @RequestMapping
-        @ResponseBody
+
         public ResponseEntity<ApiError> handleErrorPage(
                 @RequestParam("errorCode") String errorCode, // (4)
                 WebRequest request) {
@@ -4275,7 +4383,7 @@ Controller that sends the error response for the error notified to Servlet Conta
             // (7)
             return ResponseEntity.status(httpStatus).body(apiError);
         }
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4286,33 +4394,33 @@ Controller that sends the error response for the error notified to Servlet Conta
     * - Sr. No.
       - Description
     * - | (1)
-      - | A Controller class is created for sending error responses.
+      - | Create a Controller class for sending error response.
         | In the above example, it is mapped to Servlet path "\ ``/api/v1/error``\".
     * - | (2)
-      - | A class that creates error information is injected.
+      - | Inject a class that creates error information.
     * - | (3)
-      - | Processing method that sends error response is created.
+      - | Create a processing method that sends error response.
         | Above example is implemented on considering only the case wherein, error page is handled by using a response code (\ ``<error-code>``\ ).
-        | Therefore, separate consideration is required for the case where an error page that is handled by using exception type (\ ``<exception-type>``\) is to be processed using this method.
+        | Therefore, separate consideration is required for the case where an error page that is handled by using exception type (\ ``<exception-type>``\ ) is to be processed using this method.
     * - | (4)
-      - | Error code is received as request parameter.
+      - | Receive the error code as request parameter.
     * - | (5)
-      - | Status code stored in request scope is fetched.
+      - | Fetch the status code stored in request scope.
     * - | (6)
-      - | Error information corresponding to the error code received by request parameter is generated.
+      - | Generate error information corresponding to the error code received in request parameter.
     * - | (7)
-      - | Error information fetched in (5) and (6) is sent as a response.
+      - | Send the error information fetched in (5) and (6) as a response.
 
-| 
+|
 
 Creating a static JSON file to be sent as response when a fatal error occurs
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-A static JSON file is created to be sent as a response when a fatal error occurs.
+Create a static JSON file to be sent as a response when a fatal error occurs.
 
 - :file:`unhandledSystemError.json`
 
  .. code-block:: json
-    
+
     {"code":"e.ex.fw.9999","message":"Unhandled system error occurred."}
 
 |
@@ -4356,14 +4464,14 @@ Settings for handling an error that is notified to Servlet Container are explain
     * - Sr. No.
       - Description
     * - | (1)
-      - | If needed, error page definition for response code is added.
+      - | Add error page definition for response code if required.
         | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\`` ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error?errorCode=e.ex.fw.5001``\ " is called and error response is sent.
     * - | (2)
-      - | Definition for handling a fatal error is added.
+      - | Add definition for handling a fatal error.
         | When a fatal error occurs, it is recommended to respond with the static JSON provided in advance, as double failure may occur during the process that creates response information.
         | In the above example, fixed JSON defined in "\ ``/WEB-INF/views/common/error/unhandledSystemError.json``\ " is sent as response.
     * - | (3)
-      - | MIME type of json is specified.
+      - | Specify MIME type of json.
         | When multi byte characters are included in the JSON file created in (2), junk characters may be displayed at client side if \ ``charset=UTF-8``\  is not specified.
         | When there are no multi byte characters in the JSON file, this setting is not mandatory. However, it is always safe to incorporate this setting.
 
@@ -4380,7 +4488,7 @@ Settings for handling an error that is notified to Servlet Container are explain
     Content-Type: application/json;charset=UTF-8
     Transfer-Encoding: chunked
     Date: Wed, 19 Feb 2014 23:24:20 GMT
-    
+
     {"code":"e.ex.fw.5001","message":"Resource not found."}
 
 |
@@ -4397,7 +4505,7 @@ Settings for handling an error that is notified to Servlet Container are explain
     Content-Length: 68
     Date: Thu, 20 Feb 2014 00:13:43 GMT
     Connection: close
-    
+
     {"code":"e.ex.fw.9999","message":"Unhandled system error occurred."}
 
 |
@@ -4523,16 +4631,16 @@ How to set \ ``DispatcherServlet``\  for RESTful Web Service
     * - | (1)
       - | Request mapping with the \ ``DispatcherServlet``\  that receives request for client application.
     * - | (2)
-      - | Servlet (\ ``DispatcherServlet``\ ) that receives the request for RESTful Web Service is added.
-        | A name indicating it as RESTful Web Service Servlet, is specified in \ ``<servlet-name>``\  element.
+      - | Add Servlet (\ ``DispatcherServlet``\ ) that receives the request for RESTful Web Service.
+        | Specify a name indicating it as RESTful Web Service Servlet in \ ``<servlet-name>``\  element.
         | In the above example, \ ``"restAppServlet"``\  is specified as the Servlet name.
     * - | (3)
-      - | Spring MVC bean definition file to be used while building the \ ``DispatcherServlet``\  for RESTful Web Service, is specified.
+      - | Specify Spring MVC bean definition file to be used while building the \ ``DispatcherServlet``\  for RESTful Web Service.
         | In the above example, \ :file:`META-INF/spring/spring-mvc-rest.xml`\  in class path, is specified as the Spring MVC bean definition file.
     * - | (4)
-      - | Pattern of servlet path mapped to the \ ``DispatcherServlet``\ for RESTful Web Service, is specified.
+      - | Specify the pattern of servlet path mapped to the \ ``DispatcherServlet``\ for RESTful Web Service.
         | In the above example, the Servlet path under \ ``"/api/v1/"``\  is mapped in the \ ``DispatcherServlet``\  for RESTful Web Service.
-        | Typically, Servlet paths like 
+        | Typically, Servlet paths like
         |   \ ``"/api/v1/"``\
         |   \ ``"/api/v1/members"``\
         |   \ ``"/api/v1/members/xxxxx"``\
@@ -4541,10 +4649,10 @@ How to set \ ``DispatcherServlet``\  for RESTful Web Service
  .. tip:: **Value to be specified in the value attribute of @RequestMapping annotation**
 
    Value in the wild card (\ ``*``\ ) part specified in \ ``<url-pattern>``\  element, is specified as the value in "value" attribute of \ ``@RequestMapping``\  annotation.
-   
+
    For example, when \ ``@RequestMapping(value = "members")``\  is specified, it is deployed as the method that performs process for path \ ``"/api/v1/members"``\ .
    Therefore, it is not necessary to specify the path (\ ``"api/v1"``\ ) that performs mapping in divided Servlets, in the value attribute of \ ``@RequestMapping``\  annotation.
-   
+
    When specified as \ ``@RequestMapping(value = "api/v1/members")``\ , it ends up being deployed as the method performing the process for path \ ``"/api/v1/api/v1/members"``\ . Hence, please take note of same.
 
 |
@@ -4558,37 +4666,37 @@ Implementation for including a hypermedia link to a related resource in JSON, is
 Implementing common parts
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-* JavaBean that retains the link information is created.
+* Create a JavaBean that retains the link information.
 
  .. code-block:: java
     :emphasize-lines: 5
- 
+
     package org.terasoluna.examples.rest.api.common.resource;
-    
+
     import java.io.Serializable;
-    
+
     // (1)
     public class Link implements Serializable {
-    
+
         private static final long serialVersionUID = 1L;
 
         private final String rel;
 
         private final String href;
-    
+
         public Link(String rel, String href) {
             this.rel = rel;
             this.href = href;
         }
-    
+
         public String getRel() {
             return rel;
         }
-    
+
         public String getHref() {
             return href;
         }
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4599,50 +4707,50 @@ Implementing common parts
     * - Sr. No.
       - Description
     * - | (1)
-      - | JavaBean for link information that retains the link name and URL is created.
+      - | Create a JavaBean for link information that retains the link name and URL.
 
 |
 
-* An abstract class of Resource that retains collection of link information, is created.
+* Create an abstract class of Resource that retains collection of link information.
 
  .. code-block:: java
-    :emphasize-lines: 10, 13, 21, 27, 32
+    :emphasize-lines: 9, 12, 20, 26, 31
 
     package org.terasoluna.examples.rest.api.common.resource;
-    
+
     import java.net.URI;
     import java.util.LinkedHashSet;
     import java.util.Set;
-    
+
     import com.fasterxml.jackson.annotation.JsonInclude;
-    
+
     // (2)
     public abstract class AbstractLinksSupportedResource {
 
         // (3)
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private final Set<Link> links = new LinkedHashSet<>();
-    
+
         public Set<Link> getLinks() {
             return links;
         }
-    
+
         // (4)
         public AbstractLinksSupportedResource addLink(String rel, URI href) {
             links.add(new Link(rel, href.toString()));
             return this;
         }
-    
+
         // (5)
         public AbstractLinksSupportedResource addSelf(URI href) {
             return addLink("self", href);
         }
-    
+
         // (5)
         public AbstractLinksSupportedResource addParent(URI href) {
             return addLink("parent", href);
         }
-    
+
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4653,81 +4761,31 @@ Implementing common parts
     * - Sr. No.
       - Description
     * - | (2)
-      - | An abstract class (JavaBean) of the Resource that retains collection of link information is created.
+      - | Create an abstract class (JavaBean) of the Resource that retains collection of link information.
         | It is assumed that this is the class inherited by the Resource class supporting hypermedia link.
     * - | (3)
-      - | A field that retains information of multiple links is defined.
+      - | Define a field that retains information of multiple links.
         | In the above example, \ ``@JsonInclude(JsonInclude.Include.NON_EMPTY)``\  is specified to prevent output to JSON when link is not specified.
     * - | (4)
-      - | Method to add link information is provided.
+      - | Create a method to add link information.
     * - | (5)
-      - | If required, method is provided to add common link information.
-        | In the above example, methods to add link information for accessing the resource itself (\ ``"self"``\ ) and to add link information for accessing parent resource (\ ``"parent"``\ ) are provided.
-
-|
-
-* Creating the class that builds the URI to be set in link information.
-
- .. code-block:: java
-    :emphasize-lines: 13
-
-    package org.terasoluna.examples.rest.api.common.resource;
-    
-    import java.net.URI;
-    
-    import org.springframework.stereotype.Component;
-    import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-    
-    @Component
-    public class ResourceUriBuilder {
-        
-        // omitted
-        
-        // (6)
-        public URI self() {
-            return ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
-        }
-    
-        // omitted
-
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (6)
-      - | Method that builds URI for accessing the resource itself.
-        | In the above example, URI is built by using \ ``org.springframework.web.servlet.support.ServletUriComponentsBuilder``\  provided by Spring MVC.
-        |
-        | By using  \ ``ServletUriComponentsBuilder``\  class method, the URI can be built based on request information.
-        | Thus, a generic build process which is independent of a resource, can be implemented.
-        | For example, when a request is sent for \ ``http://example.com/api/v1/members/M000000001``\, return value of "self" method is same as the requested URI (\ ``http://example.com/api/v1/members/M000000001``\ ).
-        |
-        | Method that builds the URI to be set in link information should be implemented as required.
-
- .. tip::
-
-    When building an URI in \ ``ServletUriComponentsBuilder``\ , by referring \ ``X-Forwarded-Host``\  header, a configuration with a load balancer or Web server between the client and the application server is considered. 
-    However, it should be noted that expected URI will not be built if it is not combined with path configuration.
+      - | If required, create a method to add common link information.
+        | In the above example, methods to add link information for accessing the resource itself (\ ``"self"``\ ) and to add link information for accessing parent resource (\ ``"parent"``\ ) are created.
 
 |
 
 Implementation for each resource
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-* An abstract class of Resource that retains collection of link information, is inherited in Resource class.
+* Inherit an abstract class of Resource that retains collection of link information in Resource class.
 
  .. code-block:: java
     :emphasize-lines: 3
 
     package org.terasoluna.examples.rest.api.member;
-    
+
     // (1)
-    public class MemberResource extends 
+    public class MemberResource extends
         AbstractLinksSupportedResource implements Serializable {
 
         // omitted
@@ -4742,49 +4800,46 @@ Implementation for each resource
     * - Sr. No.
       - Description
     * - | (1)
-      - | An abstract class of Resource that retains collection of link information, is inherited.
+      - | Inherit an abstract class of Resource that retains collection of link information.
         | By this, the field (\ ``links``\ ) that retains collection of link information is imported, thus making it a Resource class that supports hypermedia link.
 
-|
 
 * Adding hypermedia link by REST API process.
 
  .. code-block:: java
-    :emphasize-lines: 7-8, 24
+    :emphasize-lines: 11, 19
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
 
         // omitted
 
-        // (2)
-        @Inject
-        ResourceUriBuilder resourceUriBuilder;
-
-        // omitted
 
         @RequestMapping(value = "{memberId}", method = RequestMethod.GET)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMember(
-                @PathVariable("memberId") String memberId) {
-    
+                @PathVariable("memberId") String memberId
+                // (2)
+                UriComponentsBuilder uriBuilder) {
+
             Member member = memberService.getMember(memberId);
-    
+
             MemberResource responseResource = beanMapper.map(member,
                     MemberResource.class);
-    
+
             // (3)
-            responseResource.addSelf(resourceUriBuilder.self());
-    
+            responseResource.addSelf(uriBuilder.path("/members").pathSegment(memberId)
+                    .build().toUri());
+
             return responseResource;
         }
 
         // omitted
 
     }
-    
+
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
  .. list-table::
     :header-rows: 1
@@ -4793,12 +4848,26 @@ Implementation for each resource
     * - Sr. No.
       - Description
     * - | (2)
-      - | Object that builds the URI to be set in link information is injected.
+      - | Specify \ ``org.springframework.web.util.UriComponentsBuilder``\
+        | class, provided by Spring MVC, in method argument in order to build URI set in link information.
+        | When \ ``UriComponentsBuilder``\  class is specified in method argument of Controller, instance of \ ``org.springframework.web.servlet.support.ServletUriComponentsBuilder``\  class,
+        | that has inherited \ ``UriComponentsBuilder``\  class in Spring MVC, is passed at the time of method execution.
     * - | (3)
-      - | Link information is added to resource.
-        | In the above example, object method that builds the URI to be set in link information is called and URI for accessing the resource itself, is added to the resource.
+      - | Add link information to resource.
+        | In the above example, \ ``UriComponentsBuilder``\  class method is called to build URI set in link information and URI to access to one's resource is added to resource.
+        |
+        | \ ``ServletUriComponentsBuilder``\  instances passed as method argument of Controller are initiated based on the information of \ ``<servlet-mapping>``\  element described in web.xml. It is not resource dependent.
+        | By using `URI Template Patterns <http://docs.spring.io/spring/docs/4.1.4.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates>`_\  ,etc. provided in Spring Framework,
+        | an URI can be built based on the request information. Thus, a generic build process which is independent of a resource, can be implemented.
+        |
+        | In the above example, when GET is done for \ ``http://example.com/api/v1/members/M000000001``\ , built URI is same as the requested URI \ ``(http://example.com/api/v1/members/M000000001)``\ .
+        |
+        | Method that builds an URI to be set in link information should be implemented as required.
 
-|
+ .. tip::
+
+    When building an URL in \ ``ServletUriComponentsBuilder``\ , by referring to "\ ``X-Forwarded-Host``\  " header, a configuration with a load balancer or Web server between client and the application server is considered.
+    However, it should be noted that the expected URI will not be built if it does not match with the path configuration.
 
 * | Response example
   | Following response is obtained in actual operation.
@@ -4851,63 +4920,6 @@ Settings for location header at the time of POST
 | When conforming to HTTP specifications, it is necessary to set the URI of created resource in the response header of POST method ("Location header").
 | Implementation to set the URI of created resource in the response header in case of POST ("Location header") is explained here.
 
-Implementation of common components
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-* | Class that builds the URI to be set in location header is created.
-  | This class is same as the class explained in ":ref:`RESTAppendixHyperMediaLink`".
-
- .. code-block:: java
-    :emphasize-lines: 13
-
-    package org.terasoluna.examples.rest.api.common.resource;
-    
-    import java.net.URI;
-    
-    import org.springframework.stereotype.Component;
-    import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-    
-    @Component
-    public class ResourceUriBuilder<T> {
-    
-        // omitted
-
-        // (1)
-        public URI created(T id) {
-            return children (String.valueOf(id));
-        }
-    
-        public URI children (String... paths) {
-            return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/")
-                    .pathSegment(paths).build().toUri();
-        }
-    
-        // omitted
-    
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (1)
-      - | Method to build the URI of created resource.
-        | In this example, URI is built by using \ ``org.springframework.web.servlet.support.ServletUriComponentsBuilder``\  provided by Spring MVC.
-        |
-        | By using \ ``ServletUriComponentsBuilder``\  class method, URI can be built based on request information.
-        | Thus, a generic build process that is independent of the resource, can be implemented.
-        | For example, if POST method is used for \ ``http://example.com/api/v1/members``\ , the return value of created method is "requested URI + \ ``"/"``\  + ID specified as an argument".
-        | Typically, if \ ``"M000000001"``\  is specified in ID, it becomes ``http://example.com/api/v1/members/M000000001``\ .
-
- .. tip::
-
-    When building an URI in \ ``ServletUriComponentsBuilder``\  , by referring \ ``X-Forwarded-Host``\  header, a configuration with a load balancer or Web server between the client and the application server is considered.
-    However, it should be noted that expected URI will not be built if it is not combined with path configuration.
-
-|
 
 Implementation for each resource
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -4915,36 +4927,33 @@ Implementation for each resource
 * The URI of created resource is set in Location header by REST API process.
 
  .. code-block:: java
-    :emphasize-lines: 7, 26, 29
+    :emphasize-lines: 11, 21, 25
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
 
         // omitted
 
-        // (1)
-        @Inject
-        ResourceUriBuilder resourceUriBuilder;
-
-        // omitted
 
         @RequestMapping(method = RequestMethod.POST)
-        @ResponseBody
         public ResponseEntity<MemberResource> postMembers(
                 @RequestBody @Validated({ PostMembers.class, Default.class })
-                MemberResource requestedResource) {
-    
+                MemberResource requestedResource,
+                // (1)
+                UriComponentsBuilder uriBuilder) {
+
             Member creatingMember = beanMapper.map(requestedResource, Member.class);
-    
+
             Member createdMember = memberService.createMember(creatingMember);
-    
+
             MemberResource responseResource = beanMapper.map(createdMember,
                     MemberResource.class);
 
             // (2)
-            URI createdUri = resourceUriBuilder.created(responseResource.getMemberId());
-                    
+            URI createdUri = uriBuilder.path("/members/{memberId}")
+                    .buildAndExpand(responseResource.getMemberId()).toUri();
+
             // (3)
             return ResponseEntity.created(createdUri).body(responseResource);
         }
@@ -4961,18 +4970,33 @@ Implementation for each resource
     * - Sr. No.
       - Description
     * - | (1)
-      - | Object to build the URI of created resource is injected.
+      - | Specify \ ``org.springframework.web.util.UriComponentsBuilder``\  class provided by Spring MVC, in method argument in order to build an URI of created resource.
+        | When \ ``UriComponentsBuilder``\  class is specified in method argument of Controller, an instance of \ ``org.springframework.web.servlet.support.ServletUriComponentsBuilder``\  class,
+        | that has inherited \ ``UriComponentsBuilder``\  class by Spring MVC, is passed at the time of method execution.
     * - | (2)
-      - | URI for created resource is built.
-        | In the above example, method of the object that builds URI of created resource is called and the URI is built.
+      - | Build an URI of created resource.
+        | In above example, by \ ``path``\  method, a path using URI Template Patterns is added to \ ``ServletUriComponentsBuilder``\  instance passed as argument,
+        | \ ``buildAndExpand``\  method is called and an URI of created resource is built by binding the ID of created resource.
+        |
+        | \ ``ServletUriComponentsBuilder``\  instances passed as method argument of Controller are initiated based on the information of \ ``<servlet-mapping>``\  element described in web.xml. It is not resource dependent.
+        | By using `URI Template Patterns <http://docs.spring.io/spring/docs/4.1.4.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates>`_\  ,etc. provided by Spring Framework,
+        | an URI can be built based on the request information. Thus, a generic build process which is independent of a resource, can be implemented.
+        |
+        | For example, if POST method is used for \ ``http://example.com/api/v1/members``\ , the built URI will be "requested URI + \ ``"/"``\  + ID of created resource".
+        | Typically, if \ ``"M000000001"``\  is specified in ID, it becomes ``http://example.com/api/v1/members/M000000001``\ .
+        |
+        | Method that builds an URI to be set in link information should be implemented as required.
     * - | (3)
-      - | Create the \ ``org.springframework.http.ResponseEntity``\ instance using following parameters, and return it.
+      - | Create the \ ``org.springframework.http.ResponseEntity``\  instance using following parameters, and return it.
 
         * Status code : 201(Created)
         * Location header : Created resource's URI
         * Response body : Created resource object
 
-|
+ .. tip::
+
+    When building an URL in \ ``ServletUriComponentsBuilder``\ , by referring to "\ ``X-Forwarded-Host``\  " header, a configuration with a load balancer or Web server between client and the application server is considered.
+    However, it should be noted that the expected URI will not be built if it does not match with the path configuration.
 
 * | Response example
   | Following response header is obtained in the actual operation.
@@ -5029,7 +5053,7 @@ Setting to dispatch OPTIONS method request to the Controller
    * - | Sr. No.
      - | Description
    * - | (1)
-     - | Initialization parameter (dispatchOptionsRequest) value of \ ``DispatcherServlet``\  that receives RESTful Web Service request is set to \ ``true``\ .
+     - | Set initialization parameter (dispatchOptionsRequest) value of \ ``DispatcherServlet``\  that receives RESTful Web Service request to \ ``true``\ .
 
 |
 
@@ -5041,32 +5065,31 @@ Implementing OPTIONS method
 | API implementation that responds with list of HTTP methods (REST AP) supported by the resource specified in URI, is shown below.
 
 * | REST API implementation
-  | A process is implemented wherein, list of HTTP methods (REST API) supported by the resource specified in URI is sent as response.
+  | Implement a process wherein, list of HTTP methods (REST API) supported by the resource specified in URI is sent as response.
 
  .. code-block:: java
     :emphasize-lines: 11, 14
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MembersRestController {
 
         // omitted
 
         @RequestMapping(value = "{memberId}", method = RequestMethod.OPTIONS)
-        @ResponseBody
         public ResponseEntity<Void> optionsMember(
             @PathVariable("memberId") String memberId) {
 
-            // (2)
+            // (1)
             memberService.getMember(memberId);
 
-            // (3)
+            // (2)
             return ResponseEntity
                     .ok()
                     .allow(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.PUT,
                             HttpMethod.DELETE, HttpMethod.OPTIONS).build();
         }
-    
+
         // omitted
 
     }
@@ -5080,12 +5103,9 @@ Implementing OPTIONS method
     * - Sr. No.
       - Description
     * - | (1)
-      - | \ ``@ResponseStatus``\  annotation is assigned as method annotation and the status code sent as response is specified.
-        | 200 (OK) is set in the value attribute of \ ``@ResponseStatus``\  annotation.
+      - | Call domain layer Service method and check to confirm if a resource matching with the ID fetched from path variable exists.
     * - | (2)
-      - | Domain layer Service method is called and a check is performed to confirm if a resource matching with the ID fetched from path variable exists.
-    * - | (3)
-      - | **The HTTP method supported by resource specified in URI, is set in Allow header.**
+      - | **Set HTTP method supported by resource specified in URI, in Allow header.**
 
 |
 
@@ -5130,7 +5150,7 @@ Implementing HEAD method
     :emphasize-lines: 9
 
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
 
         // omitted
@@ -5138,7 +5158,7 @@ Implementing HEAD method
         @RequestMapping(value = "{memberId}",
                         method = { RequestMethod.GET,
                                    RequestMethod.HEAD }) // (1)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMember(
                 @PathVariable("memberId") String memberId) {
@@ -5157,17 +5177,17 @@ Implementing HEAD method
     * - Sr. No.
       - Description
     * - | (1)
-      - | \ ``RequestMethod.HEAD``\  is added to the method attribute of REST API \ ``@RequestMapping``\  annotation that processes the GET method.
+      - | Add \ ``RequestMethod.HEAD``\  to the method attribute of REST API \ ``@RequestMapping``\  annotation that processes the GET method.
         | HEAD method needs to respond only the header information, by performing the same process as GET method. Therefore, \ ``RequestMethod.HEAD``\  is also specified in the method attribute of \ ``@RequestMapping``\  annotation.
         | It is advisable to perform a process similar to GET process as the Controller process since, the process for emptying response BODY is performed by standard functionality of Servlet API.
 
  |
- 
+
 * Request example
- 
+
  .. code-block:: guess
     :emphasize-lines: 1
- 
+
     HEAD /rest-api-web/api/v1/members/M000000001 HTTP/1.1
     Accept: text/plain, application/json, application/*+json, */*
     User-Agent: Java/1.7.0_51
@@ -5175,7 +5195,7 @@ Implementing HEAD method
     Connection: keep-alive
 
  |
- 
+
 * Response example
 
  .. code-block:: guess
@@ -5187,7 +5207,7 @@ Implementing HEAD method
     Content-Type: application/json;charset=UTF-8
     Content-Length: 452
     Date: Thu, 13 Mar 2014 13:25:23 GMT
- 
+
 
 |
 
@@ -5202,7 +5222,7 @@ Settings that prevent CSRF measures implementation for RESTful Web Service reque
  .. tip::
 
     Need to use session is eliminated when CSRF measures are not to be implemented.
-    
+
     In the following configuration example, session will not be used in Spring Security process.
 
 |
@@ -5250,7 +5270,7 @@ prevented for RESTful Web Service requests.
    * - Sr. No.
      - Description
    * - | (1)
-     - | Spring Security definition for REST API is added.
+     - | Add Spring Security definition for REST API.
        | URL pattern of REST API request path is specified in \ ``pattern``\  attribute of \ ``<sec:http>``\  element.
        | In the above example, request path starting with \ ``/api/v1/``\  is handled as the REST API request path.
        | Further, session is no longer used in Spring Security process by setting \ ``create-session``\  attribute to \ ``stateless``\ .
@@ -5298,13 +5318,13 @@ Adding Spring-oxm as dependent artifact.
    * - | Sr. No.
      - | Description
    * - | (1)
-     - | Spring-oxm is added as a dependent artifact.
+     - | Add Spring-oxm as a dependent artifact.
    * - | (2)
      - | Spring version should be fetched from the placeholder (${org.springframework-version}) that manages version number of Spring defined in :file:`pom.xml` of terasoluna-gfw-parent.
 
 |
 
-Bean definition for mutual conversion between XML and object is performed by using the class provided by Spring-oxm.
+Perform Bean definition for mutual conversion between XML and object by using the class provided by Spring-oxm.
 
 - :file:`spring-mvc-rest.xml`
 
@@ -5343,18 +5363,18 @@ Bean definition for mutual conversion between XML and object is performed by usi
    * - | Sr. No.
      - | Description
    * - | (1)
-     - | Bean definition is carried out for \ ``Jaxb2Marshaller``\  provided by Spring-oxm.
-       | \ ``Jaxb2Marshaller``\  implements the XXE injection measure by default.
+     - | Perform Bean definition for \ ``Jaxb2Marshaller``\  provided by Spring-oxm.
+       | For \ ``Jaxb2Marshaller``\ , XXE injection measures are carried out by default.
    * - | (2)
-     - | Package name with JAXB JavaBean (JavaBean assigned with ``javax.xml.bind.annotation.XmlRootElement`` annotation) stored in ``packagesToScan`` property, is specified.
+     - | Specify package name with JAXB JavaBean (JavaBean assigned with ``javax.xml.bind.annotation.XmlRootElement`` annotation) stored in ``packagesToScan`` property.
        | JAXB JavaBean stored under the specified package is scanned and is registered as JavaBean for marshalling and unmarshalling.
        | JavaBean is scanned by the mechanism same as base-package attribute of ``<context:component-scan>``.
    * - | (3)
-     - | Bean definition of ``MarshallingHttpMessageConverter`` is added to ``<mvc:message-converters>`` element which is the child element of ``<mvc:annotation-driven>`` element.
+     - | Add bean definition of ``MarshallingHttpMessageConverter`` to ``<mvc:message-converters>`` element which is the child element of ``<mvc:annotation-driven>`` element.
    * - | (4)
-     - | ``Jaxb2Marshaller`` bean defined in (1), is specified in ``marshaller`` property.
+     - | Specify ``Jaxb2Marshaller`` bean defined in (1) in ``marshaller`` property.
    * - | (5)
-     - | ``Jaxb2Marshaller`` bean defined in (1), is specified in ``unmarshaller`` property.
+     - | Specify ``Jaxb2Marshaller`` bean defined in (1) in ``unmarshaller`` property.
 
 |
 
@@ -5363,37 +5383,37 @@ Bean definition for mutual conversion between XML and object is performed by usi
 How to copy Joda-Time classes using Dozer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-How to copy Joda-Time classes (\ ``org.joda.time.DateTime``\, \ ``org.joda.time.LocalDate``\  etc.) using Dozer is explained here.
+How to copy Joda-Time classes (\ ``org.joda.time.DateTime``\ , \ ``org.joda.time.LocalDate``\  etc.) using Dozer is explained here.
 
-| A custom converter is created for converting the Joda-Time class.
+| Create a custom converter for converting the Joda-Time class.
 | For details of custom converter, refer to ":doc:`Utilities/Dozer`".
 
 * :file:`JodaDateTimeConverter.java`
 
  .. code-block:: java
-  
+
     package org.terasoluna.examples.rest.infra.dozer.converter;
-    
+
     import org.dozer.DozerConverter;
     import org.joda.time.DateTime;
-    
+
     public class JodaDateTimeConverter extends DozerConverter<DateTime, DateTime> {
-    
+
         public JodaDateTimeConverter() {
             super(DateTime.class, DateTime.class);
         }
-    
+
         @Override
         public DateTime convertTo(DateTime source, DateTime destination) {
             // This method not called, because type of from/to is same.
             return convertFrom(source, destination);
         }
-    
+
         @Override
         public DateTime convertFrom(DateTime source, DateTime destination) {
             return source;
         }
-    
+
     }
 
 
@@ -5402,43 +5422,43 @@ How to copy Joda-Time classes (\ ``org.joda.time.DateTime``\, \ ``org.joda.time.
  .. code-block:: java
 
     package org.terasoluna.examples.rest.infra.dozer.converter;
-    
+
     import org.dozer.DozerConverter;
     import org.joda.time.LocalDate;
-    
+
     public class JodaLocalDateConverter extends
                                        DozerConverter<LocalDate, LocalDate> {
-    
+
         public JodaLocalDateConverter() {
             super(LocalDate.class, LocalDate.class);
         }
-    
+
         @Override
         public LocalDate convertTo(LocalDate source, LocalDate destination) {
             // This method not called, because type of from/to is same.
             return convertFrom(source, destination);
         }
-    
+
         @Override
         public LocalDate convertFrom(LocalDate source, LocalDate destination) {
             return source;
         }
-    
+
     }
 
-| Custom converter thus created is applied to Dozer.
+| Apply the created Custom converter to Dozer.
 | For details of custom converter, refer to :doc:`Utilities/Dozer`.
 
  .. code-block:: xml
     :emphasize-lines: 1, 10-18
-  
+
     <!-- (1) -->
     <?xml version="1.0" encoding="UTF-8"?>
     <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="
             http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd
         ">
-    
+
         <configuration>
             <custom-converters>
                 <!-- (2) -->
@@ -5452,7 +5472,7 @@ How to copy Joda-Time classes (\ ``org.joda.time.DateTime``\, \ ``org.joda.time.
                 </converter>
             </custom-converters>
         </configuration>
-    
+
     </mappings>
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -5463,18 +5483,18 @@ How to copy Joda-Time classes (\ ``org.joda.time.DateTime``\, \ ``org.joda.time.
     * - Sr. No.
       - Description
     * - | (1)
-      - | File that defines the operation settings for Dozer, is created.
-        | 
+      - | Create a file that defines operation settings for Dozer.
+        |
         | In this implementation, it is stored in \ :file:`/xxx-domain/src/main/resources/META-INF/dozer/dozer-configration-mapping.xml`\ .
     * - | (2)
       - | In the above example, custom converter definitions for Joda-Time classes (\ ``org.joda.time.DateTime``\  and \ ``org.joda.time.LocalDate``\ ) are added.
 
 
  .. note::
- 
+
     When Dozer is used in domain layer as well, it is recommended to store the file defining Dozer operation settings, in domain layer project (\ ``xxx-domain``\ ).
-    
-    When Dozer is used only in application layer, it may be stored in application layer project (\ ``xxx-web``\).
+
+    When Dozer is used only in application layer, it may be stored in application layer project (\ ``xxx-web``\ ).
 
 |
 
@@ -5500,7 +5520,7 @@ Source code for application layer
      - | :ref:`RESTHowToUseExceptionHandling`
      - | :ref:`ApiErrorCreator.java <RESTAppendixSoruceCodesOfApiErrorCreator>`
    * - | (3)
-     - | 
+     - |
      - | :ref:`ApiGlobalExceptionHandler.java <RESTAppendixSoruceCodesOfApiGlobalExceptionHandler>`
 
  Following files are excluded.
@@ -5521,116 +5541,117 @@ MemberRestController.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.api.member;
-    
+
     import java.util.ArrayList;
     import java.util.List;
-    
+
     import javax.inject.Inject;
     import javax.validation.groups.Default;
-    
+
     import org.dozer.Mapper;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.PageImpl;
     import org.springframework.data.domain.Pageable;
     import org.springframework.http.HttpStatus;
-    import org.springframework.stereotype.Controller;
+
     import org.springframework.validation.annotation.Validated;
     import org.springframework.web.bind.annotation.PathVariable;
     import org.springframework.web.bind.annotation.RequestBody;
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RequestMethod;
-    import org.springframework.web.bind.annotation.ResponseBody;
+
     import org.springframework.web.bind.annotation.ResponseStatus;
+    import org.springframework.web.bind.annotation.RestController;
     import org.terasoluna.examples.rest.api.member.MemberResource.PostMembers;
     import org.terasoluna.examples.rest.api.member.MemberResource.PutMember;
     import org.terasoluna.examples.rest.domain.model.Member;
     import org.terasoluna.examples.rest.domain.service.member.MemberService;
-    
+
     @RequestMapping("members")
-    @Controller
+    @RestController
     public class MemberRestController {
-    
+
         @Inject
         MemberService memberService;
-    
+
         @Inject
         Mapper beanMapper;
-    
+
         @RequestMapping(method = RequestMethod.GET)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public Page<MemberResource> getMembers(@Validated MembersSearchQuery query,
                 Pageable pageable) {
-    
+
             Page<Member> page = memberService.searchMembers(query.getName(), pageable);
-    
+
             List<MemberResource> memberResources = new ArrayList<>();
             for (Member member : page.getContent()) {
                 memberResources.add(beanMapper.map(member, MemberResource.class));
             }
             Page<MemberResource> responseResource =
                 new PageImpl<>(memberResources, pageable, page.getTotalElements());
-    
+
             return responseResource;
         }
-    
+
         @RequestMapping(method = RequestMethod.POST)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.CREATED)
         public MemberResource postMembers(@RequestBody @Validated({
                 PostMembers.class, Default.class }) MemberResource requestedResource) {
-    
+
             Member creatingMember = beanMapper.map(requestedResource, Member.class);
-    
+
             Member createdMember = memberService.createMember(creatingMember);
-    
+
             MemberResource responseResource = beanMapper.map(createdMember,
                     MemberResource.class);
-    
+
             return responseResource;
         }
-    
+
         @RequestMapping(value = "{memberId}", method = RequestMethod.GET)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMember(@PathVariable("memberId") String memberId) {
-    
+
             Member member = memberService.getMember(memberId);
-    
+
             MemberResource responseResource = beanMapper.map(member,
                     MemberResource.class);
-    
+
             return responseResource;
         }
-    
+
         @RequestMapping(value = "{memberId}", method = RequestMethod.PUT)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.OK)
         public MemberResource putMember(
                 @PathVariable("memberId") String memberId,
                 @RequestBody @Validated({
                 PutMember.class, Default.class }) MemberResource requestedResource) {
-    
+
             Member updatingMember = beanMapper.map(requestedResource, Member.class);
-    
+
             Member updatedMember = memberService.updateMember(memberId,
                     updatingMember);
-    
-            MemberResource responseResource = beanMapper.map(updatedMember,
+
+            Member updatedMember = memberService.updateMember(memberId,
                     MemberResource.class);
-    
+
             return responseResource;
         }
-    
+
         @RequestMapping(value = "{memberId}", method = RequestMethod.DELETE)
-        @ResponseBody
+
         @ResponseStatus(HttpStatus.NO_CONTENT)
         public void deleteMember(@PathVariable("memberId") String memberId) {
-    
+
             memberService.deleteMember(memberId);
-    
+
         }
-    
+
     }
 
 |
@@ -5645,9 +5666,9 @@ ApiErrorCreator.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.api.common.error;
-    
+
     import javax.inject.Inject;
-    
+
     import org.springframework.context.MessageSource;
     import org.springframework.context.support.DefaultMessageSourceResolvable;
     import org.springframework.stereotype.Component;
@@ -5657,20 +5678,20 @@ ApiErrorCreator.java
     import org.springframework.web.context.request.WebRequest;
     import org.terasoluna.gfw.common.message.ResultMessage;
     import org.terasoluna.gfw.common.message.ResultMessages;
-    
+
     @Component
     public class ApiErrorCreator {
-    
+
         @Inject
         MessageSource messageSource;
-    
+
         public ApiError createApiError(WebRequest request, String errorCode,
                 String defaultErrorMessage, Object... arguments) {
             String localizedMessage = messageSource.getMessage(errorCode,
                     arguments, defaultErrorMessage, request.getLocale());
             return new ApiError(errorCode, localizedMessage);
         }
-    
+
         public ApiError createBindingResultApiError(WebRequest request,
                 String errorCode, BindingResult bindingResult,
                 String defaultErrorMessage) {
@@ -5686,14 +5707,14 @@ ApiErrorCreator.java
             }
             return apiError;
         }
-    
+
         private ApiError createApiError(WebRequest request,
                 DefaultMessageSourceResolvable messageResolvable, String target) {
             String localizedMessage = messageSource.getMessage(messageResolvable,
                     request.getLocale());
             return new ApiError(messageResolvable.getCode(), localizedMessage, target);
         }
-    
+
         public ApiError createResultMessagesApiError(WebRequest request,
                 String rootErrorCode, ResultMessages resultMessages,
                 String defaultErrorMessage) {
@@ -5718,7 +5739,7 @@ ApiErrorCreator.java
             }
             return apiError;
         }
-    
+
     }
 
 |
@@ -5733,9 +5754,9 @@ ApiGlobalExceptionHandler.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.api.common.error;
-    
+
     import javax.inject.Inject;
-    
+
     import org.springframework.dao.OptimisticLockingFailureException;
     import org.springframework.dao.PessimisticLockingFailureException;
     import org.springframework.http.HttpHeaders;
@@ -5753,16 +5774,16 @@ ApiGlobalExceptionHandler.java
     import org.terasoluna.gfw.common.exception.ExceptionCodeResolver;
     import org.terasoluna.gfw.common.exception.ResourceNotFoundException;
     import org.terasoluna.gfw.common.exception.ResultMessagesNotificationException;
-    
+
     @ControllerAdvice
     public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    
+
         @Inject
         ApiErrorCreator apiErrorCreator;
-    
+
         @Inject
         ExceptionCodeResolver exceptionCodeResolver;
-    
+
         @Override
         protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                 Object body, HttpHeaders headers, HttpStatus status,
@@ -5777,7 +5798,7 @@ ApiGlobalExceptionHandler.java
             }
             return ResponseEntity.status(status).headers(headers).body(apiError);
         }
-    
+
         @Override
         protected ResponseEntity<Object> handleMethodArgumentNotValid(
                 MethodArgumentNotValidException ex, HttpHeaders headers,
@@ -5785,14 +5806,14 @@ ApiGlobalExceptionHandler.java
             return handleBindingResult(ex, ex.getBindingResult(), headers, status,
                     request);
         }
-    
+
         @Override
         protected ResponseEntity<Object> handleBindException(BindException ex,
                 HttpHeaders headers, HttpStatus status, WebRequest request) {
             return handleBindingResult(ex, ex.getBindingResult(), headers, status,
                     request);
         }
-    
+
         private ResponseEntity<Object> handleBindingResult(Exception ex,
                 BindingResult bindingResult, HttpHeaders headers,
                 HttpStatus status, WebRequest request) {
@@ -5801,7 +5822,7 @@ ApiGlobalExceptionHandler.java
                     request, errorCode, bindingResult, ex.getMessage());
             return handleExceptionInternal(ex, apiError, headers, status, request);
         }
-    
+
         @Override
         protected ResponseEntity<Object> handleHttpMessageNotReadable(
                 HttpMessageNotReadableException ex, HttpHeaders headers,
@@ -5813,21 +5834,21 @@ ApiGlobalExceptionHandler.java
                 return handleExceptionInternal(ex, null, headers, status, request);
             }
         }
-    
+
         @ExceptionHandler(ResourceNotFoundException.class)
         public ResponseEntity<Object> handleResourceNotFoundException(
                 ResourceNotFoundException ex, WebRequest request) {
             return handleResultMessagesNotificationException(ex, new HttpHeaders(),
                     HttpStatus.NOT_FOUND, request);
         }
-    
+
         @ExceptionHandler(BusinessException.class)
         public ResponseEntity<Object> handleBusinessException(BusinessException ex,
                 WebRequest request) {
             return handleResultMessagesNotificationException(ex, new HttpHeaders(),
                     HttpStatus.CONFLICT, request);
         }
-    
+
         private ResponseEntity<Object> handleResultMessagesNotificationException(
                 ResultMessagesNotificationException ex, HttpHeaders headers,
                 HttpStatus status, WebRequest request) {
@@ -5836,7 +5857,7 @@ ApiGlobalExceptionHandler.java
                     request, errorCode, ex.getResultMessages(), ex.getMessage());
             return handleExceptionInternal(ex, apiError, headers, status, request);
         }
-    
+
         @ExceptionHandler({ OptimisticLockingFailureException.class,
                 PessimisticLockingFailureException.class })
         public ResponseEntity<Object> handleLockingFailureException(Exception ex,
@@ -5844,14 +5865,14 @@ ApiGlobalExceptionHandler.java
             return handleExceptionInternal(ex, null, new HttpHeaders(),
                     HttpStatus.CONFLICT, request);
         }
-    
+
         @ExceptionHandler(Exception.class)
         public ResponseEntity<Object> handleSystemError(Exception ex,
                 WebRequest request) {
             return handleExceptionInternal(ex, null, new HttpHeaders(),
                     HttpStatus.INTERNAL_SERVER_ERROR, request);
         }
-    
+
     }
 
 |
@@ -5875,10 +5896,10 @@ Source code of the domain layer class created at the time of REST API implementa
      - | model
      - | :ref:`Member.java <RESTAppendixSoruceCodesOfMember>`
    * - | (2)
-     - | 
+     - |
      - | :ref:`MemberCredentia.java <RESTAppendixSoruceCodesOfMemberCredentia>`
    * - | (3)
-     - | 
+     - |
      - | :ref:`Gender.java <RESTAppendixSoruceCodesOfGender>`
    * - | (4)
      - | repository
@@ -5887,13 +5908,13 @@ Source code of the domain layer class created at the time of REST API implementa
      - | service
      - | :ref:`MemberService.java <RESTAppendixSoruceCodesOfMemberService>`
    * - | (6)
-     - | 
+     - |
      - | :ref:`MemberServiceImpl.java <RESTAppendixSoruceCodesOfMemberServiceImpl>`
    * - | (7)
      - | other
      - | :ref:`DomainMessageCodes.java <RESTAppendixSoruceCodesOfDomainMessageCodes>`
    * - | (8)
-     - | 
+     - |
      - | :ref:`member-mapping.xml <RESTAppendixSoruceCodesOfMemberMappingXml>`
 
 
@@ -5916,9 +5937,9 @@ Member.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.model;
-    
+
     import java.io.Serializable;
-    
+
     import javax.persistence.Access;
     import javax.persistence.AccessType;
     import javax.persistence.CascadeType;
@@ -5930,83 +5951,83 @@ Member.java
     import javax.persistence.Table;
     import javax.persistence.Transient;
     import javax.persistence.Version;
-    
+
     import org.joda.time.DateTime;
     import org.joda.time.LocalDate;
     import org.springframework.data.annotation.CreatedDate;
     import org.springframework.data.annotation.LastModifiedDate;
-    
+
     @Table(name = "t_member")
     @Entity
     public class Member implements Serializable {
-    
+
         private static final long serialVersionUID = 1L;
-    
+
         @Id
         private String memberId;
-    
+
         private String firstName;
-    
+
         private String lastName;
-    
+
         @Transient
         private Gender gender;
-    
+
         private LocalDate dateOfBirth;
-    
+
         private String emailAddress;
-    
+
         private String telephoneNumber;
-    
+
         private String zipCode;
-    
+
         private String address;
-    
+
         @CreatedDate
         private DateTime createdAt;
-    
+
         @LastModifiedDate
         private DateTime lastModifiedAt;
-    
+
         @Version
         private long version;
-    
+
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "member_id")
         private MemberCredential credential;
-    
+
         public String getMemberId() {
             return memberId;
         }
-    
+
         public void setMemberId(String memberId) {
             this.memberId = memberId;
         }
-    
+
         public String getFirstName() {
             return firstName;
         }
-    
+
         public void setFirstName(String firstName) {
             this.firstName = firstName;
         }
-    
+
         public String getLastName() {
             return lastName;
         }
-    
+
         public void setLastName(String lastName) {
             this.lastName = lastName;
         }
-    
+
         public Gender getGender() {
             return gender;
         }
-    
+
         public void setGender(Gender gender) {
             this.gender = gender;
         }
-    
+
         @Access(AccessType.PROPERTY)
         @Column(name = "gender")
         public String getGenderCode() {
@@ -6016,83 +6037,83 @@ Member.java
                 return gender.getCode();
             }
         }
-    
+
         public void setGenderCode(String genderCode) {
             this.gender = Gender.getByCode(genderCode);
         }
-    
+
         public LocalDate getDateOfBirth() {
             return dateOfBirth;
         }
-    
+
         public void setDateOfBirth(LocalDate dateOfBirth) {
             this.dateOfBirth = dateOfBirth;
         }
-    
+
         public String getEmailAddress() {
             return emailAddress;
         }
-    
+
         public void setEmailAddress(String emailAddress) {
             this.emailAddress = emailAddress;
         }
-    
+
         public String getTelephoneNumber() {
             return telephoneNumber;
         }
-    
+
         public void setTelephoneNumber(String telephoneNumber) {
             this.telephoneNumber = telephoneNumber;
         }
-    
+
         public String getZipCode() {
             return zipCode;
         }
-    
+
         public void setZipCode(String zipCode) {
             this.zipCode = zipCode;
         }
-    
+
         public String getAddress() {
             return address;
         }
-    
+
         public void setAddress(String address) {
             this.address = address;
         }
-    
+
         public DateTime getCreatedAt() {
             return createdAt;
         }
-    
+
         public void setCreatedAt(DateTime createdAt) {
             this.createdAt = createdAt;
         }
-    
+
         public DateTime getLastModifiedAt() {
             return lastModifiedAt;
         }
-    
+
         public void setLastModifiedAt(DateTime lastModifiedAt) {
             this.lastModifiedAt = lastModifiedAt;
         }
-    
+
         public long getVersion() {
             return version;
         }
-    
+
         public void setVersion(long version) {
             this.version = version;
         }
-    
+
         public MemberCredential getCredential() {
             return credential;
         }
-    
+
         public void setCredential(MemberCredential credential) {
             this.credential = credential;
         }
-    
+
     }
 
 
@@ -6108,96 +6129,96 @@ MemberCredentia.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.model;
-    
+
     import java.io.Serializable;
-    
+
     import javax.persistence.Entity;
     import javax.persistence.Id;
     import javax.persistence.Table;
     import javax.persistence.Version;
-    
+
     import org.joda.time.DateTime;
     import org.springframework.data.annotation.LastModifiedDate;
-    
+
     @Table(name = "t_member_credential")
     @Entity
     public class MemberCredential implements Serializable {
-    
+
         private static final long serialVersionUID = 1L;
-    
+
         @Id
         private String memberId;
-    
+
         private String signId;
-    
+
         private String password;
-    
+
         private String previousPassword;
-    
+
         private DateTime passwordLastChangedAt;
-    
+
         @LastModifiedDate
         private DateTime lastModifiedAt;
-    
+
         @Version
         private long version;
-    
+
         public String getMemberId() {
             return memberId;
         }
-    
+
         public void setMemberId(String memberId) {
             this.memberId = memberId;
         }
-    
+
         public String getSignId() {
             return signId;
         }
-    
+
         public void setSignId(String signId) {
             this.signId = signId;
         }
-    
+
         public String getPassword() {
             return password;
         }
-    
+
         public void setPassword(String password) {
             this.password = password;
         }
-    
+
         public String getPreviousPassword() {
             return previousPassword;
         }
-    
+
         public void setPreviousPassword(String previousPassword) {
             this.previousPassword = previousPassword;
         }
-    
+
         public DateTime getPasswordLastChangedAt() {
             return passwordLastChangedAt;
         }
-    
+
         public void setPasswordLastChangedAt(DateTime passwordLastChangedAt) {
             this.passwordLastChangedAt = passwordLastChangedAt;
         }
-    
+
         public DateTime getLastModifiedAt() {
             return lastModifiedAt;
         }
-    
+
         public void setLastModifiedAt(DateTime lastModifiedAt) {
             this.lastModifiedAt = lastModifiedAt;
         }
-    
+
         public long getVersion() {
             return version;
         }
-    
+
         public void setVersion(long version) {
             this.version = version;
         }
-    
+
     }
 
 
@@ -6213,19 +6234,19 @@ Gender.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.model;
-    
+
     import java.util.Collections;
     import java.util.HashMap;
     import java.util.Map;
-    
+
     import org.springframework.util.Assert;
-    
+
     public enum Gender {
-    
+
         UNKNOWN("0"), MEN("1"), WOMEN("2");
-    
+
         private static final Map<String, Gender> genderMap;
-    
+
         static {
             Map<String, Gender> map = new HashMap<>();
             for (Gender gender : values()) {
@@ -6233,25 +6254,25 @@ Gender.java
             }
             genderMap = Collections.unmodifiableMap(map);
         }
-    
+
         private final String code;
-    
+
         private Gender(String code) {
             this.code = code;
         }
-    
+
         public static Gender getByCode(String code) {
             Gender gender = genderMap.get(code);
             Assert.notNull(gender, "gender code is invalid. code : " + code);
             return gender;
         }
-    
+
         public String getCode() {
             return code;
         }
-    
+
     }
-    
+
 
 |
 
@@ -6265,22 +6286,22 @@ MemberRepository.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.repository.member;
-    
+
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.jpa.repository.JpaRepository;
     import org.springframework.data.jpa.repository.Query;
     import org.springframework.data.repository.query.Param;
     import org.terasoluna.examples.rest.domain.model.Member;
-    
+
     public interface MemberRepository extends JpaRepository<Member, String> {
-    
+
         @Query("SELECT m FROM Member m"
                 + " WHERE m.firstName LIKE :name% ESCAPE '~'"
                 + " OR m.lastName LIKE :name% ESCAPE '~'")
         Page<Member> findPageByContainsName(@Param("name") String name,
                 Pageable pageable);
-    
+
     }
 
 
@@ -6296,23 +6317,23 @@ MemberService.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.service.member;
-    
+
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Pageable;
     import org.terasoluna.examples.rest.domain.model.Member;
-    
+
     public interface MemberService {
-    
+
         Page<Member> searchMembers(String name, Pageable pageable);
-    
+
         Member getMember(String memberId);
-    
+
         Member createMember(Member creatingMember);
-    
+
         Member updateMember(String memberId, Member updatingMember);
-    
+
         void deleteMember(String memberId);
-    
+
     }
 
 |
@@ -6327,10 +6348,10 @@ MemberServiceImpl.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.service.member;
-    
+
     import javax.inject.Inject;
     import javax.inject.Named;
-    
+
     import org.dozer.Mapper;
     import org.joda.time.DateTime;
     import org.springframework.dao.DataIntegrityViolationException;
@@ -6350,37 +6371,37 @@ MemberServiceImpl.java
     import org.terasoluna.gfw.common.message.ResultMessages;
     import org.terasoluna.gfw.common.query.QueryEscapeUtils;
     import org.terasoluna.gfw.common.sequencer.Sequencer;
-    
+
     @Transactional
     @Service
     public class MemberServiceImpl implements MemberService {
-    
+
         @Inject
         MemberRepository memberRepository;
-    
+
         @Inject
         @Named("memberIdSequencer")
         Sequencer<String> sequencer;
-    
+
         @Inject
         JodaTimeDateFactory dateFactory;
-    
+
         @Inject
         PasswordEncoder passwordEncoder;
-    
+
         @Inject
         Mapper beanMapper;
-    
+
         @Transactional(readOnly = true)
         public Page<Member> searchMembers(String name, Pageable pageable) {
-    
+
             // escape to like condition value
             String escapedName = QueryEscapeUtils.toLikeCondition(name);
-    
+
             // find members that matches with search criteria
             return memberRepository.findPageByContainsName(escapedName, pageable);
         }
-    
+
         @Transactional(readOnly = true)
         public Member getMember(String memberId) {
             // find member
@@ -6392,31 +6413,31 @@ MemberServiceImpl.java
             }
             return member;
         }
-    
+
         public Member createMember(Member creatingMember) {
-    
+
             MemberCredential creatingCredential = creatingMember.getCredential();
-    
+
             // get processing current date time
             DateTime currentDateTime = dateFactory.newDateTime();
-    
+
             // set id
             String newMemberId = sequencer.getNext();
             creatingMember.setMemberId(newMemberId);
             creatingCredential.setMemberId(newMemberId);
-    
+
             // decide sign id(email-address)
             String signId = creatingCredential.getSignId();
             if (!StringUtils.hasLength(signId)) {
                 signId = creatingMember.getEmailAddress();
                 creatingCredential.setSignId(signId.toLowerCase());
             }
-    
+
             // encrypt password
             String rawPassword = creatingCredential.getPassword();
             creatingCredential.setPassword(passwordEncoder.encode(rawPassword));
             creatingCredential.setPasswordLastChangedAt(currentDateTime);
-    
+
             // save member & member credential
             try {
                 return memberRepository.saveAndFlush(creatingMember);
@@ -6427,25 +6448,25 @@ MemberServiceImpl.java
                         creatingCredential.getSignId()), e);
             }
         }
-    
+
         public Member updateMember(String memberId, Member updatingMember) {
             // get member
             Member member = getMember(memberId);
-    
+
             // override updating member attributes
             beanMapper.map(updatingMember, member, "member.update");
-    
+
             // save updating member
             return memberRepository.save(member);
         }
-    
+
         public void deleteMember(String memberId) {
-    
+
             // delete member
             memberRepository.delete(memberId);
-    
+
         }
-    
+
     }
 
 |
@@ -6460,20 +6481,20 @@ DomainMessageCodes.java
 .. code-block:: java
 
     package org.terasoluna.examples.rest.domain.message;
-    
+
     /**
      * Message codes of domain layer message.
      * @author DomainMessageCodesGenerator
      */
     public class DomainMessageCodes {
-    
+
         private DomainMessageCodes() {
             // NOP
         }
-    
+
         /** e.ex.mm.5001=Specified member not found. member id : {0} */
         public static final String E_EX_MM_5001 = "e.ex.mm.5001";
-    
+
         /** e.ex.mm.8001=Cannot use specified sign id. sign id : {0} */
         public static final String E_EX_MM_8001 = "e.ex.mm.8001";
     }
@@ -6497,7 +6518,7 @@ member-mapping.xml
     <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://dozer.sourceforge.net
               http://dozer.sourceforge.net/schema/beanmapping.xsd">
-    
+
         <mapping map-id="member.update">
             <class-a>org.terasoluna.examples.rest.domain.model.Member</class-a>
             <class-b>org.terasoluna.examples.rest.domain.model.Member</class-b>
@@ -6522,10 +6543,9 @@ member-mapping.xml
                 <b>version</b>
             </field-exclude>
         </mapping>
-    
+
     </mappings>
 
 .. raw:: latex
 
    \newpage
-
