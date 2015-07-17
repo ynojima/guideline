@@ -1759,7 +1759,7 @@ Commons FileUploadを使用する場合は以下の設定を行う。
    * - | (2)
      - | ファイルアップロードで許容する最大サイズを設定する。
        | Commons FileUploadに場合、最大値はヘッダ含めたリクエスト全体のサイズであることに注意すること。
-       | また、**デフォルト値は-1(無制限)なので、必ず値を設定すること。** その他のプロパティは\ `JavaDoc <http://docs.spring.io/spring-framework/docs/3.2.13.RELEASE/javadoc-api/org/springframework/web/multipart/commons/CommonsMultipartResolver.html>`_\ を参照されたい。
+       | また、**デフォルト値は-1(無制限)なので、必ず値を設定すること。** その他のプロパティは\ `JavaDoc <http://docs.spring.io/spring-framework/docs/3.2.14.RELEASE/javadoc-api/org/springframework/web/multipart/commons/CommonsMultipartResolver.html>`_\ を参照されたい。
 
 .. warning::
 
