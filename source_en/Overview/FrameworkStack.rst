@@ -108,7 +108,7 @@ Common Library
 OSS Versions
 --------------------------------------------------------------------------------
 
-List of OSS being used in version 1.0.2.RELEASE.
+List of OSS being used in version 1.0.3.RELEASE.
 
 .. tabularcolumns:: |p{0.20\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|p{0.05\linewidth}|
 .. list-table::
