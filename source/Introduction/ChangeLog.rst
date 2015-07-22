@@ -9,6 +9,16 @@
     * - 更新日付
       - 更新箇所
       - 更新内容
+    * - 2015-07-31
+      - \-
+      - 1.0.3 RELEASE版公開
+
+        更新内容の詳細は、\ `1.0.3のIssue一覧 <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A1.0.3+is%3Aclosed>`_\ を参照されたい。
+    * -
+      - :doc:`../Overview/FrameworkStack`
+      - Spring Frameworkのバグ(セキュリティ脆弱性)改修に伴い利用するOSSのバージョンを更新
+
+        * GroupId「\ ``org.springframework``\」のバージョンを3.2.13.RELEASEから3.2.14.RELEASEに更新
     * - 2015-02-23
       - \-
       - 1.0.2 RELEASE版公開
