@@ -9,7 +9,17 @@ Change Log
     * - Modified on
       - Modified locations
       - Modification details
-    * - 2015-02-xx
+    * - 2015-07-31
+      - \-
+      - Released "1.0.3 RELEASE" version
+
+        For details, refer to \ `issue list of 1.0.3 <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A1.0.3+is%3Aclosed>`_\ .
+    * -
+      - :doc:`../Overview/FrameworkStack`
+      - Updated the OSS version in accordance with Spring Framework bug fix(security vulnerability)
+
+        * GroupId (\ ``org.springframework``\ ) updated to 3.2.14.RELEASE from 3.2.13.RELEASE.
+    * - 2015-02-23
       - \-
       - Released "1.0.2 RELEASE" version
 
