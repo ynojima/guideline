@@ -1573,6 +1573,12 @@ How to use
 --------------------------------------------------------------------------------
 本節では、RESTful Web Serviceの具体的な作成方法について説明する。
 
+.. warning:: **StAX(Streaming API for XML)使用時のDOS攻撃対策について**
+
+    XML形式のデータをStAXを使用して解析する場合は、DTDを使ったDOS攻撃を受けないように対応する必要がある。
+    詳細は、\ `CVE-2015-3192 - DoS Attack with XML Input <http://pivotal.io/security/cve-2015-3192>`_\ を参照されたい。
+
+
 .. _RESTHowToUseWebApplicationConstruction:
 
 Webアプリケーションの構成
