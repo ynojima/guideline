@@ -19,6 +19,12 @@
       - Spring Frameworkのバグ(セキュリティ脆弱性)改修に伴い利用するOSSのバージョンを更新
 
         * GroupId「\ ``org.springframework``\」のバージョンを3.2.13.RELEASEから3.2.14.RELEASEに更新
+    * -
+      - | :doc:`../ArchitectureInDetail/Ajax`
+        | :doc:`../ArchitectureInDetail/REST`
+      - \ `CVE-2015-3192 <http://pivotal.io/security/cve-2015-3192>`_\ (XMLの脆弱性)に関する注意喚起を追加
+
+        * StAX(Streaming API for XML)を使用する際の注意事項を追加 (\ `guideline#1211 <https://github.com/terasolunaorg/guideline/issues/1211>`_\ )
     * - 2015-02-23
       - \-
       - 1.0.2 RELEASE版公開

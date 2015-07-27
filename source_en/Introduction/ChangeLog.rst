@@ -19,6 +19,12 @@ Change Log
       - Updated the OSS version in accordance with Spring Framework bug fix(security vulnerability)
 
         * GroupId (\ ``org.springframework``\ ) updated to 3.2.14.RELEASE from 3.2.13.RELEASE.
+    * -
+      - | :doc:`../ArchitectureInDetail/Ajax`
+        | :doc:`../ArchitectureInDetail/REST`
+      - Added the warning about \ `CVE-2015-3192 <http://pivotal.io/security/cve-2015-3192>`_\ (XML security vulnerability)
+
+        * Added the warning at the time of the StAX(Streaming API for XML) use (\ `guideline#1211 <https://github.com/terasolunaorg/guideline/issues/1211>`_\ )
     * - 2015-02-23
       - \-
       - Released "1.0.2 RELEASE" version
