@@ -207,7 +207,8 @@ Logbackの設定
      #. クラスパス上のlogback.grovy
      #. 「1」のファイルが見つからない場合、クラスパス上のlogback-test.xml
      #. 「2」のファイルが見つからない場合、クラスパス上のlogback.xml
-     #. 「3」のファイルが見つからない場合、BasicConfiguratorクラスの設定内容(コンソール出力)
+     #. 「3」のファイルが見つからない場合、\ ``com.qos.logback.classic.spi.Configurator``\ インタフェースの実装クラスの設定内容 (\ `ServiceLoader <http://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html>`_\ の仕組みを使用して実装クラスを指定)
+     #. \ ``Configurator``\ インタフェースの実装クラスが見つからない場合、BasicConfiguratorクラスの設定内容(コンソール出力)
 
      本ガイドラインでは、logback.xmlをクラスパス上に配置することを推奨する。
      このほか、自動読み込み以外にも、\ `APIによってプログラマティックに読み込んだり <http://logback.qos.ch/manual/configuration.html#joranDirectly>`_\ 、
