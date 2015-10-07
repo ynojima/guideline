@@ -465,7 +465,7 @@ JdbcCodeListの使用方法
 .. code-block:: xml
 
     <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList"> <!-- (1) -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" /> <!-- (2) -->
         <property name="valueColumn" value="authority_id" /> <!-- (3) -->
@@ -876,7 +876,7 @@ SimpleI18nCodeListの使用方法
     </bean>
   
     <bean id="CL_PRICE_EN" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">  <!-- (4) -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'en' ORDER BY code" />
         <property name="valueColumn" value="code" />
@@ -884,7 +884,7 @@ SimpleI18nCodeListの使用方法
     </bean>
   
     <bean id="CL_PRICE_JA" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">  <!-- (5) -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'ja' ORDER BY code" />
         <property name="valueColumn" value="code" />
@@ -1333,7 +1333,7 @@ Task Schedulerの設定例について、以下に示す。
     </task:scheduled-tasks>
 
     <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
         <property name="valueColumn" value="authority_id" />
@@ -1379,7 +1379,7 @@ JdbcCodeListのrefreshメソッドをServiceクラスで呼び出す場合の実
 .. code-block:: xml
 
     <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
         <property name="valueColumn" value="authority_id" />
