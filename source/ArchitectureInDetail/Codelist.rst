@@ -422,12 +422,15 @@ Javaクラスでのコードリスト使用
 JdbcCodeListの使用方法
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``org.terasoluna.gfw.common.codelist.JdbcCodeList`` とは、アプリケーション起動時にDBから値を取得し、
-コードリストを作成するクラスである。このリストはキャッシュされる。
+| ``org.terasoluna.gfw.common.codelist.JdbcCodeList`` とは、アプリケーション起動時にDBから値を取得し、コードリストを作成するクラスである。
+| ``JdbcCodeList`` はアプリケーション起動時にキャッシュを作るので、リスト表示時はDBアクセスによる遅延がない。
 
-また、取得する値はリロードにより動的に変更できる。詳細は :ref:`codeListTaskScheduler` 参照されたい。
+| 起動時の読み込み時間を抑えたいならば、取得数の上限を設定するとよい。
+| ``JdbcCodeList`` には ``org.springframework.jdbc.core.JdbcTemplate`` を設定するフィールドがある。
+| ``JdbcTemplate`` の ``fetchSize`` に上限を設定すれば、その分だけのレコードが起動時に読み込まれる。  
+| なお、取得する値はリロードにより動的に変更できる。詳細は :ref:`codeListTaskScheduler` 参照されたい。
 
-**JdbcCodeListのイメージ**
+**JdbcCodeLitのイメージ**
 
 .. figure:: ./images/codelist-jdbc.png
    :alt: codelist simple
@@ -460,16 +463,25 @@ JdbcCodeListの使用方法
 
 |
 
-**bean定義ファイル(xxx-codelist.xml)の定義**
+**bean定義ファイル(xxx-infra.xml)の定義**
 
 .. code-block:: xml
 
-    <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList"> <!-- (1) -->
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
+    <bean id="jdbcTemplateForCodeList" class="org.springframework.jdbc.core.JdbcTemplate" > <!-- (1) -->
+        <property name="dataSource" ref="dataSource" />
+        <property name="fetchSize" value="1000" /> <!-- (2) -->
+    </bean>
+
+    <bean id="AbstractJdbcCodeList"
+        class="org.terasoluna.gfw.common.codelist.JdbcCodeList" abstract="true"> <!-- (3) -->
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" /> <!-- (4) -->
+    </bean>
+
+    <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList" > <!-- (5) -->
         <property name="querySql"
-            value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" /> <!-- (2) -->
-        <property name="valueColumn" value="authority_id" /> <!-- (3) -->
-        <property name="labelColumn" value="authority_name" /> <!-- (4) -->
+            value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" /> <!-- (6) -->
+        <property name="valueColumn" value="authority_id" /> <!-- (7) -->
+        <property name="labelColumn" value="authority_name" /> <!-- (8) -->
     </bean>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -480,14 +492,28 @@ JdbcCodeListの使用方法
    * - 項番
      - 説明
    * - | (1)
-     - | JdbcCodeListクラスをbean定義する。
+     - | ``org.springframework.jdbc.core.JdbcTemplate`` クラスをbean定義する。
+       | 独自にfetchSizeを設定するために必要となる。
    * - | (2)
+     - | fetchSizeを設定する。適切な値を設定すること。
+   * - | (3)
+     - | JdbcCodeListの共通bean定義。
+       | 他のJdbcCodeListの共通部分を設定している。そのため、基本JdbcCodeListのbean定義はこのbean定義を親クラスに設定する。
+       | abstract属性をtrueにすることで、このbeanはインスタンス化されない。
+   * - | (4)
+     - | (1)で設定したjdbcTemplateを設定。
+       | fetchSizeを設定したJdbcTemplateを、JdbcCodeListに格納している。
+   * - | (5)
+     - | JdbcCodeListのbean定義。
+       | parent属性を(3)のbean定義を親クラスとして設定することで、fetchSizeを設定したJdbcCodeListが設定される。
+       | このbean定義では、クエリに関する設定のみを行い、必要なCodeList分作成する。
+   * - | (6) 
      - | querySqlプロパティに取得するSQLを記述する。その際、 **必ず「ORDER BY」を指定し、順序を確定させること。**
        | 「ORDER BY」を指定しないと、取得する度に順序が変わってしまう。
-   * - | (3)
+   * - | (7)
      - | valueColumnプロパティに、MapのKeyに該当する値を設定する。この例ではauthority_idを設定している。
-   * - | (4)
-     - | labelColumnプロパティに、MapのValueに該当する値を設定する。この例ではauthority_nameを設定している。
+   * - | (8)
+     - | labelColumnプロパティに、MapのValueに該当する値を設定する。この例ではauthority_nameを設定している。      
 
 |
 
@@ -1223,70 +1249,6 @@ BeanValidationや、メッセージ出力方法の詳細については、 :doc:
 
 How to extend
 --------------------------------------------------------------------------------
-
-
-.. _settingFetchSize:
-
-JdbcCodeListの読み込む件数が大きい場合
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-JdbcCodeListの読み込む件数が大きい(数百)場合、Webアプリの起動に時間が掛かる。
-
-原因は、DB問い合わせ時に全件取得することがあり、DBからリストを取得する時間がかかってしまうためである。
-(fetchSizeのデフォルト設定が、全件取得になっている場合がある。)
-
-この問題は、fetchSizeを適切な値に指定することで解決できる。
-fetchSizeを変更するには ``org.springframework.jdbc.core.JdbcTemplate`` のfetchSizeを設定する必要がある。
-
-以下に実装例を示す。
-
-
-**bean定義ファイル(xxx-infra.xml)の定義**
-
-.. code-block:: xml
-
-    <bean id="jdbcTemplateForCodeList" class="org.springframework.jdbc.core.JdbcTemplate" > <!-- (1) -->
-        <property name="dataSource" ref="dataSource" />
-        <property name="fetchSize" value="1000" /> <!-- (2) -->
-    </bean>
-
-    <bean id="AbstractJdbcCodeList"
-        class="org.terasoluna.gfw.common.codelist.JdbcCodeList" abstract="true"> <!-- (3) -->
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" /> <!-- (4) -->
-    </bean>
-
-    <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList" ><!-- (5) -->
-        <property name="querySql"
-            value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
-        <property name="valueColumn" value="authority_id" />
-        <property name="labelColumn" value="authority_name" />
-    </bean>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | ``org.springframework.jdbc.core.JdbcTemplate`` クラスをbean定義する。
-       | 独自にfetchSizeを設定するために必要となる。
-   * - | (2)
-     - | fetchSizeを設定する。適切な値を設定すること。
-   * - | (3)
-     - | JdbcCodeListの共通bean定義。
-       | 他のJdbcCodeListの共通部分を設定している。そのため、基本JdbcCodeListのbean定義はこのbean定義を親クラスに設定する。
-       | abstract属性をtrueにすることで、このbeanはインスタンス化されない。
-   * - | (4)
-     - | (1)で設定したjdbcTemplateを設定。
-       | fetchSizeを設定したJdbcTemplateを、JdbcCodeListに格納している。
-   * - | (5)
-     - | JdbcCodeListのbean定義。
-       | parent属性を(3)のbean定義を親クラスとして設定することで、fetchSizeを設定したJdbcCodeListが設定される。
-       | このbean定義では、クエリに関する設定のみを行い、必要なCodeList分作成する。
-
-|
 
 .. _codeListTaskScheduler:
 
