@@ -458,7 +458,7 @@ Example of codelist settings
 .. code-block:: xml
 
     <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList"> <!-- (1) -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" /> <!-- (2) -->
         <property name="valueColumn" value="authority_id" /> <!-- (3) -->
@@ -870,7 +870,7 @@ For other setting methods, refer to :ref:`afterCodelisti18n`.
     </bean>
   
     <bean id="CL_PRICE_EN" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">  <!-- (4) -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'en' ORDER BY code" />
         <property name="valueColumn" value="code" />
@@ -878,7 +878,7 @@ For other setting methods, refer to :ref:`afterCodelisti18n`.
     </bean>
   
     <bean id="CL_PRICE_JA" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">  <!-- (5) -->
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'ja' ORDER BY code" />
         <property name="valueColumn" value="code" />
@@ -1324,7 +1324,7 @@ Example for setting the Task Scheduler is shown below.
     </task:scheduled-tasks>
 
     <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
         <property name="valueColumn" value="authority_id" />
@@ -1370,7 +1370,7 @@ See the example below for directly calling refresh method of JdbcCodeList in Ser
 .. code-block:: xml
 
     <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">
-        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
         <property name="valueColumn" value="authority_id" />
