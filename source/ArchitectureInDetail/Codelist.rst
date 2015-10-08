@@ -469,7 +469,7 @@ JdbcCodeListの使用方法
 
     <bean id="jdbcTemplateForCodeList" class="org.springframework.jdbc.core.JdbcTemplate" > <!-- (1) -->
         <property name="dataSource" ref="dataSource" />
-        <property name="fetchSize" value="1000" /> <!-- (2) -->
+        <property name="fetchSize" value="${codelist.jdbc.fetchSize:1000}" /> <!-- (2) -->
     </bean>
 
     <bean id="AbstractJdbcCodeList"
