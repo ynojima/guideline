@@ -7112,6 +7112,36 @@ SQLの実装
     * 関連Entityに検索条件があり、そのEntityから複数レコードを取得する場合、上記の主Entityのみの仮想テーブルを
       次のようにして作成する。検索条件を適用した関連Entityの抽出レコードを集約し、主Entityのみの仮想テーブルとが
       1:1の関係になるようにしてJOINする。これで検索条件を満たしたページ範囲内の仮想テーブルが作成される。
+      以下に例を記載しておく。
+
+      .. code-block:: xml
+
+        <select id="findPage" resultMap="orderResultMap">
+            <bind name="orderTable" value="
+                '(
+                  SELECT
+                      vo.id,
+                      vo.status_code
+                  FROM
+                      t_order vo
+                  INNER JOIN
+                      (
+                       SELECT
+                          voi.order_id
+                        FROM
+                          t_order_item voi
+                        WHERE
+                          voi.item_code = #{itemcode}
+                        GROOUP BY
+                          voi.order_id
+                       ) vvoi ON vvoi.order_id = vo.id
+                  ORDER BY
+                      id DESC
+                  LIMIT #{pageable.pageSize}
+                  OFFSET #{pageable.offset}
+                  )'" />
+            <include refid="selectFromJoin"/>
+
 
     等の方法が考えられる。
 
