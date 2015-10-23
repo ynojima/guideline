@@ -652,8 +652,9 @@ How to use
     public String save(@Validated({ Wizard1.class, Wizard2.class,
             Wizard3.class }) WizardForm form,   // (1)
             BindingResult result,
-            Entity entity,                      // (2)
+            ModelMap model,
             RedirectAttributes redirectAttributes) {
+        Entity entity = model.get("entity"); // (2)
         // ...
         return "redirect:/wizard/save?complete";
     }
@@ -671,7 +672,9 @@ How to use
         | 上記例では、\ ``"wizardForm"``\ という属性名でセッションスコープに格納されているオブジェクトが、引数formに渡される。
         | ``@Validated`` アノテーションで指定している ``Wizard1.class`` , ``Wizard2.class`` , ``Wizard3.class`` については、 Appendixの :ref:`session-management_appendix_sessionattribute` を参照されたい。
     * - | (2)
-      - | 上記例では、\ ``"entity"``\ という属性名でセッションスコープに格納されているオブジェクトが、引数entityに渡される。
+      - | \ ``Model``\ オブジェクトに格納されている読み取り専用のオブジェクト(ドメインオブジェクトなど)を取得する場合は、メソッドの引数として受け取るのではなく\ ``org.springframework.ui.ModelMap``\ 経由で取得する。
+        | 上記例では、\ ``"entity"``\ という属性名でセッションスコープに格納されているオブジェクトを取得している。
+        | 読み取り専用のオブジェクトをメソッドの引数で受け取ってしまうと、リクエストパラメータの値が読み取り専用のオブジェクトに反映される可能性がある。
 
 Controllerの処理メソッドの引数に渡すオブジェクトが、\ ``Model``\ オブジェクトに存在しない場合、\ ``@ModelAttribute``\ アノテーションの指定の有無で、動作が変わる。
 
@@ -688,10 +691,9 @@ Controllerの処理メソッドの引数に渡すオブジェクトが、\ ``Mod
  .. code-block:: java
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String save(@Validated({ Wizard1.class, Wizard2.class,
-            Wizard3.class }) WizardForm form, // (3)
+    public String save(@ModelAttribute @Validated({ Wizard1.class, Wizard2.class, Wizard3.class }) WizardForm form, // (3)
             BindingResult result,
-            @ModelAttribute Entity entity, // (4)
+            ModelMap model,
             RedirectAttributes redirectAttributes) {
         // ...
         return "redirect:/wizard/save?complete";
@@ -705,11 +707,8 @@ Controllerの処理メソッドの引数に渡すオブジェクトが、\ ``Mod
     * - 項番
       - 説明
     * - | (3)
-      - | \ ``@Validated``\ アノテーションで、特定の検証グループ(\ ``Wizard1.class``\ , \ ``Wizard2.class``\ , \ ``Wizard3.class``\ )を設定して入力チェックを行っている。
-        | 入力チェックの詳細については、\ :doc:`Validation`\ を参照されたい。
-    * - | (4)
-      - | 引数に、\ ``@ModelAttribute``\ アノテーションを指定している場合、セッションに対象のオブジェクトが存在しない時に呼び出されると、\ ``HttpSessionRequiredException``\ が発生する。
-        | \ ``HttpSessionRequiredException``\ は、ブラウザバックや、URL直接指定のアクセスなどの、クライアントの操作に起因して発生する例外になるため、クライアントエラーとして、例外ハンドリングを行う必要がある。
+      - | 引数に\ ``@ModelAttribute``\ アノテーションを指定している場合、セッションに対象のオブジェクトが存在しない時に呼び出されると\ ``HttpSessionRequiredException``\ が発生する。
+        | \ ``HttpSessionRequiredException``\ は、ブラウザバックやURL直接指定のアクセスなどのクライアントの操作に起因して発生する例外になるため、クライアントエラーとして例外ハンドリングを行う必要がある。
 
 \ ``HttpSessionRequiredException``\ をクライアントエラーとするための設定は、以下の通りである。
 
@@ -828,7 +827,7 @@ Controllerの処理メソッドの引数に渡すオブジェクトが、\ ``Mod
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@ModelAttribute @Validated({ Wizard1.class,
             Wizard2.class, Wizard3.class }) WizardForm form,
-            BindingResult result, Entity entity,
+            BindingResult result, ModelMap model,
             RedirectAttributes redirectAttributes) {
         // ...
         return "redirect:/wizard/save?complete"; // (2)
@@ -1532,12 +1531,13 @@ Appendix
         public String save(@ModelAttribute @Validated({ Wizard1.class,
                 Wizard2.class, Wizard3.class }) WizardForm form, // (22)
                 BindingResult result,
-                Entity entity, // (23)
+                ModelMap model,
                 RedirectAttributes redirectAttributes) {
             if (result.hasErrors()) {
-                throw new InvalidRequestException(result); // (24)
+                throw new InvalidRequestException(result); // (23)
             }
 
+            Entity entity = model.get("entity"); // (24)
             beanMapper.map(form, entity);
 
             entity = wizardService.saveEntity(entity); // (25)
@@ -1566,11 +1566,11 @@ Appendix
     * - | (22)
       - | 入力画面で入力された値を全てチェックするために、\ ``@Validated``\ アノテーションのvalue属性に、各入力画面の検証グループインタフェース(\ ``Wizard1.class``\ , \  ``Wizard2.class``\ , \ ``Wizard3.class``\ )を指定する。
     * - | (23)
-      - | 保存する\ ``Entity.class``\ のオブジェクトを取得する。
-        | 登録処理の場合は、新たに生成されたオブジェクト、更新処理の場合は、(14)の処理でセッションに格納したオブジェクトが取得される。
-    * - | (24)
       - | アプリケーションが提供しているボタンを使って、画面遷移を行っていれば、このタイミングでエラーは発生しないので、不正な操作が行われた場合に\ ``InvalidRequestException``\ がthrowされる。
         | なお、\ ``InvalidRequestException``\は共通ライブラリから提供している例外クラスではないため、別途作成する必要がある。
+    * - | (24)
+      - | 保存する\ ``Entity.class``\ のオブジェクトを取得する。
+        | 登録処理の場合は新たに生成されたオブジェクト、更新処理の場合は(14)の処理でセッションに格納したオブジェクトが取得される。
     * - | (25)
       - | 入力値が反映された\ ``Entity.class``\ のオブジェクトを保存する。
     * - | (26)
@@ -1701,12 +1701,13 @@ Appendix
         @RequestMapping(value = "save", method = RequestMethod.POST)
         public String save(@ModelAttribute @Validated({ Wizard1.class,
                 Wizard2.class, Wizard3.class }) WizardForm form, // (22)
-                BindingResult result, Entity entity, // (23)
+                BindingResult result, ModelMap model,
                 RedirectAttributes redirectAttributes) {
             if (result.hasErrors()) {
-                throw new InvalidRequestException(result); // (24)
+                throw new InvalidRequestException(result); // (23)
             }
-    
+
+            Entity entity = model.get("entity"); // (24)
             beanMapper.map(form, entity);
     
             entity = wizardService.saveEntity(entity); // (25)
