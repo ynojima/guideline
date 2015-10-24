@@ -5740,32 +5740,6 @@ RepositoryのBean定義を行えばよい。
 これは、Mapperインタフェースのメソッドを呼び出したタイミングではSQLが発行されず、
 バッチ実行用にキューイング(\ ``java.sql.Statement#addBatch()``\)される仕組みになっているためである。
 
-**つまり、更新結果の妥当性をチェックする必要がある場合(楽観ロックによる排他制御処理など)では、**
-**バッチモードを使用する事はできない。**
-
- .. tip::
-
-    MyBatis3自体の機能としては、
-    \ ``org.apache.ibatis.session.SqlSession``\インタフェースのメソッド(\ ``flushStatements``\)を使用すると、
-    バッチ実行用にキューイングされているSQLを実行し、更新結果を受け取る事ができる。
-    ただし、本ガイドラインでは\ ``SqlSession``\を直接使用する前提ではないため、
-    可能な限り\ ``SqlSession``\を直接使用しないようにする事を推奨する。
-
-    どうしても\ ``SqlSession``\インタフェースのメソッドを直接呼び出す必要がある場合は、
-    「`MyBatis-Spring REFERENCE DOCUMENTATION(Using an SqlSession) <http://mybatis.github.io/spring/sqlsession.html>`_\」
-    を参照されたい。
-    MyBatis-Springが提供している\ ``org.mybatis.spring.SqlSessionTemplate``\を使用するという点がポイントである。
-
- .. warning:: **バッチモード使用時のJDBCドライバの動作について**
-
-    \ ``SqlSession``\インタフェースを使用するとバッチ実行時の更新結果を受け取る事ができると前述したが、
-    JDBCドライバから返却される更新結果が「処理したレコード数」になる保証はない。
-
-    これは、使用するJDBCドライバの実装にも依存する部分なので、
-    使用するJDBCドライバの仕様を確認しておく必要がある。
-
-|
-
 これは、以下の様な実装が出来ないことを意味している。
 
  .. code-block:: java
@@ -5801,6 +5775,76 @@ RepositoryのBean定義を行えばよい。
     * - (1)
       - 上記例のように実装した場合、更新結果は常に\ ``false``\になるため、
         必ず更新失敗時の処理が実行されてしまう。
+
+
+アプリケーションの要件によっては、バッチ実行した更新結果の妥当性をチェックすることが求められるケースも考えられる。
+そのようなケースでは、Mapperインタフェースに「バッチ実行用にキューイングされているSQLを実行するためのメソッド」を用意すればよい。
+
+MyBatis 3.2系では、\ ``org.apache.ibatis.session.SqlSession``\インタフェースの\ ``flushStatements``\ メソッドを直接呼び出す必要があったが、
+terasoluna-gfw-mybatis3 5.1.0.RELEASEでサポートしたMyBatis 3.3.0以降のバージョンでは、
+Mapperインタフェースに\ ``@org.apache.ibatis.annotations.Flush``\ アノテーションを付与したメソッドを作成する方法がサポートされている。
+
+ .. warning:: **バッチモード使用時のJDBCドライバが返却する更新結果について**
+
+    \ ``@Flush``\ アノテーションを付与したメソッド(及び\ ``SqlSession``\インタフェースの\ ``flushStatements``\ メソッド)を使用するとバッチ実行時の更新結果を受け取る事ができると前述したが、
+    JDBCドライバから返却される更新結果が「処理したレコード数」になる保証はない。
+
+    これは、使用するJDBCドライバの実装に依存する部分なので、使用するJDBCドライバの仕様を確認しておく必要がある。
+
+以下に、\ ``@Flush``\ アノテーションを付与したメソッドの作成例と呼び出し例を示す。
+
+ .. code-block:: java
+
+    public interface TodoRepository {
+        // ...
+        @Flush // (1)
+        List<BatchResult> flush();
+    }
+
+ .. code-block:: java
+
+    @Transactional
+    @Service
+    public class TodoServiceImpl implements TodoService {
+
+        @Inject
+        @Named("todoBatchRepository")
+        TodoRepository todoBatchRepository;
+
+        @Override
+        public void updateTodos(List<Todo> todos) {
+
+            for (Todo todo : todos) {
+                todoBatchRepository.update(todo);
+            }
+
+            List<BatchResult> updateResults = todoBatchRepository.flush(); // (2)
+
+            // Validate update results
+            // ...
+
+        }
+
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.80\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 80
+
+    * - 項番
+      - 説明
+    * - (1)
+      - \ ``@Flush``\ アノテーションを付与したメソッド（以降「\ ``@Flush``\ メソッド」と呼ぶ）を作成する。
+
+        更新結果の判定が必要な場合は、返り値として\ ``org.apache.ibatis.executor.BatchResult``\ のリスト型を指定する。
+        更新結果の判定が不要な場合(一意制約違反などのデータベースエラーのみをハンドリングしたい場合)は、返り値は\ ``void``\ でよい。
+    * - (2)
+      - バッチ実行用にキューイングされているSQLを実行したいタイミングで、\ ``@Flush``\ メソッドを呼び出す。
+        \ ``@Flush``\ メソッドを呼び出すと、Mapperインタフェースに紐づく\ ``SqlSession``\ オブジェクトの\ ``flushStatements``\ メソッドが呼び出されて、
+        バッチ実行用にキューイングされているSQLが実行される。
+
+        更新結果の判定が必要な場合は、\ ``@Flush``\ メソッドから返却される更新結果の妥当性チェックを行う。
 
 |
 
@@ -5854,6 +5898,12 @@ RepositoryのBean定義を行えばよい。
 
         これは、SQLがバッチ実行されるタイミングが、
         Serviceの処理が終わった後(トランザクションがコミットされる直前)に行われるためである。
+
+
+アプリケーションの要件によっては、バッチ実行時の一意制約違反を検知することが求められるケースも考えられる。
+そのようなケースでは、Mapperインタフェースに「バッチ実行用にキューイングされているSQLを実行するためのメソッド(\ ``@Flush``\メソッド)」を用意すればよい。
+\ ``@Flush``\ メソッドの詳細は、前述の「:ref:`DataAccessMyBatis3HowToExtendExecutorTypeBatchNotesUpdateResult`」を参照されたい。
+
 
 |
 
