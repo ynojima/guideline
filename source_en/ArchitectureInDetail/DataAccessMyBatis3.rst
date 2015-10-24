@@ -5109,7 +5109,7 @@ How to implement a process wherein the search results are downloaded as CSV data
     public interface TodoRepository {
 
         // (1) (2)
-        void collectAllByCriteria(TodoCriteria criteria, ResultHandler resultHandler);
+        void collectAllByCriteria(TodoCriteria criteria, ResultHandler<Todo> resultHandler);
 
     }
 
@@ -5196,10 +5196,10 @@ How to implement a process wherein the search results are downloaded as CSV data
             final BufferedWriter downloadWriter) {
 
             // (4)
-            ResultHandler handler = new ResultHandler() {
+            ResultHandler<Todo> handler = new ResultHandler<Todo>() {
                 @Override
-                public void handleResult(ResultContext context) {
-                    Todo todo = (Todo) context.getResultObject();
+                public void handleResult(ResultContext<? extends Todo> context) {
+                    Todo todo = context.getResultObject();
                     StringBuilder sb = new StringBuilder();
                     try {
                         sb.append(todo.getTodoId());
@@ -5269,7 +5269,7 @@ How to implement a process wherein the search results are downloaded as CSV data
            - Description
          * - (1)
            - getResultObject
-           - A method for fetching Java class object specified by \ ``resultType``\  attribute of \ ``select``\  element.
+           - A method for fetching object which mapped search results.
          * - (2)
            - getResultCount
            - A method for fetching the call count of \ ``ResultHandler#handleResult``\  method.
