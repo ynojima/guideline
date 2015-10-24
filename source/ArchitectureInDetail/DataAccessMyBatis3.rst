@@ -7865,49 +7865,25 @@ MyBatis3では、マッピング時に別のSQL(ネストしたSQL)を使用し�
 
 "Lazy Load"を使用する場合は、"Lazy Load"を実現するためのProxyオブジェクトを生成するために、
 
-* CGLIB
 * JAVASSIST
+* CGLIB
 
 のいずれか一方のライブラリが必要となる。
 
-ここでは、MyBatis 3.2系のデフォルトに指定されているCGLIBを依存ライブラリに追加する方法を示す。
+MyBatis 3.2系まではCGLIBがデフォルトで使用されるライブラリであったが、
+terasoluna-gfw-mybatis3 5.1.0.RELEASEでサポートしたMyBatis 3.3.0以降のバージョンではJAVASSISTがデフォルトで使用される。
+さらに、MyBatis 3.3.0からJAVASSISTがMyBatis本体に内包されているため、ライブラリを追加しなくても"Lazy Load"を使用する事ができる。
 
-* :file:`projectName-domain/pom.xml`
+ .. note::
 
- .. code-block:: xml
+    MyBatis 3.3.0以降のバージョンでCGLIBを使用する場合は、
 
-    <!-- (1) -->
-    <dependency>
-        <groupId>cglib</groupId>
-        <artifactId>cglib</artifactId>
-        <version>2.2.2</version>
-    </dependency>
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.80\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 80
-
-    * - 項番
-      - 説明
-    * - (1)
-      - \ :file:`pom.xml`\に、CGLIBのアーティファクトを追加する。
-
- .. tip::
-
-    MyBatis 3.3.0以降のバージョンでは、JAVASSISTがMyBatis本体に内包されるため、
-    ライブラリを追加しなくても"Lazy Load"を使用する事ができる。
-
-    3.2系ではCGLIBがデフォルトだが、3.3系からはMyBatisが内包しているJAVASSISTがデフォルトになる。
-
-    3.2系でJAVASSISTを使用する場合は、
-
-    * \ :file:`pom.xml`\にJAVASSISTのアーティファクトを追加
-    * MyBatis設定ファイル(:file:`projectName-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml`)に「\ ``proxyFactory=JAVASSIST``\」を追加
+    * \ :file:`pom.xml`\にCGLIBのアーティファクトを追加
+    * MyBatis設定ファイル(:file:`projectName-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml`)に「\ ``proxyFactory=CGLIB``\」を追加
 
     すればよい。
 
-    JAVASSISTのアーティファクト情報については、
+    CGLIBのアーティファクト情報については、
     「`MyBatis3 PROJECT DOCUMENTATION(Project Dependencies-compile-) <http://mybatis.github.io/mybatis-3/dependencies.html#compile>`_\」を参照されたい。
 
 |
