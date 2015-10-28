@@ -2665,6 +2665,7 @@ Basic implementation method of JSP is described below.
 - :ref:`view_jsp_out-label`
 - :ref:`view_jsp_outnumber-label`
 - :ref:`view_jsp_outdate-label`
+- :ref:`view_jsp_requesturl-label`
 - :ref:`view_jsp_form-label`
 - :ref:`view_jsp_errors-label`
 - :ref:`view_jsp_resultmessages-label`
@@ -2903,6 +2904,165 @@ Display using ``<fmt:formatDate>`` tag provided by JSP tag library of JSTL.
     Refer to :doc:`../ArchitectureInDetail/Utilities/JodaTime`  for the details of Joda Time.
 
 |
+
+
+
+
+.. _view_jsp_requesturl-label:
+
+Generate request URL
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When a request URL (a URL for calling Controller method) is to be set for \ ``action``\   attribute of \ ``<form>``\  element(\ ``<form:form>``\  element of JSP tag library) of HTML and \ ``href``\   attribute of \ ``<a>``\  element,
+a URL is generated using either of the methods described below.
+
+* Build a request URL as a character string
+* Build a request URL using EL function which has been added from Spring Framework 4.1
+
+.. note::
+
+    Although either of these methods can be used, using both the methods together in a single application should be avoided
+    since it may result in decrease in maintainability.
+
+|
+
+| An implementation sample of the Controller method used further in the description is shown.
+| In the description hereafter, an implementation method is described wherein a request URL is generated for calling the method given below.
+
+ .. code-block:: java
+
+    package com.example.app.hello;
+
+    import org.springframework.stereotype.Controller;
+    import org.springframework.web.bind.annotation.RequestMapping;
+
+    @RequestMapping("hello")
+    @Controller
+    public class HelloController {
+
+        // (1)
+        @RequestMapping({"", "/"})
+        public String hello() {
+            return "hello/home";
+        }
+
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - Request URL assigned to the method is \ "``{Context path}/hello"``\ .
+
+|
+
+**Building a request URL as a character string**
+
+First, the method to build a request URL using a character string is explained.
+
+ .. code-block:: jsp
+
+    <form action="${pageContext.request.contextPath}/hello"> <!-- (2) -->
+        <!-- ... -->
+    </form>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (2)
+      - Fetch context path assigned to Web application from \ ``pageContext``\  (implicit object of JSP)(\ ``${pageContext.request.contextPath}``\ ),
+        add servlet path (\ ``/hello``\  in the example above) assigned to the Controller method that has been called, after the context path.
+
+ .. tip::
+
+
+
+    * \ ``<c:url>``\  offered by JSTL
+    * \ ``<spring:url>``\  offered by Spring Framework
+
+    are available as JSP tag libraries which build URL. A request URL can also be built using these JSP tag libraries.
+
+    When it is necessary to build a request URL dynamically,
+    a URL is preferably built by using these JSP tag libraries.
+
+|
+
+**Building a request URL by using EL function added from Spring Framework 4.1**
+
+Next, a method to build a request URL using EL function (\ ``spring:mvcUrl``\ ) added from Spring Framework 4.1 is described.
+
+If \ ``spring:mvcUrl``\  function is used, a request URL can be built by linking with meta information of Controller method (method signature and annotation etc).
+
+
+ .. code-block:: jsp
+
+    <form action="${spring:mvcUrl('HC#hello').build()}"> <!-- (3) -->
+        <!-- ... -->
+    </form>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (3)
+      - Specify a request mapping name assigned to the Controller method which has been called, in the \ ``spring:mvcUrl``\  function argument.
+
+        An object of class (\ ``MvcUriComponentsBuilder.MethodArgumentBuilder``\ ) which builds a request URL is returned from \ ``spring:mvcUrl``\  function.
+        \ ``MvcUriComponentsBuilder.MethodArgumentBuilder``\  class offers following methods
+
+        * \ ``arg``\  method
+        * \ ``build``\  method
+        * \ ``buildAndExpand``\  method
+
+        which play roles described below respectively.
+
+        * \ ``arg``\  method specifies the value to be passed to argument of Controller method.
+        * \ ``build``\  method generates a request URL.
+        * \ ``buildAndExpand``\  method generates a request URL after specifying a value embedded in dynamic part (path variable etc) which has not been declared as an argument of Controller method.
+
+        In the example above, since a request URL is static, a request URL is generated only by calling \ ``build``\  method.
+        When the request URL is dynamic (a URL wherein a path variable and a query string exists),
+        \ ``arg``\  method and \ ``buildAndExpand``\  method must be called.
+
+        Refer to "\ `Spring Framework Reference Documentation(Building URIs to Controllers and methods from views) <http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/html/mvc.html#mvc-links-to-controllers-from-views>`_\ " for
+        the basic usage of \ ``arg``\  method and \ ``buildAndExpand``\  method.
+
+
+ .. note:: **Regarding request mapping name**
+
+    In the default implementation (\ ``org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMethodMappingNamingStrategy``\  implementation), the request mapping name is represented as
+    "Class name in upper case (short name of class) + \ ``"#"``\  + method name".
+
+    Request mapping name must not be duplicated.
+    When the name is duplicated, a unique name must be specified in \ ``name``\  attribute  of \ ``@RequestMapping``\  annotation.
+
+    When a request mapping name assigned to Controller method is to be verified,
+    settings given below should be added to \ :file:`logback.xml`\ .
+
+     .. code-block:: xml
+
+        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+            <level value="trace" />
+        </logger>
+
+    If the program is rebooted after applying the settings given above, the log shown below is output.
+
+     .. code-block:: text
+
+        date:2014-12-09 18:34:29	thread:RMI TCP Connection(2)-127.0.0.1	X-Track:	level:TRACE	logger:o.s.w.s.m.m.a.RequestMappingHandlerMapping      	message:Mapping name=HC#hello
+
+
 
 .. _view_jsp_form-label:
 
