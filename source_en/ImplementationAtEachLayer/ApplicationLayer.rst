@@ -3767,7 +3767,7 @@ Methods to specify Controller (methods to specify attributes) for applying commo
    * - | (1)
      - It indicates that it is Bean of ControllerAdvice by assigning the \ ``@ControllerAdvice``\  annotation.
    * - | (2)
-     - Specify priority for common processes by assigning the \ ``@Order``\  annotation. It should be specified when multiple ControllerAdvice are to be created.
+     - Specify priority for common processes by assigning the \ ``@Order``\  annotation. If you want to create multiple ControllerAdvice, be sure to specify to it if there is a dependency. If there are no dependencies, specified it is arbitrary.
    * - | (3)
      - Implement \ ``@InitBinder``\  method. \ ``@InitBinder``\  method is applied to all Controllers.
 
