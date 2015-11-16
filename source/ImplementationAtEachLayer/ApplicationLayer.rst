@@ -90,10 +90,10 @@ Controllerクラスの作成方法
 
 .. _controller_mapping-label:
 
-リクエストと処理メソッドのマッピング方法
+リクエストとハンドラメソッドのマッピング方法
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | リクエストを受け取るメソッドは、\ ``@RequestMapping``\ アノテーションを付与する。
-| 本ガイドラインでは、\ ``@RequestMapping``\ が付加されたメソッドのことを「処理メソッド」と呼ぶ。
+| 本ガイドラインでは、\ ``@RequestMapping``\ が付加されたメソッドのことを「ハンドラメソッド」と呼ぶ。
 
  .. code-block:: java
 
@@ -104,7 +104,7 @@ Controllerクラスの作成方法
 
 |
 
-リクエストと処理メソッドをマッピングするためのルールは、\ ``@RequestMapping``\ アノテーションの属性に指定する。
+リクエストとハンドラメソッドをマッピングするためのルールは、\ ``@RequestMapping``\ アノテーションの属性に指定する。
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.10\linewidth}|p{0.80\linewidth}|
  .. list-table::
@@ -154,7 +154,7 @@ Controllerクラスの作成方法
 - :ref:`controller-mapping-contenttype-label`
 - :ref:`controller-mapping-accept-label`
 
-| 以降の説明では、以下のControllerクラスに処理メソッドを定義する前提となっている。
+| 以降の説明では、以下のControllerクラスにハンドラメソッドを定義する前提となっている。
 
  .. code-block:: java
     :emphasize-lines: 1-2
@@ -175,7 +175,7 @@ Controllerクラスの作成方法
    * - | (1)
      - ``@Controller``\ アノテーションを付加することでAnnotation-basedなコントローラークラスとして認識され、component scanの対象となる。
    * - | (2)
-     - クラスレベルで\ ``@RequestMapping("sample")``\ アノテーションを付けることでこのクラス内の処理メソッドがsample配下のURLにマッピングされる。
+     - クラスレベルで\ ``@RequestMapping("sample")``\ アノテーションを付けることでこのクラス内のハンドラメソッドがsample配下のURLにマッピングされる。
 
 |
 
@@ -308,7 +308,7 @@ Acceptヘッダでマッピング
 
 .. _controller-mapping-policy-label:
 
-リクエストと処理メソッドのマッピング方針
+リクエストとハンドラメソッドのマッピング方針
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 以下の方針でマッピングを行うことを推奨する。
 
@@ -317,9 +317,9 @@ Acceptヘッダでマッピング
 
 - | **処理内の画面フローで使用するリクエストのURLは、同じURLにする。**
   | 同じURLとは \ ``@RequestMapping(value = "xxx")``\ のvalue属性の値を同じ値にすることを意味する。
-  | 処理内の画面フローで使用する処理メソッドの切り替えは、HTTPメソッドとHTTPパラメータによって行う。
+  | 処理内の画面フローで使用するハンドラメソッドの切り替えは、HTTPメソッドとHTTPパラメータによって行う。
 
-以下にベーシックな画面フローを行うサンプルアプリケーションを例にして、リクエストと処理メソッドの具体的なマッピング例を示す。
+以下にベーシックな画面フローを行うサンプルアプリケーションを例にして、リクエストとハンドラメソッドの具体的なマッピング例を示す。
 
  * :ref:`controller-mapping-policy-sampleapp-overview-label`
  * :ref:`controller-mapping-policy-sampleapp-url-design-label`
@@ -429,9 +429,9 @@ Acceptヘッダでマッピング
 
 .. _controller-mapping-policy-sampleapp-mapping-design-label:
 
-リクエストと処理メソッドのマッピング
+リクエストとハンドラメソッドのマッピング
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| リクエストと処理メソッドのマッピングの設計を行う。
+| リクエストとハンドラメソッドのマッピングの設計を行う。
 | 以下は、マッピング方針に則って設計したマッピング定義となる。
 
  .. tabularcolumns:: |p{0.05\linewidth}|p{0.20\linewidth}|p{0.15\linewidth}|p{0.22\linewidth}|p{0.10\linewidth}|p{0.13\linewidth}|p{0.15\linewidth}|
@@ -447,7 +447,7 @@ Acceptヘッダでマッピング
        | メソッド
      - | HTTP
        | パラメータ
-     - | 処理メソッド
+     - | ハンドラメソッド
    * - 1.
      - Entity一覧取得
      - /abc/list
@@ -547,9 +547,9 @@ Acceptヘッダでマッピング
      - complete
      - deleteComplete
 
-| Entity新規作成、Entity更新、Entity削除処理では、処理内に複数のリクエストが存在しているため、HTTPメソッドとHTTPパラメータによって処理メソッドを切り替えている。
+| Entity新規作成、Entity更新、Entity削除処理では、処理内に複数のリクエストが存在しているため、HTTPメソッドとHTTPパラメータによってハンドラメソッドを切り替えている。
 | 以下に、Entity新規作成処理を例に、処理内に複数のリクエストが存在する場合のリクエストフローを示す。
-| URLは全て ``"/abc/create"`` で、HTTPメソッドとHTTPパラメータの組み合わせで処理メソッドを切り替えている点に注目すること。
+| URLは全て ``"/abc/create"`` で、HTTPメソッドとHTTPパラメータの組み合わせでハンドラメソッドを切り替えている点に注目すること。
 
 .. figure:: images_ApplicationLayer/applicationScreenflow.png
    :alt: Request flow of entity create processing
@@ -560,9 +560,9 @@ Acceptヘッダでマッピング
 
 |
 
-| 以下に、Entity新規作成処理の処理メソッドの実装コードを示す。
-| ここではリクエストと処理メソッドのマッピングについて理解してもらうのが目的なので、\ ``@RequestMapping``\ の書き方に注目すること。
-| 処理メソッドの引数や返り値(View名及びView)の詳細については、次章以降で説明する。
+| 以下に、Entity新規作成処理のハンドラメソッドの実装コードを示す。
+| ここではリクエストとハンドラメソッドのマッピングについて理解してもらうのが目的なので、\ ``@RequestMapping``\ の書き方に注目すること。
+| ハンドラメソッドの引数や返り値(View名及びView)の詳細については、次章以降で説明する。
 
 - :ref:`controller-mapping-policy-sampleapp-form-impl-label`
 - :ref:`controller-mapping-policy-sampleapp-confirm-impl-label`
@@ -605,9 +605,9 @@ Acceptヘッダでマッピング
 
 |
 
-以下に、処理メソッド以外の部分の実装例についても説明しておく。
+以下に、ハンドラメソッド以外の部分の実装例についても説明しておく。
 
-フォーム表示を行う場合、処理メソッドの実装以外に、
+フォーム表示を行う場合、ハンドラメソッドの実装以外に、
 
 - フォームオブジェクトの生成処理の実装。フォームオブジェクトの詳細は、 :ref:`formobject` を参照されたい。
 - フォーム画面のViewの実装。Viewの詳細は、 :ref:`view` を参照されたい。
@@ -713,7 +713,7 @@ Acceptヘッダでマッピング
    * - | (1)
      - method属性に ``RequestMethod.POST`` 、params属性に ``"confirm"`` を指定する。
    * - | (2)
-     - 入力チェックエラーが発生した場合の処理は、フォーム再表示用の処理メソッドを呼び出すことを推奨する。フォーム画面を再表示するための処理の共通化を行うことができる。
+     - 入力チェックエラーが発生した場合の処理は、フォーム再表示用のハンドラメソッドを呼び出すことを推奨する。フォーム画面を再表示するための処理の共通化を行うことができる。
    * - | (3)
      - 入力内容確認画面を描画するためのJSPのView名を返却する。
 
@@ -723,9 +723,9 @@ Acceptヘッダでマッピング
 
 |
 
-以下に、処理メソッド以外の部分の実装例についても説明しておく。
+以下に、ハンドラメソッド以外の部分の実装例についても説明しておく。
 
-入力内容確認表示を行う場合、処理メソッドの実装以外に、
+入力内容確認表示を行う場合、ハンドラメソッドの実装以外に、
 
 - 入力内容確認画面のViewの実装。Viewの詳細は、 :ref:`view` を参照されたい。
 
@@ -959,7 +959,7 @@ Backボタンを押下するとPOSTメソッドでHTTPパラメータが送信�
 HTML form上に複数のボタンを配置する場合の実装
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 1つのフォームに対して複数のボタンを設置したい場合、ボタンを識別するためのHTTPパラメータを送ることで、
-実行する処理メソッドを切り替える。
+実行するハンドラメソッドを切り替える。
 ここではサンプルアプリケーションの入力内容確認画面のCreateボタンとBackボタンを例に説明する。
 
 下図のように、入力内容確認画面のフォームには、新規作成を行うCreateボタンと新規作成フォーム画面を再表示するBackボタンが存在する。
@@ -1061,10 +1061,10 @@ Backボタン押下時の動作については、 :ref:`controller-mapping-polic
 
 .. _controller_method_argument-label:
 
-処理メソッドの引数について
+ハンドラメソッドの引数について
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`処理メソッドの引数は様々な値をとることができる <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-arguments>`_ が、
+`ハンドラメソッドの引数は様々な値をとることができる <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-arguments>`_ が、
 基本的には次に挙げるものは原則として使用しないこと。
 
 * ServletRequest
@@ -1110,7 +1110,7 @@ Backボタン押下時の動作については、 :ref:`controller-mapping-polic
 
 画面(View)にデータを渡す
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-画面(View)に表示するデータを渡したい場合は、``org.springframework.ui.Model``\ (以降 ``Model`` と呼ぶ) を処理メソッドの引数として受け取り、
+画面(View)に表示するデータを渡したい場合は、``org.springframework.ui.Model``\ (以降 ``Model`` と呼ぶ) をハンドラメソッドの引数として受け取り、
 \ ``Model``\ オブジェクトに渡したいデータ(オブジェクト)を追加する。
 
 - SampleController.java
@@ -1302,9 +1302,9 @@ URLのパスから値を取得する
 | リクエストパラメータをオブジェクトにまとめて取得する場合は、フォームオブジェクトを使用する。
 | フォームオブジェクトは、HTML formを表現するJavaBeanである。フォームオブジェクトの詳細は :ref:`formobject` を参照されたい。
 
-以下は、``@RequestParam`` で個別にリクエストパラメータを受け取っていた処理メソッドを、フォームオブジェクトで受け取るように変更した場合の実装例である。
+以下は、``@RequestParam`` で個別にリクエストパラメータを受け取っていたハンドラメソッドを、フォームオブジェクトで受け取るように変更した場合の実装例である。
 
-``@RequestParam`` を使って個別にリクエストパラメータを受け取っている処理メソッドは以下の通り。
+``@RequestParam`` を使って個別にリクエストパラメータを受け取っているハンドラメソッドは以下の通り。
 
  .. code-block:: java
 
@@ -1414,7 +1414,7 @@ URLのパスから値を取得する
 
 
 | フォームオブジェクト引数に\ ``@Validated``\ アノテーションを付与する。
-| ``@Validated``\ アノテーションを付けた引数は、処理メソッド実行前に入力チェックが行われ、チェック結果が直後の\ ``BindingResult``\ 引数に格納される。
+| ``@Validated``\ アノテーションを付けた引数は、ハンドラメソッド実行前に入力チェックが行われ、チェック結果が直後の\ ``BindingResult``\ 引数に格納される。
 | フォームオブジェクトにString型以外を指定した場合に発生する型変換エラーも \ ``BindingResult``\ に格納されている。
 
  .. code-block:: java
@@ -1451,7 +1451,7 @@ URLのパスから値を取得する
 
 リダイレクト先にデータを渡す
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-処理メソッドを実行した後にリダイレクトする場合に、リダイレクト先で表示するデータを渡したい場合は、\ ``org.springframework.web.servlet.mvc.support.RedirectAttributes``\ (以降\ ``RedirectAttributes``\ と呼ぶ) を処理メソッドの引数として受け取り、
+ハンドラメソッドを実行した後にリダイレクトする場合に、リダイレクト先で表示するデータを渡したい場合は、\ ``org.springframework.web.servlet.mvc.support.RedirectAttributes``\ (以降\ ``RedirectAttributes``\ と呼ぶ) をハンドラメソッドの引数として受け取り、
 ``RedirectAttributes``\ オブジェクトに渡したいデータを追加する。
 
 - SampleController.java
@@ -1505,7 +1505,7 @@ URLのパスから値を取得する
    * - | (4)
      - | 画面(View)を直接表示せず、次の画面を表示するためのリクエストにリダイレクトする。
    * - | (5)
-     - | リダイレクト後の処理メソッドでは、(2)(3)で追加したデータを表示する画面のView名を返却する。
+     - | リダイレクト後のハンドラメソッドでは、(2)(3)で追加したデータを表示する画面のView名を返却する。
    * - | (6)
      - | View(JSP)側では、「${属性名}」と記述することで\ ``RedirectAttributes``\ オブジェクトに追加したデータを取得することができる。
        | 例ではHTMLエスケープを行うEL式の関数を呼び出しているため、「${f:h(属性名)}」としている。
@@ -1682,7 +1682,7 @@ Cookieに値を書き込む
 ページネーション情報を取得する
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | 一覧検索を行うリクエストでは、ページネーション情報が必要となる。
-| ``org.springframework.data.domain.Pageable``\ (以降\ ``Pageable``\ と呼ぶ) オブジェクトを処理メソッドの引数に取ることで、ページネーション情報(ページ数、取得件数)を容易に扱うことができる。
+| ``org.springframework.data.domain.Pageable``\ (以降\ ``Pageable``\ と呼ぶ) オブジェクトをハンドラメソッドの引数に取ることで、ページネーション情報(ページ数、取得件数)を容易に扱うことができる。
 
  詳細については :doc:`../ArchitectureInDetail/Pagination` を参照すること。
 
@@ -1695,7 +1695,7 @@ Cookieに値を書き込む
 アップロードされたファイルを取得する方法は大きく２つある。
 
 - フォームオブジェクトに\ ``MultipartFile``\のプロパティを用意する。
-- \ ``@RequestParam``\ アノテーションを付与して\ ``org.springframework.web.multipart.MultipartFile``\ を処理メソッドの引数とする。
+- \ ``@RequestParam``\ アノテーションを付与して\ ``org.springframework.web.multipart.MultipartFile``\ をハンドラメソッドの引数とする。
 
 詳細については :doc:`../ArchitectureInDetail/FileUpload` を参照されたい。
 
@@ -1705,7 +1705,7 @@ Cookieに値を書き込む
 
 画面に結果メッセージを表示する
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-\ ``Model``\ オブジェクト又は\ ``RedirectAttributes``\ オブジェクトを処理メソッドの引数として受け取り、
+\ ``Model``\ オブジェクト又は\ ``RedirectAttributes``\ オブジェクトをハンドラメソッドの引数として受け取り、
 \ ``ResultMessages``\ オブジェクトを追加することで処理の結果メッセージを表示できる。
 
 詳細については :doc:`../ArchitectureInDetail/MessageManagement` を参照されたい。
@@ -1715,9 +1715,9 @@ Cookieに値を書き込む
 
 .. _controller_method_return-label:
 
-処理メソッドの返り値について
+ハンドラメソッドの返り値について
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`処理メソッドの返り値についても様々な値をとることができる <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-return-types>`_ が、
+`ハンドラメソッドの返り値についても様々な値をとることができる <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-return-types>`_ が、
 基本的には次に挙げるもののみを使用すること。
 
 - String(View論理名)
@@ -1733,7 +1733,7 @@ Cookieに値を書き込む
 
 HTMLを応答する
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| 処理メソッドの実行結果をHTMLとして応答する場合、処理メソッドの返り値は、JSPのView名を返却する。
+| ハンドラメソッドの実行結果をHTMLとして応答する場合、ハンドラメソッドの返り値は、JSPのView名を返却する。
 | JSPを使ってHTMLを生成する場合の\ ``ViewResolver``\ は、基本的には\ ``UrlBasedViewResolver``\ の継承クラス(\ ``InternalViewResolver``\ や \ ``TilesViewResolver``\ 等)となる。
 
 | 以下では、JSP用の\ ``InternalViewResolver``\ を使用する場合の例を記載するが、画面レイアウトがテンプレート化されている場合は\ ``TilesViewResolver``\ を使用することを推奨する。
@@ -1805,10 +1805,10 @@ HTMLを応答する
            本ガイドラインでは\ ``<mvc:view-resolvers>``\ を使用することを推奨する。
 
    * - | (6)
-     - 処理メソッドの返り値として ``"sample/hello"`` というView名を返却した場合、 ``"/WEB-INF/views/sample/hello.jsp"`` が呼び出されてHTMLが応答される。
+     - ハンドラメソッドの返り値として ``"sample/hello"`` というView名を返却した場合、 ``"/WEB-INF/views/sample/hello.jsp"`` が呼び出されてHTMLが応答される。
 
 .. note::
-    上記の例ではJSPを使ってHTMLを生成しているが、VelocityやFreeMarkerなど他のテンプレートエンジンを使用してHTMLを生成する場合でも、処理メソッドの返り値は ``"sample/hello`` のままでよい。
+    上記の例ではJSPを使ってHTMLを生成しているが、VelocityやFreeMarkerなど他のテンプレートエンジンを使用してHTMLを生成する場合でも、ハンドラメソッドの返り値は ``"sample/hello`` のままでよい。
     使用するテンプレートエンジンでの差分は ``ViewResolver`` によって解決される。
 
 |
@@ -1819,7 +1819,7 @@ HTMLを応答する
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | データベースなどに格納されているデータをダウンロードデータ(\ ``"application/octet-stream"``\ 等 )として応答する場合、
 | レスポンスデータの生成(ダウンロード処理)を行うViewを作成し、処理を委譲することを推奨する。
-| 処理メソッドでは、ダウンロード対象となるデータを \ ``Model``\ に追加し、ダウンロード処理を行うViewのView名を返却する。
+| ハンドラメソッドでは、ダウンロード対象となるデータを \ ``Model``\ に追加し、ダウンロード処理を行うViewのView名を返却する。
 
 | View名からViewを解決する方法としては、個別のViewResolverを作成する方法もあるが、ここではSpring Frameworkから提供されている\ ``BeanNameViewResolver``\ を使用する。
 | ダウンロード処理の詳細については、 :doc:`../ArchitectureInDetail/FileDownload` を参照されたい。
@@ -1915,7 +1915,7 @@ HTMLを応答する
            \ ``<mvc:view-resolvers>``\ 要素を使用すると、\ ``ViewResolver``\ をシンプルに定義することが出来るため、
            本ガイドラインでは\ ``<mvc:view-resolvers>``\ を使用することを推奨する。
    * - | (4)
-     - 処理メソッドの返り値として ``"sample/report"`` というView名を返却した場合、 (5)でBean登録されたViewインスタンスによって生成されたデータがダウンロードデータとして応答される。
+     - ハンドラメソッドの返り値として ``"sample/report"`` というView名を返却した場合、 (5)でBean登録されたViewインスタンスによって生成されたデータがダウンロードデータとして応答される。
    * - | (5)
      - コンポーネントの名前にView名を指定して、ViewオブジェクトをBeanとして登録する。
 
@@ -1956,7 +1956,7 @@ Controllerで実装すべき処理を以下に4つ示す。
 | 入力値に対する相関チェックは、\ ``org.springframework.validation.Validator``\ インタフェースを実装したValidationクラス、もしくは、Bean Validationで検証を行う。
 | 相関チェックの実装の詳細については、:doc:`../ArchitectureInDetail/Validation` を参照されたい。
 
-| 相関チェックの実装自体はControllerの処理メソッドで行うことはないが、相関チェックを行う\ ``Validator``\ を\ ``org.springframework.web.bind.WebDataBinder``\ に追加する必要がある。
+| 相関チェックの実装自体はControllerのハンドラメソッドで行うことはないが、相関チェックを行う\ ``Validator``\ を\ ``org.springframework.web.bind.WebDataBinder``\ に追加する必要がある。
 
  .. code-block:: java
     :emphasize-lines: 2,6
@@ -1980,7 +1980,7 @@ Controllerで実装すべき処理を以下に4つ示す。
      - 相関チェックを行う\ ``Validator``\ をInjectする。
    * - | (2)
      - | Injectした\ ``Validator``\ を \ ``WebDataBinder``\ に追加する。
-       | \ ``WebDataBinder``\ に追加しておくことで、処理メソッド呼び出し前に行われる入力チェック処理にて、(1)で追加した\ ``Validator``\ が実行され、相関チェックを行うことが出来る。
+       | \ ``WebDataBinder``\ に追加しておくことで、ハンドラメソッド呼び出し前に行われる入力チェック処理にて、(1)で追加した\ ``Validator``\ が実行され、相関チェックを行うことが出来る。
 
 |
 
@@ -2056,7 +2056,7 @@ Controllerで実装すべき処理を以下に4つ示す。
    * - | (3)
      - 業務処理から返却されたデータを \ ``Model``\ に追加する。
 
-| ドメインオブジェクトへ値を反映する処理は、Controllerの処理メソッド内で実装してもよいが、コード量が多くなる場合は処理メソッドの可読性を考慮してHelperクラスのメソッドに処理を委譲することを推奨する。
+| ドメインオブジェクトへ値を反映する処理は、Controllerのハンドラメソッド内で実装してもよいが、コード量が多くなる場合はハンドラメソッドの可読性を考慮してHelperクラスのメソッドに処理を委譲することを推奨する。
 | 以下にHelperメソッドに処理を委譲した場合の例を示す。
 
 - SampleController.java
@@ -2161,8 +2161,8 @@ Controllerで実装すべき処理を以下に4つ示す。
  .. note::
     画面に表示のみ行う項目については、フォームオブジェクトに項目をもつのではなく、Entityなどのドメインオブジェクトから直接値を参照することを推奨する。
 
-フォームオブジェクトへの値反映処理は、Controllerの処理メソッド内で実装してもよいが、
-コード量が多くなる場合は処理メソッドの可読性を考慮してHelperクラスのメソッドに委譲することを推奨する。
+フォームオブジェクトへの値反映処理は、Controllerのハンドラメソッド内で実装してもよいが、
+コード量が多くなる場合はハンドラメソッドの可読性を考慮してHelperクラスのメソッドに委譲することを推奨する。
 
 - SampleController.java
 
@@ -2218,7 +2218,7 @@ Controllerで実装すべき処理を以下に4つ示す。
 フォームオブジェクトはHTML上のformを表現するオブジェクト(JavaBean)であり、以下の役割を担う。
 
 #. **データベース等で保持している業務データを保持し、HTML(JSP) formから参照できるようにする。**
-#. **HTML formから送信されたリクエストパラメータを保持し、処理メソッドで参照できるようにする。**
+#. **HTML formから送信されたリクエストパラメータを保持し、ハンドラメソッドで参照できるようにする。**
 
 .. figure:: ./images_ApplicationLayer/applicationFormobject.png
    :width: 80%
@@ -2476,20 +2476,20 @@ form-backing beanの初期化は、\ ``@ModelAttribute``\ アノテーション�
    * - | (2)
      -  ``Model``\ に追加するための属性名を指定したい場合は、\ ``@ModelAttribute``\ アノテーションのvalue属性に指定する。この例では ``"xxx"`` が属性名になる。
         返却したオブジェクトは、``model.addAttribute("xxx", form)``\ 相当の処理が実行され\ ``Model``\ に追加される。
-        デフォルト値以外の属性名を指定した場合、処理メソッドの引数としてフォームオブジェクトを受け取る時に\ ``@ModelAttribute("xxx")``\ の指定が必要になる。
+        デフォルト値以外の属性名を指定した場合、ハンドラメソッドの引数としてフォームオブジェクトを受け取る時に\ ``@ModelAttribute("xxx")``\ の指定が必要になる。
    * - | (3)
-     -  ModelAttributeメソッドは、処理メソッドと同様に初期化に必要なパラメータを渡すこともできる。例では、\ ``@CookieValue``\ アノテーションを使用してCookieの値をフォームオブジェクトに設定している。
+     -  ModelAttributeメソッドは、ハンドラメソッドと同様に初期化に必要なパラメータを渡すこともできる。例では、\ ``@CookieValue``\ アノテーションを使用してCookieの値をフォームオブジェクトに設定している。
 
 .. note::
     フォームオブジェクトにデフォルト値を設定したい場合はModelAttributeメソッドで値を設定すること。
     例の(3)ではCookieから値を取得しているが、定数クラスなどに定義されている固定値を直接設定してもよい。
 
 .. note::
-    ModelAttributeメソッドはController内に複数定義することができる。各メソッドはControllerの処理メソッドが呼び出される前に毎回実行される。
+    ModelAttributeメソッドはController内に複数定義することができる。各メソッドはControllerのハンドラメソッドが呼び出される前に毎回実行される。
 
 .. warning::
     ModelAttributeメソッドはリクエスト毎にメソッドが実行されるため、特定のリクエストの時のみに必要なオブジェクトをModelAttributeメソッドを使って生成すると、無駄なオブジェクトの生成及び初期化処理が行われる点に注意すること。
-    特定のリクエストのみで必要なオブジェクトについては、処理メソッド内で生成し\ ``Model``\ に追加する方法にすること。
+    特定のリクエストのみで必要なオブジェクトについては、ハンドラメソッド内で生成し\ ``Model``\ に追加する方法にすること。
 
 |
 
@@ -2539,7 +2539,7 @@ HTML formへのバインディング方法
 
 リクエストパラメータのバインディング方法
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-HTML formから送信されたリクエストパラメータは、フォームオブジェクトにバインドし、Controllerの処理メソッドの引数に渡すことができる。
+HTML formから送信されたリクエストパラメータは、フォームオブジェクトにバインドし、Controllerのハンドラメソッドの引数に渡すことができる。
 
  .. code-block:: java
     :emphasize-lines: 3
@@ -2582,14 +2582,14 @@ HTML formから送信されたリクエストパラメータは、フォーム�
    * - 項番
      - 説明
    * - | (1)
-     - フォームオブジェクトにリクエストパラメータが反映された状態で、Controllerの処理メソッドの引数に渡される。
+     - フォームオブジェクトにリクエストパラメータが反映された状態で、Controllerのハンドラメソッドの引数に渡される。
    * - | (2)
      - ModelAttributeメソッドにて属性名を指定した場合、\ ``@ModelAttribute("xxx")``\ といった感じで、フォームオブジェクトの属性名を明示的に指定する必要がある。
 
 .. warning::
 
     ModelAttributeメソッドで指定した属性名とメソッドの引数で指定した属性名が異なる場合、ModelAttributeメソッドで生成したインスタンスとは別のインスタンスが生成されるので注意が必要。
-    処理メソッドで属性名の指定を省略した場合、クラス名の先頭を小文字にした値が属性名として扱われる。
+    ハンドラメソッドで属性名の指定を省略した場合、クラス名の先頭を小文字にした値が属性名として扱われる。
 
 |
 
@@ -3419,7 +3419,7 @@ Controllerの呼び出し前後で行う共通処理の実装
 Servlet Filterの実装
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Spring MVCに依存しない共通処理については、Servlet Filterで実装する。
-| ただし、Controllerの処理メソッドにマッピングされるリクエストに対してのみ共通処理を行いたい場合は、Servlet FilterではなくHandlerInterceptorで実装すること。
+| ただし、Controllerのハンドラメソッドにマッピングされるリクエストに対してのみ共通処理を行いたい場合は、Servlet FilterではなくHandlerInterceptorで実装すること。
 
 | 以下に、Servlet Filterのサンプルを示す。
 | サンプルコードでは、クライアントのIPアドレスをログ出力するために ``MDC`` に値を格納している。
@@ -3517,15 +3517,15 @@ Servlet FilterをSpring FrameworkのBeanとして定義することもできる�
 HandlerInterceptorの実装
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Spring MVCに依存する共通処理については、 HandlerInterceptorで実装する。
-| HandlerInterceptorは、リクエストにマッピングされた処理メソッドが決定した後に呼び出されるので、アプリケーションが許可しているリクエストに対してのみ共通処理を行うことができる。
+| HandlerInterceptorは、リクエストにマッピングされたハンドラメソッドが決定した後に呼び出されるので、アプリケーションが許可しているリクエストに対してのみ共通処理を行うことができる。
 
 HandlerInterceptorでは以下の３つのポイントで処理を実行することが出来る。
 
-- | Controllerの処理メソッドを実行する前
+- | Controllerのハンドラメソッドを実行する前
   | ``HandlerInterceptor#preHandle`` メソッドとして実装する。
-- | Controllerの処理メソッドが正常終了した後
+- | Controllerのハンドラメソッドが正常終了した後
   | ``HandlerInterceptor#postHandle`` メソッドとして実装する。
-- | Controllerの処理メソッドの処理が完了した後(正常/異常に関係なく実行される)
+- | Controllerのハンドラメソッドの処理が完了した後(正常/異常に関係なく実行される)
   | ``HandlerInterceptor#afterCompletion`` メソッドとして実装する。
 
 | 以下に、HandlerInterceptorのサンプルを示す。
@@ -3686,13 +3686,13 @@ HandlerMethodArgumentResolverを実装してControllerの引数として受け�
    * - | (4)
      - リクエストパラメータから値を取得し、共通パラメータを保持するJavaBeanに設定し返却する。
    * - | (5)
-     - | Controllerの処理メソッドの引数に共通パラメータを保持するJavaBeanを指定する。
+     - | Controllerのハンドラメソッドの引数に共通パラメータを保持するJavaBeanを指定する。
        | (4)で返却されるオブジェクトが渡される。
    * - | (6)
      - 作成したHandlerMethodArgumentResolverを ``spring-mvc.xml`` の ``<mvc:argument-resolvers>`` タグ内に追加する。
 
 .. note::
-    全てのControllerの処理メソッドで共通的に渡すパラメータがある場合は、HandlerMethodArgumentResolverを使ってJavaBeanに変換してから渡す方法が有効的である。
+    全てのControllerのハンドラメソッドで共通的に渡すパラメータがある場合は、HandlerMethodArgumentResolverを使ってJavaBeanに変換してから渡す方法が有効的である。
     ここでいうパラメータとは、リクエストパラメータに限らない。
 
 |
