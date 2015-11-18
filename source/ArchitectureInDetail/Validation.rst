@@ -3988,13 +3988,21 @@ terasoluna-gfw-validatorのチェックルール
         * \ ``GRATER_THAN_OR_EQUAL``\  : \ ``source >= destination``\ である
         * \ ``LESS_THAN``\  : \ ``source < destination``\ である
         * \ ``LESS_THAN_OR_EQUAL``\  : \ ``source <= destination``\ である
-      - メールアドレスと確認用に入力したメールアドレスが一致することをチェックする場合、以下のように実装する。
+
+        | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Path path``\  - エラーメッセージを出力するパスを示す列挙型\ ``Path``\ の値を指定する。指定可能な値は以下の通り。
+
+        * \ ``SOURCE``\  : \ ``source``\ 属性で指定したフィールドのエラーとして出力する（デフォルト）
+        * \ ``DESTINATION``\  : \ ``destination``\ 属性で指定したフィールドのエラーとして出力する
+        * \ ``ROOT_BEAN``\  : チェックを実施したオブジェクトのエラーとして出力する
+
+      - メールアドレスと確認用に入力したメールアドレスが一致することをチェックし、確認用に入力したメールアドレスにエラーメッセージを表示する場合、以下のように実装する。
 
         .. code-block:: java
 
              @Compare(source = "email",
                      destination = "confirmEmail",
-                     operator = Compare.Operator.EQUAL)
+                     operator = Compare.Operator.EQUAL
+                     path = Compare.Path.DESTINATION)
              public class UserRegisterForm {
                  private String email;
                  private String confirmEmail;
@@ -4002,7 +4010,7 @@ terasoluna-gfw-validatorのチェックルール
 
         |
 
-        期間の開始日が終了日以前であることをチェックする場合、以下のように実装する。
+        期間の開始日が終了日以前であることをチェックし、期間の開始日にエラーメッセージを表示する場合、以下のように実装する。
 
         .. code-block:: java
 
