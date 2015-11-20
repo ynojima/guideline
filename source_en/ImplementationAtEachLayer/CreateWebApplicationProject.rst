@@ -12,6 +12,8 @@ In this section, how to create a web application development project is describe
 In this guideline, it is recommended to adopt multi-project configuration.
 For description of the recommended multi-project configuration, refer [:ref:`application-layering_project-structure`].
 
+.. _CreateWebApplicationProject:
+
 Create development project
 --------------------------------------------------------------------------------
 
@@ -1891,6 +1893,101 @@ Description of the configuration file
     * If functional description is explained anywhere, description will be done here.
 
     Specific time-line is not decided yet.
+
+|
+
+Application development in offline environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In ":ref:`CreateWebApplicationProject`",
+a method to create a development project of multi-project configuration
+by using `archetype:generate <http://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html>`_ of
+`Maven Archetype Plugin <http://maven.apache.org/archetype/maven-archetype-plugin/>`_ is described.
+Although Maven is used for the operations in the online environment,
+a method is described below for how to use it in offline environment as well.
+
+To continue project development in the offline environment,
+the files like libraries and plugins necessary for development must be copied in advance.
+The operation below should be performed in **online environment**.
+
+|
+
+Move to root directory of development project.
+Here, the project created using ":ref:`CreateWebApplicationProject`" is used for the explanation.
+
+.. code-block:: console
+
+    cd C:\work\todo
+
+|
+
+Copy the files like libraries and plugins necessary for project development.
+Files are copied by executing `dependency:go-offline <https://maven.apache.org/plugins/maven-dependency-plugin/go-offline-mojo.html>`_ of
+`Maven Archetype Plugin <http://maven.apache.org/archetype/maven-archetype-plugin/>`_.
+
+.. code-block:: console
+
+    mvn dependency:go-offline -Dmaven.repo.local=repository
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Parameter
+      - Description
+    * - | \--Dmaven.repo.local
+      - Specify copy destination.
+        A new destination is created if a copy destination does not exist.
+        At present, copy destination is specified as a repository.
+
+|
+
+Create a war file or a jar file in order to facilitate the distribution of deliverables.
+At that time, files like libraries and plugins necessary for build are copied.
+
+.. code-block:: console
+
+    mvn package -Dmaven.repo.local=repository
+
+|
+
+When build is successful, the log shown below is output.
+
+.. code-block:: console
+
+	(... omit)    
+	[INFO] ------------------------------------------------------------------------
+	[INFO] Reactor Summary:
+	[INFO]
+	[INFO] TERASOLUNA Server Framework for Java (5.x) Web Blank Multi Project (MyBa
+	tis3) SUCCESS [  0.006 s]
+	[INFO] todo-env ........................................... SUCCESS [ 46.565 s]
+	[INFO] todo-domain ........................................ SUCCESS [  0.684 s]
+	[INFO] todo-web ........................................... SUCCESS [ 12.832 s]
+	[INFO] todo-initdb ........................................ SUCCESS [  0.067 s]
+	[INFO] todo-selenium ...................................... SUCCESS [01:13 min]
+	[INFO] ------------------------------------------------------------------------
+	[INFO] BUILD SUCCESS
+	[INFO] ------------------------------------------------------------------------
+	[INFO] Total time: 02:14 min
+	[INFO] Finished at: 2015-10-01T10:32:34+09:00
+	[INFO] Final Memory: 36M/206M
+	[INFO] ------------------------------------------------------------------------
+
+|
+
+Above, files like libraries and plugins necessary for project development are copied.
+Operation is completed when the repository is copied to ${HOME}/.m2 of offline environment machine.
+If a process which has not been executed even once in online environment is executed in offline environment,
+necessary files like libraries and plugins cannot be fetched resulting in the process failure.
+However, by copying the files, the development can be continued uninterrupted even after moving to offline environment.
+
+.. warning:: **Precautions for the development in offline environment**
+
+    Since it is not possible to fetch a new dependency relation from internet in the offline environment,
+    POM (Project Object Model) file should not be edited.
+    It is necessary to return to online environment again for editing POM file.
 
 .. raw:: latex
 
