@@ -3989,6 +3989,11 @@ terasoluna-gfw-validatorのチェックルール
         * \ ``LESS_THAN``\  : \ ``left < right``\ である
         * \ ``LESS_THAN_OR_EQUAL``\  : \ ``left <= right``\ である
 
+        | \ ``boolean requireBoth``\  - \ ``left``\ 属性と\ ``right``\ 属性で指定したフィールドの両方が入力されている（\ ``null``\ でない）必要があるかどうかを指定する。
+
+        * \ ``true``\  : どちらか一方だけ入力されている場合は検証エラーとする。ただし、両方とも未入力の場合は検証成功とする
+        * \ ``false``\  : どちらか一方でも入力されている場合は検証成功とする（デフォルト）
+
         | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Node node``\  - エラーメッセージを出力するパスを示す列挙型\ ``Node``\ の値を指定する。指定可能な値は以下の通り。
 
         * \ ``PROPERTY``\  : \ ``left``\ 属性で指定したフィールドのエラーとして出力する（デフォルト）
@@ -4000,7 +4005,8 @@ terasoluna-gfw-validatorのチェックルール
 
              @Compare(left = "email",
                      right = "confirmEmail",
-                     operator = Compare.Operator.EQUAL
+                     operator = Compare.Operator.EQUAL,
+                     requireBoth = true,
                      node = Compare.Node.ROOT_BEAN)
              public class UserRegisterForm {
                  private String email;
@@ -4009,7 +4015,7 @@ terasoluna-gfw-validatorのチェックルール
 
         |
 
-        期間の開始日が終了日以前であることをチェックし、期間の開始日にエラーメッセージを表示する場合、以下のように実装する。
+        期間の開始日と終了日が両方入力された場合は、開始日が終了日以前であることをチェックし、期間の開始日にエラーメッセージを表示する場合、以下のように実装する。
 
         .. code-block:: java
 
@@ -4224,7 +4230,7 @@ terasoluna-gfw-validatorのチェックルール
     @Target({ TYPE, ANNOTATION_TYPE }) // (1)
     @Retention(RUNTIME)
     @ReportAsSingleViolation // (2)
-    @Compare(left = "", right = "", operator = Compare.Operator.EQUAL) // (3)
+    @Compare(left = "", right = "", operator = Compare.Operator.EQUAL, requireBoth = true) // (3)
     public @interface Confirm {
     
         String message() default "{com.example.sample.domain.validation.Confirm.message}"; // (4)
@@ -4259,7 +4265,7 @@ terasoluna-gfw-validatorのチェックルール
     * - | (2)
       - | エラー時にこのアノテーションの\ ``message``\ 属性に指定したメッセージが使用されるようにする。
     * - | (3)
-      - | \ ``@Compare``\ アノテーションの\ ``operator``\ 属性に\ ``Compare.Operator.EQUAL``\ (同値であること)を指定する。
+      - | \ ``@Compare``\ アノテーションの\ ``operator``\ 属性に\ ``Compare.Operator.EQUAL``\ (同値であること)を指定する。どちらか一方が未入力の場合はエラーとするため、\ ``requireBoth``\ 属性に\ ``true``\ を指定する。
     * - | (4)
       - | エラーメッセージのデフォルト値を定義する。
     * - | (5)
