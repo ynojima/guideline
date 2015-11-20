@@ -586,7 +586,7 @@ Using Spring MVC, sample for displaying a month wise calender, is shown below.
 
     * - Process name
       - URL
-      - Processing method
+      - Handler method
     * - Display of current month's calendar
       - /calendar
       - today
@@ -689,7 +689,7 @@ The ``CalendarOutput`` class mentioned below is JavaBean having the consolidated
 
     .. warning::
 
-        For the sake of simplicity, this sample code includes all the logic in the processing method of Controller,
+        For the sake of simplicity, this sample code includes all the logic in the handler method of Controller,
         but in real scenario, this logic should be delegated to Helper classes to improve maintainability.
 
 |

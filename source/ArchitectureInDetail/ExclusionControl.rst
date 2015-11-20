@@ -1671,7 +1671,7 @@ Controllerで適切にハンドリングする必要がある。
       - | エラーハンドリングの処理を実装する。エラーを通知するためのメッセージ、画面表示に必要な情報（フォームやその他のモデル）を生成し、遷移先を指定した\ ``ModelAndView``\ を返却する。
         | エラーハンドリングの詳細については、\ :ref:`exception-handling-how-to-use-codingpoint-controller-usecase-label`\ を参照されたい。
 
-リクエスト単位に動作を変える必要がある場合は、Controllerの処理メソッドの中で、\ ``try - catch``\ を使用してハンドリングする。
+リクエスト単位に動作を変える必要がある場合は、Controllerのハンドラメソッドの中で、\ ``try - catch``\ を使用してハンドリングする。
 
  .. code-block:: java
 
@@ -1743,7 +1743,7 @@ Controllerで適切にハンドリングする必要がある。
       - | エラーハンドリングの処理を実装する。エラーを通知するためのメッセージ、画面表示に必要な情報（フォームやその他のモデル）を生成し、遷移先を指定した\ ``ModelAndView``\ を返却する。
         | エラーハンドリングの詳細については、\ :ref:`exception-handling-how-to-use-codingpoint-controller-usecase-label`\ を参照されたい。
 
-リクエスト単位に動作を変える必要がある場合は、Controllerの処理メソッドの中で、\ ``try - catch``\ を使用してハンドリングする。
+リクエスト単位に動作を変える必要がある場合は、Controllerのハンドラメソッドの中で、\ ``try - catch``\ を使用してハンドリングする。
 
  .. code-block:: java
 

@@ -114,7 +114,7 @@ RESTful Web Service is developed in TERASOLUNA Server Framework for Java (5.x) u
     * - | (1)
       - | Spring MVC
         | (Framework)
-      - | Spring MVC receives a request from client and determines the REST API (processing method of Controller) to be called.
+      - | Spring MVC receives a request from client and determines the REST API (handler method of Controller) to be called.
     * - | (2)
       - | 
         | 
@@ -319,7 +319,7 @@ REST API implementation sample
 
 * Implementation sample for Controller class (REST API)
 
- Following five REST APIs (Controller processing methods) are created for Todo resource.
+ Following five REST APIs (Controller handler methods) are created for Todo resource.
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.15\linewidth}|p{0.10\linewidth}|p{0.30\linewidth}|p{0.15\linewidth}|p{0.20\linewidth}|
  .. list-table::
@@ -3569,7 +3569,7 @@ Following three exceptions need to be handled in order to respond to input error
  
     \ ``org.springframework.beans.TypeMismatchException``\  occurs when there is a type conversion error for value while fetching values from request parameter, request header and path variable, by using annotation provided by Spring Framework.
     
-    When following annotations are specified as arguments of Controller processing method (argument other than \ ``String``\ ), \ ``TypeMismatchException``\  may occur.
+    When following annotations are specified as arguments of Controller handler method (argument other than \ ``String``\ ), \ ``TypeMismatchException``\  may occur.
     
      * \ ``@org.springframework.web.bind.annotation.RequestParam``\
      * \ ``@org.springframework.web.bind.annotation.RequestHeader``\
@@ -4408,7 +4408,7 @@ Create a controller that sends the error response for the error notified to Serv
     * - | (2)
       - | Inject a class that creates error information.
     * - | (3)
-      - | Create a processing method that sends error response.
+      - | Create a handler method that sends error response.
         | Above example is implemented on considering only the case wherein, error page is handled by using a response code (\ ``<error-code>``\ ).
         | Therefore, separate consideration is required for the case where an error page that is handled by using exception type (\ ``<exception-type>``\ ) is to be processed using this method.
     * - | (4)

@@ -61,7 +61,7 @@ Servlet3.0からサポートされたファイルアップロード機能と、S
      - | \ ``DispatcherServlet``\ は、 ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、Servlet3.0のファイルアップロード機能を、Spring MVCで扱えるようにする。
        | \ ``StandardServletMultipartResolver``\ は、Servlet3.0から導入されたAPI(\ ``javax.servlet.http.Part``\ )をラップする\ ``org.springframework.web.multipart.MultipartFile``\ のオブジェクトを生成する。
    * - | (4)
-     - | \ ``DispatcherServlet``\ は、Controllerの処理メソッドを呼び出す。
+     - | \ ``DispatcherServlet``\ は、Controllerのハンドラメソッドを呼び出す。
        | (3)で生成された\ ``MultipartFile``\ オブジェクトは、 Controllerの引数またはフォームオブジェクトに、バインドされる。
    * - | (5)
      - | Controllerは、\ ``MultipartFile``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得する。
@@ -671,9 +671,9 @@ Controllerの実装
      - | ファイルアップロード用のフォームオブジェクトを、\ ``Model``\ に格納するためのメソッド。
        | 上記例では、\ ``Model``\ に格納するための属性名は、\ ``"fileUploadForm"``\ となる。
    * - | (2)
-     - | アップロード画面を表示するための処理メソッド。
+     - | アップロード画面を表示するためのハンドラメソッド。
    * - | (3)
-     - | ファイルをアップロードするための処理メソッド。
+     - | ファイルをアップロードするためのハンドラメソッド。
    * - | (4)
      - | アップロードファイルが選択されているかのチェックを行っている。
        | ファイルが選択されたかチェックする場合は、\ ``MultipartFile#getOriginalFilename``\ メソッドを呼び出し、ファイル名の指定有無で判断する。

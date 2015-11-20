@@ -597,7 +597,7 @@ Process flow when using pagination functionality of Spring Data and JSP tag libr
       - | Apart from search conditions, specify the location of page to be searched (page) and number of records to be fetched (size) as request parameters and send the request.
     * - | (2)
       - | ``PageableHandlerMethodArgumentResolver``  fetches location of page to be searched (page) and number of records to be fetched (size) specified in request parameter and creates ``Pageable``  object.
-        | The created ``Pageable``  object is set as an argument of Controller processing method.
+        | The created ``Pageable``  object is set as an argument of Controller handler method.
     * - | (3)
       - | Controller passes the ``Pageable``  object received as an argument to Service method.
     * - | (4)
@@ -705,7 +705,7 @@ The information required for page search (such as location of page to be searche
     * - Sr. No.
       - Description
     * - | (1)
-      - | Specify ``Pageable``  as an argument of processing method.
+      - | Specify ``Pageable``  as an argument of handler method.
         | ``Pageable``  object stores the information required for page search (such as location of page to be searched, number of records to be fetched and sort condition).
     * - | (2)
       - | Specify the ``Pageable``  object as an argument of Service method and then call the same.
@@ -723,7 +723,7 @@ The information required for page search (such as location of page to be searche
 
     Default values can be changed using the following two methods.
 
-    * Define the default values by specifying ``@org.springframework.data.web.PageableDefault``  annotation as an argument of ``Pageable``  of processing method.
+    * Define the default values by specifying ``@org.springframework.data.web.PageableDefault``  annotation as an argument of ``Pageable``  of handler method.
     * Specify ``Pageable``  object wherein default values are defined in ``fallbackPageable``  property of ``PageableHandlerMethodArgumentResolver``.
 
 |

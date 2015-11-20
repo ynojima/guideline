@@ -467,11 +467,11 @@ This guideline recommends using any one of the following methods to store data i
 
 .. warning::
  
-    ``HttpSession`` API can be called directly by specifying the ``HttpSession`` object as an argument of Controller processing method. However,
+    ``HttpSession`` API can be called directly by specifying the ``HttpSession`` object as an argument of Controller handler method. However,
     **as a rule, this guideline strongly recommends not to use the HttpSession API directly.** 
 
     ``HttpSession`` API may be used directly only for those processes that cannot be implemented otherwise. However,
-    in most of the business processes, it is not necessary to use the HttpSession API directly. Therefore, set such that ``HttpSession`` object is not specified as an argument of the Controller processing method.
+    in most of the business processes, it is not necessary to use the HttpSession API directly. Therefore, set such that ``HttpSession`` object is not specified as an argument of the Controller handler method.
 
 .. _session-management_how_to_use_sessionattributes:
 
@@ -569,7 +569,7 @@ Object can be added to session using the following two methods.
 * addAttribute method of \ ``Model``\  object is used to add the object stored in session.
 
 Object added to \ ``Model``\  object is stored in session as per the type of \ ``@SessionAttributes``\  annotation and value of "value" attribute.
-Hence, there is no need to consider the session when implementation is carried out using processing method of Controller.
+Hence, there is no need to consider the session when implementation is carried out using handler method of Controller.
 
 | How to return the object to be stored in session using the method with  \ ``@ModelAttribute``\  annotation, is explained below.
 | It is recommended to create object using this method when storing form object in session.
@@ -643,8 +643,8 @@ Hence, there is no need to consider the session when implementation is carried o
 
 Fetching the object stored in session
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| The object stored in session can be received as an argument of Controller processing method.
-| There is no need to consider the session in Controller processing method, as the object stored session gets stored in \ ``Model``\  object as per the attribute value of \ ``@SessionAttributes``\  annotation.
+| The object stored in session can be received as an argument of Controller handler method.
+| There is no need to consider the session in Controller handler method, as the object stored session gets stored in \ ``Model``\  object as per the attribute value of \ ``@SessionAttributes``\  annotation.
 
  .. code-block:: java
 
@@ -673,7 +673,7 @@ Fetching the object stored in session
     * - | (2)
       - | In the above example, object stored in session scope with attribute name \ ``"entity"``\ , is passed to argument "entity".
 
-When the object to be passed to the argument of Controller processing method does not exist in \ ``Model``\  object, the operation changes depending on whether \ ``@ModelAttribute``\  annotation is specified or not.
+When the object to be passed to the argument of Controller handler method does not exist in \ ``Model``\  object, the operation changes depending on whether \ ``@ModelAttribute``\  annotation is specified or not.
 
 * When ``@ModelAttribute`` annotation is not specified, a new object is created and passed as argument.
   The created object is stored in ``Model`` object and subsequently in session as well.
@@ -782,7 +782,7 @@ Following are the settings to handle \ ``HttpSessionRequiredException``\  as cli
 
 Deleting the object stored in session
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| To delete the object stored in session using \ ``@SessionAttributes``\ , call setComplete method of \ ``org.springframework.web.bind.support.SessionStatus``\  from the processing method of Controller.
+| To delete the object stored in session using \ ``@SessionAttributes``\ , call setComplete method of \ ``org.springframework.web.bind.support.SessionStatus``\  from the handler method of Controller.
 | On calling setComplete method of \ ``SessionStatus``\  object, the object specified in attribute value of \ ``@SessionAttributes``\  annotation, is deleted from session.
 
  .. note:: **Time when the object is deleted from session**
@@ -790,7 +790,7 @@ Deleting the object stored in session
     By calling setComplete method of \ ``SessionStatus``\  object, the object specified in attribute value of \ ``@SessionAttributes``\  annotation is deleted from session.
     However, the actual time when the object is deleted is different than when setComplete method is called.
 
-    setComplete method of \ ``SessionStatus``\  object changes only the internal flag, whereas, the actual deletion of object is carried out by the framework, after the processing method of Controller is completed.
+    setComplete method of \ ``SessionStatus``\  object changes only the internal flag, whereas, the actual deletion of object is carried out by the framework, after the handler method of Controller is completed.
 
  .. note:: **Referring object from View (JSP)**
 
@@ -849,11 +849,11 @@ Example given below illustrates implementation of object deletion by using a req
     * - Sr. No.
       - Description 
     * - | (1)
-      - | Processing method to perform update process.
+      - | Handler method to perform update process.
     * - | (2)
       - | Redirect to request (3), in order to display completion screen.
     * - | (3)
-      - | Processing method to display completion screen.
+      - | Handler method to display completion screen.
     * - | (4)
       - | Call setComplete method of \ ``SessionStatus``\  object and delete the object from session.
         | Display process for View (JSP) is not affected directly as the same object remains in \ ``Model``\  object.
@@ -877,7 +877,7 @@ Example given below illustrates implementation of object deletion by using a req
     * - Sr. No.
       - Description
     * - | (1)
-      - | Processing method to stop the consecutive screen operations.
+      - | Handler method to stop the consecutive screen operations.
     * - | (2)
       - | Call setComplete method of \ ``SessionStatus``\  object and delete the object from session.
     * - | (3)
@@ -908,7 +908,7 @@ Example given below illustrates implementation of object deletion by using a req
     * - Sr. No.
       - Description
     * - | (1)
-      - | Processing method for initial display of input screen.
+      - | Handler method for initial display of input screen.
     * - | (2)
       - | Call setComplete method of \ ``SessionStatus``\  object.
     * - | (3)
@@ -918,7 +918,7 @@ Example given below illustrates implementation of object deletion by using a req
         | if View (JSP) is called directly, the information being entered is displayed.
         | Therefore, \ **It should be redirected to the request for displaying input screen after deleting from session.** \
     * - | (4)
-      - | Processing method to display input screen.
+      - | Handler method to display input screen.
 
 Process implementation using @SessionAttributes
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1413,10 +1413,10 @@ Example of implementation is as follows:
     * - Sr. No.
       - Description
     * - | (9)
-      - | Processing method for initial display of input screen for registration.
-        | Objects for which operation is in process, may be stored in session; hence such objects are deleted by this processing method.
+      - | Handler method for initial display of input screen for registration.
+        | Objects for which operation is in process, may be stored in session; hence such objects are deleted by this handler method.
     * - | (10)
-      - | Processing method to display the first page of input screen for registration.
+      - | Handler method to display the first page of input screen for registration.
 
  .. code-block:: java
 
@@ -1446,9 +1446,9 @@ Example of implementation is as follows:
     * - Sr. No.
       - Description
     * - | (11)
-      - | Processing method for initial display of input screen for update.
+      - | Handler method for initial display of input screen for update.
     * - | (12)
-      - | Processing method to display input screen for update (first page).
+      - | Handler method to display input screen for update (first page).
     * - | (13)
       - | Set the fetched entity status in form object. In the above example, Bean mapper library called Dozer, is used.
     * - | (14)
@@ -1495,15 +1495,15 @@ Example of implementation is as follows:
     * - Sr. No.
       - Description
     * - | (15)
-      - | Processing method to display second page of input screen.
+      - | Handler method to display second page of input screen.
     * - | (16)
       - | Specify the verification group (\ ``Wizard1.class``\ ) on the first page of input screen, in "value" attribute of \ ``@Validated``\  annotation, so as to perform input validation of only the value entered in first page of input screen.
     * - | (17)
-      - | Processing method to display the third page of input screen.
+      - | Handler method to display the third page of input screen.
     * - | (18)
       - | Specify the verification group (\ ``Wizard2.class``\ ) on the second page of input screen, in "value" attribute of \ ``@Validated``\  annotation, so as to perform input validation of only the value entered in second page of input screen.          
     * - | (19)
-      - | Processing method to display confirmation screen.
+      - | Handler method to display confirmation screen.
     * - | (20)
       - | Specify the verification group (\ ``Wizard3.class``\ ) on the third page of input screen, in "value" attribute of \ ``@Validated``\  annotation, so as to perform input validation of only the value entered in third page of input screen.
           
@@ -1544,7 +1544,7 @@ Example of implementation is as follows:
     * - Sr. No.
       - Description
     * - | (21)
-      - | Processing method to execute save process.
+      - | Handler method to execute save process.
     * - | (22)
       - | Specify the verification group interface (\ ``Wizard1.class``\ , \  ``Wizard2.class``\ , \ ``Wizard3.class``\ ) of each input screen, in the "value" attribute of \ ``@Validated``\  annotation, to check all the values entered on input screen.
     * - | (23)
@@ -1556,9 +1556,9 @@ Example of implementation is as follows:
     * - | (25)
       - | Save the \ ``Entity.class``\  object reflecting the input value.
     * - | (26)
-      - | \ ``Entity.class``\  object saved by processing method of redirect destination is stored in Flash scope so that it can be referred.
+      - | \ ``Entity.class``\  object saved by handler method of redirect destination is stored in Flash scope so that it can be referred.
     * - | (27)
-      - | Processing method to display completion screen.
+      - | Handler method to display completion screen.
 
  .. code-block:: java
 
@@ -1590,11 +1590,11 @@ Example of implementation is as follows:
     * - Sr. No.
       - Description
     * - | (28)
-      - | Processing method to re-display first page of input screen.
+      - | Handler method to re-display first page of input screen.
     * - | (29)
-      - | Processing method to re-display second page of input screen.
+      - | Handler method to re-display second page of input screen.
     * - | (30)
-      - | Processing method to re-display third page of input screen.
+      - | Handler method to re-display third page of input screen.
 
 - Complete Controller source code
 
@@ -2075,9 +2075,9 @@ Implementation is as follows:
     * - Sr. No.
       - Description
     * - | (2)
-      - | Processing method to display product screen.
+      - | Handler method to display product screen.
     * - | (3)
-      - | Processing method to add the specified products to cart.
+      - | Handler method to add the specified products to cart.
     * - | (4)
       - | Pass the \ ``Cart``\  object stored in session, to service method.
     * - | (5)
@@ -2155,9 +2155,9 @@ Implementation is as follows:
     * - | (7)
       - | Add to \ ``Model``\  object to refer in View (JSP).
     * - | (8)
-      - | Processing method to display cart screen (quantity change screen).
+      - | Handler method to display cart screen (quantity change screen).
     * - | (9)
-      - | Processing method to change quantity.
+      - | Handler method to change quantity.
     * - | (10)
       - | Reflect \ ``Cart``\  object returned by Service method, to session-scoped bean.
         | By reflecting in session-scoped bean, it is reflected in session and \ ``Model``\  object.
@@ -2220,11 +2220,11 @@ Implementation is as follows:
     * - | (12)
       - | Add to \ ``Model``\  object to refer in View (JSP).
     * - | (13)
-      - | Processing method to display Order screen.
+      - | Handler method to display Order screen.
     * - | (14)
-      - | Processing method to place an Order.
+      - | Handler method to place an Order.
     * - | (15)
-      - | Processing method to display Order Completion screen.
+      - | Handler method to display Order Completion screen.
 
 - Product screen (JSP)
 

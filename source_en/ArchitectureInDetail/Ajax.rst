@@ -45,7 +45,7 @@ Application settings for Ajax are explained below.
 
 Settings to enable the Ajax functionality in Spring MVC
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Content-Type (such as ``"application/xml"``, ``"application/json"`` etc.) used in Ajax communication is set such that it can be handled by the processing method of Controller.
+Content-Type (such as ``"application/xml"``, ``"application/json"`` etc.) used in Ajax communication is set such that it can be handled by the handler method of Controller.
 
 - :file:`spring-mvc.xml`
 
@@ -964,7 +964,7 @@ Input error handling methods are widely classified into the following.
 
 * Method that performs error handling by providing an exception handling method.
 
-* Method that performs error handling by receiving ``org.springframework.validation.BindingResult`` as an argument of Controller processing method.
+* Method that performs error handling by receiving ``org.springframework.validation.BindingResult`` as an argument of Controller handler method.
 
 
 |
@@ -1208,9 +1208,9 @@ Handling HttpMessageNotReadableException
 
 Handling by using BindingResult
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| When same type of JavaBean is returned in case of normal termination and in case of input error, error handling can be performed by receiving ``BindingResult`` as the processing method argument.
+| When same type of JavaBean is returned in case of normal termination and in case of input error, error handling can be performed by receiving ``BindingResult`` as the handler method argument.
 | This method can be used irrespective of the request data format.
-| When ``BindingResult`` is not to be specified as processing method argument, it is necessary to implement error handling by the exception handling method mentioned earlier.
+| When ``BindingResult`` is not to be specified as handler method argument, it is necessary to implement error handling by the exception handling method mentioned earlier.
 
 - Controller
 
@@ -1243,7 +1243,7 @@ Handling by using BindingResult
    * - | Sr. No.
      - | Description
    * - | (1)
-     - | Declare ``BindingResult`` as a processing method argument.
+     - | Declare ``BindingResult`` as a handler method argument.
        | ``BindingResult`` needs to be declared immediately after the JavaBean for input validation.
    * - | (2)
      - | Check whether there is any input value error.
@@ -1258,7 +1258,7 @@ Handling by using BindingResult
 
     In the above example, HTTP status code ``200`` (OK) is returned as response for both normal process as well as error.
     When it is necessary to classify HTTP status codes as per processing results, it can be implemented by setting ``org.springframework.http.ResponseEntity`` as the return value.
-    As another approach, error handling can be implemented by the exception handling method mentioned earlier, without specifying ``BindingResult`` as the processing method argument.
+    As another approach, error handling can be implemented by the exception handling method mentioned earlier, without specifying ``BindingResult`` as the handler method argument.
 
       .. code-block:: java
 
@@ -1304,13 +1304,13 @@ Methods that handle business errors are widely classified as follows.
 
 * Method that performs error handling by providing a business exception handling method.
 
-* Method that catches business exception in the processing method of Controller and performs error handling.
+* Method that catches business exception in the handler method of Controller and performs error handling.
 
 
 Handling business exception by exception handling method
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Business exceptions are handled by providing an exception handling method same as in case of input error.
-| This method is recommended when it is necessary to implement the same error handling in requests for multiple processing methods.
+| This method is recommended when it is necessary to implement the same error handling in requests for multiple handler methods.
 
 - Controller
 
@@ -1345,7 +1345,7 @@ Handling business exception by exception handling method
 
 |
 
-Handling business exception in processing method
+Handling business exception in handler method
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Business exception is caught by enclosing the process where the business error has occurred, in try clause.
 | This method is implemented when error handling is different for each request.
