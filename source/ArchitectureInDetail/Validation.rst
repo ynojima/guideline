@@ -3989,20 +3989,19 @@ terasoluna-gfw-validatorのチェックルール
         * \ ``LESS_THAN``\  : \ ``left < right``\ である
         * \ ``LESS_THAN_OR_EQUAL``\  : \ ``left <= right``\ である
 
-        | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Path path``\  - エラーメッセージを出力するパスを示す列挙型\ ``Path``\ の値を指定する。指定可能な値は以下の通り。
+        | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Node node``\  - エラーメッセージを出力するパスを示す列挙型\ ``Node``\ の値を指定する。指定可能な値は以下の通り。
 
-        * \ ``LEFT``\  : \ ``left``\ 属性で指定したフィールドのエラーとして出力する（デフォルト）
-        * \ ``RIGHT``\  : \ ``right``\ 属性で指定したフィールドのエラーとして出力する
+        * \ ``PROPERTY``\  : \ ``left``\ 属性で指定したフィールドのエラーとして出力する（デフォルト）
         * \ ``ROOT_BEAN``\  : チェックを実施したオブジェクトのエラーとして出力する
 
-      - メールアドレスと確認用に入力したメールアドレスが一致することをチェックし、確認用に入力したメールアドレスにエラーメッセージを表示する場合、以下のように実装する。
+      - メールアドレスと確認用に入力したメールアドレスが一致することをチェックし、フォーム全体のエラーメッセージとして表示する場合、以下のように実装する。
 
         .. code-block:: java
 
              @Compare(left = "email",
                      right = "confirmEmail",
                      operator = Compare.Operator.EQUAL
-                     path = Compare.Path.RIGHT)
+                     node = Compare.Node.ROOT_BEAN)
              public class UserRegisterForm {
                  private String email;
                  private String confirmEmail;
