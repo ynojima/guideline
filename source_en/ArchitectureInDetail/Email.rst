@@ -243,7 +243,7 @@ Next, define a Bean for \ ``JavaMailSender``\ .
 
 
 When a mail session offered by application server is not used (no authentication)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 A configuration example wherein authentication is not required is given below.
 
