@@ -3922,57 +3922,6 @@ terasoluna-gfw-validatorのチェックルール
              @ByteMax(value = 100,
                      charset = "Shift_JIS")
              private String id;
-              
-    * - \ ``@After``\
-      - \ ``@Before``\ 参照
-      - | 値が指定した日付・時間より後であることを検証する。
-        | （指定した日付・時間と同じ値は許可されない）
-        |
-        | **[アノテーションの属性]**
-        | \ ``String value``\  - 検証基準となる日付・時間を指定する。
-        | \ ``String format``\  - 検証基準となる指定日付・時間の書式文字列を指定する。デフォルト値は対象の型ごとに異なるため、下記別表を参照されたい。
-      - \ ``@Before``\ 参照
-    * - \ ``@Before``\
-      - | \ ``Date``\
-        | \ ``Calendar``\
-        | \ `Date and Time API <https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html>`_\
-        | \ `Joda-Time <http://www.joda.org/joda-time/index.html>`_\
-        |
-        | 対応クラスの一覧は、下記別表を参照されたい。
-      - | 値が指定した日付・時間より前であることを検証する。
-        | （指定日付・時間と同じ値は許可されない）
-        |
-        | **[アノテーションの属性]**
-        | \ ``String value``\  - 検証基準となる日付・時間を指定する。
-        | \ ``String format``\  - 検証基準となる指定日付・時間の書式文字列を指定する。デフォルト値は対象の型ごとに異なるため、下記別表を参照されたい。
-        |
-        | **[format属性の注意点]**
-        | Date and Time APIの対応クラスでは、フォーマットは厳密モード（\ ``java.time.ResolverStyle.STRICT``\ )で解析される。Date and Time APIにおいて、書式文字\ ``"u"``\ が年（year）を、\ ``"y"``\ が暦に対する年（year-of-era）を意味しており、厳密モードで暦を指定しない場合は書式文字\ ``"u"``\ を使用する必要がある。
-      - \ ``format``\ 属性を指定しない場合は、下記別表に記載しているデフォルトの書式文字列に沿った日付・時間の文字列を指定する。
-
-        .. code-block:: java
-
-             @After("2014-12-31")
-             @Before("2016-01-01")
-             private Date eventDate;
-
-        |
-
-        \ ``format``\ 属性を指定する場合は、指定した書式文字列に沿った日付・時間の文字列を指定する。
-
-        .. code-block:: java
-
-             @After(value = "2014/12/31",)
-                     format = "yyyy/MM/dd")
-             @Before(value = "2016/01/01",
-                     format = "yyyy/MM/dd")
-             private Date eventDate;
-
-             @After(value = "2014/12/31",
-                     format = "uuuu/MM/dd")
-             @Before(value = "2016/01/01",
-                     format = "uuuu/MM/dd")
-             private java.time.LocalDate joinDate;
 
     * - \ ``@Compare``\
       - | \ ``Comparable``\ インタフェースの実装クラスをプロパティにもつ任意のJavaBeanに適用可能
@@ -4014,121 +3963,6 @@ terasoluna-gfw-validatorのチェックルール
                  private Date to;
              }
 
-|
-
-\ ``@After``\ と\ ``@Before``\ アノテーションがサポートしているクラスと、\ ``format``\ 属性のデフォルト値を以下に示す。
-
-.. tabularcolumns:: |p{0.30\linewidth}|p{0.30\linewidth}|p{0.40\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 30 35 35
-
-    * - 型
-      - \ ``format``\ 属性のデフォルト値
-      - 設定例
-    * - | \ ``java.util.Date``\
-      - | \ ``"yyyy-MM-dd"``\
-      - .. code-block:: java
-
-            @Before("2016-01-01")
-            private Date eventDate;
-              
-    * - | \ ``java.util.Calendar``\
-      - | \ ``"yyyy-MM-dd"``\
-      - .. code-block:: java
-
-            @Before("2016-01-01")
-            private Calendar eventDate;
-              
-    * - | \ ``java.time.chrono.ChronoLocalDate``\ 実装クラス
-        | (\ ``HijrahDate``\ , \ ``JapaneseDate``\ , \ ``LocalDate``\ , \ ``MinguoDate``\ , \ ``ThaiBuddhistDate``\ )
-      - | \ ``DateTimeFormatter.ISO_LOCAL_DATE``\
-      - .. code-block:: java
-
-            @Before("2016-01-01")
-            private LocalDate eventDate;
-              
-    * - | \ ``java.time.chrono.ChronoLocalDateTime``\ 実装クラス
-        | (\ ``LocalDateTime``\ )
-      - | \ ``DateTimeFormatter.ISO_LOCAL_DATE_TIME``\
-      - .. code-block:: java
-
-            @Before("2016-01-01T00:00:00")
-            private LocalDateTime eventDate;
-              
-    * - | \ ``java.time.chrono.ChronoZonedDateTime``\ 実装クラス
-        | (\ ``ZonedDateTime``\ )
-      - | \ ``DateTimeFormatter.ISO_ZONED_DATE_TIME``\
-      - .. code-block:: java
-
-            @Before("2016-01-01T00:00:00+09:00[Asia/Tokyo]")
-            private ZonedDateTime eventDate;
-              
-    * - | \ ``java.time.LocalTime``\
-      - | \ ``DateTimeFormatter.ISO_LOCAL_TIME``\
-      - .. code-block:: java
-
-            @Before("12:00:00")
-            private LocalTime eventTime;
-              
-    * - | \ ``java.time.OffsetDateTime``\
-      - | \ ``DateTimeFormatter.ISO_OFFSET_DATE_TIME``\
-      - .. code-block:: java
-
-            @Before("2016-01-01T00:00:00+09:00")
-            private OffsetDateTime eventDate;
-              
-    * - | \ ``java.time.OffsetTime``\
-      - | \ ``DateTimeFormatter.ISO_OFFSET_TIME``\
-      - .. code-block:: java
-
-            @Before("12:00:00+09:00")
-            private OffsetTime eventTime;
-              
-    * - | \ ``java.time.Year``\
-      - | \ ``"uuuu"``\
-      - .. code-block:: java
-
-            @Before("2016")
-            private Year eventYear;
-              
-    * - | \ ``java.time.YearMonth``\
-      - | \ ``"uuuu-MM"``\
-      - .. code-block:: java
-
-            @Before("2016-01")
-            private YearMonth eventYearMonth;
-              
-    * - | \ ``org.joda.time.ReadableInstant``\ 実装クラス
-        | (\ ``DateTime``\ , \ ``MutableDateTime``\ , \ ``DateMidnight``\ , \ ``Instant``\ )
-      - | \ ``org.joda.time.DateTime#parse()``\ で解析可能な文字列
-      - .. code-block:: java
-
-            @Before("2016-01-01T00:00:00")
-            private DateTime eventDate;
-              
-    * - | \ ``org.joda.time.ReadablePartial``\ 実装クラス
-        | (\ ``LocalDate``\ , \ ``LocalDateTime``\ , \ ``LocalTime``\ , \ ``YearMonth``\ , \ ``MonthDay``\ , \ ``Partial``\ )
-      - | \ ``org.joda.time.DateTime#parse()``\ で解析可能な文字列
-      - .. code-block:: java
-
-            @Before("2016-01-01")
-            private LocalDate eventDate;
-              
-            @Before("12:00:00")
-            private LocalTime eventTime;
-              
-            @Before("2016-01")
-            private YearMonth eventYearMonth;
-              
-
-.. note:: **実行環境に依存するサポートクラスについて**
-
-    \ ``@After``\ と\ ``@Before``\ アノテーションがサポートしているクラスの中には、実行環境に依存するものがある。
-     
-    * Java8でアプリケーションを実行している場合のみ、Date and Time APIの対応クラスに対するチェックが有効となる。(Date and Time APIはJava8から導入されたため)
-    * クラスパスにJoda-Timeライブラリが含まれる場合のみ、Joda-Timeの対応クラスに対するチェックが有効となる。
-
 
 .. _Validation_terasoluna_gfw_how_to_use:
 
@@ -4157,8 +3991,6 @@ terasoluna-gfw-validatorのチェックルール
 .. code-block:: properties
 
   # (1)
-  org.terasoluna.gfw.common.validator.constraints.After.message = must be after {value}
-  org.terasoluna.gfw.common.validator.constraints.Before.message = must be before {value}
   org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be over {value} Bytes
   org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be under {value} Bytes
   org.terasoluna.gfw.common.validator.constraints.Compare.message = not match '{source}' and '{destination}'
