@@ -153,7 +153,7 @@ Overview
      - | 業務処理の処理時間を計測し、業務処理実行後に出力したり、リクエストの処理時間を計測し、レスポンスを返す際に、ログを出力する。
        | 通常は、AOPやサーブレットフィルタ等で実装する。
        |
-       | 共通ライブラリでは、SpringMVCのControllerの処理メソッドの処理時間を、Controllerの処理メソッド実行後に、TRACEログで出力する、
+       | 共通ライブラリでは、SpringMVCのControllerのハンドラメソッドの処理時間を、Controllerのハンドラメソッド実行後に、TRACEログで出力する、
        | \ ``org.terasoluna.gfw.web.logging.TraceLoggingInterceptor``\ を提供している。
    * - | デバッグログ
      - | 開発時にデバック情報を出力する必要がある場合、ソースコード中に、適宜ログ出力処理を実装する。

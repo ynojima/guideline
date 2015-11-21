@@ -1660,7 +1660,7 @@ When there is no need to change the operation at request level, it is handled by
       - | Carry out error handling. Generate the message to notify error and information required for screen display (form or other model) and return \ ``ModelAndView``\  specifying the destination.
         | For details on error handling, refer to \ :ref:`exception-handling-how-to-use-codingpoint-controller-usecase-label`\ .
 
-If there is a need to change the operation at request level, it is to be handled using \ ``try - catch``\  in the processing method of Controller.
+If there is a need to change the operation at request level, it is to be handled using \ ``try - catch``\  in the handler method of Controller.
 
  .. code-block:: java
 
@@ -1732,7 +1732,7 @@ If there is no need to change the operation at request level, it is handled usin
       - | Carry out error handling. Generate the message to notify error and information required for screen display (form or other model) and return \ ``ModelAndView``\  specifying the destination.
         | For details on error handling, refer to \ :ref:`exception-handling-how-to-use-codingpoint-controller-usecase-label`\ .
 
-If there is need to change the operation at request level, it is to be handled using \ ``try - catch``\  in the processing method of Controller.
+If there is need to change the operation at request level, it is to be handled using \ ``try - catch``\  in the handler method of Controller.
 
  .. code-block:: java
 

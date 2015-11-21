@@ -116,7 +116,7 @@ TERASOLUNA Server Framework for Java (5.x)では、Spring MVCの機能を利用�
     * - | (1)
       - | Spring MVC
         | (Framework)
-      - | Spring MVCは、クライアントからのリクエストを受け取り、呼び出すREST API(Controllerの処理メソッド)を決定する。
+      - | Spring MVCは、クライアントからのリクエストを受け取り、呼び出すREST API(Controllerのハンドラメソッド)を決定する。
     * - | (2)
       - | 
         | 
@@ -321,7 +321,7 @@ REST APIの実装サンプル
 
 * Controllerクラス(REST API)の実装サンプル
 
- Todoリソースに対して、以下の5つのREST API(Controllerの処理メソッド)を作成する。
+ Todoリソースに対して、以下の5つのREST API(Controllerのハンドラメソッド)を作成する。
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.15\linewidth}|p{0.10\linewidth}|p{0.30\linewidth}|p{0.15\linewidth}|p{0.20\linewidth}|
  .. list-table::
@@ -3502,7 +3502,7 @@ RESTful Web Serviceで発生した例外のハンドリング方法について�
 
     \ ``ApiGlobalExceptionHandler``\ に付与する\ ``@ControllerAdvice``\ アノテーションに属性を指定した場合、Spring MVCが提供するフレームワーク処理の中で発生する一部の例外をハンドリングできないケースがある。
 
-    具体的には、リクエストに対応するREST API(Controllerの処理メソッド)が見つからない時に発生する例外を\ ``ApiGlobalExceptionHandler``\ クラスでハンドリングする事ができないため、
+    具体的には、リクエストに対応するREST API(Controllerのハンドラメソッド)が見つからない時に発生する例外を\ ``ApiGlobalExceptionHandler``\ クラスでハンドリングする事ができないため、
     「405 Method Not Allowed」などのエラーを正しく応答する事が出来なくなってしまう。
 
 |
@@ -3560,7 +3560,7 @@ RESTful Web Serviceで発生した例外のハンドリング方法について�
  
     Spring Frameworkから提供されているアノテーションを使用してリクエストパラメータ、リクエストヘッダ、パス変数から値を取得する際に、値の型変換エラーが発生した場合、\ ``org.springframework.beans.TypeMismatchException``\が発生する。
     
-    Controllerの処理メソッドの引数(\ ``String``\以外の引数)に、以下のアノテーションを指定した場合、\ ``TypeMismatchException``\が発生する可能性がある。
+    Controllerのハンドラメソッドの引数(\ ``String``\以外の引数)に、以下のアノテーションを指定した場合、\ ``TypeMismatchException``\が発生する可能性がある。
     
      * \ ``@org.springframework.web.bind.annotation.RequestParam``\
      * \ ``@org.springframework.web.bind.annotation.RequestHeader``\
@@ -4397,7 +4397,7 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
     * - | (2)
       - | エラー情報を作成するクラスをInjectする。
     * - | (3)
-      - | エラー応答を行う処理メソッドを作成する。
+      - | エラー応答を行うハンドラメソッドを作成する。
         | 上記例では、レスポンスコード(\ ``<error-code>``\)を使ってエラーページのハンドリングを行うケースのみを考慮した実装になっている。
         | したがって、例外タイプ(\ ``<exception-type>``\)を使ってハンドリングしたエラーページの処理を本メソッドを使って行う場合は、別途考慮が必要である。
     * - | (4)

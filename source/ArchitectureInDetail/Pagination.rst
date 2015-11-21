@@ -599,7 +599,7 @@ Spring Dataより提供されているページネーション機能と、共通
       - | 検索条件と共に、リクエストパラメータとして検索対象のページ位置(page)と取得件数(size)を指定してリクエストを送信する。
     * - | (2)
       - | ``PageableHandlerMethodArgumentResolver`` は、リクエストパラメータに指定されている検索対象のページ位置(page)と取得件数(size)を取得し、 ``Pageable`` オブジェクトを生成する。
-        | 生成された ``Pageable`` オブジェクトは、Controllerの処理メソッドの引数に設定される。
+        | 生成された ``Pageable`` オブジェクトは、Controllerのハンドラメソッドの引数に設定される。
     * - | (3)
       - | Controllerは、引数で受け取った ``Pageable`` オブジェクトを、Serviceのメソッドに引き渡す。
     * - | (4)
@@ -709,7 +709,7 @@ Spring Dataのページネーション機能を有効化するための設定
     * - 項番
       - 説明
     * - | (1)
-      - | 処理メソッドの引数として ``Pageable`` を指定する。
+      - | ハンドラメソッドの引数として ``Pageable`` を指定する。
         | ``Pageable`` オブジェクトには、ページ検索に必要な情報(検索対象のページ位置、取得件数、ソート条件)が格納されている。
     * - | (2)
       - | Serviceのメソッドの引数に ``Pageable`` オブジェクトを指定して呼び出す。
@@ -727,7 +727,7 @@ Spring Dataのページネーション機能を有効化するための設定
 
     デフォルト値は、以下の２つの方法で変更することができる。
 
-    * 処理メソッドの ``Pageable`` の引数に、 ``@org.springframework.data.web.PageableDefault`` アノテーションを指定してデフォルト値を定義する。
+    * ハンドラメソッドの ``Pageable`` の引数に、 ``@org.springframework.data.web.PageableDefault`` アノテーションを指定してデフォルト値を定義する。
     * ``PageableHandlerMethodArgumentResolver`` の ``fallbackPageable`` プロパティにデフォルト値を定義した ``Pageable`` オブジェクトを指定する。
 
 |

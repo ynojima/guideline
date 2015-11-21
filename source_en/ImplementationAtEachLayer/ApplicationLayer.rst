@@ -90,10 +90,10 @@ Creating Controller class
 
 .. _controller_mapping-label:
 
-Mapping request and processing method
+Mapping request and handler method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | \ ``@RequestMapping``\  annotation is assigned to the method that receives request.
-| In this document, the method to which \ ``@RequestMapping``\  is added, is called as "processing method".
+| In this document, the method to which \ ``@RequestMapping``\  is added, is called as "handler method".
 
  .. code-block:: java
 
@@ -104,7 +104,7 @@ Mapping request and processing method
 
 |
 
-The rules for mapping the incoming request with a processing method can be specifying as attributes of \ ``@RequestMapping``\  annotation. 
+The rules for mapping the incoming request with a handler method can be specifying as attributes of \ ``@RequestMapping``\  annotation. 
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.10\linewidth}|p{0.80\linewidth}|
  .. list-table::
@@ -154,7 +154,7 @@ The rules for mapping the incoming request with a processing method can be speci
 - :ref:`controller-mapping-contenttype-label`
 - :ref:`controller-mapping-accept-label`
 
-| In the following explanation, it is prerequisite to define the processing method in the Controller class.
+| In the following explanation, it is prerequisite to define the handler method in the Controller class.
 
  .. code-block:: java
     :emphasize-lines: 1-2
@@ -175,7 +175,7 @@ The rules for mapping the incoming request with a processing method can be speci
    * - | (1)
      - With \ ``@Controller``\ , it is recognized as Annotation-based controller class and becomes the target of component scan.
    * - | (2)
-     - All the processing methods in this class are mapped to URLs with "sample" by adding ``@RequestMapping("sample")``\  annotation at class level. 
+     - All the handler methods in this class are mapped to URLs with "sample" by adding ``@RequestMapping("sample")``\  annotation at class level. 
 
 |
 
@@ -308,7 +308,7 @@ Refer to the details on the following page to mainly use the controller to map R
 
 .. _controller-mapping-policy-label:
 
-Mapping request and processing method
+Mapping request and handler method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Mapping by the following method is recommended.
 
@@ -317,9 +317,9 @@ Mapping by the following method is recommended.
 
 - | **Use the same URL for requests for screen transitions within same functional flow**
   | The same URL means the value of 'value' attribute of \ ``@RequestMapping(value = "xxx")``\  must be same.
-  | Determining which processing method is used for a particular request with same functional flow is performed using HTTP method and HTTP parameters.
+  | Determining which handler method is used for a particular request with same functional flow is performed using HTTP method and HTTP parameters.
 
-The following is an example of mapping between incoming request and processing method by a sample application with basic screen flow.
+The following is an example of mapping between incoming request and handler method by a sample application with basic screen flow.
 
  * :ref:`controller-mapping-policy-sampleapp-overview-label`
  * :ref:`controller-mapping-policy-sampleapp-url-design-label`
@@ -429,9 +429,9 @@ Design the URL of the required requests.
 
 .. _controller-mapping-policy-sampleapp-mapping-design-label:
 
-Mapping request and processing method
+Mapping request and handler method
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Design the mapping between incoming request and processing method.
+| Design the mapping between incoming request and handler method.
 | The following is the mapping design which is designed according to mapping policy.
 
  .. tabularcolumns:: |p{0.05\linewidth}|p{0.20\linewidth}|p{0.15\linewidth}|p{0.22\linewidth}|p{0.10\linewidth}|p{0.13\linewidth}|p{0.15\linewidth}|
@@ -447,7 +447,7 @@ Mapping request and processing method
        | Method
      - | HTTP
        | Parameter
-     - | Processing method
+     - | Handler method
    * - 1.
      - Fetching list of Entities
      - /abc/list
@@ -547,9 +547,9 @@ Mapping request and processing method
      - complete
      - deleteComplete
 
-| Multiple requests exist for each of Create Entity, Entity Update and Entity Delete functions. Therefore switching of processing methods is done using HTTP method and HTTP parameters.
+| Multiple requests exist for each of Create Entity, Entity Update and Entity Delete functions. Therefore switching of handler methods is done using HTTP method and HTTP parameters.
 | The following is the flow of requests in case of multiple requests in a function like "Create New Entity".
-| All URLs are ``"/abc/create"`` and determining the processing method is done based on combination of HTTP method and HTTP parameters.
+| All URLs are ``"/abc/create"`` and determining the handler method is done based on combination of HTTP method and HTTP parameters.
 
 .. figure:: images_ApplicationLayer/applicationScreenflow.png
    :alt: Request flow of entity create processing
@@ -560,9 +560,9 @@ Mapping request and processing method
 
 |
 
-| Implementation of processing method for "Create New Entity" is shown below.
-| Here, the purpose is to understand mapping between request and processing method and therefore focus must on \ ``@RequestMapping``\ .
-| The details of argument and return value (view name and view) of processing method are explained in the next chapter. 
+| Implementation of handler method for "Create New Entity" is shown below.
+| Here, the purpose is to understand mapping between request and handler method and therefore focus must on \ ``@RequestMapping``\ .
+| The details of argument and return value (view name and view) of handler method are explained in the next chapter. 
 
 - :ref:`controller-mapping-policy-sampleapp-form-impl-label`
 - :ref:`controller-mapping-policy-sampleapp-confirm-impl-label`
@@ -601,13 +601,13 @@ In order to display the form, ``form`` is specified as HTTP parameter.
      - Return view name of JSP to render form screen.
 
  .. note::
-    In this processing method, ``method`` attribute is not specified since it is not required for HTTP GET method.
+    In this handler method, ``method`` attribute is not specified since it is not required for HTTP GET method.
 
 |
 
-Example of implementation of sections other than processing method is explained below.
+Example of implementation of sections other than handler method is explained below.
 
-Besides implementing the processing method for form display, points mentioned below are required:
+Besides implementing the handler method for form display, points mentioned below are required:
 
 - Implement generation process of form object. Refer to :ref:`formobject` for the details of form object.
 - Implement View of form screen. Refer to :ref:`view` for the details of View.
@@ -711,7 +711,7 @@ To check user input in the form, data is sent by POST method and ``confirm`` is 
    * - | (1)
      - Specify "RequestMethod.POST" in ``method`` attribute and "confirm" in ``params`` attribute.
    * - | (2)
-     - In case of input validation errors, it is recommended to call the processing method of form re-display.
+     - In case of input validation errors, it is recommended to call the handler method of form re-display.
    * - | (3)
      - Return view-name of JSP to render the screen for user input confirmation.
 
@@ -721,9 +721,9 @@ To check user input in the form, data is sent by POST method and ``confirm`` is 
 
 |
 
-Example of implementation of sections other than processing method is explained below.
+Example of implementation of sections other than handler method is explained below.
 
-Besides implementing processing method for user input confirmation screen, points mentioned below are required.
+Besides implementing handler method for user input confirmation screen, points mentioned below are required.
 
 - Implement view of user-input confirmation screen. Refer to :ref:`view` for the details of view.
 
@@ -930,7 +930,7 @@ In order to notify the completion of create process, ``complete`` must be presen
      - Return View name of JSP to render the create completion screen.
 
  .. note::
-    In this processing method, ``method`` attribute is not specified since it is not required for HTTP GET method.
+    In this handler method, ``method`` attribute is not specified since it is not required for HTTP GET method.
 
 |
 
@@ -955,7 +955,7 @@ Operation is described below.
 
 Placing multiple buttons on HTML form
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-To place multiple buttons on a single form, send HTTP parameter to identify the corresponding button and so that the processing method of controller can be switched.
+To place multiple buttons on a single form, send HTTP parameter to identify the corresponding button and so that the handler method of controller can be switched.
 An example of Create button and Back button on input confirmation screen of sample application is explained here.
 
 'Create' button to perform 'user creation' and 'Back' button to redisplay 'create form' exists on the form of input confirmation screen as shown below.
@@ -1057,11 +1057,11 @@ Source code of controller of sample application
 
 .. _controller_method_argument-label:
 
-Regarding arguments of processing method
+Regarding arguments of handler method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`The arguments of processing method can be used to fetch various values <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-arguments>`_;
-however, as a principle rule, the following should not be fetched using arguments of processing method of controller.
+`The arguments of handler method can be used to fetch various values <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-arguments>`_;
+however, as a principle rule, the following should not be fetched using arguments of handler method of controller.
 
 * ServletRequest
 * HttpServletRequest
@@ -1105,7 +1105,7 @@ Arguments depending on the purpose of usage are described below.
 
 Passing data to screen (View)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-To pass data to be displayed on screen (View), fetch ``org.springframework.ui.Model``\  (Hereafter called as ``Model``) as argument of processing method and
+To pass data to be displayed on screen (View), fetch ``org.springframework.ui.Model``\  (Hereafter called as ``Model``) as argument of handler method and
 add the data (Object) to \ ``Model``\  object.
 
 - SampleController.java
@@ -1175,7 +1175,7 @@ add the data (Object) to \ ``Model``\  object.
 
 Retrieving values from URL path
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| To retrieve values from URL path, add \ ``@PathVariable``\  annotation to argument of processing method of controller.
+| To retrieve values from URL path, add \ ``@PathVariable``\  annotation to argument of handler method of controller.
 | In order to retrieve values from the path using \ ``@PathVariable``\  annotation, value of \ ``@RequestMapping``\  annotation must contain those values in the form of variables (for example, {id}).
 
  .. code-block:: java
@@ -1295,9 +1295,9 @@ Retrieving request parameters collectively
 | Use form object to collectively fetch all the request parameters.
 | Form object is JavaBean representing HTML form. For the details of form object, refer to :ref:`formobject`.
 
-Following is an example that shows the difference between processing method that fetches each request parameter using ``@RequestParam`` and the same processing method when fetching request parameters in a form object
+Following is an example that shows the difference between handler method that fetches each request parameter using ``@RequestParam`` and the same handler method when fetching request parameters in a form object
 
-Processing method that receives request parameter separately using ``@RequestParam`` is as shown below.
+Handler method that receives request parameter separately using ``@RequestParam`` is as shown below.
 
  .. code-block:: java
 
@@ -1406,7 +1406,7 @@ Add annotations required in input validation to the fields of form object class.
 
 
 | Add \ ``@Validated``\  annotation to form object argument.
-| Input validation is performed for the argument with ``@Validated`` annotation before the processing method of controller is executed. The check result is stored in the argument \ ``BindingResult``\  which immediately follows form object argument.
+| Input validation is performed for the argument with ``@Validated`` annotation before the handler method of controller is executed. The check result is stored in the argument \ ``BindingResult``\  which immediately follows form object argument.
 | The type conversion error that occurs when a data-type other than String is specified in form object, is also stored in \ ``BindingResult``\ .
 
  .. code-block:: java
@@ -1443,7 +1443,7 @@ Add annotations required in input validation to the fields of form object class.
 
 Passing data while redirecting request
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-To redirect after executing a processing method ofcontroller and to pass data along with it, fetch \ ``org.springframework.web.servlet.mvc.support.RedirectAttributes``\  (Henceforth called as \ ``RedirectAttributes``\ ) as an argument of processing method, 
+To redirect after executing a handler method ofcontroller and to pass data along with it, fetch \ ``org.springframework.web.servlet.mvc.support.RedirectAttributes``\  (Henceforth called as \ ``RedirectAttributes``\ ) as an argument of handler method, 
 and add the data to ``RedirectAttributes`` object.
 
 - SampleController.java
@@ -1487,7 +1487,7 @@ and add the data to ``RedirectAttributes`` object.
    * - Sr. No.
      - Description
    * - | (1)
-     - Fetch \ ``RedirectAttributes``\  object as argument of the processing method of controller.
+     - Fetch \ ``RedirectAttributes``\  object as argument of the handler method of controller.
    * - | (2)
      - | Call \ ``addFlashAttribute``\  method of \ ``RedirectAttributes``\  and add the data to \ ``RedirectAttributes``\  object. 
        | For example, the string data ``"HelloWorld!"`` is added to attribute name ``"hello"``. 
@@ -1497,7 +1497,7 @@ and add the data to ``RedirectAttributes`` object.
    * - | (4)
      - | Send a redirect request to another URL which will display the next screen instead of displaying screen (View) directly.
    * - | (5)
-     - | In the processing method after redirection, return view name of the screen that displays the data added in (2) and (3).
+     - | In the handler method after redirection, return view name of the screen that displays the data added in (2) and (3).
    * - | (6)
      - | In the View (JSP) side, the data added to \ ``RedirectAttributes``\  object can be obtained by specifying "${attribute name}".
        | For example, HTML escaping is performed using "${f:h(attribute name)}" function of EL expression.
@@ -1603,7 +1603,7 @@ To insert values in redirect destination URL path dynamically, add the value to 
 
 Acquiring values from Cookie
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Add \ ``@CookieValue``\  annotation to the argument of processing method to acquire the values from a cookie. 
+Add \ ``@CookieValue``\  annotation to the argument of handler method to acquire the values from a cookie. 
 
  .. code-block:: java
     :emphasize-lines: 2
@@ -1636,7 +1636,7 @@ Add \ ``@CookieValue``\  annotation to the argument of processing method to acqu
 Writing values in Cookie
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | To write values in cookie, call \ ``addCookie``\  method of \ ``HttpServletResponse``\  object directly and add the value to cookie.
-| Since there is no way to write to cookie in Spring MVC  (3.2.3 version), ** Only in this case, HttpServletResponse can fetched as an argument of processing method of controller.** 
+| Since there is no way to write to cookie in Spring MVC  (3.2.3 version), ** Only in this case, HttpServletResponse can fetched as an argument of handler method of controller.** 
 
  .. code-block:: java
     :emphasize-lines: 3,5
@@ -1665,7 +1665,7 @@ Writing values in Cookie
 
 .. tip::
 
-    No difference compared to use of \ ``HttpServletResponse``\  which fetched as an argument of processing method, however,  \ ``org.springframework.web.util.CookieGenerator``\  class is provided by Spring
+    No difference compared to use of \ ``HttpServletResponse``\  which fetched as an argument of handler method, however,  \ ``org.springframework.web.util.CookieGenerator``\  class is provided by Spring
     as a class to write values in cookie. It should be used if required. 
 
 |
@@ -1675,7 +1675,7 @@ Writing values in Cookie
 Retrieving pagination information
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Pagination related information is required for the requests performing list search. 
-| Fetching ``org.springframework.data.domain.Pageable``\  (henceforth called as \ ``Pageable``\ ) object as an argument of processing method enables to handle pagination related information (page count, fetch record count) easily.
+| Fetching ``org.springframework.data.domain.Pageable``\  (henceforth called as \ ``Pageable``\ ) object as an argument of handler method enables to handle pagination related information (page count, fetch record count) easily.
 
  Refer to :doc:`../ArchitectureInDetail/Pagination`  for details.
 
@@ -1688,7 +1688,7 @@ Retrieving uploaded file
 Uploaded file can be obtained in 2 ways.
 
 - Provide ``MultipartFile`` property in form object.
-- Use \ ``org.springframework.web.multipart.MultipartFile``\  as an argument of processing method having \ ``@RequestParam``\  annotation.
+- Use \ ``org.springframework.web.multipart.MultipartFile``\  as an argument of handler method having \ ``@RequestParam``\  annotation.
 
 Refer to :doc:`../ArchitectureInDetail/FileUpload`  for details.
 
@@ -1698,7 +1698,7 @@ Refer to :doc:`../ArchitectureInDetail/FileUpload`  for details.
 
 Displaying result message on the screen
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-\ ``Model``\  object or \ ``RedirectAttributes``\  object can be obtained as an argument of processing method and 
+\ ``Model``\  object or \ ``RedirectAttributes``\  object can be obtained as an argument of handler method and 
 result message of business logic execution can be displayed by adding \ ``ResultMessages``\  object to Model or RedirectAttributes.
 
 
@@ -1709,9 +1709,9 @@ Refer to :doc:`../ArchitectureInDetail/MessageManagement`  for details.
 
 .. _controller_method_return-label:
 
-Regarding return value of processing method
+Regarding return value of handler method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-`For return values of processing methods, various values can be fetched <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-return-types>`_ ; however,
+`For return values of handler methods, various values can be fetched <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-return-types>`_ ; however,
 only the following values should be used.
 
 
@@ -1728,7 +1728,7 @@ Return types depending on the purpose of usage are described below:
 
 HTML response
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| To get HTML response to display the output of processing method, it has to return view name of JSP.
+| To get HTML response to display the output of handler method, it has to return view name of JSP.
 | \ ``ViewResolver``\  when generating HTML using JSP will be an inherited class of \ ``UrlBasedViewResolver``\  (\ ``InternalViewResolver``\  and``TilesViewResolver``\ , etc).
 
 | An example using \ ``InternalViewResolver``\  for JSP is given below; however, it is recommended to use \ ``TilesViewResolver``\  when the screen layout is in a templated format.
@@ -1800,10 +1800,10 @@ Example of definition when \ ``<bean>``\  element is to be used
            Hence this guideline recommends to use \ ``<mvc:view-resolvers>``\ .
 
    * - | (6)
-     - When View name ``"sample/hello"`` is the return value of processing method, ``"/WEB-INF/views/sample/hello.jsp"`` is called and HTML is sent as response.
+     - When View name ``"sample/hello"`` is the return value of handler method, ``"/WEB-INF/views/sample/hello.jsp"`` is called and HTML is sent as response.
 
 .. note::
-    HTML output is generated using JSP in the above example, however, even if HTML is generated using other template engine such as Velocity, FreeMarker, return value of processing method will be ``"sample/hello``. 
+    HTML output is generated using JSP in the above example, however, even if HTML is generated using other template engine such as Velocity, FreeMarker, return value of handler method will be ``"sample/hello``. 
     ``ViewResolver`` takes care of task to determine which template engine is to be used.
 
 |
@@ -1813,7 +1813,7 @@ Example of definition when \ ``<bean>``\  element is to be used
 Responding to downloaded data
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | In order to return the data stored in db as download data (\ ``"application/octet-stream"``\ ), it is recommended to create a view 
-| for generating response data (download process).The processing method adds the data to be downloaded to \ ``Model``\  and returns 
+| for generating response data (download process).The handler method adds the data to be downloaded to \ ``Model``\  and returns 
 | name of the view which performs the actual download process.
 
 | The solution to create a separate ViewResolver to resolve a view using its view name, however, \ ``BeanNameViewResolver``\  provided by Spring Framework is recommended.
@@ -1910,7 +1910,7 @@ Responding to downloaded data
            When \ ``<mvc:view-resolvers>``\  element is used, it is possible to define \ ``ViewResolver``\  in a simple way.
            Hence, this guideline recommends to use \ ``<mvc:view-resolvers>``\ .
    * - | (4)
-     - When View name ``"sample/report"`` is the return value of processing method, the data generated by View instance which is registered in step (5), is responded as download data.
+     - When View name ``"sample/report"`` is the return value of handler method, the data generated by View instance which is registered in step (5), is responded as download data.
    * - | (5)
      - Register View object as Bean by specifying View name to the name of component.
 
@@ -1952,7 +1952,7 @@ Correlation check of input value
 | Bean Validation can also be used for correlation check of input values.
 | Refer to :doc:`../ArchitectureInDetail/Validation`  for the details of implementation of correlation check.
 
-| The implementation of correlation check itself should not be written in the processing method of controller. However, it is necessary to add the  \ ``Validator``\  to \ ``org.springframework.web.bind.WebDataBinder``\ . 
+| The implementation of correlation check itself should not be written in the handler method of controller. However, it is necessary to add the  \ ``Validator``\  to \ ``org.springframework.web.bind.WebDataBinder``\ . 
 
  .. code-block:: java
     :emphasize-lines: 2,6
@@ -1976,7 +1976,7 @@ Correlation check of input value
      - Inject \ ``Validator``\  that performs correlation check.
    * - | (2)
      - | Add the injected \ ``Validator``\  to \ ``WebDataBinder``\ .
-       | Adding the above to \ ``WebDataBinder``\  enables correlation check by executing \ ``Validator``\  before the processing method gets called.
+       | Adding the above to \ ``WebDataBinder``\  enables correlation check by executing \ ``Validator``\  before the handler method gets called.
 
 |
 
@@ -2052,7 +2052,7 @@ Reflecting values to domain object
    * - | (3)
      - | Add the data returned from business logic to \ ``Model``\ .
 
-| The process of reflecting values to domain object should be implemented by the processing method of controller. However considering the readability of processing 
+| The process of reflecting values to domain object should be implemented by the handler method of controller. However considering the readability of processing 
 | method in case of large amount of code, it is recommended to delegate the process to Helper class.
 | Example of delegating the process to Helper class is shown below:
 
@@ -2158,8 +2158,8 @@ Reflecting values to form object
  .. note::
     In JSP, it is recommended to refer the values from domain object instead of form object for the fields to be only displayed on the screen.
 
-The process of reflecting value to form object should be implemented by the processing method of controller.
-However considering the readability of processing method in case of large amount of code, it is recommended to delegate the process to Helper class method.
+The process of reflecting value to form object should be implemented by the handler method of controller.
+However considering the readability of handler method in case of large amount of code, it is recommended to delegate the process to Helper class method.
 
 - SampleController.java
 
@@ -2215,7 +2215,7 @@ Implementing form object
 Form object is the object (JavaBean) which represents HTML form and plays the following role.
 
 #. **Holds business data stored in the database so that it can be referred by HTML form (JSP).**
-#. **Holds request parameters sent by HTML form so that they can be referred by processing method of controller.**
+#. **Holds request parameters sent by HTML form so that they can be referred by handler method of controller.**
 
 .. figure:: ./images_ApplicationLayer/applicationFormobject.png
    :width: 80%
@@ -2473,20 +2473,20 @@ In this guideline, such methods are called as ModelAttribute methods and defined
    * - | (2)
      - | When attribute name is to be specified to add to \ ``Model``\ , specify it in the value attribute of \ ``@ModelAttribute``\  annotation. In the above example, ``"xxx"`` is the attribute name.
        | For returned object, appropriate process "model.addAttribute("xxx", form)"\ is executed and it is returned to \ ``Model``\ .
-       | When attribute name other than default value is specified, it is necessary to specify \ ``@ModelAttribute("xxx")``\  at the time of specifying form object as an argument of processing method.
+       | When attribute name other than default value is specified, it is necessary to specify \ ``@ModelAttribute("xxx")``\  at the time of specifying form object as an argument of handler method.
    * - | (3)
-     - | ModelAttribute method can pass the parameters required for initialization as with the case of processing method. In the above example, value of cookie is specified using \ ``@CookieValue``\  annotation.
+     - | ModelAttribute method can pass the parameters required for initialization as with the case of handler method. In the above example, value of cookie is specified using \ ``@CookieValue``\  annotation.
 
 .. note::
     When form object is to be initialized with default values, it should be done using ModelAttribute method.
     In point (3) in above example , value is fetched from cookie, However, fixed value defined in constant class can be set directly.
 
 .. note::
-    Multiple ModelAttribute methods can be defined in the controller. Each method is executed before calling processing method of controller.
+    Multiple ModelAttribute methods can be defined in the controller. Each method is executed before calling handler method of controller.
 
 .. warning::
     If ModelAttribute method is executed for each request, initialization needs to be repeated for each request and unnecessary objects will get created.
-    So, for form objects which are required only for specific requests, should be created inside processing method of controller and not through the use of ModelAttribute method.
+    So, for form objects which are required only for specific requests, should be created inside handler method of controller and not through the use of ModelAttribute method.
 
 |
 
@@ -2536,7 +2536,7 @@ Binding to HTML form
 
 Binding request parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-It is possible to bind the request parameters sent by HTML form to form object and pass it as an argument to the processing method of controller.
+It is possible to bind the request parameters sent by HTML form to form object and pass it as an argument to the handler method of controller.
 
  .. code-block:: java
     :emphasize-lines: 3
@@ -2579,15 +2579,15 @@ It is possible to bind the request parameters sent by HTML form to form object a
    * - Sr. No.
      - Description
    * - | (1)
-     - | Form object is passed as an argument to the processing method of controller after reflecting request parameters to the form object.
+     - | Form object is passed as an argument to the handler method of controller after reflecting request parameters to the form object.
    * - | (2)
      - | When the attribute name is specified in ModelAttribute method, it is necessary to explicitly specify attribute name of form object as \ ``@ModelAttribute("xxx")``\ .
 
 .. warning::
 
-    When attribute name specified by ModelAttribute method and attribute name specified in the \ ``@ModelAttribute("xxx")``\  in the argument of processing method are different, 
+    When attribute name specified by ModelAttribute method and attribute name specified in the \ ``@ModelAttribute("xxx")``\  in the argument of handler method are different, 
     it should be noted that a new instance is created other than the instance created by ModelAttribute method.
-    When attribute name is not specified with ``@ModelAttribute`` in the argument to processing method, the attribute name is deduced as the class name with first letter in lower case.
+    When attribute name is not specified with ``@ModelAttribute`` in the argument to handler method, the attribute name is deduced as the class name with first letter in lower case.
 
 |
 
@@ -2617,7 +2617,7 @@ Error (including input validation error) that occurs while binding request param
    * - Sr. No.
      - Description
    * - | (1)
-     - When \ ``BindingResult``\  is declared immediately after form object, it is possible to refer to the error inside the processing method of controller.
+     - When \ ``BindingResult``\  is declared immediately after form object, it is possible to refer to the error inside the handler method of controller.
    * - | (2)
      - Calling \ ``BindingResult.hasErrors()``\  can determine whether any error occurred in the input values of form object.
 
@@ -3421,7 +3421,7 @@ Here, common logic indicates processes which are required to be executed before 
 Implementing Servlet Filter
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Common processes independent of Spring MVC are implemented using Servlet Filter.
-| However, when common processes are to be executed only for the certain requests mapped with processing method of controller, 
+| However, when common processes are to be executed only for the certain requests mapped with handler method of controller, 
 | then it should be implemented using Handler Interceptor and not Servlet Filter.
 
 | Samples of Servlet Filter are given below.
@@ -3522,16 +3522,16 @@ Servlet Filter can also be defined as Bean of Spring Framework.
 Implementing HandlerInterceptor
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Common processes dependent on Spring MVC are implemented using HandlerInterceptor.
-| HandlerInterceptor can execute common processes only for the requests which are allowed by the application since it is called after the determining the processing method 
+| HandlerInterceptor can execute common processes only for the requests which are allowed by the application since it is called after the determining the handler method 
 | to which the request is to be mapped to.
 
 HandlerInterceptor can execute the process keeping in mind the following 3 points.
 
-- | Before executing processing method of controller
+- | Before executing handler method of controller
   | Implemented as ``HandlerInterceptor#preHandle`` method.
-- | After successfully executing processing method of controller
+- | After successfully executing handler method of controller
   | Implemented as ``HandlerInterceptor#postHandle`` method.
-- | After completion of processing method of controller (executed irrespective of Normal / Abnormal)
+- | After completion of handler method of controller (executed irrespective of Normal / Abnormal)
   | Implemented as ``HandlerInterceptor#afterCompletion`` method.
 
 | Sample of HandlerInterceptor is given below.
@@ -3604,7 +3604,7 @@ When an object that is not supported by default in Spring Framework is to be pas
 HandlerMethodArgumentResolver is to be implemented in order to enable controller to be able to receive the argument.
 
 | Sample of HandlerMethodArgumentResolver is given below.
-| In sample code, common request parameters are converted to JavaBean which are then passed to processing method of controller.
+| In sample code, common request parameters are converted to JavaBean which are then passed to handler method of controller.
 
 
 - JavaBean
@@ -3693,13 +3693,13 @@ HandlerMethodArgumentResolver is to be implemented in order to enable controller
    * - | (4)
      - Fetch the values of request parameters, set the parameters and return the JavaBean that retains the value of common parameters.
    * - | (5)
-     - | Specify JavaBean that retains common parameters in the argument of processing method of controller.
+     - | Specify JavaBean that retains common parameters in the argument of handler method of controller.
        | Object returned in step (4) is passed.
    * - | (6)
      - Add the created HandlerMethodArgumentResolver to ``<mvc:argument-resolvers>`` tag of ``spring-mvc.xml``.
 
 .. note::
-    When parameters are to be passed commonly to processing methods of all controllers, it is effective to convert the parameters to JavaBean using HandlerMethodArgumentResolver.
+    When parameters are to be passed commonly to handler methods of all controllers, it is effective to convert the parameters to JavaBean using HandlerMethodArgumentResolver.
     Parameters referred here are not restricted to request parameters.
 
 |

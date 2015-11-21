@@ -606,7 +606,7 @@ Using PRG (Post-Redirect-Get) pattern
    * - Sr. No.
      - Description
    * - | (5)
-     - | A processing method to perform a process when 'Register' button (Create User button) on Confirmation screen is clicked.
+     - | A handler method to perform a process when 'Register' button (Create User button) on Confirmation screen is clicked.
        | **The request is received by POST method.**
    * - | (6)
      - | **It is redirected to URL for displaying Completion screen.**
@@ -614,15 +614,15 @@ Using PRG (Post-Redirect-Get) pattern
        | When data is to be delivered to redirect destination, addFlashAttribute method of \ ``RedirectAttributes``\  is called and the data to be delivered is added.
        | addAttribute method of \ ``Model``\  cannot deliver data to the redirect destination.
    * - | (7)
-     - | A processing method to display Completion screen.
+     - | A handler method to display Completion screen.
        | **A request is received by GET method.**
    * - | (8)
      - | View (JSP) is called to display the Completion screen and responds with Completion screen.
-       | Since the extension of JSP is assigned by \ ``ViewResolver``\  defined in :file:`spring-mvc.xml`, it is omitted from the return value of the processing method.
+       | Since the extension of JSP is assigned by \ ``ViewResolver``\  defined in :file:`spring-mvc.xml`, it is omitted from the return value of the handler method.
 
  .. note::
 
-    * At the time of redirecting, assign "redirect:" as the prefix of transition information to be returned by the processing method as the return value.
+    * At the time of redirecting, assign "redirect:" as the prefix of transition information to be returned by the handler method as the return value.
     * When the data is to be delivered to the process of redirect destination, call addFlashAttribute method of \ ``RedirectAttributes``\  and add the data to be delivered.
 
 - :file:`createForm.jsp`
@@ -718,7 +718,7 @@ Transaction token check functionality of common library provides \ ``@org.teraso
 
 
 The transaction token check can be performed declaratively by assigning \ ``@TransactionTokenCheck``\  annotation for the
-Controller class and the processing methods of the Controller class.
+Controller class and the handler methods of the Controller class.
 
 |
 
@@ -828,9 +828,9 @@ Format for the transaction token used in the transaction token check of common l
     
     
     
-    1. | When a processing method which corresponds to multiple usecases is to be implemented in Controller, "value" attributes of both "class" annotation and "method" annotation are specified.
+    1. | When a handler method which corresponds to multiple usecases is to be implemented in Controller, "value" attributes of both "class" annotation and "method" annotation are specified.
        | For example, this pattern is used when registration, change, deletion of users is to be implemented in a single Controller.
-    2. | When a processing method which corresponds to a single usecase is to be implemented in Controller, "value" attribute is specified only in "class" annotation.
+    2. | When a handler method which corresponds to a single usecase is to be implemented in Controller, "value" attribute is specified only in "class" annotation.
        | For example, this pattern is used when a Controller is implemented for every registration, modification, deletion of users.
 
 |
@@ -988,7 +988,7 @@ How to use transaction token check in Controller
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 | In order to perform transaction token check, it is necessary to define the method to start the transaction and the method to carry out the checks in Controller.
-| The explanation below is about the implementation of processing method required in a single usecase using a controller.
+| The explanation below is about the implementation of handler method required in a single usecase using a controller.
 
 - Controller
 
@@ -1362,24 +1362,24 @@ See the example below wherein transaction token check is applied for the usecase
      - | A NameSpace called \ ``"user"``\  is set as "class" annotation.
        | In the above example, the value same as "value" attribute of \ ``@RequestMapping``\  annotation which is a recommended pattern, is specified.
    * - | (2)
-     - | A processing method to display input screen.
+     - | A handler method to display input screen.
        | **It is a screen to start a usecase; however since the process only displays data and does not involve data update, it is not necessary to start a transaction.**
        | Therefore, \ ``@TransactionTokenCheck``\  annotation is not specified in the example given above.
    * - | (3)
-     - | A processing method to perform input validation and display the Confirmation screen.
+     - | A handler method to perform input validation and display the Confirmation screen.
        | A transaction is started at this point since a button to perform update process is placed on the Confirmation screen.
        | A View (JSP) is specified for the transition destination.
    * - | (4)
-     - | A processing method to perform update.
+     - | A handler method to perform update.
        | **Since this method performs update, a transaction token check is performed.**
    * - | (4)
-     - | A processing method to display the Completion screen.
+     - | A handler method to display the Completion screen.
        | **Since the method only displays a Completion screen, the transaction token check is not required.**
        | Therefore, \ ``@TransactionTokenCheck``\  annotation is not specified in the example given above.
 
  .. warning::
 
-    It is necessary to specify the View (JSP) for the transition destination of processing method wherein \ ``@TransactionTokenCheck``\  annotation is defined.
+    It is necessary to specify the View (JSP) for the transition destination of handler method wherein \ ``@TransactionTokenCheck``\  annotation is defined.
     If other than View (JSP) of the redirect destination is specified as transition destination, the value of TransactionToken changes in the next process always resulting in the TransactionToken error.
 
 Exclusion control of parallel processing while using a session
@@ -1428,7 +1428,7 @@ How to extend
 How to manage the lifecycle of transaction tokens using a program
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It is possible to receive \ ``org.terasoluna.gfw.web.token.transaction.TransactionTokenContext``\  as an argument for processing method of Controller and manage the lifecycle of transaction tokens programmatically by adding the settings give below.
+It is possible to receive \ ``org.terasoluna.gfw.web.token.transaction.TransactionTokenContext``\  as an argument for handler method of Controller and manage the lifecycle of transaction tokens programmatically by adding the settings give below.
 
 - :file:`spring-mvc.xml`
 

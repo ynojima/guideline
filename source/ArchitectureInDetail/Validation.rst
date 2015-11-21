@@ -1684,7 +1684,7 @@ Bean Validationでグループを指定する場合、アノテーションの\ 
  これまでの例ではバリデーショングループの切り替えは、リクエストパラメータ等、\ ``@RequestMapping``\ アノテーションで指定できるパラメータによって行った。
  この方法では認証オブジェクトが有する権限情報など、\ ``@RequestMapping``\ アノテーションでは扱えない情報でグループを切り替えることはできない。
 
- この場合は、\ ``@Validated``\ アノテーションを使用せず、\ ``org.springframework.validation.SmartValidator``\ を使用し、Controllerの処理メソッド内でグループを指定したバリデーションを行えばよい。
+ この場合は、\ ``@Validated``\ アノテーションを使用せず、\ ``org.springframework.validation.SmartValidator``\ を使用し、Controllerのハンドラメソッド内でグループを指定したバリデーションを行えばよい。
 
    .. code-block:: java
 

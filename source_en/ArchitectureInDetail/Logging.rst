@@ -154,7 +154,7 @@ Log output points
        | It is usually implemented in AOP or Servlet filter.
        |
        | Common library provides \ ``org.terasoluna.gfw.web.logging.TraceLoggingInterceptor``\  which outputs processing time of SpringMVC Controller method
-       | in TRACE log after the execution of processing method of Controller.
+       | in TRACE log after the execution of handler method of Controller.
    * - | Debug log
      - | When it is necessary to output debug information at the time of development, a suitable log output process is implemented in source code.
        |

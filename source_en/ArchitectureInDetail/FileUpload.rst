@@ -60,7 +60,7 @@ Basic flow of uploading files using File Upload functionality supported by Servl
      - | \ ``DispatcherServlet``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet3.0 in Spring MVC.
        | \ ``StandardServletMultipartResolver``\  generates ``org.springframework.web.multipart.MultipartFile`` object that wraps the API (``javax.servlet.http.Part``) introduced through Servlet 3.0.
    * - | (4)
-     - | \ ``DispatcherServlet``\  calls the processing method of Controller.
+     - | \ ``DispatcherServlet``\  calls the handler method of Controller.
        | \ ``DispatcherServlet``\  object created in step (3) binds to the Controller argument or form object.
    * - | (5)
      - | Controller calls the method of \ ``MultipartFile``\  object and fetches the contents and meta information (file name etc.) of uploaded file.
@@ -670,9 +670,9 @@ Implementing Controller
      - | Method of storing the form object for file upload in \ ``Model``\ .
        | In the above example, the attribute name for storing form object in \ ``Model``\  is \ ``"fileUploadForm"``\ .
    * - | (2)
-     - | Processing method for displaying upload screen.
+     - | Handler method for displaying upload screen.
    * - | (3)
-     - | Processing method for uploading files.
+     - | Handler method for uploading files.
    * - | (4)
      - | It is checked whether the files for upload are selected.
        | To check if the files are selected, call \ ``MultipartFile#getOriginalFilename``\   method and decide on the basis of whether file name is specified or not.
