@@ -3928,22 +3928,29 @@ terasoluna-gfw-validatorのチェックルール
       - | 指定したプロパティの値の大小関係が正しいことを検証する。
         |
         | **[アノテーションの属性]**
-        | \ ``String source``\  - オブジェクト内の比較元としたいプロパティ名を指定する。検証エラーとなった場合は、このプロパティにメッセージを表示される。
-        | \ ``String destination``\  - オブジェクト内の比較先としたいプロパティ名を指定する。
+        | \ ``String left``\  - オブジェクト内の比較元としたいプロパティ名を指定する。検証エラーとなった場合は、このプロパティにメッセージを表示される。
+        | \ ``String right``\  - オブジェクト内の比較先としたいプロパティ名を指定する。
         | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Operator operator``\  - 期待する大小関係を示す列挙型\ ``Operator``\ の値を指定する。指定可能な値は以下の通り。
 
-        * \ ``EQUAL``\  : \ ``source = destination``\ である
-        * \ ``GRATER_THAN``\  : \ ``source > destination``\ である
-        * \ ``GRATER_THAN_OR_EQUAL``\  : \ ``source >= destination``\ である
-        * \ ``LESS_THAN``\  : \ ``source < destination``\ である
-        * \ ``LESS_THAN_OR_EQUAL``\  : \ ``source <= destination``\ である
-      - メールアドレスと確認用に入力したメールアドレスが一致することをチェックする場合、以下のように実装する。
+        * \ ``EQUAL``\  : \ ``left = right``\ である
+        * \ ``GRATER_THAN``\  : \ ``left > right``\ である
+        * \ ``GRATER_THAN_OR_EQUAL``\  : \ ``left >= right``\ である
+        * \ ``LESS_THAN``\  : \ ``left < right``\ である
+        * \ ``LESS_THAN_OR_EQUAL``\  : \ ``left <= right``\ である
+
+        | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Node node``\  - エラーメッセージを出力するパスを示す列挙型\ ``Node``\ の値を指定する。指定可能な値は以下の通り。
+
+        * \ ``PROPERTY``\  : \ ``left``\ 属性で指定したフィールドのエラーとして出力する（デフォルト）
+        * \ ``ROOT_BEAN``\  : チェックを実施したオブジェクトのエラーとして出力する
+
+      - メールアドレスと確認用に入力したメールアドレスが一致することをチェックし、フォーム全体のエラーメッセージとして表示する場合、以下のように実装する。
 
         .. code-block:: java
 
-             @Compare(source = "email",
-                     destination = "confirmEmail",
-                     operator = Compare.Operator.EQUAL)
+             @Compare(left = "email",
+                     right = "confirmEmail",
+                     operator = Compare.Operator.EQUAL
+                     node = Compare.Node.ROOT_BEAN)
              public class UserRegisterForm {
                  private String email;
                  private String confirmEmail;
@@ -3951,12 +3958,12 @@ terasoluna-gfw-validatorのチェックルール
 
         |
 
-        期間の開始日が終了日以前であることをチェックする場合、以下のように実装する。
+        期間の開始日が終了日以前であることをチェックし、期間の開始日にエラーメッセージを表示する場合、以下のように実装する。
 
         .. code-block:: java
 
-             @Compare(source = "form",
-                     destination = "to",
+             @Compare(left = "form",
+                     right = "to",
                      operator = Compare.Operator.LESS_THAN_OR_EQUAL)
              public class Period {
                  private Date from;
@@ -3993,7 +4000,7 @@ terasoluna-gfw-validatorのチェックルール
   # (1)
   org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be over {value} Bytes
   org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be under {value} Bytes
-  org.terasoluna.gfw.common.validator.constraints.Compare.message = not match '{source}' and '{destination}'
+  org.terasoluna.gfw.common.validator.constraints.Compare.message = not match '{left}' and '{right}'
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -4049,7 +4056,7 @@ terasoluna-gfw-validatorのチェックルール
     @Target({ TYPE, ANNOTATION_TYPE }) // (1)
     @Retention(RUNTIME)
     @ReportAsSingleViolation // (2)
-    @Compare(source = "", destination = "", operator = Compare.Operator.EQUAL) // (3)
+    @Compare(left = "", right = "", operator = Compare.Operator.EQUAL) // (3)
     public @interface Confirm {
     
         String message() default "{com.example.sample.domain.validation.Confirm.message}"; // (4)
@@ -4058,10 +4065,10 @@ terasoluna-gfw-validatorのチェックルール
     
         Class<? extends Payload>[] payload() default {};
     
-        @OverridesAttribute(constraint = Compare.class, name = "source") // (5)
+        @OverridesAttribute(constraint = Compare.class, name = "left") // (5)
         String field();
     
-        @OverridesAttribute(constraint = Compare.class, name = "destination") // (6)
+        @OverridesAttribute(constraint = Compare.class, name = "right") // (6)
         String confirmField();
     
         @Documented
@@ -4088,9 +4095,9 @@ terasoluna-gfw-validatorのチェックルール
     * - | (4)
       - | エラーメッセージのデフォルト値を定義する。
     * - | (5)
-      - | \ ``@Compare``\ アノテーションの\ ``source``\ 属性をオーバーライドし、属性名を\ ``field``\ に変更する。
+      - | \ ``@Compare``\ アノテーションの\ ``left``\ 属性をオーバーライドし、属性名を\ ``field``\ に変更する。
     * - | (6)
-      - | 同様に\ ``destination``\ 属性をオーバーライドし、属性名を\ ``confirmField``\ に変更する。
+      - | 同様に\ ``right``\ 属性をオーバーライドし、属性名を\ ``confirmField``\ に変更する。
 
 \ :ref:`Validation_correlation_item_check`\ で実装したアノテーションの代わりに、上記で作成したアノテーションを使用する。
 
