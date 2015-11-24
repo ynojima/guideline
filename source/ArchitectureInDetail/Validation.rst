@@ -3976,6 +3976,68 @@ terasoluna-gfw-validatorのチェックルール
                  private Date to;
              }
 
+.. note:: **相関項目チェックにおける入力必須について**
+  
+  単項目チェックにおいては、入力値が入力されている（\ ``null``\ でない）かどうかは \ ``@NotNull``\ を併用してチェックすればよい。しかし、相関項目チェックにおいては、「どちら一方でも入力した場合は、もう一方の入力を強制する」といった、 \ ``@NotNull``\ の併用だけでは実現できない場合がある。このため、\ ``@Compare``\ では、チェック対象の入力必須を制御する \ ``requireBoth``\ 属性を提供しており、これを併用して要件に応じたチェックを実装することができる。
+  
+  期間の開始日が終了日以前であることのチェックを例に、想定されるチェック要件と設定の例を以下に示す。
+  
+    .. tabularcolumns:: |p{0.50\linewidth}|p{0.50\linewidth}|
+    .. list-table::
+        :header-rows: 1
+        :widths: 50 50
+
+        * - チェック要件
+          - 設定例
+        * - \ ``from``\ と \ ``to``\ がともに必須で、\ ``from``\ と \ ``to``\ の比較チェックを行う。
+          - \ ``from``\ と \ ``to``\ に \ ``@NotNull``\ を付与し、 \ ``requireBoth``\ 属性はデフォルト値（ \ ``false``\ ）を使用する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  @NotNull
+                  LocalDate from;
+                  @NotNull
+                  LocalDate to;
+                }
+
+        * - \ ``from``\ だけ必須だが、 \ ``to``\ も入力された時は比較チェックする。
+          - \ ``from``\ にだけ \ ``@NotNull``\ を付与し、 \ ``requireBoth``\ 属性はデフォルト値（ \ ``false``\ ）を使用する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  @NotNull
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+        * - \ ``from``\ と \ ``to``\ がともに必須ではなく、 \ ``from``\ と \ ``to``\ が両方入力された時だけ比較チェックする。どちらか一方だけが入力された場合は比較チェックを行わない。
+          - \ ``@NotNull``\ は付与せず、 \ ``requireBoth``\ 属性はデフォルト値（ \ ``false``\ ）を使用する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+        * - \ ``from``\ と \ ``to``\ がともに必須ではないが、 \ ``from``\ か \ ``to``\ のどちら一方でも入力した場合は、必ず両方入力して比較チェックを行う。
+          - \ ``@NotNull``\ は付与せず、 \ ``requireBoth``\ 属性に \ ``true``\ を設定する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL, requireBoth = true)
+                public class Period {
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+
+|
 
 .. _Validation_terasoluna_gfw_how_to_use:
 
