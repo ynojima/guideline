@@ -5175,7 +5175,7 @@ MyBatis3では、検索結果を1件単位で処理する仕組みを提供し�
     public interface TodoRepository {
 
         // (1) (2)
-        void collectAllByCriteria(TodoCriteria criteria, ResultHandler resultHandler);
+        void collectAllByCriteria(TodoCriteria criteria, ResultHandler<Todo> resultHandler);
 
     }
 
@@ -5260,10 +5260,10 @@ MyBatis3では、検索結果を1件単位で処理する仕組みを提供し�
             final BufferedWriter downloadWriter) {
 
             // (4)
-            ResultHandler handler = new ResultHandler() {
+            ResultHandler<Todo> handler = new ResultHandler<Todo>() {
                 @Override
-                public void handleResult(ResultContext context) {
-                    Todo todo = (Todo) context.getResultObject();
+                public void handleResult(ResultContext<? extends Todo> context) {
+                    Todo todo = context.getResultObject();
                     StringBuilder sb = new StringBuilder();
                     try {
                         sb.append(todo.getTodoId());
@@ -5333,7 +5333,7 @@ MyBatis3では、検索結果を1件単位で処理する仕組みを提供し�
            - 説明
          * - (1)
            - getResultObject
-           - \ ``select``\要素の  \ ``resultType``\属性で指定したJavaクラスのオブジェクトを取得するためのメソッド。
+           - 検索結果がマッピングされたオブジェクトを取得するためのメソッド。
          * - (2)
            - getResultCount
            - \ ``ResultHandler#handleResult``\メソッドの呼び出し回数を取得するためのメソッド。
