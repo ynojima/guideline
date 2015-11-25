@@ -704,6 +704,71 @@ MyBatis3の設定
 
 |
 
+.. _DataAccessMyBatis3HowToUseSettingsDefaultFetchSize:
+
+\ ``fetchSize``\ の設定
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| 大量のデータを返すようなクエリを記述する場合は、JDBCドライバに対して適切な\ ``fetchSize``\ を指定する必要がある。
+| \ ``fetchSize``\ は、JDBCドライバとデータベース間の１回の通信で取得するデータの件数を設定するパラメータである。
+
+\ ``fetchSize``\ を指定しないとJDBCドライバのデフォルト値が利用されるため、
+使用するJDBCドライバによっては以下の問題を引き起こす可能性がある。
+
+* デフォルト値が小さいJDBCドライバの場合は「性能の劣化」
+* デフォルト値が大きい又は制限がないJDBCドライバの場合は「メモリの枯渇」
+
+これらの問題が発生しないように制御するために、MyBatis3は以下の２つの方法で\ ``fetchSize``\ を指定することができる。
+
+* 全てのクエリに対して適用する「デフォルトの\ ``fetchSize``\ 」の指定
+* 特定のクエリに対して適用する「クエリ単位の\ ``fetchSize``\ 」の指定
+
+ .. note:: **「デフォルトのfetchSize」について**
+
+    「デフォルトの\ ``fetchSize``\ 」は、terasoluna-gfw-mybatis3 5.1.0.RELEASEでサポートしたMyBatis 3.3.0以降のバージョンで利用することができる。
+
+
+以下に、「デフォルトの\ ``fetchSize``\ 」を指定する方法を示す。
+
+
+- ``projectName-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml``
+
+ .. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE configuration PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+    <configuration>
+
+        <settings>
+            <!-- (1) -->
+            <setting name="defaultFetchSize" value="100" />
+        </settings>
+
+    </configuration>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.80\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 80
+
+    * - 項番
+      - 説明
+    * - (1)
+      - \ ``defaultFetchSize``\ に、１回の通信で取得するデータの件数を指定する。
+
+\
+
+ .. note:: **「クエリ単位のfetchSize」の指定方法**
+
+    \ ``fetchSize``\ をクエリ単位に指定する必要がある場合は、
+    検索用のSQLを記述するためのXML要素(\ ``<select>``\ 要素)の\ ``fetchSize``\ 属性に値を指定すればよい。
+
+なお、大量のデータを返すようなクエリを記述する場合は、
+「:ref:`DataAccessMyBatis3HowToExtendResultHandler`」の利用も検討すること。
+
+|
+
 .. _DataAccessMyBatis3HowToUseSettingsExecutorType:
 
 SQL実行モードの設定
@@ -5171,12 +5236,10 @@ MyBatis3では、検索結果を1件単位で処理する仕組みを提供し�
  .. warning:: **fetchSize属性の指定について**
 
     大量のデータを返すようなクエリを記述する場合には、\ ``fetchSize``\属性に適切な値を設定すること。
-    \ ``fetchSize``\属性は、JDBCドライバとデータベース間の通信において、
-    一度の通信で取得するデータの件数を設定するパラメータである。
-
-    \ ``fetchSize``\属性を省略した場合は、JDBCドライバのデフォルト値が利用されるため、
-    デフォルト値が全件取得するJDBCドライバの場合、メモリの枯渇の原因になる可能性があるので、
-    注意が必要となる。
+    \ ``fetchSize``\は、JDBCドライバとデータベース間の１回の通信で取得するデータの件数を設定するパラメータである。
+    なお、terasoluna-gfw-mybatis3 5.1.0.RELEASEでサポートしたMyBatis 3.3.0以降のバージョンでは、
+    MyBatis設定ファイルに「デフォルトの\ ``fetchSize``\ 」を指定することができる。
+    \ ``fetchSize``\ の詳細は「:ref:`DataAccessMyBatis3HowToUseSettingsDefaultFetchSize`」を参照されたい。
 
 
 |
