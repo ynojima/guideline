@@ -956,12 +956,13 @@ Repositoryインタフェースを継承して作成した際と同様、メソ�
 
  .. code-block:: java
 
+    @NoRepositoryBean // (1)
     public interface MyProjectRepository<T, ID extends Serializable> extends
-            Repository<T, ID> { // (1)
+            Repository<T, ID> { // (2)
 
-        T findOne(ID id); // (2)
+        T findOne(ID id); // (3)
 
-        T save(T entity); // (2)
+        T save(T entity); // (3)
 
         // ...
 
@@ -969,7 +970,7 @@ Repositoryインタフェースを継承して作成した際と同様、メソ�
 
  .. code-block:: java
 
-    public interface OrderRepository extends MyProjectRepository<Order, Integer> { // (3)
+    public interface OrderRepository extends MyProjectRepository<Order, Integer> { // (4)
 
     }
 
@@ -981,11 +982,13 @@ Repositoryインタフェースを継承して作成した際と同様、メソ�
     * - 項番
       - 説明
     * - | (1)
+      - | ``@NoRepositoryBean`` を指定し、Spring Dataによる ``Repository`` インターフェースのインスタンス化対象から外す。
+    * - | (2)
       - | ``org.springframework.data.repository.Repository`` を継承しプロジェクト用の汎用インタフェースを作成する。
         | 汎用インタフェースなので、ジェネリック型を使用する。
-    * - | (2)
-      - Spring Dataから提供されているRepositoryインタフェースのメソッドの中から必要なメソッドを選んで定義する。
     * - | (3)
+      - Spring Dataから提供されているRepositoryインタフェースのメソッドの中から必要なメソッドを選んで定義する。
+    * - | (4)
       - プロジェクト用の汎用インタフェースを継承し、ジェネリック型 ``<T>`` にEntityの型、ジェネリック型 ``<ID extends Serializable>`` にEntityのIDの型を指定する。例では、Entityに\ ``Order``\ 型、EntityのIDに\ ``Integer``\ 型を指定している。
 
 .. _how_to_create_repository_notextends-label:

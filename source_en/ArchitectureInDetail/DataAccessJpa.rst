@@ -954,12 +954,13 @@ See the example below.
 
  .. code-block:: java
 
+    @NoRepositoryBean // (1)
     public interface MyProjectRepository<T, ID extends Serializable> extends
-            Repository<T, ID> { // (1)
+            Repository<T, ID> { // (2)
 
-        T findOne(ID id); // (2)
+        T findOne(ID id); // (3)
 
-        T save(T entity); // (2)
+        T save(T entity); // (3)
 
         // ...
 
@@ -967,7 +968,7 @@ See the example below.
 
  .. code-block:: java
 
-    public interface OrderRepository extends MyProjectRepository<Order, Integer> { // (3)
+    public interface OrderRepository extends MyProjectRepository<Order, Integer> { // (4)
 
     }
 
@@ -979,11 +980,13 @@ See the example below.
     * - Sr. No.
       - Description
     * - | (1)
+      - | Specify ``@NoRepositoryBean`` annotation to prevent the instantiation of ``Repository`` interfaces by Spring Data.
+    * - | (2)
       - | Define a common interface for the project by inheriting ``org.springframework.data.repository.Repository``.
         | Use generic type since it is a not entity specific interface.
-    * - | (2)
-      - Select and define the required methods from the methods of Repository interface of Spring Data.
     * - | (3)
+      - Select and define the required methods from the methods of Repository interface of Spring Data.
+    * - | (4)
       - Inherit this common interface and specify the type of entity in generic type ``<T>`` and type of entity ID in generic type ``<ID extends Serializable>``. In this example, \ ``Order``\  type is specified in entity and \ ``Integer``\  type in entity ID.
 
 .. _how_to_create_repository_notextends-label:
