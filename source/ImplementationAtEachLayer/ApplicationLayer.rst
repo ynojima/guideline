@@ -3919,7 +3919,7 @@ HandlerMethodArgumentResolverを実装してControllerの引数として受け�
    * - | (1)
      - \ ``@ControllerAdvice``\ アノテーションを付与することで、ControllerAdviceのBeanであることを示している。
    * - | (2)
-     - \ ``@Order``\ アノテーションを付与することで、共通処理が適用される優先度を指定する。ControllerAdviceを複数作成する場合は、必ず指定すること。
+     - \ ``@Order``\ アノテーションを付与することで、共通処理が適用される優先度を指定する。複数のControllerAdviceに依存関係があるなど、ControllerAdviceに順序性を持たせたい場合は必ず指定すること。順序性を持たせる必要がなければ指定しなくてもよい。
    * - | (3)
      - \ ``@InitBinder``\ メソッドを実装する。全てのControllerに対して\ ``@InitBinder``\ メソッドが適用される。
 
