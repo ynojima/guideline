@@ -3938,6 +3938,11 @@ terasoluna-gfw-validatorのチェックルール
         * \ ``LESS_THAN``\  : \ ``left < right``\ である
         * \ ``LESS_THAN_OR_EQUAL``\  : \ ``left <= right``\ である
 
+        | \ ``boolean requireBoth``\  - \ ``left``\ 属性と\ ``right``\ 属性で指定したフィールドの両方が入力されている（\ ``null``\ でない）必要があるかどうかを指定する。
+
+        * \ ``true``\  : どちらか一方だけ入力されている場合は検証エラーとする。ただし、両方とも未入力の場合は検証成功とする
+        * \ ``false``\  : どちらか一方でも入力されている場合は検証成功とする（デフォルト）
+
         | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Node node``\  - エラーメッセージを出力するパスを示す列挙型\ ``Node``\ の値を指定する。指定可能な値は以下の通り。
 
         * \ ``PROPERTY``\  : \ ``left``\ 属性で指定したフィールドのエラーとして出力する（デフォルト）
@@ -3949,7 +3954,8 @@ terasoluna-gfw-validatorのチェックルール
 
              @Compare(left = "email",
                      right = "confirmEmail",
-                     operator = Compare.Operator.EQUAL
+                     operator = Compare.Operator.EQUAL,
+                     requireBoth = true,
                      node = Compare.Node.ROOT_BEAN)
              public class UserRegisterForm {
                  private String email;
@@ -3958,7 +3964,7 @@ terasoluna-gfw-validatorのチェックルール
 
         |
 
-        期間の開始日が終了日以前であることをチェックし、期間の開始日にエラーメッセージを表示する場合、以下のように実装する。
+        期間の開始日と終了日が両方入力された場合は、開始日が終了日以前であることをチェックし、期間の開始日にエラーメッセージを表示する場合、以下のように実装する。
 
         .. code-block:: java
 
@@ -3970,6 +3976,70 @@ terasoluna-gfw-validatorのチェックルール
                  private Date to;
              }
 
+.. note:: **相関項目チェックにおける入力必須について**
+  
+  単項目チェックにおいては、入力フィールドが入力されている（ \ ``null``\ でない）かどうかは \ ``@NotNull``\ を併用してチェックすればよい。しかし、相関項目チェックにおいては、「どちらか一方でも入力した場合は、もう一方の入力を強制する」といった、 \ ``@NotNull``\ の併用だけでは実現できない場合がある。このため、\ ``@Compare``\ では、チェック対象の入力必須を制御する \ ``requireBoth``\ 属性を提供しており、これを併用して要件に応じたチェックを実装することができる。
+
+  なお、入力フィールドが未入力の場合に \ ``null``\ がバインドされる場合のみ、 \ ``requireBoth``\ 属性が利用できる。Spring MVCでは文字列の入力フィールドに未入力の状態でフォームを送信した場合、デフォルトでは、フォームオブジェクトに\ ``null``\ ではなく、空文字がバインドされることに注意しなければならない。  文字列フィールドが未入力の場合に、空文字ではなく、\ ``null``\ をフォームオブジェクトにバインドするには、\ :ref:`Validation_string_trimmer_editor`\ を参照されたい。
+  
+  期間の開始日が終了日以前であることのチェックを例に、想定されるチェック要件と設定の例を以下に示す。
+  
+    .. tabularcolumns:: |p{0.50\linewidth}|p{0.50\linewidth}|
+    .. list-table::
+        :header-rows: 1
+        :widths: 50 50
+
+        * - チェック要件
+          - 設定例
+        * - \ ``from``\ と \ ``to``\ がともに必須で、\ ``from``\ と \ ``to``\ の比較チェックを行う。
+          - \ ``from``\ と \ ``to``\ に \ ``@NotNull``\ を付与し、 \ ``requireBoth``\ 属性はデフォルト値（ \ ``false``\ ）を使用する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  @NotNull
+                  LocalDate from;
+                  @NotNull
+                  LocalDate to;
+                }
+
+        * - \ ``from``\ だけ必須だが、 \ ``to``\ も入力された時は比較チェックする。
+          - \ ``from``\ にだけ \ ``@NotNull``\ を付与し、 \ ``requireBoth``\ 属性はデフォルト値（ \ ``false``\ ）を使用する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  @NotNull
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+        * - \ ``from``\ と \ ``to``\ がともに必須ではなく、 \ ``from``\ と \ ``to``\ が両方入力された時だけ比較チェックする。どちらか一方だけが入力された場合は比較チェックを行わない。
+          - \ ``@NotNull``\ は付与せず、 \ ``requireBoth``\ 属性はデフォルト値（ \ ``false``\ ）を使用する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+        * - \ ``from``\ と \ ``to``\ がともに必須ではないが、 \ ``from``\ か \ ``to``\ のどちら一方でも入力した場合は、必ず両方入力して比較チェックを行う。
+          - \ ``@NotNull``\ は付与せず、 \ ``requireBoth``\ 属性に \ ``true``\ を設定する。
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL, requireBoth = true)
+                public class Period {
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+
+|
 
 .. _Validation_terasoluna_gfw_how_to_use:
 
@@ -4056,7 +4126,7 @@ terasoluna-gfw-validatorのチェックルール
     @Target({ TYPE, ANNOTATION_TYPE }) // (1)
     @Retention(RUNTIME)
     @ReportAsSingleViolation // (2)
-    @Compare(left = "", right = "", operator = Compare.Operator.EQUAL) // (3)
+    @Compare(left = "", right = "", operator = Compare.Operator.EQUAL, requireBoth = true) // (3)
     public @interface Confirm {
     
         String message() default "{com.example.sample.domain.validation.Confirm.message}"; // (4)
@@ -4091,7 +4161,7 @@ terasoluna-gfw-validatorのチェックルール
     * - | (2)
       - | エラー時にこのアノテーションの\ ``message``\ 属性に指定したメッセージが使用されるようにする。
     * - | (3)
-      - | \ ``@Compare``\ アノテーションの\ ``operator``\ 属性に\ ``Compare.Operator.EQUAL``\ (同値であること)を指定する。
+      - | \ ``@Compare``\ アノテーションの\ ``operator``\ 属性に\ ``Compare.Operator.EQUAL``\ (同値であること)を指定する。どちらか一方が未入力の場合はエラーとするため、\ ``requireBoth``\ 属性に\ ``true``\ を指定する。
     * - | (4)
       - | エラーメッセージのデフォルト値を定義する。
     * - | (5)
