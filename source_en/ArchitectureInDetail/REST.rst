@@ -1683,7 +1683,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
         <bean id="jsonMessageConverter"
             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
             <property name="objectMapper">
-                <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+                <bean id="objectMapper" class="com.fasterxml.jackson.datatype.joda.JodaMapper">
                     <!-- (2) -->
                     <property name="dateFormat">
                         <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
@@ -2240,7 +2240,7 @@ Example of Resource class creation is shown below.
 * :file:`MemberResource.java`
 
  .. code-block:: java
-    :emphasize-lines: 17, 22-27, 67
+    :emphasize-lines: 18, 23-28, 69
 
     package org.terasoluna.examples.rest.api.member;
     
@@ -2256,6 +2256,7 @@ Example of Resource class creation is shown below.
     import org.hibernate.validator.constraints.NotEmpty;
     import org.joda.time.DateTime;
     import org.joda.time.LocalDate;
+    import org.springframework.format.annotation.DateTimeFormat;
     import org.terasoluna.gfw.common.codelist.ExistInCodeList;
     
     // (1)
@@ -2289,6 +2290,7 @@ Example of Resource class creation is shown below.
     
         @NotNull
         @Past
+        @DateTimeFormat(pattern = "yyyyMMdd")
         private LocalDate dateOfBirth;
     
         @NotEmpty
@@ -2890,7 +2892,7 @@ Example of implementation of REST API wherein a specified Member resource is cre
         | By assigning \ ``@RequestBody``\  annotation, JSON or XML data set in request Body is unmarshalled in Resource object.
         |
         | Assign \ ``@Validated``\  annotation as argument annotation to enable input validation. For details on input validation, refer to "\ :doc:`Validation`\" .
-    * - | (3)
+    * - | (4)
       - | Call Service method of domain layer and create a new resource.
         | For domain layer implementation, refer to ":doc:`../ImplementationAtEachLayer/DomainLayer`".
 
@@ -5891,7 +5893,7 @@ ApiGlobalExceptionHandler.java
 Source code of the domain layer class created at the time of REST API implementation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | Source code of domain layer class called from REST API explained in \ :ref:`RESTHowToUse`\  is attached herewith.
-| Also, infrastructure layer is implemented by using JPA (Spring Data JPA).
+| Also, infrastructure layer is implemented by using MyBatis3.
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.35\linewidth}|p{0.55\linewidth}|
  .. list-table::
@@ -5924,7 +5926,16 @@ Source code of the domain layer class created at the time of REST API implementa
      - | :ref:`DomainMessageCodes.java <RESTAppendixSoruceCodesOfDomainMessageCodes>`
    * - | (8)
      - | 
+     - | :ref:`GenderTypeHandler.java <RESTAppendixSoruceCodesOfGenderTypeHandler>`
+   * - | (9)
+     - | 
      - | :ref:`member-mapping.xml <RESTAppendixSoruceCodesOfMemberMappingXml>`
+   * - | (10)
+     - | 
+     - | :ref:`mybatis-config.xml <RESTAppendixSoruceCodesOfMybatisConfig>`
+   * - | (11)
+     - | 
+     - | :ref:`MemberRepository.xml <RESTAppendixSoruceCodesOfMemberRepositoryxml>`
 
 
 
@@ -5947,39 +5958,19 @@ Member.java
 
     package org.terasoluna.examples.rest.domain.model;
     
-    import java.io.Serializable;
-    
-    import javax.persistence.Access;
-    import javax.persistence.AccessType;
-    import javax.persistence.CascadeType;
-    import javax.persistence.Column;
-    import javax.persistence.Entity;
-    import javax.persistence.Id;
-    import javax.persistence.JoinColumn;
-    import javax.persistence.OneToOne;
-    import javax.persistence.Table;
-    import javax.persistence.Transient;
-    import javax.persistence.Version;
-    
+    import java.io.Serializable;    
     import org.joda.time.DateTime;
-    import org.joda.time.LocalDate;
-    import org.springframework.data.annotation.CreatedDate;
-    import org.springframework.data.annotation.LastModifiedDate;
     
-    @Table(name = "t_member")
-    @Entity
     public class Member implements Serializable {
     
         private static final long serialVersionUID = 1L;
     
-        @Id
         private String memberId;
     
         private String firstName;
     
         private String lastName;
     
-        @Transient
         private Gender gender;
     
         private LocalDate dateOfBirth;
@@ -5992,17 +5983,12 @@ Member.java
     
         private String address;
     
-        @CreatedDate
         private DateTime createdAt;
     
-        @LastModifiedDate
         private DateTime lastModifiedAt;
     
-        @Version
         private long version;
     
-        @OneToOne(cascade = CascadeType.ALL)
-        @JoinColumn(name = "member_id")
         private MemberCredential credential;
     
         public String getMemberId() {
@@ -6037,8 +6023,6 @@ Member.java
             this.gender = gender;
         }
     
-        @Access(AccessType.PROPERTY)
-        @Column(name = "gender")
         public String getGenderCode() {
             if (gender == null) {
                 return null;
@@ -6139,23 +6123,13 @@ MemberCredentia.java
 
     package org.terasoluna.examples.rest.domain.model;
     
-    import java.io.Serializable;
-    
-    import javax.persistence.Entity;
-    import javax.persistence.Id;
-    import javax.persistence.Table;
-    import javax.persistence.Version;
-    
+    import java.io.Serializable;    
     import org.joda.time.DateTime;
-    import org.springframework.data.annotation.LastModifiedDate;
     
-    @Table(name = "t_member_credential")
-    @Entity
     public class MemberCredential implements Serializable {
     
         private static final long serialVersionUID = 1L;
     
-        @Id
         private String memberId;
     
         private String signId;
@@ -6166,10 +6140,8 @@ MemberCredentia.java
     
         private DateTime passwordLastChangedAt;
     
-        @LastModifiedDate
         private DateTime lastModifiedAt;
     
-        @Version
         private long version;
     
         public String getMemberId() {
@@ -6296,20 +6268,26 @@ MemberRepository.java
 
     package org.terasoluna.examples.rest.domain.repository.member;
     
-    import org.springframework.data.domain.Page;
-    import org.springframework.data.domain.Pageable;
-    import org.springframework.data.jpa.repository.JpaRepository;
-    import org.springframework.data.jpa.repository.Query;
-    import org.springframework.data.repository.query.Param;
+    import java.util.Collection;
+    import java.util.List;    
+    import org.apache.ibatis.session.RowBounds;
+    
     import org.terasoluna.examples.rest.domain.model.Member;
     
-    public interface MemberRepository extends JpaRepository<Member, String> {
+    public interface MemberRepository {
     
-        @Query("SELECT m FROM Member m"
-                + " WHERE m.firstName LIKE :name% ESCAPE '~'"
-                + " OR m.lastName LIKE :name% ESCAPE '~'")
-        Page<Member> findPageByContainsName(@Param("name") String name,
-                Pageable pageable);
+        Member findOne(String memberId);
+
+        long countByName(String name);
+        List<Member> findPageByContainsName(String escapedName, RowBounds rowBounds);
+
+        void createMember(Member creatingMember);
+        void createCredential(Member creatingMember);
+
+        boolean updateMember(Member updatingMember);
+
+        void deleteMember(String memberId); 
+        void deleteCredential(String memberId);
     
     }
 
@@ -6358,14 +6336,17 @@ MemberServiceImpl.java
 
     package org.terasoluna.examples.rest.domain.service.member;
     
+    import java.util.ArrayList;
+    import java.util.List;
     import javax.inject.Inject;
-    import javax.inject.Named;
-    
+    import org.apache.ibatis.session.RowBounds;
     import org.dozer.Mapper;
     import org.joda.time.DateTime;
-    import org.springframework.dao.DataIntegrityViolationException;
+    import org.springframework.dao.DuplicateKeyException;
     import org.springframework.data.domain.Page;
+    import org.springframework.data.domain.PageImpl;
     import org.springframework.data.domain.Pageable;
+    import org.springframework.orm.ObjectOptimisticLockingFailureException;
     import org.springframework.security.crypto.password.PasswordEncoder;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
@@ -6378,19 +6359,13 @@ MemberServiceImpl.java
     import org.terasoluna.gfw.common.exception.BusinessException;
     import org.terasoluna.gfw.common.exception.ResourceNotFoundException;
     import org.terasoluna.gfw.common.message.ResultMessages;
-    import org.terasoluna.gfw.common.query.QueryEscapeUtils;
-    import org.terasoluna.gfw.common.sequencer.Sequencer;
-    
+
     @Transactional
     @Service
     public class MemberServiceImpl implements MemberService {
     
         @Inject
         MemberRepository memberRepository;
-    
-        @Inject
-        @Named("memberIdSequencer")
-        Sequencer<String> sequencer;
     
         @Inject
         JodaTimeDateFactory dateFactory;
@@ -6401,16 +6376,22 @@ MemberServiceImpl.java
         @Inject
         Mapper beanMapper;
     
+        @Override
         @Transactional(readOnly = true)
         public Page<Member> searchMembers(String name, Pageable pageable) {
-    
-            // escape to like condition value
-            String escapedName = QueryEscapeUtils.toLikeCondition(name);
-    
-            // find members that matches with search criteria
-            return memberRepository.findPageByContainsName(escapedName, pageable);
+            List<Member> members = null;
+            // Count Members by search criteria
+            long total = memberRepository.countByName(name);
+            if (0 < total) {
+                 RowBounds rowBounds = new RowBounds(pageable.getOffset(), pageable.getPageSize());
+                 members = memberRepository.findPageByContainsName(name, rowBounds);
+            } else {
+                members = new ArrayList<Member>();
+            }
+            return new PageImpl<Member>(members, pageable, total);
         }
-    
+
+        @Override
         @Transactional(readOnly = true)
         public Member getMember(String memberId) {
             // find member
@@ -6418,62 +6399,79 @@ MemberServiceImpl.java
             if (member == null) {
                 // If member is not exists
                 throw new ResourceNotFoundException(ResultMessages.error().add(
-                        DomainMessageCodes.E_EX_MM_5001, memberId));
+                                DomainMessageCodes.E_EX_MM_5001, memberId));
             }
             return member;
         }
-    
+
+        @Override
         public Member createMember(Member creatingMember) {
-    
-            MemberCredential creatingCredential = creatingMember.getCredential();
-    
+            MemberCredential creatingCredential = creatingMember
+                                .getCredential();
+
             // get processing current date time
             DateTime currentDateTime = dateFactory.newDateTime();
-    
-            // set id
-            String newMemberId = sequencer.getNext();
-            creatingMember.setMemberId(newMemberId);
-            creatingCredential.setMemberId(newMemberId);
-    
+
+            creatingMember.setCreatedAt(currentDateTime);
+            creatingMember.setLastModifiedAt(currentDateTime);
+
             // decide sign id(email-address)
             String signId = creatingCredential.getSignId();
             if (!StringUtils.hasLength(signId)) {
                 signId = creatingMember.getEmailAddress();
                 creatingCredential.setSignId(signId.toLowerCase());
             }
-    
+
             // encrypt password
             String rawPassword = creatingCredential.getPassword();
             creatingCredential.setPassword(passwordEncoder.encode(rawPassword));
             creatingCredential.setPasswordLastChangedAt(currentDateTime);
-    
+            creatingCredential.setLastModifiedAt(currentDateTime);
+
             // save member & member credential
             try {
-                return memberRepository.saveAndFlush(creatingMember);
-            } catch (DataIntegrityViolationException e) {
+
+                // Registering member details
+                memberRepository.createMember(creatingMember);
+                // //Registering credential details
+                memberRepository.createCredential(creatingMember);
+                return creatingMember;
+            } catch (DuplicateKeyException e) {
                 // If sign id is already used
                 throw new BusinessException(ResultMessages.error().add(
-                        DomainMessageCodes.E_EX_MM_8001,
-                        creatingCredential.getSignId()), e);
+                                DomainMessageCodes.E_EX_MM_8001,
+                                creatingMember.getMemberId()), e);
             }
         }
-    
+
+        @Override
         public Member updateMember(String memberId, Member updatingMember) {
             // get member
             Member member = getMember(memberId);
-    
+
             // override updating member attributes
             beanMapper.map(updatingMember, member, "member.update");
-    
+
+            // get processing current date time
+            DateTime currentDateTime = dateFactory.newDateTime();
+            member.setLastModifiedAt(currentDateTime);
+
             // save updating member
-            return memberRepository.save(member);
+            boolean updated = memberRepository.updateMember(member);
+            if (!updated) {
+                    throw new ObjectOptimisticLockingFailureException(Member.class,
+                                    member.getMemberId());
+            }
+            return member;
         }
-    
+
+        @Override
         public void deleteMember(String memberId) {
-    
-            // delete member
-            memberRepository.delete(memberId);
-    
+
+            // First Delete from credential (Child)
+            memberRepository.deleteCredential(memberId);
+            // Delete member
+            memberRepository.deleteMember(memberId);
         }
     
     }
@@ -6506,6 +6504,62 @@ DomainMessageCodes.java
     
         /** e.ex.mm.8001=Cannot use specified sign id. sign id : {0} */
         public static final String E_EX_MM_8001 = "e.ex.mm.8001";
+    }
+
+|
+
+.. _RESTAppendixSoruceCodesOfGenderTypeHandler:
+
+GenderTypeHandler.java
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| This is a TypeHandler for mapping the Enum type code value.
+
+:file:`java/org/terasoluna/examples/infra/mybatis/typehandler/GenderTypeHandler.java`
+
+.. code-block:: java
+
+    package org.terasoluna.examples.infra.mybatis.typehandler;
+
+    import java.sql.CallableStatement;
+    import java.sql.PreparedStatement;
+    import java.sql.ResultSet;
+    import java.sql.SQLException;
+    import org.terasoluna.examples.domain.model.Gender;
+    import org.apache.ibatis.type.JdbcType;
+    import org.apache.ibatis.type.BaseTypeHandler;
+
+    public class GenderTypeHandler extends BaseTypeHandler<Gender> {
+
+        @Override
+        public Gender getNullableResult(ResultSet rs, String columnName) throws SQLException {
+                return getByCode(rs.getString(columnName));
+        }
+
+        @Override
+        public Gender getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+                return getByCode(rs.getString(columnIndex));
+        }
+
+        @Override
+        public Gender getNullableResult(CallableStatement cs, int columnIndex)
+                        throws SQLException {
+                return getByCode(cs.getString(columnIndex));
+        }
+
+        @Override
+        public void setNonNullParameter(PreparedStatement ps, int i,
+                        Gender parameter, JdbcType jdbcType) throws SQLException {
+                ps.setString(i, parameter.getCode());
+        }
+        
+        private Gender getByCode(String byCode) {
+                if (byCode == null) {
+                    return null;
+                } else {
+                    return Gender.getByCode(byCode);
+                }
+        }
     }
 
 |
@@ -6554,6 +6608,251 @@ member-mapping.xml
         </mapping>
     
     </mappings>
+
+|
+
+.. _RESTAppendixSoruceCodesOfMybatisConfig:
+
+mybatis-config.xml
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+| MyBatis3 operations can be customized by adding a configuration values in MyBatis configuration file. MyBatis3 does not support Joda-time classes (org.joda.time.DateTime, org.joda.time.LocalDateTime, org.joda.time.LocalDate etc.).
+| Hence, when Joda-Time class is used in the field of Entity class, it is necessary to provide a TypeHandler for Joda-Time.
+| TypeHandler implementation for mapping the org.joda.time.DateTime with java.sql.Timestamp is done by referring [\ :ref:`DataAccessMyBatis3HowToExtendTypeHandlerJoda`\].
+
+:file:`resources/META-INF/mybatis/mybatis-config.xml`
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE configuration PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+    <configuration>
+
+        <settings>
+            <setting name="jdbcTypeForNull" value="NULL" />
+            <setting name="mapUnderscoreToCamelCase" value="true" />
+        </settings>
+
+        <typeAliases>
+            <package name="org.terasoluna.examples.infra.mybatis.typehandler" />
+        </typeAliases>
+
+        <typeHandlers>
+           <package name="org.terasoluna.examples.infra.mybatis.typehandler" />
+        </typeHandlers>
+    
+    </configuration>
+
+|
+
+.. _RESTAppendixSoruceCodesOfMemberRepositoryxml:
+
+MemberRepository.xml
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+:file:`resources/org/terasoluna/examples/rest/domain/repository/member/MemberRepository.xml`
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper
+        namespace="org.terasoluna.examples.rest.domain.repository.member.MemberRepository">
+
+        <resultMap id="MemberCredentialResultMap" type="MemberCredential">
+            <id property="memberId" column="member_id" />
+            <result property="signId" column="sign_id" />
+            <result property="password" column="password" />
+            <result property="previousPassword" column="previous_password" />
+            <result property="passwordLastChangedAt" column="password_last_changed_at" />
+            <result property="lastModifiedAt" column="last_modified_at" />
+            <result property="version" column="version" />
+        </resultMap>
+
+        <resultMap id="MemberResultMap" type="Member">
+            <id property="memberId" column="member_id" />
+            <result property="firstName" column="first_name" />
+            <result property="lastName" column="last_name" />
+            <result property="gender" column="gender" />
+            <result property="dateOfBirth" column="date_of_birth" />
+            <result property="emailAddress" column="email_address" />
+            <result property="telephoneNumber" column="telephone_number" />
+            <result property="zipCode" column="zip_code" />
+            <result property="address" column="address" />
+            <result property="createdAt" column="created_at" />
+            <result property="lastModifiedAt" column="last_modified_at" />
+            <result property="version" column="version" />
+            <association property="credential" column="member_id"
+                javaType="MemberCredential" select="findOneByCredential" />
+        </resultMap>
+
+        <sql id="selectMemberCredential">
+            SELECT
+            member_id
+            ,sign_id
+            ,password
+            ,previous_password
+            ,password_last_changed_at
+            ,last_modified_at
+            ,version
+            FROM
+            t_member_credential
+        </sql>
+
+        <sql id="selectMember">
+            SELECT
+            member_id
+            ,first_name
+            ,last_name
+            ,gender
+            ,date_of_birth
+            ,email_address
+            ,telephone_number
+            ,zip_code
+            ,address
+            ,created_at
+            ,last_modified_at
+            ,version
+            FROM
+            t_member
+        </sql>
+
+        <sql id="whereMember">
+          <![CDATA[
+            WHERE
+                first_name LIKE #{nameContainingCondition} ESCAPE '~'
+                OR last_name LIKE #{nameContainingCondition} ESCAPE '~'
+          ]]>
+        </sql>
+
+        <select id="findOneByCredential" parameterType="string"
+            resultMap="MemberCredentialResultMap">
+            <include refid="selectMemberCredential" />
+            WHERE
+            member_id = #{memberId}
+        </select>
+
+        <select id="findOne" parameterType="string" resultMap="MemberResultMap">
+            <include refid="selectMember" />
+            WHERE
+            member_id = #{memberId}
+        </select>
+
+        <select id="countByName" parameterType="string" resultType="_long">
+            <bind name="nameContainingCondition"
+            value="@org.terasoluna.gfw.common.query.QueryEscapeUtils@toStartingWithCondition(_parameter)" />
+            SELECT
+            COUNT(*)
+            FROM
+            t_member
+            <include refid="whereMember" />
+        </select>
+
+        <select id="findPageByContainsName" parameterType="string"
+            resultMap="MemberResultMap">
+            <bind name="nameContainingCondition"
+            value="@org.terasoluna.gfw.common.query.QueryEscapeUtils@toStartingWithCondition(_parameter)" />
+            <include refid="selectMember" />
+            <include refid="whereMember" />
+            ORDER BY member_id ASC
+        </select>
+
+        <insert id="createMember" parameterType="Member">
+            <selectKey keyProperty="memberId" resultType="string" order="BEFORE">
+                SELECT 'M'||TO_CHAR(NEXTVAL('s_rest_member'),'FM000000000')
+            </selectKey>            
+            INSERT INTO
+            t_member
+            (
+            member_id
+            ,first_name
+            ,last_name
+            ,gender
+            ,date_of_birth
+            ,email_address
+            ,telephone_number
+            ,zip_code
+            ,address
+            ,created_at
+            ,last_modified_at
+            ,version
+            )
+            VALUES
+            (
+            #{memberId}
+            ,#{firstName}
+            ,#{lastName}
+            ,#{gender}
+            ,#{dateOfBirth}
+            ,#{emailAddress}
+            ,#{telephoneNumber}
+            ,#{zipCode}
+            ,#{address}
+            ,#{createdAt}
+            ,#{lastModifiedAt}
+            ,1
+            )
+        </insert>
+
+        <insert id="createCredential" parameterType="Member">
+            INSERT INTO
+            t_member_credential
+            (
+            member_id
+            ,sign_id
+            ,password
+            ,previous_password
+            ,password_last_changed_at
+            ,last_modified_at
+            ,version
+            )
+            VALUES
+            (
+            #{memberId}
+            ,#{credential.signId}
+            ,#{credential.password}
+            ,#{credential.previousPassword}
+            ,#{credential.passwordLastChangedAt}
+            ,#{credential.lastModifiedAt}
+            ,1
+            )
+        </insert>
+
+        <update id="updateMember" parameterType="Member">
+            UPDATE
+                t_member
+            SET
+                first_name = #{firstName}
+                ,last_name = #{lastName}
+                ,gender = #{gender}
+                ,date_of_birth = #{dateOfBirth}
+                ,email_address = #{emailAddress}
+                ,telephone_number = #{telephoneNumber}
+                ,zip_code = #{zipCode}
+                ,address = #{address}
+                ,created_at = #{createdAt}
+                ,last_modified_at = #{lastModifiedAt}
+                ,version = version + 1
+            WHERE
+                member_id = #{memberId}
+                AND version = #{version}
+        </update>
+
+        <delete id="deleteCredential" parameterType="string">
+            DELETE FROM t_member_credential
+            WHERE
+            member_id = #{memberId}
+        </delete>
+
+        <delete id="deleteMember" parameterType="string">
+            DELETE FROM t_member
+            WHERE
+            member_id = #{memberId}
+        </delete>
+        
+    </mapper>
+
 
 .. raw:: latex
 
