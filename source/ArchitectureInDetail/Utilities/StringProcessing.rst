@@ -146,6 +146,9 @@ How to use
             // (1)
             FullHalfPairsBuilder builder = new FullHalfPairsBuilder();
             for (char c = '!'; c <= '~'; c++) {
+                if (c == '-') {
+                    continue;
+                }
                 String fullwidth = String.valueOf((char) (c + FULL_HALF_CODE_DIFF));
                 builder.pair(fullwidth, String.valueOf(c));
             }
@@ -175,8 +178,7 @@ How to use
                     .pair("べ", "ﾍﾞ").pair("ボ", "ﾎﾞ").pair("パ", "ﾊﾟ")
                     .pair("ピ", "ﾋﾟ").pair("プ", "ﾌﾟ").pair("ペ", "ﾍﾟ")
                     .pair("ポ", "ﾎﾟ").pair("ヴ", "ｳﾞ").pair("\u30f7", "ﾜﾞ")
-                    .pair("\u30fa", "ｦﾞ").pair("゛", "ﾞ").pair("゜", "ﾟ")
-                    .pair("　", " ").pair("”", "\"").pair("’", "'").pair("￥", "\\")
+                    .pair("\u30fa", "ｦﾞ").pair("゛", "ﾞ").pair("゜", "ﾟ").pair("　", " ")
                     
                     // (3)
                     .pair("ー", "-");
@@ -214,7 +216,7 @@ How to use
 
  .. code-block:: java
  
-    String halfwidth = MyProjectFullHalf.INSTANCE.toHalfwidth("ハローワールド！"); // (1)
+    String halfwidth = CustomFullHalf.INSTANCE.toHalfwidth("ハローワールド！"); // (1)
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
  .. list-table::
@@ -224,7 +226,7 @@ How to use
     * - 項番
       - 説明
     * - | (1)
-      - | 実装した \ ``MyProjectFullHalf``\ を使用し、 独自の組合せが登録された \ ``FullHalfConverter#toHalfwidth``\ にて、引数に渡した文字列を、半角文字列へ変換する。
+      - | 実装した \ ``CustomFullHalf``\ を使用し、 独自の組合せが登録された \ ``FullHalfConverter#toHalfwidth``\ にて、引数に渡した文字列を、半角文字列へ変換する。
         | 本例では、"ﾊﾛ-ﾜ-ﾙﾄﾞ!" （"-" は (\u002D)）に変換される。
 
 
