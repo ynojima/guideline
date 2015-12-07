@@ -3933,8 +3933,8 @@ terasoluna-gfw-validatorのチェックルール
         | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Operator operator``\  - 期待する大小関係を示す列挙型\ ``Operator``\ の値を指定する。指定可能な値は以下の通り。
 
         * \ ``EQUAL``\  : \ ``left = right``\ である
-        * \ ``GRATER_THAN``\  : \ ``left > right``\ である
-        * \ ``GRATER_THAN_OR_EQUAL``\  : \ ``left >= right``\ である
+        * \ ``GREATER_THAN``\  : \ ``left > right``\ である
+        * \ ``GREATER_THAN_OR_EQUAL``\  : \ ``left >= right``\ である
         * \ ``LESS_THAN``\  : \ ``left < right``\ である
         * \ ``LESS_THAN_OR_EQUAL``\  : \ ``left <= right``\ である
 
@@ -4068,8 +4068,8 @@ terasoluna-gfw-validatorのチェックルール
 .. code-block:: properties
 
   # (1)
-  org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be over {value} Bytes
-  org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be under {value} Bytes
+  org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be greater than or equal to {value} Bytes
+  org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be less than or equal to {value} Bytes
   org.terasoluna.gfw.common.validator.constraints.Compare.message = not match '{left}' and '{right}'
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
