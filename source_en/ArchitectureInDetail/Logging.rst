@@ -207,7 +207,8 @@ Settings of Logback
      #. logback.groovy on class path
      #. If file "1" is not found, logback-test.xml on class path
      #. If file "2" is not found, logback.xml on class path
-     #. If file "3" is not found, settings of BasicConfigurator class (console output)
+     #. If file "3" is not found, settings of class which implements \ ``com.qos.logback.classic.spi.Configurator``\  interface (Specify a implementation class using \ `ServiceLoader <http://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html>`_\  mechanism)
+     #. If class which implements \ ``Configurator``\  interface is not found, settings of BasicConfigurator class (console output)
 
      In this guideline, it is recommended to place logback.xml in the class path.
      Moreover, apart from automatic reading, \ `it is possible to read programmatically through an API <http://logback.qos.ch/manual/configuration.html#joranDirectly>`_\  
