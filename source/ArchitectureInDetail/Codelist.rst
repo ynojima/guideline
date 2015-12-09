@@ -495,7 +495,9 @@ JdbcCodeListの使用方法
      - | ``org.springframework.jdbc.core.JdbcTemplate`` クラスをbean定義する。
        | 独自にfetchSizeを設定するために必要となる。
    * - | (2)
-     - | fetchSizeを設定する。適切な値を設定すること。
+     - | fetchSizeを設定する。
+       | fetchSizeのデフォルト設定が、全件取得になっている場合があるため適切な値を設定すること。
+       | JdbcCodeListの読み込む件数が大きい(数百)場合、fetchSizeの設定が全件取得だとDBからリストを取得するのに時間がかかってしまう。
    * - | (3)
      - | JdbcCodeListの共通bean定義。
        | 他のJdbcCodeListの共通部分を設定している。そのため、基本JdbcCodeListのbean定義はこのbean定義を親クラスに設定する。

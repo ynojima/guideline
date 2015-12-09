@@ -415,10 +415,13 @@ For details on settings shown below, refer to :ref:`Using codelist in Java class
 Using JdbcCodeList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``org.terasoluna.gfw.common.codelist.JdbcCodeList`` is a class for creating codelist by fetching values from DB at the time of launching the application.
-This list is cached.
+| ``org.terasoluna.gfw.common.codelist.JdbcCodeList`` is a class for creating codelist by fetching values from DB at the time of launching the application.
+| ``JdbcCodeList`` create a cache when the application starts. Therefore, There is no delay by the DB access to when you want to display list.
 
-The fetched values can be changed dynamically by reloading. For details, refer to :ref:`codeListTaskScheduler`.
+| If you want to reduce the load time of startup, it is preferable to set an upper limit on the number of acquisition.
+| The ``JdbcCodeList`` there is a field to set the ``org.springframework.jdbc.core.JdbcTemplate``.
+| If you set the upper limit on the ``fetchSize`` of ``JdbcTemplate``, the upper limit amount record is loaded at startup.
+| The fetched values can be changed dynamically by reloading. For details, refer to :ref:`codeListTaskScheduler`.
 
 **JdbcCodeList image**
 
@@ -457,12 +460,21 @@ Example of codelist settings
 
 .. code-block:: xml
 
-    <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList"> <!-- (1) -->
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
+    <bean id="jdbcTemplateForCodeList" class="org.springframework.jdbc.core.JdbcTemplate" > <!-- (1) -->
+        <property name="dataSource" ref="dataSource" />
+        <property name="fetchSize" value="${codelist.jdbc.fetchSize:1000}" /> <!-- (2) -->
+    </bean>
+
+    <bean id="AbstractJdbcCodeList"
+        class="org.terasoluna.gfw.common.codelist.JdbcCodeList" abstract="true"> <!-- (3) -->
+        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" /> <!-- (4) -->
+    </bean>
+
+    <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList" > <!-- (5) -->
         <property name="querySql"
-            value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" /> <!-- (2) -->
-        <property name="valueColumn" value="authority_id" /> <!-- (3) -->
-        <property name="labelColumn" value="authority_name" /> <!-- (4) -->
+            value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" /> <!-- (6) -->
+        <property name="valueColumn" value="authority_id" /> <!-- (7) -->
+        <property name="labelColumn" value="authority_name" /> <!-- (8) -->
     </bean>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -473,13 +485,29 @@ Example of codelist settings
    * - Sr. No.
      - Description
    * - | (1)
-     - | Define a bean of JdbcCodeList class.
+     - | Define a bean of ``org.springframework.jdbc.core.JdbcTemplate`` class.
+       | It is necessary for setting the fetchSize independently.
    * - | (2)
-     - | Write an SQL for fetching the codelist in querySql property. At that time, **make sure to specify ORDER BY clause to define the order.**
-       | If ORDER BY is not specified, the order gets changed every time when records are fetched using SQL.
+     - | Set the fetchSize.
+       | FetchSize may be set to Fetch All by default.By setting an appropriate value.
+       | When large number of records (in hundreds) need to be read from JdbcCodeList, When the setting of fetchSize is it FetchAll, it takes time to get a list from DB.
    * - | (3)
-     - | Set the value corresponding to the Key of Map in valueColumn property. In this example, authority_id is set.
+     - | Define a common bean of JdbcCodeList.
+       | Common parts of other JdbcCodeList are set. Therefore, for bean definition of basic JdbcCodeList, set this bean definition in parent class.
+       | This bean class cannot be instantiated by setting ``abstract`` attribute to true.
    * - | (4)
+     - | Set the jdbcTemplate referring to (1).
+       | JdbcTemplate for which fetchSize value is set is stored in JdbcCodeList.
+   * - | (5)
+     - | Bean definition of JdbcCodeList
+       | By setting Bean defined in (3) as parent class in parent attribute, JdbcCodeList is set with fetchSize.
+       | In this bean definition, only the query related settings are carried out and the required CodeList is created.
+   * - | (6)
+     - | Write an SQL for fetching the codelist in querySql property. At that time, **make sure to specify ORDER BY clause to define the order**.
+       | If ORDER BY is not specified, the order gets changed every time when records are fetched using SQL.
+   * - | (7)
+     - | Set the value corresponding to the Key of Map in valueColumn property. In this example, authority_id is set.
+   * - | (8)
      - | Set the value corresponding to the Value of Map in labelColumn property. In this example, authority_name is set.
 
 |
@@ -1215,70 +1243,6 @@ As a result of above settings, when characters other than M, F are stored in ``g
 
 How to extend
 --------------------------------------------------------------------------------
-
-
-.. _settingFetchSize:
-
-When large number of records need to be read from JdbcCodeList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When large number of records (in hundreds) need to be read from JdbcCodeList, Web application takes time to start.
-
-This is because all records may be fetched at the same time during DB inquiry and it may take time to fetch the list from DB.
-(fetchSize may be set to Fetch All by default.)
-
-This problem can be resolved by specifying appropriate value for fetchSize.
-In order to change the fetchSize, it is necessary to set the fetchSize of ``org.springframework.jdbc.core.JdbcTemplate``.
-
-See the example below.
-
-
-**Definition of Bean definition file(xxx-infra.xml)**
-
-.. code-block:: xml
-
-    <bean id="jdbcTemplateForCodeList" class="org.springframework.jdbc.core.JdbcTemplate" > <!-- (1) -->
-        <property name="dataSource" ref="dataSource" />
-        <property name="fetchSize" value="1000" /> <!-- (2) -->
-    </bean>
-
-    <bean id="AbstractJdbcCodeList"
-        class="org.terasoluna.gfw.common.codelist.JdbcCodeList" abstract="true"> <!-- (3) -->
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" /> <!-- (4) -->
-    </bean>
-
-    <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList" ><!-- (5) -->
-        <property name="querySql"
-            value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
-        <property name="valueColumn" value="authority_id" />
-        <property name="labelColumn" value="authority_name" />
-    </bean>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Define a bean of ``org.springframework.jdbc.core.JdbcTemplate`` class.
-       | It is necessary for setting the fetchSize independently.
-   * - | (2)
-     - | Set an appropriate value for the fetchSize.
-   * - | (3)
-     - | Define a common bean of JdbcCodeList.
-       | Common parts of other JdbcCodeList are set. Therefore, for bean definition of basic JdbcCodeList, set this bean definition in parent class.
-       | This bean class cannot be instantiated by setting ``abstract`` attribute to true.
-   * - | (4)
-     - | Set the jdbcTemplate referring to (1).
-       | JdbcTemplate for which fetchSize value is set is stored in JdbcCodeList.
-   * - | (5)
-     - | Bean definition of JdbcCodeList
-       | By setting Bean defined in (3) as parent class in parent attribute, JdbcCodeList is set with fetchSize.
-       | In this bean definition, only the query related settings are carried out and the required CodeList is created.
-
-|
 
 .. _codeListTaskScheduler:
 
