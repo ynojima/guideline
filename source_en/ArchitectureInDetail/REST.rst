@@ -2290,7 +2290,6 @@ Example of Resource class creation is shown below.
     
         @NotNull
         @Past
-        @DateTimeFormat(pattern = "yyyyMMdd")
         private LocalDate dateOfBirth;
     
         @NotEmpty
@@ -5606,8 +5605,21 @@ MemberRestController.java
             return responseResource;
         }
     
+        @RequestMapping(method = RequestMethod.GET)
+        
+        @ResponseStatus(HttpStatus.OK)
+        public List<MemberResource> getMembers() {
+            List<Member> members = memberService.findAll();
+            
+            List<MemberResource> memberResources = new ArrayList<>();
+            for (Member member : members) {
+                memberResources.add(beanMapper.map(member, MemberResource.class));
+            }
+            return memberResources;
+        }
+    
         @RequestMapping(method = RequestMethod.POST)
-
+        
         @ResponseStatus(HttpStatus.CREATED)
         public MemberResource postMembers(@RequestBody @Validated({
                 PostMembers.class, Default.class }) MemberResource requestedResource) {
@@ -5960,6 +5972,7 @@ Member.java
     
     import java.io.Serializable;    
     import org.joda.time.DateTime;
+    import org.joda.time.LocalDate;
     
     public class Member implements Serializable {
     
@@ -6268,7 +6281,6 @@ MemberRepository.java
 
     package org.terasoluna.examples.rest.domain.repository.member;
     
-    import java.util.Collection;
     import java.util.List;    
     import org.apache.ibatis.session.RowBounds;
     
@@ -6277,9 +6289,11 @@ MemberRepository.java
     public interface MemberRepository {
     
         Member findOne(String memberId);
+        
+        List<Member> findAll();
 
-        long countByName(String name);
-        List<Member> findPageByContainsName(String escapedName, RowBounds rowBounds);
+        long countByContainsName(String name);
+        List<Member> findPageByContainsName(String name, RowBounds rowBounds);
 
         void createMember(Member creatingMember);
         void createCredential(Member creatingMember);
@@ -6305,12 +6319,15 @@ MemberService.java
 
     package org.terasoluna.examples.rest.domain.service.member;
     
+    import java.util.List;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Pageable;
     import org.terasoluna.examples.rest.domain.model.Member;
     
     public interface MemberService {
     
+        List<Member> findAll();
+        
         Page<Member> searchMembers(String name, Pageable pageable);
     
         Member getMember(String memberId);
@@ -6378,10 +6395,16 @@ MemberServiceImpl.java
     
         @Override
         @Transactional(readOnly = true)
+        public List<RestMember> findAll() {
+            return restMemberRepository.findAll();
+        }
+    
+        @Override
+        @Transactional(readOnly = true)
         public Page<Member> searchMembers(String name, Pageable pageable) {
             List<Member> members = null;
             // Count Members by search criteria
-            long total = memberRepository.countByName(name);
+            long total = memberRepository.countByContainsName(name);
             if (0 < total) {
                  RowBounds rowBounds = new RowBounds(pageable.getOffset(), pageable.getPageSize());
                  members = memberRepository.findPageByContainsName(name, rowBounds);
@@ -6440,7 +6463,7 @@ MemberServiceImpl.java
                 // If sign id is already used
                 throw new BusinessException(ResultMessages.error().add(
                                 DomainMessageCodes.E_EX_MM_8001,
-                                creatingMember.getMemberId()), e);
+                                creatingCredential.getSignId()), e);
             }
         }
 
@@ -6660,16 +6683,6 @@ MemberRepository.xml
     <mapper
         namespace="org.terasoluna.examples.rest.domain.repository.member.MemberRepository">
 
-        <resultMap id="MemberCredentialResultMap" type="MemberCredential">
-            <id property="memberId" column="member_id" />
-            <result property="signId" column="sign_id" />
-            <result property="password" column="password" />
-            <result property="previousPassword" column="previous_password" />
-            <result property="passwordLastChangedAt" column="password_last_changed_at" />
-            <result property="lastModifiedAt" column="last_modified_at" />
-            <result property="version" column="version" />
-        </resultMap>
-
         <resultMap id="MemberResultMap" type="Member">
             <id property="memberId" column="member_id" />
             <result property="firstName" column="first_name" />
@@ -6683,69 +6696,64 @@ MemberRepository.xml
             <result property="createdAt" column="created_at" />
             <result property="lastModifiedAt" column="last_modified_at" />
             <result property="version" column="version" />
-            <association property="credential" column="member_id"
-                javaType="MemberCredential" select="findOneByCredential" />
+            <result property="credential.memberId" column="member_id" />
+            <result property="credential.signId" column="sign_id" />
+            <result property="credential.password" column="password" />
+            <result property="credential.previousPassword" column="previous_password" />
+            <result property="credential.passwordLastChangedAt" column="password_last_changed_at" />
+            <result property="credential.lastModifiedAt" column="credential_last_modified_at" />
+            <result property="credential.version" column="credential_version" />
         </resultMap>
-
-        <sql id="selectMemberCredential">
-            SELECT
-            member_id
-            ,sign_id
-            ,password
-            ,previous_password
-            ,password_last_changed_at
-            ,last_modified_at
-            ,version
-            FROM
-            t_member_credential
-        </sql>
 
         <sql id="selectMember">
             SELECT
-            member_id
-            ,first_name
-            ,last_name
-            ,gender
-            ,date_of_birth
-            ,email_address
-            ,telephone_number
-            ,zip_code
-            ,address
-            ,created_at
-            ,last_modified_at
-            ,version
+             member.member_id as member_id
+             ,member.first_name as first_name
+             ,member.last_name as last_name
+             ,member.gender as gender
+             ,member.date_of_birth as date_of_birth
+             ,member.email_address as email_address
+             ,member.telephone_number as telephone_number
+             ,member.zip_code as zip_code
+             ,member.address as address
+             ,member.created_at as created_at
+             ,member.last_modified_at as last_modified_at
+             ,member.version as version
+             ,credential.sign_id as sign_id
+             ,credential.password as password
+             ,credential.previous_password as previous_password
+             ,credential.password_last_changed_at as password_last_changed_at
+             ,credential.last_modified_at as credential_last_modified_at
+             ,credential.version as credential_version
             FROM
-            t_member
+             t_member member
+             INNER JOIN t_member_credential credential ON credential.member_id = member.member_id
         </sql>
 
         <sql id="whereMember">
-          <![CDATA[
             WHERE
-                first_name LIKE #{nameContainingCondition} ESCAPE '~'
-                OR last_name LIKE #{nameContainingCondition} ESCAPE '~'
-          ]]>
+                member.first_name LIKE #{nameContainingCondition} ESCAPE '~'
+                OR member.last_name LIKE #{nameContainingCondition} ESCAPE '~'
         </sql>
 
-        <select id="findOneByCredential" parameterType="string"
-            resultMap="MemberCredentialResultMap">
-            <include refid="selectMemberCredential" />
-            WHERE
-            member_id = #{memberId}
+        <select id="findAll" resultMap="RestMemberResultMap">
+            <include refid="selectRestMember" />
+            ORDER BY member_id ASC
         </select>
-
-        <select id="findOne" parameterType="string" resultMap="MemberResultMap">
+	
+	    <select id="findOne" parameterType="string" resultMap="MemberResultMap">
             <include refid="selectMember" />
             WHERE
-            member_id = #{memberId}
+            member.member_id = #{memberId}
         </select>
 
-        <select id="countByName" parameterType="string" resultType="_long">
+        <select id="countByContainsName" parameterType="string" resultType="_long">
             <bind name="nameContainingCondition"
             value="@org.terasoluna.gfw.common.query.QueryEscapeUtils@toStartingWithCondition(_parameter)" />
             SELECT
             COUNT(*)
             FROM
-            t_member
+            t_member member
             <include refid="whereMember" />
         </select>
 
@@ -6760,7 +6768,7 @@ MemberRepository.xml
 
         <insert id="createMember" parameterType="Member">
             <selectKey keyProperty="memberId" resultType="string" order="BEFORE">
-                SELECT 'M'||TO_CHAR(NEXTVAL('s_rest_member'),'FM000000000')
+                SELECT 'M'||TO_CHAR(NEXTVAL('s_member'),'FM000000000')
             </selectKey>            
             INSERT INTO
             t_member
