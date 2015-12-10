@@ -2236,7 +2236,7 @@ Resourceクラスの役割は以下の通りである。
 * :file:`MemberResource.java`
 
  .. code-block:: java
-    :emphasize-lines: 18, 23-28, 69
+    :emphasize-lines: 18, 23-28, 68
 
     package org.terasoluna.examples.rest.api.member;
     
@@ -2776,7 +2776,7 @@ URIで指定されたMemberリソースのコレクションをページ検索�
     Resourceクラスのリストを直接扱う場合のControllerのメソッドは以下のような定義となる。
 
      .. code-block:: java
-        :emphasize-lines: 4
+        :emphasize-lines: 3
 
         @RequestMapping(method = RequestMethod.GET)
         @ResponseStatus(HttpStatus.OK)

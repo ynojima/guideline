@@ -2240,7 +2240,7 @@ Example of Resource class creation is shown below.
 * :file:`MemberResource.java`
 
  .. code-block:: java
-    :emphasize-lines: 18, 23-28, 69
+    :emphasize-lines: 18, 23-28, 68
 
     package org.terasoluna.examples.rest.api.member;
     
@@ -2355,7 +2355,6 @@ Example of Resource class creation is shown below.
     import javax.validation.constraints.Size;
     
     import com.fasterxml.jackson.annotation.JsonInclude;
-
     import org.hibernate.validator.constraints.Email;
     import org.joda.time.DateTime;
 
@@ -2549,7 +2548,6 @@ Example to implement the REST API wherein a page search is performed for member 
         // (3)
         @RequestMapping(method = RequestMethod.GET)
         // (4)
-
         @ResponseStatus(HttpStatus.OK)
         public Page<MemberResource> getMembers(
                 // (5)
@@ -2779,10 +2777,9 @@ Example to implement the REST API wherein a page search is performed for member 
     Following is the definition of the Controller method used when handling the list of Resource class directly.
 
      .. code-block:: java
-        :emphasize-lines: 4
+        :emphasize-lines: 3
 
         @RequestMapping(method = RequestMethod.GET)
-
         @ResponseStatus(HttpStatus.OK)
         public List<MemberResource> getMembers(
                 @Validated MembersSearchQuery query) {
@@ -2942,7 +2939,6 @@ Implementation of REST API that fetches the Member resource specified by URI, is
  .. code-block:: java
     :emphasize-lines: 7, 9, 12, 15
 
-
     @RequestMapping("members")
     @RestController
     public class MemberRestController {
@@ -2951,7 +2947,6 @@ Implementation of REST API that fetches the Member resource specified by URI, is
 
         // (1)
         @RequestMapping(value = "{memberId}", method = RequestMethod.GET)
-
         // (2)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMember(
@@ -3044,7 +3039,6 @@ Implementation of REST API that updates the Member resource specified in URI, is
 
         // (1)
         @RequestMapping(value = "{memberId}", method = RequestMethod.PUT)
-
         // (2)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource putMember(
@@ -3150,7 +3144,6 @@ Implementation of REST API that deletes the Member resource specified by URI is 
 
         // (1)
         @RequestMapping(value = "{memberId}", method = RequestMethod.DELETE)
-
         // (2)
         @ResponseStatus(HttpStatus.NO_CONTENT)
         public void deleteMember(
@@ -4361,10 +4354,8 @@ Create a controller that sends the error response for the error notified to Serv
     
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
-
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RequestParam;
-
     import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.bind.annotation.RestController;
     import org.springframework.web.context.request.WebRequest;
@@ -4379,7 +4370,6 @@ Create a controller that sends the error response for the error notified to Serv
     
         // (3)
         @RequestMapping
-
         public ResponseEntity<ApiError> handleErrorPage(
                 @RequestParam("errorCode") String errorCode, // (4)
                 WebRequest request) {
@@ -4825,9 +4815,7 @@ Implementation for each resource
 
         // omitted
 
-
         @RequestMapping(value = "{memberId}", method = RequestMethod.GET)
-
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMember(
                 @PathVariable("memberId") String memberId
@@ -4944,7 +4932,6 @@ Implementation for each resource
     public class MemberRestController {
 
         // omitted
-
 
         @RequestMapping(method = RequestMethod.POST)
         public ResponseEntity<MemberResource> postMembers(
