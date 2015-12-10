@@ -328,7 +328,7 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
     public static String decryptTextByAesWithGcm(String secret, String salt, String cipherText) {
         TextEncryptor aesTextEncryptor = Encryptors.delux(secret, salt); // (1)
 
-        return aesTextEncryptor.encrypt(cipherText); // (2)
+        return aesTextEncryptor.decrypt(cipherText); // (2)
     }
 
   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
