@@ -1079,6 +1079,18 @@ Implement \ ``org.springframework.beans.factory.FactoryBean``\  to create \ ``or
 
 .. code-block:: java
 
+    import java.security.KeyStore;
+
+    import javax.net.ssl.KeyManagerFactory;
+    import javax.net.ssl.SSLContext;
+    import javax.net.ssl.TrustManagerFactory;
+
+    import org.apache.http.client.HttpClient;
+    import org.apache.http.impl.client.HttpClientBuilder;
+    import org.springframework.beans.factory.FactoryBean;
+    import org.springframework.http.client.ClientHttpRequestFactory;
+    import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+
     public class RequestFactoryBean implements
             FactoryBean<ClientHttpRequestFactory> {
 
@@ -1152,6 +1164,20 @@ Implement \ ``org.springframework.beans.factory.FactoryBean``\  to create \ ``or
       - | Create \ ``org.apache.http.client.HttpClient``\  which uses SSL context thus created.
     * - | (3)
       - | Create \ ``ClientHttpRequestFactory``\  which uses \ ``HttpClient``\  thus created.
+
+
+Apache HttpComponents HttpClient library is required in order to use of \ ``HttpClient`` \ and \ ``HttpClientBuilder``\.
+Add below Apache HttpComponents HttpClient dependency library into \ :file:`pom.xml`\.
+Furthermore, the version of Apache HttpComponents HttpClient is managed by Spring IO Platform, Apache HttpComponents HttpClient version is not defined here.
+
+* :file:`pom.xml`
+
+ .. code-block:: xml
+
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+    </dependency>
 
 
 **Implementation example of bean definition file (applicationContext.xml)**
