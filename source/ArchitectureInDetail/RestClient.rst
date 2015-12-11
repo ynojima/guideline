@@ -1166,8 +1166,9 @@ SSL自己署名証明書の使用
       - | 作成した\ ``HttpClient``\ を利用する \ ``ClientHttpRequestFactory``\ を作成する。
 
 
-\ ``HttpClient``\ および  \ ``HttpClientBuilder``\ を使用するためには、Apache HTTP Client のライブラリが必要となる。
-以下を \ :file:`pom.xml`\ に追加し、Apache HTTP Client を依存ライブラリに追加する。
+\ ``HttpClient``\ および  \ ``HttpClientBuilder``\ を使用するためには、Apache HttpComponents HttpClient のライブラリが必要となる。
+以下を \ :file:`pom.xml`\ に追加し、Apache HttpComponents HttpClient を依存ライブラリに追加する。
+なお、Apache HttpComponents HttpClient のバージョンは、 Spring IO Platform にて管理されているため、ここでApache HttpComponents HttpClient のバージョンを定義する必要はない。
 
 * :file:`pom.xml`
 
