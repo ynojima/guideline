@@ -145,15 +145,17 @@ How to use
         static {
             // (1)
             FullHalfPairsBuilder builder = new FullHalfPairsBuilder();
+        
+            // (2)
+            builder.pair("ー", "-");
+            
+            // (3)
             for (char c = '!'; c <= '~'; c++) {
-                if (c == '-') {
-                    continue;
-                }
                 String fullwidth = String.valueOf((char) (c + FULL_HALF_CODE_DIFF));
                 builder.pair(fullwidth, String.valueOf(c));
             }
             
-            // (2)
+            // (4)
             builder.pair("。", "｡").pair("「", "｢").pair("」", "｣").pair("、", "､")
                     .pair("・", "･").pair("ァ", "ｧ").pair("ィ", "ｨ").pair("ゥ", "ｩ")
                     .pair("ェ", "ｪ").pair("ォ", "ｫ").pair("ャ", "ｬ").pair("ュ", "ｭ")
@@ -178,12 +180,9 @@ How to use
                     .pair("べ", "ﾍﾞ").pair("ボ", "ﾎﾞ").pair("パ", "ﾊﾟ")
                     .pair("ピ", "ﾋﾟ").pair("プ", "ﾌﾟ").pair("ペ", "ﾍﾟ")
                     .pair("ポ", "ﾎﾟ").pair("ヴ", "ｳﾞ").pair("\u30f7", "ﾜﾞ")
-                    .pair("\u30fa", "ｦﾞ").pair("゛", "ﾞ").pair("゜", "ﾟ").pair("　", " ")
-                    
-                    // (3)
-                    .pair("ー", "-");
+                    .pair("\u30fa", "ｦﾞ").pair("゛", "ﾞ").pair("゜", "ﾟ").pair("　", " ");
             
-            // (4)
+            // (5)
             INSTANCE = new FullHalfConverter(builder.build());
         }
     }
@@ -198,10 +197,13 @@ How to use
     * - | (1)
       - | \ ``org.terasoluna.gfw.common.fullhalf.FullHalfPairsBuilder``\ を使用して、全角文字列と半角文字列の組合せとなる \ ``org.terasoluna.gfw.common.fullhalf.FullHalfPairs``\ を作成する。
     * - | (2)
-      - | Unicodeの全角"！"から"～"までと半角"!"から"~"までのコード値は、コード定義の順番が同じであるため、ループ処理にてマッピング可能であったが、それ以外の文字はコード定義の順番が全角文字列と半角文字列で一致しない。そのため、それぞれ個別にマッピングする。
-    * - | (3)
       - | \ ``DefaultFullHalf``\ では、全角文字列"ー"に対する半角文字列を"ｰ(\uFF70)"と設定していたところを、"-(\u002D)"に変更して設定。
+        | なお、"-(\u002D)"は、下記(3)でのマッピングに含まれるため、本マッピングを先に定義し、本マッピングが優先されるようにする。
+    * - | (3)
+      - | Unicodeの全角"！"から"～"までと半角"!"から"~"までのコード値は、コード定義の順番が同じであるため、ループ処理にてマッピングする。
     * - | (4)
+      - | 上記(3)以外の文字はコード定義の順番が全角文字列と半角文字列で一致しない。そのため、それぞれ個別にマッピングする。
+    * - | (5)
       - | \ ``FullHalfPairsBuilder``\ より作成した \ ``FullHalfPairs``\ を使用して、 \ ``FullHalfConverter``\ を作成する。
 
  .. note::
