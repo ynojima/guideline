@@ -1176,7 +1176,6 @@ SSL自己署名証明書の使用
     <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.5.1</version>
     </dependency>
 
 
