@@ -483,8 +483,8 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
             System.out.println(Base64.getEncoder().encodeToString(encryptedBytes));
             String decryptedText = decryptByPrivateKey(encryptedBytes, privateKey); // (5)
             System.out.println(decryptedText);
-        } catch (NoSuchAlgorithmException ignored) {
-            throw new IllegalStateException("Should not be happend!", ignored);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         }
     }
 
@@ -524,8 +524,8 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding"); // (1)
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);                       // (2)
             return cipher.doFinal(rawText.getBytes(StandardCharsets.UTF_8)); //
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ignored) {
-            throw new IllegalStateException("Should not be happened!", ignored);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         } catch (InvalidKeyException |
                  IllegalBlockSizeException |
                  BadPaddingException e) {
@@ -561,8 +561,8 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
             cipher.init(Cipher.DECRYPT_MODE, privateKey);           // (2)
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes); //
             return new String(decryptedBytes, StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ignored) {
-            throw new IllegalStateException("Should not be happened!", ignored);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         } catch (InvalidKeyException |
                  IllegalBlockSizeException |
                  BadPaddingException e) {
@@ -650,8 +650,8 @@ OpenSSL
                     .println("openssl rsautl -decrypt -inkey hoge.pem -in encryptedByJCA.txt");
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        } catch (NoSuchAlgorithmException ignored) {
-            throw new IllegalStateException("Should not be happend!", ignored);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         } catch (InvalidKeySpecException e) {
             throw new IllegalArgumentException(e);
         }
@@ -730,8 +730,8 @@ OpenSSL
             System.out.println(decryptedText);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        } catch (NoSuchAlgorithmException ignored) {
-            throw new IllegalStateException("Should not be happend!", ignored);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         } catch (InvalidKeySpecException e) {
             throw new IllegalArgumentException(e);
         }
@@ -787,8 +787,8 @@ OpenSSL
             result.write(aes.encrypt(text)); // (8)
 
             return result.toByteArray(); // (9)
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ignored) {
-            throw new IllegalStateException("Should not be happened!", ignored);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
@@ -860,8 +860,8 @@ OpenSSL
             return output.toByteArray(); // (9)
         } catch (IOException e) {
             throw new SystemException("encryption error (IO).", e);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ignored) {
-            throw new IllegalStateException("Should not be happened!", ignored);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new IllegalStateException("Invalid setting error.", e);
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             throw new IllegalArgumentException(e);
         }
@@ -961,7 +961,7 @@ ByteKeyGeneratorによるバイト配列型の疑似乱数 / 鍵生成
 
 |
 
-StringKeyGeneratorによる String 型の疑似乱数生成
+StringKeyGeneratorによる文字列型の疑似乱数生成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
   .. code-block:: java
