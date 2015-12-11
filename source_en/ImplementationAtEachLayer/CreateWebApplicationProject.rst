@@ -1680,7 +1680,7 @@ Module that manages the SQL file to initialize the database is explained.
 
 .. note::
 
-    Execute SQL using  `sql:execute <http://www.mojohaus.org/sql-maven-plugin/execute-mojo.html>`_ of `SQL Maven Plugin <http://www.mojohaus.org/sql-maven-plugin/>`_.
+    Can be executed SQL using `sql:execute <http://www.mojohaus.org/sql-maven-plugin/execute-mojo.html>`_ of `SQL Maven Plugin <http://www.mojohaus.org/sql-maven-plugin/>`_.
 
         .. code-block:: console
 
