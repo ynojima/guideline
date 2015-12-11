@@ -42,7 +42,7 @@ Spring Securityの暗号化機能の詳細については、\ `Spring Security R
 公開鍵暗号化方式
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | 復号側が用意した公開鍵を使用して暗号化し、公開鍵とペアとなる秘密鍵を使用して復号する方式である。
-| 暗号文を復号する際に使用する秘密鍵は公開されないためセキュリティの強度は高いが、暗復化と復号処理のコストは高い。
+| 暗号文を復号する際に使用する秘密鍵は公開されないためセキュリティの強度は高いが、暗号化と復号処理のコストは高い。
 
 ハイブリッド暗号化方式
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -768,14 +768,13 @@ OpenSSL
 
   .. code-block:: java
 
-    public byte[] encrypt(byte[] text, PublicKey key, String alg,
-            String salt) {
+    public byte[] encrypt(byte[] text, PublicKey key, String salt) {
         byte[] random = KeyGenerators.secureRandom(16).generateKey(); // (1)
         BytesEncryptor aes = Encryptors.standard(
                 new String(Hex.encode(random)), salt); // (2)
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream()) {
-            final Cipher cipher = Cipher.getInstance(alg); // (3)
+            final Cipher cipher = Cipher.getInstance("RSA"); // (3)
             cipher.init(Cipher.ENCRYPT_MODE, key); // (4)
             byte[] secret = cipher.doFinal(random); // (5)
 
@@ -790,11 +789,10 @@ OpenSSL
             return result.toByteArray(); // (9)
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ignored) {
             throw new IllegalStateException("Should not be happened!", ignored);
-        } catch (InvalidKeyException | IllegalBlockSizeException
-                | BadPaddingException e) {
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new SystemException("encryption error (IO).", e);
         }
     }
 
@@ -814,7 +812,7 @@ OpenSSL
        - | 生成した共通鍵とソルトを指定して\ ``BytesEncryptor``\ クラスのインスタンスを生成する。
 
      * - | (3)
-       - | 暗号化アルゴリズム、暗号利用モード、パディング方式を指定して、\ ``Cipher``\ クラスのインスタンスを生成する。
+       - | 暗号化アルゴリズムとしてRSAを指定して、\ ``Cipher``\ クラスのインスタンスを生成する。
 
      * - | (4)
        - | 暗号化モード定数と公開鍵を指定して\ ``Cipher``\ クラスのインスタンスを初期化する。
@@ -841,8 +839,7 @@ OpenSSL
 
   .. code-block:: java
 
-    public byte[] decrypt(byte[] text, PrivateKey key, String alg,
-            String salt) {
+    public byte[] decrypt(byte[] text, PrivateKey key, String salt) {
 
         try (ByteArrayInputStream input = new ByteArrayInputStream(text);
                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
@@ -852,7 +849,7 @@ OpenSSL
 
             byte[] random = new byte[length]; // (2)
             input.read(random); //
-            final Cipher cipher = Cipher.getInstance(alg); // (3)
+            final Cipher cipher = Cipher.getInstance("RSA"); // (3)
             cipher.init(Cipher.DECRYPT_MODE, key); // (4)
             String secret = new String(Hex.encode(cipher.doFinal(random))); // (5)
             byte[] buffer = new byte[text.length - random.length - 2]; // (6)
@@ -862,11 +859,10 @@ OpenSSL
 
             return output.toByteArray(); // (9)
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new SystemException("encryption error (IO).", e);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ignored) {
             throw new IllegalStateException("Should not be happened!", ignored);
-        } catch (InvalidKeyException | IllegalBlockSizeException
-                | BadPaddingException e) {
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -885,7 +881,7 @@ OpenSSL
        - | 暗号化された共通鍵を取得する。
 
      * - | (3)
-       - | 暗号化アルゴリズム、暗号利用モード、パディング方式を指定して、\ ``Cipher``\ クラスのインスタンスを生成する。
+       - | 暗号化アルゴリズムとしてRSAを指定して、\ ``Cipher``\ クラスのインスタンスを生成する。
 
      * - | (4)
        - | 復号モード定数と秘密鍵を指定して\ ``Cipher``\ クラスのインスタンスを初期化する。
