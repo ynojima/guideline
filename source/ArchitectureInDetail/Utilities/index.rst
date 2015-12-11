@@ -5,6 +5,7 @@
    
    Dozer
    JodaTime
+   StringProcessing
 
 .. raw:: latex
 
