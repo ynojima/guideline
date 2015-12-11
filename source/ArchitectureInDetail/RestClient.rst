@@ -1079,6 +1079,18 @@ SSL自己署名証明書の使用
 
 .. code-block:: java
 
+    import java.security.KeyStore;
+
+    import javax.net.ssl.KeyManagerFactory;
+    import javax.net.ssl.SSLContext;
+    import javax.net.ssl.TrustManagerFactory;
+
+    import org.apache.http.client.HttpClient;
+    import org.apache.http.impl.client.HttpClientBuilder;
+    import org.springframework.beans.factory.FactoryBean;
+    import org.springframework.http.client.ClientHttpRequestFactory;
+    import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+
     public class RequestFactoryBean implements
             FactoryBean<ClientHttpRequestFactory> {
 
@@ -1152,6 +1164,20 @@ SSL自己署名証明書の使用
       - | 作成したSSLコンテキストを利用する \ ``org.apache.http.client.HttpClient``\ を作成する。
     * - | (3)
       - | 作成した\ ``HttpClient``\ を利用する \ ``ClientHttpRequestFactory``\ を作成する。
+
+
+\ ``HttpClient``\ および  \ ``HttpClientBuilder``\ を使用するためには、Apache HTTP Client のライブラリが必要となる。
+以下を \ :file:`pom.xml`\ に追加し、Apache HTTP Client を依存ライブラリに追加する。
+
+* :file:`pom.xml`
+
+ .. code-block:: xml
+
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.1</version>
+    </dependency>
 
 
 **bean定義ファイル(applicationContext.xml)の定義例**
