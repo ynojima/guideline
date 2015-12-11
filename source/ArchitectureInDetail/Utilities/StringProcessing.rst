@@ -557,100 +557,86 @@ Bean Validation との連携
      - | \ ``ASCIIControlChars``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | Ascii制御文字の集合(0x0000-0x001F、0x007F)
-     - | groupId : org.terasoluna.gfw
-       | artifactId : terasoluna-gfw-codepoints
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw``\
+       | artifactId : \ ``terasoluna-gfw-codepoints``\
    * - | (2)
      - | \ ``ASCIIPrintableChars``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | Ascii印字可能文字の集合(0x0020-0x007E)
-     - | groupId : org.terasoluna.gfw
-       | artifactId : terasoluna-gfw-codepoints
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw``\
+       | artifactId : \ ``terasoluna-gfw-codepoints``\
    * - | (3)
      - | \ ``CRLF``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | 改行コードの集合。0x000A( \ ``LINE FEED``\ )と0x000D( \ ``CARRIAGE RETURN``\ )。
-     - | groupId : org.terasoluna.gfw
-       | artifactId : terasoluna-gfw-codepoints
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw``\
+       | artifactId : \ ``terasoluna-gfw-codepoints``\
    * - | (4)
      - | \ ``JIS_X_0201_Katakana``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0201 の半角カナの集合。記号(｡｢｣､･)も含まれる。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0201
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0201``\
    * - | (5)
      - | \ ``JIS_X_0201_LatinLetters``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0201 のLatin文字の集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0201
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0201``\
    * - | (6)
      - | \ ``JIS_X_0208_SpecialChars``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の1-2区：特殊文字の集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (7)
      - | \ ``JIS_X_0208_LatinLetters``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の3区：英数字の集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (8)
      - | \ ``JIS_X_0208_Hiragana``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の4区：ひらがなの集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (9)
      - | \ ``JIS_X_0208_Katakana``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の5区：カタカナの集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (10)
      - | \ ``JIS_X_0208_GreekLetters``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の6区：ギリシア文字の集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (11)
      - | \ ``JIS_X_0208_CyrillicLetters``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の7区：キリル文字の集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (12)
      - | \ ``JIS_X_0208_BoxDrawingChars``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0208 の8区：罫線素片の集合。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208``\
    * - | (13)
      - | \ ``JIS_X_0208_Kanji``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 208で規定される漢字6355字。第一・第二水準漢字。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0208kanji
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0208kanji``\
    * - | (14)
      - | \ ``JIS_X_0213_Kanji``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | JIS X 0213:2004で規定される漢字10050字。第一・第二・第三・第四水準漢字。
-     - | groupId : org.terasoluna.gfw.codepoints
-       | artifactId : terasoluna-gfw-codepoints-jisx0213kanji
-       | version : ${terasoluna.gfw.version}
+     - | groupId : \ ``org.terasoluna.gfw.codepoints``\
+       | artifactId : \ ``terasoluna-gfw-codepoints-jisx0213kanji``\
 
 
 .. _StringProcessingCodePointsCreate:
