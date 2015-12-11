@@ -574,7 +574,7 @@ Bean Validation との連携
    * - | (4)
      - | \ ``JIS_X_0201_Katakana``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
-       | JIS X 0201 の半角カナの集合。記号(｡｢｣､･)も含まれる。
+       | JIS X 0201 のカタカナの集合。記号(｡｢｣､･)も含まれる。
      - | groupId : \ ``org.terasoluna.gfw.codepoints``\
        | artifactId : \ ``terasoluna-gfw-codepoints-jisx0201``\
    * - | (5)
