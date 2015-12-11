@@ -259,13 +259,13 @@ How to use
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-:header-rows: 1
+   :header-rows: 1
    :widths: 10 90
 
-       * - 項番
-         - 説明
-       * - | (1)
-         - | \ ``CodePoints#of``\ メソッドにコードポイント集合のクラスを渡すことで、インスタンスを取得出来る。
+   * - 項番
+     - 説明
+   * - | (1)
+     - | \ ``CodePoints#of``\ メソッドにコードポイント集合のクラスを渡すことで、インスタンスを取得出来る。
        | 本例では、 Ascii印字可能文字のコードポイント集合 \ ``org.terasoluna.gfw.common.codepoints.catalog.ASCIIPrintableChars``\ のインスタンスが取得される。
        | また、このメソッドを使用することで、作成されたインスタンスはキャッシュされる。
 
@@ -290,13 +290,13 @@ How to use
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-:header-rows: 1
+   :header-rows: 1
    :widths: 10 90
 
-       * - 項番
-         - 説明
-       * - | (1)
-         - | \ ``new``\ でコードポイント集合のクラスのインスタンスを取得出来る。
+   * - 項番
+     - 説明
+   * - | (1)
+     - | \ ``new``\ でコードポイント集合のクラスのインスタンスを取得出来る。
        | 本例では、 Ascii印字可能文字のコードポイント集合 \ ``ASCIIPrintableChars``\ のインスタンスが取得される。
        | なお、この方法で作成されたインスタンスはキャッシュされない。
 
@@ -314,14 +314,14 @@ How to use
       CodePoints codePoints = new CodePoints(0x0061 /* a */, 0x0062 /* b */);  // (1)
 
    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+   .. list-table::
+      :header-rows: 1
       :widths: 10 90
 
-          * - 項番
-            - 説明
-          * - | (1)
-            - | \ ``int``\ のコードポイントを、\ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
+      * - 項番
+        - 説明
+      * - | (1)
+        - | \ ``int``\ のコードポイントを、\ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
           | 本例では、 文字"a"と"b"のコードポイント集合のインスタンスが取得される。
 
  |
@@ -336,14 +336,14 @@ How to use
       CodePoints codePoints = new CodePoints(set);  // (1)
 
    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+   .. list-table::
+      :header-rows: 1
       :widths: 10 90
 
-          * - 項番
-            - 説明
-          * - | (1)
-            - | \ ``int``\ のコードポイントを \ ``Set``\ に追加し、\ ``Set``\ を \ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
+      * - 項番
+        - 説明
+      * - | (1)
+        - | \ ``int``\ のコードポイントを \ ``Set``\ に追加し、\ ``Set``\ を \ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
           | 本例では、 文字"a"と"b"のコードポイント集合のインスタンスが取得される。
 
  |
@@ -357,14 +357,14 @@ How to use
       // CodePoints codePoints = new CodePoints("a", "b");  // (2)
 
    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+   .. list-table::
+      :header-rows: 1
       :widths: 10 90
 
-          * - 項番
-            - 説明
-          * - | (1)
-            - | コードポイントを含む文字列を \ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
+      * - 項番
+        - 説明
+      * - | (1)
+        - | コードポイントを含む文字列を \ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
           | 本例では、 文字"a"と"b"のコードポイント集合のインスタンスが取得される。
       * - | (2)
         - | 文字列を複数に分けて渡すことも出来る。(1)と同じ結果となる。
@@ -388,14 +388,14 @@ How to use
      CodePoints abcdCp = abCp.union(cdCp);    // (1)
 
   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+  .. list-table::
+     :header-rows: 1
      :widths: 10 90
 
-         * - 項番
-           - 説明
-         * - | (1)
-           - | \ ``CodePoints#union``\ メソッドで、 ２つのコードポイント集合の和集合を計算し、新規のコードポイント集合のインスタンスを作成する。
+     * - 項番
+       - 説明
+     * - | (1)
+       - | \ ``CodePoints#union``\ メソッドで、 ２つのコードポイント集合の和集合を計算し、新規のコードポイント集合のインスタンスを作成する。
          | 本例では、文字列"ab"に含まれるコードポイントの集合と、文字列"cd"に含まれるコードポイントの集合の和集合を計算し、新規のコードポイントの集合（文字列"abcd"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
 
 |
@@ -411,14 +411,14 @@ How to use
      CodePoints abCp = abcdCp.subtract(cdCp);    // (1)
 
   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+  .. list-table::
+     :header-rows: 1
      :widths: 10 90
 
-         * - 項番
-           - 説明
-         * - | (1)
-           - | \ ``CodePoints#subtract``\ メソッドで、 ２つのコードポイント集合の差集合を計算し、新規のコードポイント集合のインスタンスを作成する。
+     * - 項番
+       - 説明
+     * - | (1)
+       - | \ ``CodePoints#subtract``\ メソッドで、 ２つのコードポイント集合の差集合を計算し、新規のコードポイント集合のインスタンスを作成する。
          | 本例では、文字"abcd"に含まれるコードポイントの集合と、文字"cd"に含まれるコードポイントの集合の差集合を計算し、新規のコードポイントの集合（文字列"ab"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
 
 |
@@ -434,14 +434,14 @@ How to use
      CodePoints cdCp = abcdCp.intersect(cdeCp);    // (1)
 
   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+  .. list-table::
+     :header-rows: 1
      :widths: 10 90
 
-         * - 項番
-           - 説明
-         * - | (1)
-           - | \ ``CodePoints#intersect``\ メソッドで、 ２つのコードポイント集合の積集合を計算し、新規のコードポイント集合のインスタンスを作成する。
+     * - 項番
+       - 説明
+     * - | (1)
+       - | \ ``CodePoints#intersect``\ メソッドで、 ２つのコードポイント集合の積集合を計算し、新規のコードポイント集合のインスタンスを作成する。
          | 本例では、文字"abcd"に含まれるコードポイントの集合と、文字"cde"に含まれるコードポイントの集合の積集合を計算し、新規のコードポイントの集合（文字列"cd"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
 
 
@@ -505,28 +505,28 @@ Bean Validation との連携
      private String firstName;
 
   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
+  .. list-table::
+     :header-rows: 1
      :widths: 10 90
 
-         * - 項番
-           - 説明
-         * - | (1)
-           - | 対象のフィールドに設定された文字列が、全て JIS X 0208のひらがな であることをチェックする。
+     * - 項番
+       - 説明
+     * - | (1)
+       - | 対象のフィールドに設定された文字列が、全て JIS X 0208のひらがな であることをチェックする。
 
-    |
+|
 
     * チェックに用いるコードポイント集合が複数の場合
 
       .. code-block:: java
 
-     @ConsisOf({JIS_X_0208_Hiragana.class, JIS_X_0208_Katakana.class})    // (1)
-     private String firstName;
+         @ConsisOf({JIS_X_0208_Hiragana.class, JIS_X_0208_Katakana.class})    // (1)
+         private String firstName;
 
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-:header-rows: 1
-     :widths: 10 90
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+         :header-rows: 1
+         :widths: 10 90
 
          * - 項番
            - 説明
@@ -547,14 +547,14 @@ Bean Validation との連携
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.60\linewidth}|p{0.30\linewidth}|
 .. list-table::
-:header-rows: 1
+   :header-rows: 1
    :widths: 10 60 30
 
-       * - 項番
-         - クラス名/ (パッケージ名) / 説明
-         - アーティファクト情報
-       * - | (1)
-         - | \ ``ASCIIControlChars``\
+   * - 項番
+     - クラス名/ (パッケージ名) / 説明
+     - アーティファクト情報
+   * - | (1)
+     - | \ ``ASCIIControlChars``\
        | ( \ ``org.terasoluna.gfw.common.codepoints.catalog``\ )
        | Ascii制御文字の集合(0x0000-0x001F、0x007F)
      - | groupId : org.terasoluna.gfw
