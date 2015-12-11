@@ -1686,6 +1686,14 @@ initdbモジュールの構成
         作成時点では、空のディレクトリである。
         作成例については、`サンプルアプリケーションのinitdbプロジェクト <https://github.com/terasolunaorg/terasoluna-tourreservation-mybatis3/tree/master/terasoluna-tourreservation-initdb/src/sqls>`_ を参照されたい。
 
+.. note::
+
+    `SQL Maven Plugin <http://www.mojohaus.org/sql-maven-plugin/>`_ の `sql:execute <http://www.mojohaus.org/sql-maven-plugin/execute-mojo.html>`_ を使用して、SQLを実行できる。
+
+        .. code-block:: console
+
+            mvn sql:execute
+
 |
 
 .. _CreateWebApplicationProjectConfigurationSelenium:
