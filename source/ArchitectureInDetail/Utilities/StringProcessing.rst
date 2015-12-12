@@ -18,14 +18,26 @@ Overview
 How to use
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-全角半角文字列変換
+全角・半角文字列変換
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+全角文字と半角文字の変換は、共通ライブラリが提供する\ ``org.terasoluna.gfw.common.fullhalf.FullHalfConverter``\ クラスのAPIを使用して行う。
+
+\ ``FullHalfConverter``\ クラスは、変換対象にしたい全角文字と半角文字のペア定義(\ ``org.terasoluna.gfw.common.fullhalf.FullHalfPair``\ )を事前に登録しておくスタイルを採用している。
+共通ライブラリでは、デフォルトのペア定義が登録されている\ ``FullHalfConverter``\ オブジェクトを、
+\ ``org.terasoluna.gfw.common.fullhalf.DefaultFullHalf``\ クラスの\ ``INSTANCE``\ 定数として提供している。
+デフォルトのペア定義については、`DefaultFullHalfのソース <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/DefaultFullHalf.java>`_ を参照されたい。
+
+.. note::
+
+    共通ライブラリが提供しているデフォルトのペア定義で変換要件が満たせない場合は、独自のペア定義を登録した\ ``FullHalfConverter``\ オブジェクトを作成すればよい。
+    具体的な作成方法については、:ref:`StringOperationsHowToUseCustomFullHalfConverter` を参照されたい。
+
 
 全角文字列に変換
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-| \ ``FullHalfConverter#toFullwidth``\ は、引数の文字列を全角文字列へ変換するメソッドである。
-| 以下に半角文字列から全角文字列への変換方法を示す。
+半角文字を全角文字へ変換する場合は、\ ``FullHalfConverter``\ の\ ``toFullwidth``\ メソッドを使用する。
 
 .. code-block:: java
 
@@ -39,23 +51,14 @@ How to use
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``org.terasoluna.gfw.common.fullhalf.DefaultFullHalf``\ クラスを使用し、デフォルトの全角文字列と半角文字列の組合せが登録された\ ``FullHalfConverter#toFullwidth``\ にて、引数に渡した文字列を、全角文字列へ変換する。
-       | 本例では、"ア゛！Ａ８ガザ" に変換される。
-       | なお、本例の"ザ"のように半角文字ではない（デフォルトの組合せに無い）文字は、そのまま返却される。
-       | \ ``DefaultFullHalf``\ クラスが定義しているデフォルトの全角文字列と半角文字列の組合せについては `ソース <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/DefaultFullHalf.java>`_ を参照されたい。
-
-.. note::
-
-    独自の全角文字列と半角文字列の組合せを登録した\ ``FullHalfConverter``\ を使用する場合は :ref:`StringOperationsHowToDesignCustomFullHalfConverter` を参照されたい。
-
-|
+     - | 半角文字が含まれる文字列を\ ``toFullwidth``\ メソッドの引数に渡し、全角文字列へ変換する。
+       | 本例では、\ ``"ア゛！Ａ８ガザ"``\ に変換される。なお、ペア定義されていない文字（本例の\ ``"ザ"``\ ）はそのまま返却される。
 
 
 半角文字列に変換
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-| \ ``FullHalfConverter#toHalfwidth``\ は、引数の文字列を半角文字列へ変換するメソッドである。
-| 以下に全角文字列から半角文字列への変換方法を示す。
+全角文字を半角文字へ変換する場合は、\ ``FullHalfConverter``\ の\ ``toHalfwidth``\ メソッドを使用する。
 
 .. code-block:: java
 
@@ -69,31 +72,26 @@ How to use
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``DefaultFullHalf``\ クラスを使用し、デフォルトの全角文字列と半角文字列の組合せが登録された\ ``FullHalfConverter#toHalfwidth``\ にて、引数に渡した文字列を、半角文字列へ変換する。
-       | 本例では、"A!ｱｶﾞｻ" に変換される。
-       | なお、本例の"ｻ"のように全角文字ではない（デフォルトの組合せに無い）文字は、そのまま返却される。
-       | \ ``DefaultFullHalf``\ クラスが定義しているデフォルトの全角文字列と半角文字列の組合せについては `ソース <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/DefaultFullHalf.java>`_ を参照されたい。
+     - | 全角文字が含まれる文字列を\ ``toHalfwidth``\ メソッドの引数に渡し、半角文字列へ変換する。
+       | 本例では、\ ``"A!ｱｶﾞｻ"``\ に変換される。なお、ペア定義されていない文字（本例の\ ``"ｻ"``\ ）はそのまま返却される。
 
 .. note::
 
-    独自の全角文字列と半角文字列の組合せを登録した\ ``FullHalfConverter``\ を使用する場合は :ref:`StringOperationsHowToDesignCustomFullHalfConverter` を参照されたい。
-
-.. note::
-
-    \ ``FullHalfConverter``\ は、2文字以上で1文字を表現する結合文字（例："シ（\\u30b7）" + "濁点（\\u3099）"）を半角文字（例："ｼﾞ"）へ変換することが出来ない。
-    このような場合、テキスト正規化を行い、結合文字を合成文字（例："ジ（\\u30b8）"）に変換してから \ ``FullHalfConverter``\ を使用する必要がある。
+    \ ``FullHalfConverter``\ は、2文字以上で1文字を表現する結合文字（例：「\ ``"シ"``\ (\ ``\u30b7``\ ) + 濁点(\ ``\u3099``\ )」）を半角文字（例：\ ``"ｼﾞ"``\ ）へ変換することが出来ない。
+    結合文字を半角文字へ変換する場合は、テキスト正規化を行って合成文字（例：\ ``"ジ"``\ (\ ``\u30b8``\ )）に変換してから \ ``FullHalfConverter``\ を使用する必要がある。
     
     テキスト正規化を行う場合は、\ ``java.text.Normalizer``\ を使用する。
-    以下に、使用方法を示す。
-    
-    正規化形式 ： NFD（正準等価性によって分解する）の場合
+    なお、結合文字を合成文字に変換する場合は、正規化形式としてNFCまたはNFKCを利用する。
+
+
+    正規化形式としてNFD（正準等価性によって分解する）を使用する場合の実装例
     
       .. code-block:: java
 
          String str1 = Normalizer.normalize("モジ", Normalizer.Form.NFD); // str1 = "モシ + Voiced sound mark(\\u3099)"
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFD);  // str2 = "ﾓｼﾞ"
 
-    正規化形式 ： NFC（正準等価性によって分解し、再度合成する）の場合
+    正規化形式としてNFC（正準等価性によって分解し、再度合成する）を使用する場合の実装例
     
       .. code-block:: java
 
@@ -101,14 +99,14 @@ How to use
          String str1 = Normalizer.normalize(mojiStr, Normalizer.Form.NFC); // str1 = "モジ（\\u30b8）"
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFC);   // str2 = "ﾓｼﾞ"
     
-    正規化形式 ： NFKD（互換等価性によって分解する）の場合
+    正規化形式としてNFKD（互換等価性によって分解する）を使用する場合の実装例
     
       .. code-block:: java
 
          String str1 = Normalizer.normalize("モジ", Normalizer.Form.NFKD); // str1 = "モシ + Voiced sound mark(\\u3099)"
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFKD);  // str2 = "モシ + Voiced sound mark(\\u3099)"
     
-    正規化形式 ： NFKC（互換等価性によって分解し、再度合成する）の場合
+    正規化形式としてNFKC（互換等価性によって分解し、再度合成する）を使用する場合の実装例
     
       .. code-block:: java
 
@@ -117,24 +115,20 @@ How to use
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFKC) ;  // str2 = "モジ"
     
     
-    上記のように、結合文字を合成文字に変換する場合などは、正規化形式 ： NFC または NFKC を利用する。
-    
-    詳細は \ `JavaDoc <https://docs.oracle.com/javase/8/docs/api/java/text/Normalizer.html>`_\ を参照されたい。
-
-|
+    詳細は \ `NormalizerのJavaDoc <https://docs.oracle.com/javase/8/docs/api/java/text/Normalizer.html>`_\ を参照されたい。
 
 
-.. _StringOperationsHowToDesignCustomFullHalfConverter:
+.. _StringOperationsHowToUseCustomFullHalfConverter:
 
-独自の全角文字列と半角文字列の組合せを登録したFullHalfConverterクラスの作成
+独自の全角文字と半角文字のペア定義を登録したFullHalfConverterクラスの作成
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-| \ ``DefaultFullHalf``\ を使用せず、独自に作成した全角文字列と半角文字列の組合せを使って \ ``FullHalfConverter``\ を使用することも出来る。
-| 以下に、独自の全角文字列と半角文字列の組合せを使って \ ``FullHalfConverter``\ を使用する方法を示す。
+| \ ``DefaultFullHalf``\ を使用せず、独自の全角文字と半角文字のペア定義を登録した\ ``FullHalfConverter``\ を使用することも出来る。
+| 以下に、独自の全角文字と半角文字のペア定義を登録した \ ``FullHalfConverter``\ を使用する方法を示す。
 
-* | 独自の組合せを使った \ ``FullHalfConverter``\ を提供するクラスの実装
+**独自のペア定義を登録したFullHalfConverterを提供するクラスの実装例**
 
- .. code-block:: java
+.. code-block:: java
  
     public class CustomFullHalf {
         
@@ -187,49 +181,49 @@ How to use
         }
     }
 
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
     :header-rows: 1
     :widths: 10 90
 
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``org.terasoluna.gfw.common.fullhalf.FullHalfPairsBuilder``\ を使用して、全角文字列と半角文字列の組合せとなる \ ``org.terasoluna.gfw.common.fullhalf.FullHalfPairs``\ を作成する。
+      - | \ ``org.terasoluna.gfw.common.fullhalf.FullHalfPairsBuilder``\ を使用して、全角文字と半角文字のペア定義のセットを表現する\ ``org.terasoluna.gfw.common.fullhalf.FullHalfPairs``\ を作成する。
     * - | (2)
-      - | \ ``DefaultFullHalf``\ では、全角文字列"ー"に対する半角文字列を"ｰ(\uFF70)"と設定していたところを、"-(\u002D)"に変更して設定。
-        | なお、"-(\u002D)"は、下記(3)でのマッピングに含まれるため、本マッピングを先に定義し、本マッピングが優先されるようにする。
+      - | \ ``DefaultFullHalf``\ では、全角文字の\ ``"ー"``\ に対する半角文字を\ ``"ｰ"``\ (\ ``\uFF70``\ )に設定しているところを、本例では\ ``"-"``\ (\ ``\u002D``\ )に変更している。
+        | なお、\ ``"-"``\ (\ ``\u002D``\ )は、下記(3)の処理対象にも含まれているが、先に定義したペア定義が優先される仕組みになっている。
     * - | (3)
-      - | Unicodeの全角"！"から"～"までと半角"!"から"~"までのコード値は、コード定義の順番が同じであるため、ループ処理にてマッピングする。
+      - | 本例では、Unicodeの全角の\ ``"！"``\ から\ ``"～"``\ までと半角の\ ``"!"``\ から\ ``"~"``\ までのコード値を、コード値の並び順が同じであるという特徴を利用して、ループ処理を使ってペア定義を行っている。
     * - | (4)
-      - | 上記(3)以外の文字はコード定義の順番が全角文字列と半角文字列で一致しない。そのため、それぞれ個別にマッピングする。
+      - | 上記(3)以外の文字はコード値の並び順が全角文字と半角文字で一致しないため、それぞれ個別にペア定義を行う。
     * - | (5)
       - | \ ``FullHalfPairsBuilder``\ より作成した \ ``FullHalfPairs``\ を使用して、 \ ``FullHalfConverter``\ を作成する。
 
- .. note::
+.. note::
 
-    \ ``FullHalfPairsBuilder#pair``\ メソッドは、以下の条件を満たさない場合、\ ``java.lang.IllegalArgumentException``\ をスローする。
-     * 第1引数の全角文字は1文字
-     * 第2引数の半角文字は1文字または2文字
+    \ ``FullHalfPairsBuilder#pair``\ メソッドの引数に指定可能な値については、
+    `FullHalfPairのコンストラクタのJavaDoc <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/FullHalfPair.java>`_
+    を参照されたい。
 
 |
 
-* | 独自の組合せを使った \ ``FullHalfConverter``\ の使用例
+**独自のペア定義を登録したFullHalfConverterの使用例**
 
- .. code-block:: java
+.. code-block:: java
  
     String halfwidth = CustomFullHalf.INSTANCE.toHalfwidth("ハローワールド！"); // (1)
 
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
     :header-rows: 1
     :widths: 10 90
 
     * - 項番
       - 説明
     * - | (1)
-      - | 実装した \ ``CustomFullHalf``\ を使用し、 独自の組合せが登録された \ ``FullHalfConverter#toHalfwidth``\ にて、引数に渡した文字列を、半角文字列へ変換する。
-        | 本例では、"ﾊﾛ-ﾜ-ﾙﾄﾞ!" （"-" は (\u002D)）に変換される。
+      - | 独自のペア定義が登録された \ ``FullHalfConverter``\ オブジェクトの\ ``toHalfwidth``\ メソッドを使用して、全角文字が含まれる文字列を半角文字列へ変換する。
+        | 本例では、\ ``"ﾊﾛ-ﾜ-ﾙﾄﾞ!"``\ に変換される。（\ ``"-"``\ は \ ``\u002D``\ ）
 
 
 |
