@@ -551,6 +551,64 @@ Bean Validation との連携
 
 |
 
+.. _StringProcessingCodePointsCreate:
+
+コードポイント集合のクラスの新規作成
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+| コードポイント集合のクラスを新規で作成する場合、\ ``CodePoints``\ クラスを継承し、コンストラクタでコードポイント等を指定する。
+| コードポイント集合のクラスを新規で作成する方法を以下に示す。
+|
+
+**コードポイントを指定して新規にコードポイント集合のクラスを作成する場合**
+
+「数字のみ」からなるコードポイント集合の作成例
+
+.. code-block:: java
+
+     public class NumberChars extends CodePoints {
+         public NumberCodePoints() {
+             super(0x0030 /* 0 */, 0x0031 /* 1 */, 0x0032 /* 2 */, 0x0033 /* 3 */,
+                     0x0034 /* 4 */, 0x0035 /* 5 */, 0x0036 /* 6 */,
+                     0x0037 /* 7 */, 0x0038 /* 8 */, 0x0039 /* 9 */);
+         }
+     }
+
+|
+
+**既存のコードポイント集合の集合演算で新規にコードポイント集合のクラスを作成する場合**
+
+「ひらがな」と「カタカナ」からなる和集合を用いたコードポイント集合の作成例
+
+.. code-block:: java
+
+    public class FullwidthHiraganaKatakana extends CodePoints {
+        public FullwidthHiraganaKatakana() {
+            super(new X_JIS_0208_Hiragana().union(new X_JIS_0208_Katakana()));
+        }
+    }
+
+「記号（｡｢｣､･）を除いた半角カタカナ」からなる差集合を用いたコードポイント集合の作成例
+
+.. code-block:: java
+
+    public class HalfwidthKatakana extends CodePoints {
+        public HalfwidthKatakana() {
+            CodePoints symbolCp = new CodePoints(0xFF61 /* ｡ */, 0xFF62 /* ｢ */,
+                    0xFF63 /* ｣ */, 0xFF64 /* ､ */, 0xFF65 /* ･ */);
+
+            super(new JIS_X_0201_Katakana().subtract(symbolCp));
+        }
+    }
+
+.. note::
+
+    集合演算で使用するコードポイント集合（本例では \ ``X_JIS_0208_Hiragana``\ や、 \ ``X_JIS_0208_Katakana``\ 等）を、他で使用する予定がない場合、 \ ``new``\ を使い、キャッシュされないようにすべきである。
+    \ ``CodePoints#of``\ メソッドを使用してキャッシュさせると、集合演算の途中計算のみで使用されるコードポイント集合がヒープに残り、メモリを圧迫してしまう。
+    逆に他で使用する予定がある場合は、\ ``CodePoints#of``\ メソッドを使用して、キャッシュさせるべきである。
+
+|
+
 .. _StringProcessingCodePointsList:
 
 コードポイント集合のクラスの一覧
@@ -650,65 +708,6 @@ Bean Validation との連携
        | JIS X 0213:2004で規定される漢字10050字。第一・第二・第三・第四水準漢字。
      - | groupId : \ ``org.terasoluna.gfw.codepoints``\
        | artifactId : \ ``terasoluna-gfw-codepoints-jisx0213kanji``\
-
-|
-
-.. _StringProcessingCodePointsCreate:
-
-コードポイント集合のクラスの新規作成
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-| コードポイント集合のクラスを新規で作成する場合、\ ``CodePoints``\ クラスを継承し、コンストラクタでコードポイント等を指定する。
-| コードポイント集合のクラスを新規で作成する方法を以下に示す。
-|
-
-**コードポイントを指定して新規にコードポイント集合のクラスを作成する場合**
-
-「数字のみ」からなるコードポイント集合の作成例
-
-.. code-block:: java
-
-     public class NumberChars extends CodePoints {
-         public NumberCodePoints() {
-             super(0x0030 /* 0 */, 0x0031 /* 1 */, 0x0032 /* 2 */, 0x0033 /* 3 */,
-                     0x0034 /* 4 */, 0x0035 /* 5 */, 0x0036 /* 6 */,
-                     0x0037 /* 7 */, 0x0038 /* 8 */, 0x0039 /* 9 */);
-         }
-     }
-
-|
-
-**既存のコードポイント集合の集合演算で新規にコードポイント集合のクラスを作成する場合**
-
-「ひらがな」と「カタカナ」からなる和集合を用いたコードポイント集合の作成例
-
-.. code-block:: java
-
-    public class FullwidthHiraganaKatakana extends CodePoints {
-        public FullwidthHiraganaKatakana() {
-            super(new X_JIS_0208_Hiragana().union(new X_JIS_0208_Katakana()));
-        }
-    }
-
-「記号（｡｢｣､･）を除いた半角カタカナ」からなる差集合を用いたコードポイント集合の作成例
-
-.. code-block:: java
-
-    public class HalfwidthKatakana extends CodePoints {
-        public HalfwidthKatakana() {
-            CodePoints symbolCp = new CodePoints(0xFF61 /* ｡ */, 0xFF62 /* ｢ */,
-                    0xFF63 /* ｣ */, 0xFF64 /* ､ */, 0xFF65 /* ･ */);
-
-            super(new JIS_X_0201_Katakana().subtract(symbolCp));
-        }
-    }
-
-.. note::
-
-    集合演算で使用するコードポイント集合（本例では \ ``X_JIS_0208_Hiragana``\ や、 \ ``X_JIS_0208_Katakana``\ 等）を、他で使用する予定がない場合、 \ ``new``\ を使い、キャッシュされないようにすべきである。
-    \ ``CodePoints#of``\ メソッドを使用してキャッシュさせると、集合演算の途中計算のみで使用されるコードポイント集合がヒープに残り、メモリを圧迫してしまう。
-    逆に他で使用する予定がある場合は、\ ``CodePoints#of``\ メソッドを使用して、キャッシュさせるべきである。
-
 
 |
 
