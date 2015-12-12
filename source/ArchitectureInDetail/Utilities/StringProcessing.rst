@@ -18,8 +18,21 @@ Overview
 How to use
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-全角半角文字列変換
+全角・半角文字列変換
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+全角文字と半角文字の変換は、共通ライブラリが提供する\ ``org.terasoluna.gfw.common.fullhalf.FullHalfConverter``\ クラスのAPIを使用する。
+
+\ ``FullHalfConverter``\ クラスは、変換対象にしたい全角文字と半角文字のペア定義(\ ``org.terasoluna.gfw.common.fullhalf.FullHalfPair``\ )を事前に登録しておくスタイルを採用している。
+共通ライブラリでは、デフォルトのペア定義が登録されている\ ``FullHalfConverter``\ オブジェクトを、
+\ ``org.terasoluna.gfw.common.fullhalf.DefaultFullHalf``\ クラスの\ ``INSTANCE``\ 定数として提供している。
+デフォルトのペア定義については、`DefaultFullHalfのソース <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/DefaultFullHalf.java>`_ を参照されたい。
+
+.. note::
+
+    共通ライブラリが提供しているデフォルトのペア定義で変換要件が満たせない場合は、独自のペア定義を登録した\ ``FullHalfConverter``\ オブジェクトを作成すればよい。
+    具体的な作成方法については、:ref:`StringOperationsHowToDesignCustomFullHalfConverter` を参照されたい。
+
 
 全角文字列に変換
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -42,13 +55,6 @@ How to use
      - | \ ``org.terasoluna.gfw.common.fullhalf.DefaultFullHalf``\ クラスを使用し、デフォルトの全角文字列と半角文字列の組合せが登録された\ ``FullHalfConverter#toFullwidth``\ にて、引数に渡した文字列を、全角文字列へ変換する。
        | 本例では、\ ``"ア゛！Ａ８ガザ"``\ に変換される。
        | なお、本例の\ ``"ザ"``\ のように半角文字ではない（デフォルトの組合せに無い）文字は、そのまま返却される。
-       | \ ``DefaultFullHalf``\ クラスが定義しているデフォルトの全角文字列と半角文字列の組合せについては `ソース <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/DefaultFullHalf.java>`_ を参照されたい。
-
-.. note::
-
-    独自の全角文字列と半角文字列の組合せを登録した\ ``FullHalfConverter``\ を使用する場合は :ref:`StringOperationsHowToDesignCustomFullHalfConverter` を参照されたい。
-
-|
 
 
 半角文字列に変換
@@ -72,11 +78,6 @@ How to use
      - | \ ``DefaultFullHalf``\ クラスを使用し、デフォルトの全角文字列と半角文字列の組合せが登録された\ ``FullHalfConverter#toHalfwidth``\ にて、引数に渡した文字列を、半角文字列へ変換する。
        | 本例では、\ ``"A!ｱｶﾞｻ"``\ に変換される。
        | なお、本例の\ ``"ｻ"``\ のように全角文字ではない（デフォルトの組合せに無い）文字は、そのまま返却される。
-       | \ ``DefaultFullHalf``\ クラスが定義しているデフォルトの全角文字列と半角文字列の組合せについては `ソース <https://github.com/terasolunaorg/terasoluna-gfw/blob/master/terasoluna-gfw-string/src/main/java/org/terasoluna/gfw/common/fullhalf/DefaultFullHalf.java>`_ を参照されたい。
-
-.. note::
-
-    独自の全角文字列と半角文字列の組合せを登録した\ ``FullHalfConverter``\ を使用する場合は :ref:`StringOperationsHowToDesignCustomFullHalfConverter` を参照されたい。
 
 .. note::
 
@@ -120,8 +121,6 @@ How to use
     上記のように、結合文字を合成文字に変換する場合などは、正規化形式 ： NFC または NFKC を利用する。
     
     詳細は \ `JavaDoc <https://docs.oracle.com/javase/8/docs/api/java/text/Normalizer.html>`_\ を参照されたい。
-
-|
 
 
 .. _StringOperationsHowToDesignCustomFullHalfConverter:
