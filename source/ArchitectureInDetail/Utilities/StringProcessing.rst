@@ -132,9 +132,9 @@ How to use
 | \ ``DefaultFullHalf``\ を使用せず、独自に作成した全角文字列と半角文字列の組合せを使って \ ``FullHalfConverter``\ を使用することも出来る。
 | 以下に、独自の全角文字列と半角文字列の組合せを使って \ ``FullHalfConverter``\ を使用する方法を示す。
 
-* | 独自の組合せを使った \ ``FullHalfConverter``\ を提供するクラスの実装
+**独自の組合せを使ったFullHalfConverterを提供するクラスの実装**
 
- .. code-block:: java
+.. code-block:: java
  
     public class CustomFullHalf {
         
@@ -187,8 +187,8 @@ How to use
         }
     }
 
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
     :header-rows: 1
     :widths: 10 90
 
@@ -206,22 +206,23 @@ How to use
     * - | (5)
       - | \ ``FullHalfPairsBuilder``\ より作成した \ ``FullHalfPairs``\ を使用して、 \ ``FullHalfConverter``\ を作成する。
 
- .. note::
+.. note::
 
     \ ``FullHalfPairsBuilder#pair``\ メソッドは、以下の条件を満たさない場合、\ ``java.lang.IllegalArgumentException``\ をスローする。
-     * 第1引数の全角文字は1文字
-     * 第2引数の半角文字は1文字または2文字
+
+    * 第1引数の全角文字は1文字
+    * 第2引数の半角文字は1文字または2文字
 
 |
 
-* | 独自の組合せを使った \ ``FullHalfConverter``\ の使用例
+**独自の組合せを使ったFullHalfConverterの使用例**
 
- .. code-block:: java
+.. code-block:: java
  
     String halfwidth = CustomFullHalf.INSTANCE.toHalfwidth("ハローワールド！"); // (1)
 
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
     :header-rows: 1
     :widths: 10 90
 
