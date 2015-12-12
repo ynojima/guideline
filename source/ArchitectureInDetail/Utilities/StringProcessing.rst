@@ -252,7 +252,7 @@ How to use
 | \ ``CodePoints``\ のインスタンスを作成することで、コードポイント集合を作成できる。
 | \ ``CodePoints``\ のインスタンスの作成方法を以下に示す。
 
-* 既存のコードポイント集合からインスタンスを作成する場合（キャッシュする）
+**既存のコードポイント集合からインスタンスを作成する場合（キャッシュする）**
 
 | 既存のコードポイント集合のクラス( \ ``Class<? extends CodePoints>``\ )からインスタンスを作成し、作成したインスタンスをキャッシュする方法を以下に示す。
 | 通常、特定のコードポイント集合は複数回作成する必要はないため、この方法を使用して、キャッシュすることを推奨する。
@@ -283,7 +283,7 @@ How to use
 
 |
 
-* 既存のコードポイント集合からインスタンスを作成する場合（キャッシュしない）
+**既存のコードポイント集合からインスタンスを作成する場合（キャッシュしない）**
 
 | 既存のコードポイント集合のクラスからインスタンスを作成する方法を以下に示す。
 | この方法を使用した場合、作成されるインスタンスはキャッシュされないため、キャッシュすべきでない処理（集合演算の引数等）で使用することを推奨する。
@@ -306,19 +306,19 @@ How to use
 
 |
 
-* CodePointsからインスタンスを作成する場合
+**CodePointsからインスタンスを作成する場合**
 
 | \ ``CodePoints``\ からインスタンスを作成する方法を以下に示す。
 | この方法を使用した場合、作成されるインスタンスはキャッシュされないため、キャッシュすべきでない処理（集合演算の引数等）で使用することを推奨する。
 
- * \ ``CodePoints``\ のコンストラクタに、コードポイント( \ ``int``\ )の可変長配列を渡す場合
+* \ ``CodePoints``\ のコンストラクタに、コードポイント( \ ``int``\ )の可変長配列を渡す場合
 
-   .. code-block:: java
+  .. code-block:: java
 
       CodePoints codePoints = new CodePoints(0x0061 /* a */, 0x0062 /* b */);  // (1)
 
-   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-   .. list-table::
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
       :header-rows: 1
       :widths: 10 90
 
@@ -328,19 +328,19 @@ How to use
         - | \ ``int``\ のコードポイントを、\ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
           | 本例では、 文字"a"と"b"のコードポイント集合のインスタンスが取得される。
 
- |
+|
 
- * \ ``CodePoints``\ のコンストラクタに、コードポイント( \ ``int``\ )の \ ``Set``\ を渡す場合
+* \ ``CodePoints``\ のコンストラクタに、コードポイント( \ ``int``\ )の \ ``Set``\ を渡す場合
 
-   .. code-block:: java
+  .. code-block:: java
 
       Set<Integet> set = new HashSet<>();
       set.add(0x0061 /* a */);
       set.add(0x0062 /* b */);
       CodePoints codePoints = new CodePoints(set);  // (1)
 
-   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-   .. list-table::
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
       :header-rows: 1
       :widths: 10 90
 
@@ -350,18 +350,18 @@ How to use
         - | \ ``int``\ のコードポイントを \ ``Set``\ に追加し、\ ``Set``\ を \ ``CodePoints``\ のコンストラクタに渡してインスタンスを取得出来る。
           | 本例では、 文字"a"と"b"のコードポイント集合のインスタンスが取得される。
 
- |
+|
 
- * \ ``CodePoints``\ のコンストラクタに、コードポイントを含む文字列の可変長配列を渡す場合
+* \ ``CodePoints``\ のコンストラクタに、コードポイントを含む文字列の可変長配列を渡す場合
 
-   .. code-block:: java
+  .. code-block:: java
 
       CodePoints codePoints = new CodePoints("ab");         // (1)
 
       // CodePoints codePoints = new CodePoints("a", "b");  // (2)
 
-   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-   .. list-table::
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
       :header-rows: 1
       :widths: 10 90
 
@@ -373,6 +373,7 @@ How to use
       * - | (2)
         - | 文字列を複数に分けて渡すことも出来る。(1)と同じ結果となる。
 
+|
 
 コードポイント集合同士の集合演算
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -382,165 +383,173 @@ How to use
 | 集合演算で新規のコードポイント集合のインスタンスを作成する方法を以下に示す。
 
 
-* 和集合で新規のコードポイント集合のインスタンスを作成する場合
+**和集合で新規のコードポイント集合のインスタンスを作成する場合**
 
-  .. code-block:: java
+.. code-block:: java
 
-     CodePoints abCp = new CodePoints(0x0061 /* a */, 0x0062 /* b */);
-     CodePoints cdCp = new CodePoints(0x0063 /* c */, 0x0064 /* d */);
+    CodePoints abCp = new CodePoints(0x0061 /* a */, 0x0062 /* b */);
+    CodePoints cdCp = new CodePoints(0x0063 /* c */, 0x0064 /* d */);
 
-     CodePoints abcdCp = abCp.union(cdCp);    // (1)
+    CodePoints abcdCp = abCp.union(cdCp);    // (1)
 
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
 
-     * - 項番
-       - 説明
-     * - | (1)
-       - | \ ``CodePoints#union``\ メソッドで、 ２つのコードポイント集合の和集合を計算し、新規のコードポイント集合のインスタンスを作成する。
-         | 本例では、文字列"ab"に含まれるコードポイントの集合と、文字列"cd"に含まれるコードポイントの集合の和集合を計算し、新規のコードポイントの集合（文字列"abcd"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
-
-|
-
-* 差集合で新規のコードポイント集合のインスタンスを作成する場合
-
-  .. code-block:: java
-
-     CodePoints abcdCp = new CodePoints(0x0061 /* a */, 0x0062 /* b */,
-             0x0063 /* c */, 0x0064 /* d */);
-     CodePoints cdCp = new CodePoints(0x0063 /* c */, 0x0064 /* d */);
-
-     CodePoints abCp = abcdCp.subtract(cdCp);    // (1)
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - 項番
-       - 説明
-     * - | (1)
-       - | \ ``CodePoints#subtract``\ メソッドで、 ２つのコードポイント集合の差集合を計算し、新規のコードポイント集合のインスタンスを作成する。
-         | 本例では、文字"abcd"に含まれるコードポイントの集合と、文字"cd"に含まれるコードポイントの集合の差集合を計算し、新規のコードポイントの集合（文字列"ab"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``CodePoints#union``\ メソッドで、 ２つのコードポイント集合の和集合を計算し、新規のコードポイント集合のインスタンスを作成する。
+        | 本例では、文字列"ab"に含まれるコードポイントの集合と、文字列"cd"に含まれるコードポイントの集合の和集合を計算し、新規のコードポイントの集合（文字列"abcd"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
 
 |
 
-* 積集合で新規のコードポイント集合のインスタンスを作成する場合
+**差集合で新規のコードポイント集合のインスタンスを作成する場合**
 
-  .. code-block:: java
+.. code-block:: java
 
-     CodePoints abcdCp = new CodePoints(0x0061 /* a */, 0x0062 /* b */,
-             0x0063 /* c */, 0x0064 /* d */);
-     CodePoints cdeCp = new CodePoints(0x0063 /* c */, 0x0064 /* d */, 0x0064 /* e */);
+    CodePoints abcdCp = new CodePoints(0x0061 /* a */, 0x0062 /* b */,
+            0x0063 /* c */, 0x0064 /* d */);
+    CodePoints cdCp = new CodePoints(0x0063 /* c */, 0x0064 /* d */);
 
-     CodePoints cdCp = abcdCp.intersect(cdeCp);    // (1)
+    CodePoints abCp = abcdCp.subtract(cdCp);    // (1)
 
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
 
-     * - 項番
-       - 説明
-     * - | (1)
-       - | \ ``CodePoints#intersect``\ メソッドで、 ２つのコードポイント集合の積集合を計算し、新規のコードポイント集合のインスタンスを作成する。
-         | 本例では、文字"abcd"に含まれるコードポイントの集合と、文字"cde"に含まれるコードポイントの集合の積集合を計算し、新規のコードポイントの集合（文字列"cd"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``CodePoints#subtract``\ メソッドで、 ２つのコードポイント集合の差集合を計算し、新規のコードポイント集合のインスタンスを作成する。
+        | 本例では、文字"abcd"に含まれるコードポイントの集合と、文字"cd"に含まれるコードポイントの集合の差集合を計算し、新規のコードポイントの集合（文字列"ab"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
 
+|
+
+**積集合で新規のコードポイント集合のインスタンスを作成する場合**
+
+.. code-block:: java
+
+    CodePoints abcdCp = new CodePoints(0x0061 /* a */, 0x0062 /* b */,
+            0x0063 /* c */, 0x0064 /* d */);
+    CodePoints cdeCp = new CodePoints(0x0063 /* c */, 0x0064 /* d */, 0x0064 /* e */);
+
+    CodePoints cdCp = abcdCp.intersect(cdeCp);    // (1)
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``CodePoints#intersect``\ メソッドで、 ２つのコードポイント集合の積集合を計算し、新規のコードポイント集合のインスタンスを作成する。
+        | 本例では、文字"abcd"に含まれるコードポイントの集合と、文字"cde"に含まれるコードポイントの集合の積集合を計算し、新規のコードポイントの集合（文字列"cd"に含まれるコードポイントの集合に相当）のインスタンスを作成している。
+
+|
 
 コードポイント集合を使った文字列チェック
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 | \ ``CodePoints``\ に用意されている各種チェックメソッドにて文字列チェックが出来る。
 | 文字列チェックの方法を以下に示す。
-|
 
-* \ ``CodePoints#containsAll``\ メソッドで、対象の文字列が全てコードポイント集合に含まれているか判定する。
+**containsAllメソッド**
 
-  .. code-block:: java
+対象の文字列が全てコードポイント集合に含まれているか判定する。
 
-     CodePoints jisX208KanaCp = CodePoints.of(JIS_X_0208_Katakana.class);
+.. code-block:: java
 
-     boolean result;
-     result = jisX208KanaCp.containsAll("カ");     // true
-     result = jisX208KanaCp.containsAll("カナ");   // true
-     result = jisX208KanaCp.containsAll("カナa");  // false
+    CodePoints jisX208KanaCp = CodePoints.of(JIS_X_0208_Katakana.class);
 
-|
-
-* \ ``CodePoints#firstExcludedContPoint``\ メソッドで、対象の文字列のうち、コードポイント集合に含まれない最初のコードポイントを返す。
-
-  .. code-block:: java
-
-     CodePoints jisX208KanaCp = CodePoints.of(JIS_X_0208_Katakana.class);
-
-     int result;
-     result = jisX208KanaCp.firstExcludedCodePoint("カナa");  // 0x0061 (a)
-     result = jisX208KanaCp.firstExcludedCodePoint("カaナ");  // 0x0061 (a)
-     result = jisX208KanaCp.firstExcludedCodePoint("カナ");   // CodePoints#NOT_FOUND
+    boolean result;
+    result = jisX208KanaCp.containsAll("カ");     // true
+    result = jisX208KanaCp.containsAll("カナ");   // true
+    result = jisX208KanaCp.containsAll("カナa");  // false
 
 |
 
-* \ ``CodePoints#allExcludedCodePoints``\ メソッドで、対象の文字列のうち、コードポイント集合に含まれないコードポイントの \ ``Set``\ を返す。
+**firstExcludedContPointメソッド**
 
-  .. code-block:: java
+対象の文字列のうち、コードポイント集合に含まれない最初のコードポイントを返す。
 
-     CodePoints jisX208KanaCp = CodePoints.of(JIS_X_0208_Katakana.class);
+.. code-block:: java
 
-     Set<Integer> result;
-     result = jisX208KanaCp.allExcludedCodePoints("カナa");  // [0x0061 (a)]
-     result = jisX208KanaCp.allExcludedCodePoints("カaナb"); // [0x0061 (a), 0x0062 (b)]
-     result = jisX208KanaCp.allExcludedCodePoints("カナ");   // []
+    CodePoints jisX208KanaCp = CodePoints.of(JIS_X_0208_Katakana.class);
 
+    int result;
+    result = jisX208KanaCp.firstExcludedCodePoint("カナa");  // 0x0061 (a)
+    result = jisX208KanaCp.firstExcludedCodePoint("カaナ");  // 0x0061 (a)
+    result = jisX208KanaCp.firstExcludedCodePoint("カナ");   // CodePoints#NOT_FOUND
+
+|
+
+**allExcludedCodePointsメソッド**
+
+対象の文字列のうち、コードポイント集合に含まれないコードポイントの \ ``Set``\ を返す。
+
+.. code-block:: java
+
+    CodePoints jisX208KanaCp = CodePoints.of(JIS_X_0208_Katakana.class);
+
+    Set<Integer> result;
+    result = jisX208KanaCp.allExcludedCodePoints("カナa");  // [0x0061 (a)]
+    result = jisX208KanaCp.allExcludedCodePoints("カaナb"); // [0x0061 (a), 0x0062 (b)]
+    result = jisX208KanaCp.allExcludedCodePoints("カナ");   // []
+
+|
 
 Bean Validation との連携
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 | \ ``@ConsistOf``\ アノテーションにコードポイント集合のクラスを指定することで、そのBeanのフィールドに設定された文字列が、対象のコードポイント集合に全て含まれるかをチェック出来る。
 | 以下に方法を示す。
+
+**チェックに用いるコードポイント集合が一つの場合**
+
+.. code-block:: java
+
+    @ConsisOf(JIS_X_0208_Hiragana.class)    // (1)
+    private String firstName;
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | 対象のフィールドに設定された文字列が、全て JIS X 0208のひらがな であることをチェックする。
+
 |
 
-* チェックに用いるコードポイント集合が一つの場合
+**チェックに用いるコードポイント集合が複数の場合**
 
-  .. code-block:: java
+.. code-block:: java
 
-     @ConsisOf(JIS_X_0208_Hiragana.class)    // (1)
-     private String firstName;
+    @ConsisOf({JIS_X_0208_Hiragana.class, JIS_X_0208_Katakana.class})    // (1)
+    private String firstName;
 
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
 
-     * - 項番
-       - 説明
-     * - | (1)
-       - | 対象のフィールドに設定された文字列が、全て JIS X 0208のひらがな であることをチェックする。
+    * - 項番
+      - 説明
+    * - | (1)
+      - | 対象のフィールドに設定された文字列が、全て JIS X 0208のひらがな または JIS X 0208のカタカナ であることをチェックする。
+
+.. note::
+
+    長さNの文字列をM個のコードポイント集合でチェックした場合、N x M回のチェック処理が発生する。文字列の長さが大きい場合は、性能劣化の要因となる恐れがある。そのため、チェックに使用するコードポイント集合の和集合となる新規コードポイント集合のクラスを作成し、そのクラスのみを指定したほうが良い。この場合、チェック処理はN回となる。
+
 
 |
-
-    * チェックに用いるコードポイント集合が複数の場合
-
-      .. code-block:: java
-
-         @ConsisOf({JIS_X_0208_Hiragana.class, JIS_X_0208_Katakana.class})    // (1)
-         private String firstName;
-
-      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-      .. list-table::
-         :header-rows: 1
-         :widths: 10 90
-
-         * - 項番
-           - 説明
-         * - | (1)
-           - | 対象のフィールドに設定された文字列が、全て JIS X 0208のひらがな または JIS X 0208のカタカナ であることをチェックする。
-
-      .. note::
-
-       長さNの文字列をM個のコードポイント集合でチェックした場合、N x M回のチェック処理が発生する。文字列の長さが大きい場合は、性能劣化の要因となる恐れがある。そのため、チェックに使用するコードポイント集合の和集合となる新規コードポイント集合のクラスを作成し、そのクラスのみを指定したほうが良い。この場合、チェック処理はN回となる。
-
 
 .. _StringProcessingCodePointsList:
 
@@ -642,6 +651,7 @@ Bean Validation との連携
      - | groupId : \ ``org.terasoluna.gfw.codepoints``\
        | artifactId : \ ``terasoluna-gfw-codepoints-jisx0213kanji``\
 
+|
 
 .. _StringProcessingCodePointsCreate:
 
@@ -652,11 +662,11 @@ Bean Validation との連携
 | コードポイント集合のクラスを新規で作成する方法を以下に示す。
 |
 
-* コードポイントを指定して新規にコードポイント集合のクラスを作成する場合
+**コードポイントを指定して新規にコードポイント集合のクラスを作成する場合**
 
- * 数字のみ からなるコードポイント集合の作成例
+「数字のみ」からなるコードポイント集合の作成例
 
-  .. code-block:: java
+.. code-block:: java
 
      public class NumberChars extends CodePoints {
          public NumberCodePoints() {
@@ -668,38 +678,36 @@ Bean Validation との連携
 
 |
 
-* 既存のコードポイント集合の集合演算で新規にコードポイント集合のクラスを作成する場合
+**既存のコードポイント集合の集合演算で新規にコードポイント集合のクラスを作成する場合**
 
- * ひらがな と カタカナ からなる和集合を用いたコードポイント集合の作成例
+「ひらがな」と「カタカナ」からなる和集合を用いたコードポイント集合の作成例
 
-   .. code-block:: java
+.. code-block:: java
 
-      public class FullwidthHiraganaKatakana extends CodePoints {
-          public FullwidthHiraganaKatakana() {
-              super(new X_JIS_0208_Hiragana().union(new X_JIS_0208_Katakana()));
-          }
-      }
+    public class FullwidthHiraganaKatakana extends CodePoints {
+        public FullwidthHiraganaKatakana() {
+            super(new X_JIS_0208_Hiragana().union(new X_JIS_0208_Katakana()));
+        }
+    }
 
-|
+「記号（｡｢｣､･）を除いた半角カタカナ」からなる差集合を用いたコードポイント集合の作成例
 
-  * 記号（｡｢｣､･） を除いた 半角カタカナ からなる差集合を用いたコードポイント集合の作成例
+.. code-block:: java
 
-    .. code-block:: java
+    public class HalfwidthKatakana extends CodePoints {
+        public HalfwidthKatakana() {
+            CodePoints symbolCp = new CodePoints(0xFF61 /* ｡ */, 0xFF62 /* ｢ */,
+                    0xFF63 /* ｣ */, 0xFF64 /* ､ */, 0xFF65 /* ･ */);
 
-       public class HalfwidthKatakana extends CodePoints {
-           public HalfwidthKatakana() {
-               CodePoints symbolCp = new CodePoints(0xFF61 /* ｡ */, 0xFF62 /* ｢ */,
-                       0xFF63 /* ｣ */, 0xFF64 /* ､ */, 0xFF65 /* ･ */);
+            super(new JIS_X_0201_Katakana().subtract(symbolCp));
+        }
+    }
 
-               super(new JIS_X_0201_Katakana().subtract(symbolCp));
-           }
-       }
+.. note::
 
-  .. note::
-
-       集合演算で使用するコードポイント集合（本例では \ ``X_JIS_0208_Hiragana``\ や、 \ ``X_JIS_0208_Katakana``\ 等）を、他で使用する予定がない場合、 \ ``new``\ を使い、キャッシュされないようにすべきである。
-       \ ``CodePoints#of``\ メソッドを使用してキャッシュさせると、集合演算の途中計算のみで使用されるコードポイント集合がヒープに残り、メモリを圧迫してしまう。
-       逆に他で使用する予定がある場合は、\ ``CodePoints#of``\ メソッドを使用して、キャッシュさせるべきである。
+    集合演算で使用するコードポイント集合（本例では \ ``X_JIS_0208_Hiragana``\ や、 \ ``X_JIS_0208_Katakana``\ 等）を、他で使用する予定がない場合、 \ ``new``\ を使い、キャッシュされないようにすべきである。
+    \ ``CodePoints#of``\ メソッドを使用してキャッシュさせると、集合演算の途中計算のみで使用されるコードポイント集合がヒープに残り、メモリを圧迫してしまう。
+    逆に他で使用する予定がある場合は、\ ``CodePoints#of``\ メソッドを使用して、キャッシュさせるべきである。
 
 
 |
