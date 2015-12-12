@@ -234,16 +234,23 @@ How to use
 
 |
 
-文字種チェック
+.. _StringProcessingHowToUseCodePoints:
+
+コードポイント集合チェック(文字種チェック)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| 対象の文字列が、コードポイント集合に含まれるかどうかのチェックを行うため、以下の機能を提供する。
+文字種チェックを行う場合は、共通ライブラリから提供しているコードポイント集合機能を使用してチェックするとよい。
 
-* コードポイント集合の作成
-* コードポイント集合同士の集合演算
-* コードポイント集合を使った文字列チェック
-* Bean Validation との連携
+ここでは、コードポイント集合機能を使用した文字種チェックの実装方法を説明する。
 
+* :ref:`StringProcessingHowToUseCodePointsConstruction`
+* :ref:`StringProcessingHowToUseCodePointsOperations`
+* :ref:`StringProcessingHowToUseCodePointsCheck`
+* :ref:`StringProcessingHowToUseCodePointsValidator`
+* :ref:`StringProcessingHowToUseCodePointsClassCreation`
+
+
+.. _StringProcessingHowToUseCodePointsConstruction:
 
 コードポイント集合の作成
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -275,10 +282,10 @@ How to use
 
     コードポイント集合クラスは、\ ``CodePoints``\ クラスと同じモジュール内に複数存在する。
     その他にもコードポイント集合を提供するモジュールが存在するが、それらのモジュールは必要に応じて自プロジェクトに追加する必要がある。
-    詳細は、:ref:`StringProcessingCodePointsList` を参照されたい。
+    詳細は、:ref:`StringProcessingHowToUseCodePointsClasses` を参照されたい。
 
     また、 新規にコードポイント集合クラスを作成することも出来る。
-    詳細は、 :ref:`StringProcessingCodePointsCreate` を参照されたい。
+    詳細は、 :ref:`StringProcessingHowToUseCodePointsClassCreation` を参照されたい。
 
 |
 
@@ -375,6 +382,8 @@ How to use
 
 |
 
+.. _StringProcessingHowToUseCodePointsOperations:
+
 コードポイント集合同士の集合演算
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -451,6 +460,8 @@ How to use
 
 |
 
+.. _StringProcessingHowToUseCodePointsCheck:
+
 コードポイント集合を使った文字列チェック
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -503,7 +514,9 @@ How to use
 
 |
 
-Bean Validation との連携
+.. _StringProcessingHowToUseCodePointsValidator:
+
+Bean Validationと連携した文字列チェック
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 | \ ``@org.terasoluna.gfw.common.codepoints.ConsistOf``\ アノテーションにコードポイント集合クラスを指定することで、チェック対象の文字列が指定したコードポイント集合に全て含まれるかをチェックすることが出来る。
@@ -553,7 +566,7 @@ Bean Validation との連携
 
 |
 
-.. _StringProcessingCodePointsCreate:
+.. _StringProcessingHowToUseCodePointsClassCreation:
 
 コードポイント集合クラスの新規作成
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -611,7 +624,7 @@ Bean Validation との連携
 
 |
 
-.. _StringProcessingCodePointsList:
+.. _StringProcessingHowToUseCodePointsClasses:
 
 共通ライブラリから提供しているコードポイント集合クラス
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
