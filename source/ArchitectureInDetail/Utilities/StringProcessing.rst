@@ -88,30 +88,30 @@ How to use
     
       .. code-block:: java
 
-         String str1 = Normalizer.normalize("モジ", Normalizer.Form.NFD); // str1 = "モシ + Voiced sound mark(\\u3099)"
+         String str1 = Normalizer.normalize("モジ", Normalizer.Form.NFD); // str1 = "モシ + Voiced sound mark(\u3099)"
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFD);  // str2 = "ﾓｼﾞ"
 
     正規化形式としてNFC（正準等価性によって分解し、再度合成する）を使用する場合の実装例
     
       .. code-block:: java
 
-         String mojiStr = "モシ\\u3099";                                   // "モシ + Voiced sound mark(\\u3099)"
-         String str1 = Normalizer.normalize(mojiStr, Normalizer.Form.NFC); // str1 = "モジ（\\u30b8）"
+         String mojiStr = "モシ\u3099";                                   // "モシ + Voiced sound mark(\u3099)"
+         String str1 = Normalizer.normalize(mojiStr, Normalizer.Form.NFC); // str1 = "モジ（\u30b8）"
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFC);   // str2 = "ﾓｼﾞ"
     
     正規化形式としてNFKD（互換等価性によって分解する）を使用する場合の実装例
     
       .. code-block:: java
 
-         String str1 = Normalizer.normalize("モジ", Normalizer.Form.NFKD); // str1 = "モシ + Voiced sound mark(\\u3099)"
-         String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFKD);  // str2 = "モシ + Voiced sound mark(\\u3099)"
+         String str1 = Normalizer.normalize("モジ", Normalizer.Form.NFKD); // str1 = "モシ + Voiced sound mark(\u3099)"
+         String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFKD);  // str2 = "モシ + Voiced sound mark(\u3099)"
     
     正規化形式としてNFKC（互換等価性によって分解し、再度合成する）を使用する場合の実装例
     
       .. code-block:: java
 
-         String mojiStr = "モシ\\u3099";                                    // "モシ + Voiced sound mark(\\u3099)"
-         String str1 = Normalizer.normalize(mojiStr, Normalizer.Form.NFKC); // str1 = "モジ（\\u30b8）"
+         String mojiStr = "モシ\u3099";                                    // "モシ + Voiced sound mark(\u3099)"
+         String str1 = Normalizer.normalize(mojiStr, Normalizer.Form.NFKC); // str1 = "モジ（\u30b8）"
          String str2 = Normalizer.normalize("ﾓｼﾞ", Normalizer.Form.NFKC) ;  // str2 = "モジ"
     
     
