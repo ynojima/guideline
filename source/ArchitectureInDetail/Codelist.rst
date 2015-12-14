@@ -1215,8 +1215,8 @@ BeanValidationや、メッセージ出力方法の詳細については、 :doc:
 
 .. tip::
 
-    ``@ExistInCodeList`` の入力チェックでサポートしている型は、 ``String`` または ``Character`` のみである。
-    そのため、 ``@ExistInCodeList`` をつけるフィールドは意味的に整数型であっても、Stringで定義する必要がある。(年・月・日等)
+    ``@ExistInCodeList`` の入力チェックでサポートしている型は、 \ ``CharSequence``\ インタフェースの実装クラス(\ ``String``\ など) または \ ``Character``\ のみである。
+    そのため、 \ ``@ExistInCodeList``\ をつけるフィールドは意味的に整数型であっても、\ ``String``\ で定義する必要がある。(年・月・日等)
 
 |
 
