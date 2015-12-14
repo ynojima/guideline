@@ -704,6 +704,71 @@ MyBatis3 settings
 
 |
 
+.. _DataAccessMyBatis3HowToUseSettingsDefaultFetchSize:
+
+\ ``fetchSize``\  settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| When a query that returns a large amount of data is to be described, an appropriate \ ``fetchSize``\  must be specified for JDBC driver.
+| \ ``fetchSize``\  is a parameter that specifies data record count that can be fetched in a single communication between JDBC driver and database.
+
+Since default value of JDBC driver is used if \ ``fetchSize``\  is not specified,
+following issues are likely to appear due to JDBC driver that is being used.
+
+* "Performance degradation" when default value of JDBC driver is small
+* "Out of memory" when default value of JDBC driver is large or has no restriction
+
+MyBatis3 can specify \ ``fetchSize``\  by using 2 methods shown below to control the occurrences of these issues.
+
+* Specifying "default \ ``fetchSize``\ " applicable for all queries
+* Specifying "\ ``fetchSize``\ for query unit" applicable to a specific query
+
+ .. note:: **"Regarding default fetchSize"**
+
+    "Default \ ``fetchSize``\ "can be used in MyBatis3.3.0 and subsequent versions supported in terasoluna-gfw-mybatis3 5.1.0.RELEASE.
+
+
+How to specify "default \ ``fetchSize``\ " is shown below.
+
+
+- ``projectName-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml``
+
+ .. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE configuration PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+    <configuration>
+
+        <settings>
+            <!-- (1) -->
+            <setting name="defaultFetchSize" value="100" />
+        </settings>
+
+    </configuration>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.80\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 80
+
+    * - Sr. No.
+      - Description
+    * - (1)
+      - Specify data record count fetched in a single communication, in \ ``defaultFetchSize``\ .
+
+\
+
+ .. note:: **How to specify "fetchsize of query unit"**
+
+    When \ ``fetchSize``\  is to be specified in query unit, a value must be specified in \ ``fetchSize``\  attribute of
+    XML element (\ ``<select>``\  element) to describe SQL for search.
+
+Note that, when a query for returning large volume of data is to be described,
+usage of ":ref:`DataAccessMyBatis3HowToExtendResultHandler`" must also be explored.
+
+|
+
 .. _DataAccessMyBatis3HowToUseSettingsExecutorType:
 
 SQL execution mode settings
@@ -5170,11 +5235,10 @@ How to implement a process wherein the search results are downloaded as CSV data
  .. warning:: **Specifying fetchSize attribute**
 
     When a query to return a large amount of data is to be described, an appropriate value should be set in \ ``fetchSize``\  attribute.
-    \ ``fetchSize``\  attribute is the parameter that sets the data records fetched in a single communication, during the communication between JDBC driver and database.
+    \ ``fetchSize``\  is a parameter which specifies data record count to be fetched in a single communication between JDBC driver and database.
+    Note that, "default \ ``fetchSize``\ " can be specified in MyBatis configuration file, in MyBatis3.3.0 and subsequent versions which are supported in terasoluna-gfw-mybatis3 5.1.0.RELEASE.
     
-
-    Default value of JDBC driver is used when \ ``fetchSize``\  attribute is omitted.
-    Hence, precaution must be taken, as default value can cause memory exhaustion when JDBC driver fetches all the records.
+    Refer ":ref:`DataAccessMyBatis3HowToUseSettingsDefaultFetchSize`" for details of \ ``fetchSize``\ .
     
 
 
