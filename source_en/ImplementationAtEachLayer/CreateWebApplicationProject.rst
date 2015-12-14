@@ -1678,6 +1678,14 @@ Module that manages the SQL file to initialize the database is explained.
         It is an empty directory at the time of creation.
         For how to create, Refer `Sample application of initdb project <https://github.com/terasolunaorg/terasoluna-tourreservation-mybatis3/tree/master/terasoluna-tourreservation-initdb/src/sqls>`_.
 
+.. note::
+
+    Can be executed SQL using `sql:execute <http://www.mojohaus.org/sql-maven-plugin/execute-mojo.html>`_ of `SQL Maven Plugin <http://www.mojohaus.org/sql-maven-plugin/>`_.
+
+        .. code-block:: console
+
+            mvn sql:execute
+
 |
 
 .. _CreateWebApplicationProjectConfigurationSelenium:
