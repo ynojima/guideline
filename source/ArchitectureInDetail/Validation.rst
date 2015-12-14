@@ -3880,7 +3880,9 @@ terasoluna-gfw-commonのチェックルール
       - 説明
       - 使用例
     * - \ ``@ExistInCodeList``\
-      - | \ ``Character``\ , \ ``String``\
+      - | \ ``Character``\
+        | \ ``CharSequence``\ の実装クラス
+        | (\ ``String``\, \ ``StringBuilder``\ など)
       - 値がコードリストに含まれているかどうかを検証する。
       - \ :ref:`@ExistInCodeList <codelist-validate>`\ 参照
 
