@@ -493,21 +493,21 @@ JdbcCodeListの使用方法
      - 説明
    * - | (1)
      - | ``org.springframework.jdbc.core.JdbcTemplate`` クラスをbean定義する。
-       | 独自にfetchSizeを設定するために必要となる。
+       | 独自に ``fetchSize`` を設定するために必要となる。
    * - | (2)
-     - | fetchSizeを設定する。
-       | fetchSizeのデフォルト設定が、全件取得になっている場合があるため適切な値を設定すること。
-       | fetchSizeの設定が全件取得のままだと、JdbcCodeListの読み込む件数が大きい場合に、DBからリストを取得する際の処理性能が落ちてしまい、アプリケーションの起動時間が長期化する可能性がある。
+     - | ``fetchSize`` を設定する。
+       | ``fetchSize`` のデフォルト設定が、全件取得になっている場合があるため適切な値を設定すること。
+       | ``fetchSize`` の設定が全件取得のままだと、 ``JdbcCodeList`` の読み込む件数が大きい場合に、DBからリストを取得する際の処理性能が落ちてしまい、アプリケーションの起動時間が長期化する可能性がある。
    * - | (3)
-     - | JdbcCodeListの共通bean定義。
-       | 他のJdbcCodeListの共通部分を設定している。そのため、基本JdbcCodeListのbean定義はこのbean定義を親クラスに設定する。
+     - | ``JdbcCodeList`` の共通bean定義。
+       | 他の ``JdbcCodeList`` の共通部分を設定している。そのため、基本 ``JdbcCodeList`` のbean定義はこのbean定義を親クラスに設定する。
        | abstract属性をtrueにすることで、このbeanはインスタンス化されない。
    * - | (4)
-     - | (1)で設定したjdbcTemplateを設定。
-       | fetchSizeを設定したJdbcTemplateを、JdbcCodeListに格納している。
+     - | (1)で設定した ``jdbcTemplate`` を設定。
+       | ``fetchSize`` を設定した ``JdbcTemplate`` を、 ``JdbcCodeList`` に格納している。
    * - | (5)
-     - | JdbcCodeListのbean定義。
-       | parent属性を(3)のbean定義を親クラスとして設定することで、fetchSizeを設定したJdbcCodeListが設定される。
+     - | ``JdbcCodeList`` のbean定義。
+       | parent属性を(3)のbean定義を親クラスとして設定することで、 ``fetchSize`` を設定した ``JdbcCodeList`` が設定される。
        | このbean定義では、クエリに関する設定のみを行い、必要なCodeList分作成する。
    * - | (6) 
      - | querySqlプロパティに取得するSQLを記述する。その際、 **必ず「ORDER BY」を指定し、順序を確定させること。**
