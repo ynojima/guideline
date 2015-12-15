@@ -430,7 +430,7 @@ JdbcCodeListの使用方法
 | ``JdbcTemplate`` の ``fetchSize`` に上限を設定すれば、その分だけのレコードが起動時に読み込まれる。  
 | なお、取得する値はリロードにより動的に変更できる。詳細は :ref:`codeListTaskScheduler` 参照されたい。
 
-**JdbcCodeLitのイメージ**
+**JdbcCodeListのイメージ**
 
 .. figure:: ./images/codelist-jdbc.png
    :alt: codelist simple
