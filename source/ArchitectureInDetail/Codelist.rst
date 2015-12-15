@@ -497,7 +497,7 @@ JdbcCodeListの使用方法
    * - | (2)
      - | fetchSizeを設定する。
        | fetchSizeのデフォルト設定が、全件取得になっている場合があるため適切な値を設定すること。
-       | JdbcCodeListの読み込む件数が大きい(数百)場合、fetchSizeの設定が全件取得だとDBからリストを取得するのに時間がかかってしまう。
+       | fetchSizeの設定が全件取得のままだと、JdbcCodeListの読み込む件数が大きい場合に、DBからリストを取得する際の処理性能が落ちてしまい、アプリケーションの起動時間が長期化する可能性がある。
    * - | (3)
      - | JdbcCodeListの共通bean定義。
        | 他のJdbcCodeListの共通部分を設定している。そのため、基本JdbcCodeListのbean定義はこのbean定義を親クラスに設定する。
