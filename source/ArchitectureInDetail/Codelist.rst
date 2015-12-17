@@ -904,7 +904,6 @@ SimpleI18nCodeListの使用方法
     </bean>
   
     <bean id="CL_PRICE_EN" parent="AbstractJdbcCodeList">  <!-- (4) -->
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'en' ORDER BY code" />
         <property name="valueColumn" value="code" />
@@ -912,7 +911,6 @@ SimpleI18nCodeListの使用方法
     </bean>
   
     <bean id="CL_PRICE_JA" parent="AbstractJdbcCodeList">  <!-- (5) -->
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'ja' ORDER BY code" />
         <property name="valueColumn" value="code" />
@@ -1297,7 +1295,6 @@ Task Schedulerの設定例について、以下に示す。
     </task:scheduled-tasks>
 
     <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList">
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
         <property name="valueColumn" value="authority_id" />
@@ -1343,7 +1340,6 @@ JdbcCodeListのrefreshメソッドをServiceクラスで呼び出す場合の実
 .. code-block:: xml
 
     <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList">
-        <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
         <property name="valueColumn" value="authority_id" />
