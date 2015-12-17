@@ -463,7 +463,7 @@ JdbcCodeListの使用方法
 
 |
 
-**bean定義ファイル(xxx-infra.xml)の定義**
+**bean定義ファイル(xxx-codelist.xml)の定義**
 
 .. code-block:: xml
 
