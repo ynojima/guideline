@@ -903,7 +903,7 @@ SimpleI18nCodeListの使用方法
         </property>
     </bean>
   
-    <bean id="CL_PRICE_EN" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">  <!-- (4) -->
+    <bean id="CL_PRICE_EN" parent="AbstractJdbcCodeList">  <!-- (4) -->
         <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'en' ORDER BY code" />
@@ -911,7 +911,7 @@ SimpleI18nCodeListの使用方法
         <property name="labelColumn" value="label" />
     </bean>
   
-    <bean id="CL_PRICE_JA" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">  <!-- (5) -->
+    <bean id="CL_PRICE_JA" parent="AbstractJdbcCodeList">  <!-- (5) -->
         <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT code, label FROM price WHERE locale = 'ja' ORDER BY code" />
@@ -1296,7 +1296,7 @@ Task Schedulerの設定例について、以下に示す。
         <task:scheduled ref="CL_AUTHORITIES" method="refresh" cron="${cron.codelist.refreshTime}"/>  <!-- (3) -->
     </task:scheduled-tasks>
 
-    <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">
+    <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList">
         <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
@@ -1342,7 +1342,7 @@ JdbcCodeListのrefreshメソッドをServiceクラスで呼び出す場合の実
 
 .. code-block:: xml
 
-    <bean id="CL_AUTHORITIES" class="org.terasoluna.gfw.common.codelist.JdbcCodeList">
+    <bean id="CL_AUTHORITIES" parent="AbstractJdbcCodeList">
         <property name="jdbcTemplate" ref="jdbcTemplateForCodeList" />
         <property name="querySql"
             value="SELECT authority_id, authority_name FROM authority ORDER BY authority_id" />
