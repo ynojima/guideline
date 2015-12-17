@@ -244,10 +244,10 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
   .. code-block:: java
 
     public static void encryptTextResult(
-        String secret, String salt, String rawText) {
+        String secret, String salt, String plainText) {
         TextEncryptor encryptor = Encryptors.queryableText(secret, salt); // (1)
-        System.out.println(encryptor.encrypt(rawText)); // (2)
-        System.out.println(encryptor.encrypt(rawText)); //
+        System.out.println(encryptor.encrypt(plainText)); // (2)
+        System.out.println(encryptor.encrypt(plainText)); //
     }
 
   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -479,10 +479,10 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
             PublicKey publicKey = keyPair.getPublic();
             PrivateKey privateKey = keyPair.getPrivate();
 
-            byte[] encryptedBytes = encryptByPublicKey("Hello World!", publicKey);  // (4)
-            System.out.println(Base64.getEncoder().encodeToString(encryptedBytes));
-            String decryptedText = decryptByPrivateKey(encryptedBytes, privateKey); // (5)
-            System.out.println(decryptedText);
+            byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey);  // (4)
+            System.out.println(Base64.getEncoder().encodeToString(cipherBytes));
+            String plainText = decryptByPrivateKey(cipherBytes, privateKey); // (5)
+            System.out.println(plainText);
         } catch (NoSuchAlgorithmException e) {
             throw new SystemException("e.xx.xx.9002", "No Such setting error.", e);
         }
@@ -519,11 +519,11 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
 
   .. code-block:: java
 
-    public byte[] encryptByPublicKey(String rawText, PublicKey publicKey) {
+    public byte[] encryptByPublicKey(String plainText, PublicKey publicKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding"); // (1)
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);                       // (2)
-            return cipher.doFinal(rawText.getBytes(StandardCharsets.UTF_8)); //
+            return cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)); //
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new SystemException("e.xx.xx.9002", "No Such setting error.", e);
         } catch (InvalidKeyException |
@@ -555,12 +555,12 @@ JavaでAESの鍵長256ビットを扱うためには、強度が無制限のJCE�
 
   .. code-block:: java
 
-    public String decryptByPrivateKey(byte[] encryptedBytes, PrivateKey privateKey) {
+    public String decryptByPrivateKey(byte[] cipherBytes, PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding"); // (1)
             cipher.init(Cipher.DECRYPT_MODE, privateKey);           // (2)
-            byte[] decryptedBytes = cipher.doFinal(encryptedBytes); //
-            return new String(decryptedBytes, StandardCharsets.UTF_8);
+            byte[] plainBytes = cipher.doFinal(cipherBytes); //
+            return new String(plainBytes, StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new SystemException("e.xx.xx.9002", "No Such setting error.", e);
         } catch (InvalidKeyException |
@@ -642,9 +642,9 @@ OpenSSL
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey publicKey = keyFactory.generatePublic(publicKeySpec); // (2)
 
-            byte[] encryptedBytes = encryptByPublicKey("Hello World!", publicKey); // (3)
+            byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey); // (3)
 
-            Files.write(Paths.get("encryptedByJCA.txt"), encryptedBytes);
+            Files.write(Paths.get("encryptedByJCA.txt"), cipherBytes);
             System.out.println("Please execute the following command:");
             System.out
                     .println("openssl rsautl -decrypt -inkey hoge.pem -in encryptedByJCA.txt");
@@ -724,10 +724,10 @@ OpenSSL
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec); // (2)
 
-            String decryptedText = decryptByPrivateKey(
+            String plainText = decryptByPrivateKey(
                    Files.readAllBytes(Paths.get("encryptedByOpenSSL.txt")),
                    privateKey); // (3)
-            System.out.println(decryptedText);
+            System.out.println(plainText);
         } catch (IOException e) {
             throw new SystemException("e.xx.xx.9001", "input/output error.", e);
         } catch (NoSuchAlgorithmException e) {
@@ -768,14 +768,14 @@ OpenSSL
 
   .. code-block:: java
 
-    public byte[] encrypt(byte[] text, PublicKey key, String salt) {
+    public byte[] encrypt(byte[] plainBytes, PublicKey publicKey, String salt) {
         byte[] random = KeyGenerators.secureRandom(16).generateKey(); // (1)
         BytesEncryptor aes = Encryptors.standard(
                 new String(Hex.encode(random)), salt); // (2)
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream()) {
             final Cipher cipher = Cipher.getInstance("RSA"); // (3)
-            cipher.init(Cipher.ENCRYPT_MODE, key); // (4)
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey); // (4)
             byte[] secret = cipher.doFinal(random); // (5)
 
             byte[] data = new byte[2]; // (6)
@@ -784,7 +784,7 @@ OpenSSL
             result.write(data); //
 
             result.write(secret); // (7)
-            result.write(aes.encrypt(text)); // (8)
+            result.write(aes.encrypt(plainBytes)); // (8)
 
             return result.toByteArray(); // (9)
         } catch (IOException e) {
@@ -839,9 +839,9 @@ OpenSSL
 
   .. code-block:: java
 
-    public byte[] decrypt(byte[] text, PrivateKey key, String salt) {
+    public byte[] decrypt(byte[] cipherBytes, PrivateKey privateKey, String salt) {
 
-        try (ByteArrayInputStream input = new ByteArrayInputStream(text);
+        try (ByteArrayInputStream input = new ByteArrayInputStream(cipherBytes);
                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             byte[] b = new byte[2]; // (1)
             input.read(b); //
@@ -850,7 +850,7 @@ OpenSSL
             byte[] random = new byte[length]; // (2)
             input.read(random); //
             final Cipher cipher = Cipher.getInstance("RSA"); // (3)
-            cipher.init(Cipher.DECRYPT_MODE, key); // (4)
+            cipher.init(Cipher.DECRYPT_MODE, privateKey); // (4)
             String secret = new String(Hex.encode(cipher.doFinal(random))); // (5)
             byte[] buffer = new byte[text.length - random.length - 2]; // (6)
             input.read(buffer); //
