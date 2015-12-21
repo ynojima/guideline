@@ -5803,33 +5803,7 @@ Update results returned from Mapper interface method when a batch mode is used, 
 This is due to the mechanism wherein SQL is not executed within the timing of calling  Mapper interface method
 but is queued for batch execution (\ ``java.sql.Statement#addBatch()``\ ).
 
-**In other words, batch mode cannot be used when it is necessary to check the validity of update results**
-**(exclusive control process using optimistic locking etc).**
-
- .. tip::
-
-    When the method (\ ``flushStatements``\ ) of \ ``org.apache.ibatis.session.SqlSession``\  interface
-    is used as a functionality of MyBatis3 itself, SQL queued for batch execution is executed and
-    update results can be obtained.
-    However, since \ ``SqlSession``\  is not presumed to be used directly in the guideline,
-    it is recommended not to use \ ``SqlSession``\  directly as far as possible.
-
-    If it is absolutely necessary to use \ ``SqlSession``\  interface method,
-    refer to "`MyBatis-Spring REFERENCE DOCUMENTATION(Using an SqlSession) <http://mybatis.github.io/spring/sqlsession.html>`_\".
-    
-    The important point is to use \ ``org.mybatis.spring.SqlSessionTemplate``\  provided by MyBatis-Spring.
-
- .. warning:: **Behavior of JDBC driver while using batch mode**
-
-    Although it has been explained that update results at the time of batch execution can be received if \ ``SqlSession``\  interface is used,
-    it cannot be guaranteed that the update results returned from JDBC driver can be used as "number of processed records".
-
-    Since it also depends on the implementation of JDBC driver to be used,
-    it is necessary to check the specifications of the JDBC driver to be used.
-
-|
-
-It signifies that the implementation given below cannot be performed.
+It signifies that the implementation below cannot be performed.
 
  .. code-block:: java
 
@@ -5862,8 +5836,78 @@ It signifies that the implementation given below cannot be performed.
     * - Sr. No.
       - Description
     * - (1)
-      - When the implementation is performed as described above, update result is always \ ``false``\ 
-        thereby always resulting in the execution of update failure process.
+      - When the implementation is performed as described below, update results are always returned as \ ``false``\  resulting
+        in the execution of process at the time of update failure.
+
+
+Based on the application requirement, it is also necessary to check the validity of update results executed in the batch.
+In such cases, "a method to execute SQL queued for batch execution" is provided in the Mapper interface."
+
+In MyBatis 3.2, \ ``flushStatements``\  method of \ ``org.apache.ibatis.session.SqlSession``\  interface must be called directly, however,
+a method is supported in MyBatis 3.3.0 and subsequent versions supported in terasoluna-gfw-mybatis3 5.1.0.RELEASE wherein
+a method which assigns \ ``@org.apache.ibatis.annotations.Flush``\  annotation in Mapper interface is created.
+
+ .. warning:: **Regarding update results returned by JDBC driver while using batch mode**
+
+    Although it has been described earlier that update results at the time of batch execution can be received when a method which assigns \ ``@Flush``\  annotation (and \ ``flushStatements``\  method of \ ``SqlSession``\  interface) is used,
+    it cannot be guaranteed that the update results returned from JDBC driver can be used as "number of processed records".
+
+    Since it depends on implementation of JDBC driver to be used, the specifications of JDBC driver to be used must be checked in advance.
+
+How to create and call a method which assigns \ ``@Flush``\  annotation is given below.
+|
+ .. code-block:: java
+
+    public interface TodoRepository {
+        // ...
+        @Flush // (1)
+        List<BatchResult> flush();
+    }
+
+ .. code-block:: java
+
+    @Transactional
+    @Service
+    public class TodoServiceImpl implements TodoService {
+
+        @Inject
+        @Named("todoBatchRepository")
+        TodoRepository todoBatchRepository;
+
+        @Override
+        public void updateTodos(List<Todo> todos) {
+        
+            for (Todo todo : todos) {
+                todoBatchRepository.update(todo);                
+            }
+
+            List<BatchResult> updateResults = todoBatchRepository.flush(); // (2)
+
+            // Validate update results
+            // ...
+
+        }
+
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.80\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 80
+
+    * - Sr. No.
+      - Description
+    * - (1)
+      - Create a method which assigns \ ``@Flush``\  annotation (hereafter referred to as "\ ``@Flush``\  method").
+
+        When it is necessary to determine update results, specify list type of \ ``org.apache.ibatis.executor.BatchResult``\  as a return value.
+        When it is not necessary to determine update results (when only a database error like a unique constraint violation is to be handled), the return value can be \ ``void``\ .
+    * - (2)
+      - Call \ ``@Flush``\  method within the timing in which SQL queued for batch execution is to be executed.
+        If \ ``@Flush``\  method is called, \ ``flushStatements``\  method of \ ``SqlSession``\  object associated with Mapper interface is called and
+        SQL queued for batch execution is executed.
+
+        When it is necessary to determine update results, validity of update results returned from \ ``@Flush``\  method is checked.
 
 |
 
@@ -5917,6 +5961,12 @@ It signifies that the implementation given below cannot be performed.
 
         This is because SQL batch execution is performed after termination of Service process (just before the transaction is committed).
         
+
+
+Depending on application requirement, it is necessary to detect a unique constraint violation at the time of batch execution.
+In such cases, "a method to execute SQL queued for batch execution (\ ``@Flush``\  method)" must be provided in Mapper interface.
+Refer ":ref:`DataAccessMyBatis3HowToExtendExecutorTypeBatchNotesUpdateResult`" described earlier for details of \ ``@Flush``\  method.
+
 
 |
 
