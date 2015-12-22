@@ -1626,57 +1626,6 @@ RESTful Web Serviceとクライアントアプリケーションを一つのWeb�
 
 |
 
-.. _RESTHowToUseAddingDependencyLibraries:
-
-依存ライブラリの追加
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
-\ ``pom.xml``\ にJacksonから提供されている拡張モジュールを依存ライブラリに追加する。
-
-**JSR-310 Date and Time APIのクラスを使用する場合**
-
-.. code-block:: xml
-
-    <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-jsr310</artifactId>
-    </dependency>
-
-|
-
-**Joda Timeのクラスを使用する場合**
-
-.. code-block:: xml
-
-    <dependency>
-        <groupId>org.terasoluna.gfw</groupId>
-        <artifactId>terasoluna-gfw-jodatime</artifactId>
-    </dependency>
-
-or
-
-.. code-block:: xml
-
-    <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-joda</artifactId>
-    </dependency>
-
-|
-
-.. note::
-
-    上記以外にも、
-
-    * Java SE 7から追加された\ ``java.nio.file.Path``\
-    * Java SE 8から追加された\ ``java.util.Optional``\
-    * Hibernate ORMのLazy Load機能によってProxy化されたオブジェクト
-
-    などを扱うための拡張モジュールも提供されている。
-
-|
-
 .. _RESTHowToUseApplicationSettings:
 
 アプリケーションの設定
@@ -1789,6 +1738,7 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
         | プロパティファイルから値を取得する方法の詳細ついては、「:doc:`PropertyManagement`」を参照されたい。
     * - | (2)
       - | JSONの日付フィールドの形式をISO-8601の拡張形式として扱うための設定を追加する。
+        | なお、リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、「\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ 」を行う必要がある。
     * - | (3)
       - | RESTful Web Serviceを提供するために必要となるSpring MVCのフレームワークコンポーネントをbean登録する。
         | 本設定を行うことで、リソースのフォーマットとしてJSONを使用する事ができる。
@@ -4646,6 +4596,53 @@ CSRF対策
 
 Appendix
 --------------------------------------------------------------------------------
+
+.. _RESTAppendixUsingJSR310_JodaTime:
+
+JSR-310 Date and Time API / Joda Timeを使う場合の設定
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
+\ ``pom.xml``\ にJacksonから提供されている拡張モジュールを依存ライブラリに追加する。
+
+**JSR-310 Date and Time APIのクラスを使用する場合**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+**Joda Timeのクラスを使用する場合**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>org.terasoluna.gfw</groupId>
+        <artifactId>terasoluna-gfw-jodatime</artifactId>
+    </dependency>
+
+or
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-joda</artifactId>
+    </dependency>
+
+.. note::
+
+    上記以外にも、
+
+    * Java SE 7から追加された\ ``java.nio.file.Path``\
+    * Java SE 8から追加された\ ``java.util.Optional``\
+    * Hibernate ORMのLazy Load機能によってProxy化されたオブジェクト
+
+    などを扱うための拡張モジュールも提供されている。
+
+|
 
 .. _RESTAppendixSettingsOfDeployInSameWarFileRestAndClientApplication:
 
