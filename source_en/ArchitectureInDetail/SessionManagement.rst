@@ -1053,21 +1053,15 @@ Using session-scoped bean
     @Inject
     SessionCart sessionCart; // (1)
 
-    // (2)
-    @ModelAttribute
-    public SessionCart setUpSessionCart() {
-        return sessionCart;
-    }
-
     @RequestMapping(value = "add")
     public String addCart(@Validated ItemForm form, BindingResult result) {
         if (result.hasErrors()) {
             return "item/item";
         }
         CartItem cartItem = beanMapper.map(form, CartItem.class);
-        Cart addedCart = cartService.addCartItem(sessionCart.getCart(), // (3)
+        Cart addedCart = cartService.addCartItem(sessionCart.getCart(), // (2)
                 cartItem);
-        sessionCart.setCart(addedCart); // (4)
+        sessionCart.setCart(addedCart); // (3)
         return "redirect:/cart";
     }
 
@@ -1081,17 +1075,44 @@ Using session-scoped bean
     * - | (1)
       - | Inject session-scoped bean to Controller.
     * - | (2)
-      - | Add the session-scoped bean to \ ``Model``\  object, so that it can be referred from View (JSP).
-    * - | (3)
       - | On calling the method of session-scoped bean, object stored in session is returned.
         | When there is no object stored in session, newly created object is returned as well as stored in session.
         | In the above example, Service method is called to check inventory etc. before adding to cart.
-    * - | (4)
+    * - | (3)
       - | In the above example, \ ``Cart``\  object passed as an argument of addCartItem method of \ ``CartService``\  and
         | the \ ``Cart``\  object returned with value, may form a separate instance.
-        | Therefore, the returned ``Cart`` object is set to session-scoped bean.
-        | Session-scoped bean is stored in \ ``Model``\  object, by the process explained in (2).
-        | As a result, \ ``Cart``\  object returned by addCartItem method of \ ``CartService``\  can be referred from View (JSP) as well.
+        | Therefore, the returned \ ``Cart``\  object is set to session-scoped bean.
+
+ .. note:: **How to refer session-scoped Bean from View(JSP)**
+
+     A session-scoped Bean can be referred from JSP even when Bean is not added to \ ``Model``\  object in Controller by using SpEL(Spring Expression Language) formula.
+
+ .. code-block:: jsp
+
+    <spring:eval var="cart" expression="@sessionCart.cart" />     <%-- (1) --%>
+    
+    <%-- omitted --%>
+    
+    <c:forEach var="item" items="${cart.cartItems}">     <%-- (2) --%>
+        <tr>
+            <td>${f:h(item.id)}</td>
+            <td>${f:h(item.itemCode)}</td>
+            <td>${f:h(item.quantity)}</td>
+        </tr>
+    </c:forEach>　　　　
+    
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :widths: 10 90
+    :header-rows: 1
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Refer session-scoped Bean.
+    * - | (2)
+      - | Display session-scoped Bean.
+
 
 Deleting objects stored in session
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2047,23 +2068,23 @@ Implementation is as follows:
             return new ItemForm();
         }
     
-        // (2)
+        // (3)
         @RequestMapping
         public String view(Model model) {
             return "item/item";
         }
     
-        // (3)
+        // (4)
         @RequestMapping(value = "add")
         public String addCart(@Validated ItemForm form, BindingResult result) {
             if (result.hasErrors()) {
                 return "item/item";
             }
             CartItem cartItem = beanMapper.map(form, CartItem.class);
-            Cart cart = cartService.addCartItem(sessionCart.getCart(), // (4)
+            Cart cart = cartService.addCartItem(sessionCart.getCart(), // (5)
                     cartItem);
-            sessionCart.setCart(cart); // (5)
-            return "redirect:/cart"; // (6)
+            sessionCart.setCart(cart); // (6)
+            return "redirect:/cart"; // (7)
         }
     }
 
@@ -2074,16 +2095,16 @@ Implementation is as follows:
 
     * - Sr. No.
       - Description
-    * - | (2)
-      - | Handler method to display product screen.
     * - | (3)
-      - | Handler method to add the specified products to cart.
+      - | Handler method to display product screen.
     * - | (4)
-      - | Pass the \ ``Cart``\  object stored in session, to service method.
+      - | Handler method to add specified products to cart.
     * - | (5)
-      - | Reflect \ ``Cart``\  object returned by Service method to session-scoped bean.
-        | By reflecting in session-scoped bean, it is reflected in session and \ ``Model``\  object.
+      - | Pass \ ``Cart``\  object stored in the session in Service method.
     * - | (6)
+      - | Reflect \ ``Cart``\  object returned by Service method to session-scoped bean.
+        | By reflecting in session-scoped Bean, \ ``Cart``\  object is stored in the session.
+    * - | (7)
       - | Redirect to the request to display cart screen after adding products to cart.
         | **When transiting to a separate Controller screen, instead of calling View (JSP) directly, it is recommended to redirect to the request for displaying the screen.**
 
@@ -2108,13 +2129,7 @@ Implementation is as follows:
         public CartForm setUpCartForm() {
             return new CartForm();
         }
-    
-        // (7)
-        @ModelAttribute("sessionCart")
-        public SessionCart setUpSessionCart() {
-            return sessionCart;
-        }
-    
+
         // (8)
         @RequestMapping
         public String cart(CartForm form) {
@@ -2152,15 +2167,13 @@ Implementation is as follows:
 
     * - Sr. No.
       - Description
-    * - | (7)
-      - | Add to \ ``Model``\  object to refer in View (JSP).
     * - | (8)
       - | Handler method to display cart screen (quantity change screen).
     * - | (9)
       - | Handler method to change quantity.
     * - | (10)
       - | Reflect \ ``Cart``\  object returned by Service method, to session-scoped bean.
-        | By reflecting in session-scoped bean, it is reflected in session and \ ``Model``\  object.
+        | By reflecting in session-scoped bean, it is reflected in the session.
     * - | (11)
       - | Redirect to the request to display cart screen (quantity change screen) after changing quantity.
         | **In case of Update process, instead of calling View (JSP) directly, it is recommended to redirect to the request for displaying the screen.**
@@ -2183,25 +2196,19 @@ Implementation is as follows:
         }
     
         // (12)
-        @ModelAttribute("sessionCart")
-        public SessionCart setUpSessionCart() {
-            return sessionCart;
-        }
-    
-        // (13)
         @RequestMapping
         public String view() {
             return "order/order";
         }
 
-        // (14)
+        // (13)
         @RequestMapping(method = RequestMethod.POST)
         public String order() {
             // ...
             return "redirect:/order?complete";
         }
     
-        // (15)
+        // (14)
         @RequestMapping(params = "complete", method = RequestMethod.GET)
         public String complete(Model model, SessionStatus sessionStatus) {
             sessionCart.clearCart();
@@ -2218,12 +2225,10 @@ Implementation is as follows:
     * - Sr. No.
       - Description
     * - | (12)
-      - | Add to \ ``Model``\  object to refer in View (JSP).
-    * - | (13)
       - | Handler method to display Order screen.
-    * - | (14)
+    * - | (13)
       - | Handler method to place an Order.
-    * - | (15)
+    * - | (14)
       - | Handler method to display Order Completion screen.
 
 - Product screen (JSP)
@@ -2275,14 +2280,16 @@ Implementation is as follows:
     <title>Cart</title>
     </head>
     <body>
+        <%-- (16) --%>
+        <spring:eval var="cart" experssion="@sessionCart.cart" />
         <h1>Cart</h1>
         <c:choose>
-            <c:when test="${ empty sessionCart.cart.cartItems }">
+            <c:when test="${ empty cart.cartItems }">
                 <div>Cart is empty.</div>
             </c:when>
             <c:otherwise>
                 CART ID :
-                ${f:h(sessionCart.cart.id)}
+                ${f:h(cart.id)}
                 <form:form modelAttribute="cartForm">
                     <table border="1">
                         <thead>
@@ -2294,7 +2301,7 @@ Implementation is as follows:
                         </thead>
                         <tbody>
                             <c:forEach var="item" 
-                                items="${sessionCart.cart.cartItems}" 
+                                items="${cart.cartItems}" 
                                 varStatus="rowStatus">
                                 <tr>
                                     <td>${f:h(item.id)}</td>
@@ -2309,14 +2316,14 @@ Implementation is as follows:
                             </c:forEach>
                         </tbody>
                     </table>
-                    <%-- (16) --%>
+                    <%-- (17) --%>
                     <form:button name="edit">Save</form:button>
                 </form:form>
             </c:otherwise>
         </c:choose>
-        <c:if test="${ not empty sessionCart.cart.cartItems }">
+        <c:if test="${ not empty cart.cartItems }">
             <div>
-                <%-- (17) --%>
+                <%-- (18) --%>
                 <a href="${pageContext.request.contextPath}/order">Go to Order</a>
             </div>
         </c:if>
@@ -2334,8 +2341,10 @@ Implementation is as follows:
     * - Sr. No.
       - Description
     * - | (16)
-      - | Button to update quantity.
+      - | Refer session-scoped Bean using SpEL formula.
     * - | (17)
+      - | Button to update quantity.
+    * - | (18)
       - | Link to display Order screen.
 
 - Order screen (JSP)
@@ -2347,6 +2356,7 @@ Implementation is as follows:
     <title>Order</title>
     </head>
     <body>
+        <spring:eval var="cart" experssion="@sessionCart.cart" />
         <h1>Order</h1>
         <table border="1">
             <thead>
@@ -2357,7 +2367,7 @@ Implementation is as follows:
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="item" items="${sessionCart.cart.cartItems}" 
+                <c:forEach var="item" items="${cart.cartItems}" 
                     varStatus="rowStatus">
                     <tr>
                         <td>${f:h(item.id)}</td>
@@ -2368,7 +2378,7 @@ Implementation is as follows:
             </tbody>
         </table>
         <form:form modelAttribute="orderForm">
-            <%-- (18) --%>
+            <%-- (19) --%>
             <form:button>Order</form:button>
         </form:form>
         <div>
@@ -2387,7 +2397,7 @@ Implementation is as follows:
 
     * - Sr. No.
       - Description
-    * - | (18)
+    * - | (19)
       - | Button to place an order.
 
 - Order Completion screen (JSP)
