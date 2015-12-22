@@ -4640,7 +4640,7 @@ or
     * Java SE 8から追加された\ ``java.util.Optional``\
     * Hibernate ORMのLazy Load機能によってProxy化されたオブジェクト
 
-    などを扱うための拡張モジュールも提供されている。
+    などを扱うための拡張モジュール(\ ``jackson-datatype-xxx``\ )が、別途Jacksonから提供されている。
 
 |
 
