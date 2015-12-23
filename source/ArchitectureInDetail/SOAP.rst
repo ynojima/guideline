@@ -30,7 +30,7 @@ SOAPとは
 | もともとは「\ **S**\imple \ **O**\bject \ **A**\ccess \ **P**\rotocol」の略であった。
 | しかし現在では、「SOAP」はなにかの略ではなく、固有名詞であるとW3Cは宣言している。
 | W3CによるSOAP1.1、SOAP1.2の仕様はW3Cにより定義されている。
-| 詳細は、\ `R3C SOAP <http://www.w3.org/TR/soap/>`_\を参照されたい。
+| 詳細は、\ `W3C -SOAP Specifications- <http://www.w3.org/TR/soap/>`_\を参照されたい。
 
 | 本ガイドラインでは、以下の図のような構成でのSOAP Web Serviceを行う場合を想定して説明する。
 | ただし、下記の構成以外でのSOAP Web Serviceの場合にも応用可能である。（例：クライアントがバッチの場合など）
@@ -54,7 +54,7 @@ SOAPとは
     * - | (2)
       - | SOAPサーバは、Webサービスを公開し、クライアントからのSOAP Web ServiceによるXMLを受信して処理を行う。データベースなどにアクセスを行い、業務処理を行うことを想定している。
     * - | (3)
-      - | SOAP Web ServiceではXML使用して情報のやり取りを行う。
+      - | SOAP Web ServiceではXMLを使用して情報のやり取りを行う。
         | 今回の想定では、SOAPサーバ、クライアントどちらもJavaである想定としているが、他のプラットフォームでも問題なく通信可能である。
 
 
@@ -131,7 +131,7 @@ Spring FrameworkのJAX-WS連携機能について
 
  .. note::
 
-      SpringでのJAX-WS実装の詳細は\ `Remoting and web services using Spring <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/remoting.html>`_\ を参照されたい。
+      SpringでのJAX-WS実装の詳細は、\ `Spring Framework Reference Documentation -Remoting and web services using Spring(Web services)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/remoting.html#remoting-web-services>`_\ を参照されたい。
 
 
 
@@ -221,7 +221,7 @@ Webサービスとして公開されるURL
 
 
 | SOAP Web Serviceを作成するとWSDL（\ **W**\ eb \ **S**\ ervices \ **D**\ escription \ **L**\ anguage）というWebサービスのインターフェース定義が公開され、クライアントはこの定義をもとにSOAP Web Serviceを実行する。
-| WSDLの詳細は、`W3C Web Services Description Language (WSDL) <http://www.w3.org/TR/wsdl>`_\を参照されたい。
+| WSDLの詳細は、`W3C -Web Services Description Language (WSDL)- <http://www.w3.org/TR/wsdl>`_\を参照されたい。
 
 
 | WSDL内には、Webサービス実行時のアクセスURLやメソッド名、引数、戻り値などが定義される。
@@ -319,7 +319,7 @@ SOAPサーバの作成
         - | Webサービス実装クラスを配置する。
       * - | (2)
         - | domainプロジェクト
-        - | WebServiceの実装クラスから呼び出されるServiceを配置する
+        - | WebServiceの実装クラスから呼び出されるServiceを配置する。
           | その他、Repositoryなどは従来と同じである。
       * - | (3)
         - | webserviceプロジェクト
@@ -878,7 +878,7 @@ Webサービスの実装
 
 * **CSRF対策**
 
-  | SOAP Web Serviceはセッションを利用せず、ステートレスな通信をすべきである。
+  | SOAP Web Serviceはセッションを利用せず、ステートレスな通信にすべきである。
   | そのため、セッションを利用するCSRF対策を行わないようにするための設定方法について以下に記述する。
   | CSRFの詳細は「\ :doc:`../Security/CSRF`\」を参照されたい。
   | ブランクプロジェクトのデフォルトの設定では、CSRF対策が有効化されている。
@@ -913,8 +913,8 @@ Webサービスの実装
 
       * - | (1)
         - | SOAP Web Service用のSpring Securityの定義を追加する。
-          | \ ``<sec:http>``\ 要素の\ ``pattern``\ 属性にSOAP Web Service用のリクエストパスのURLパターンを指定している。
-          | このコード例では、\ ``/ws/``\ で始まるリクエストパスに対して
+          | \ ``<sec:http>``\ 要素の\ ``pattern``\ 属性にSOAP Web Service用のリクエストパスのURLパターンを指定する。
+          | このコード例では、\ ``/ws/``\ で始まるリクエストパスをSOAP Web Service用のリクエストパスとしている。
           | また、\ ``create-session``\ 属性を\ ``stateless``\ とする事で、Spring Securityの処理でセッションが使用されなくなる。
           |
           | CSRF対策を無効化するために、\ ``<sec:csrf>``\ 要素の\ ``disabled``\ 属性を\ ``true``\ に指定する。
@@ -1102,7 +1102,7 @@ Webサービスの実装
 
       * - | (1)
         - | Exception継承クラスに\ ``@WebFault``\を付けて、SOAPFaultであることを宣言する。
-          | \ ``name``\属性には、クライアントに送信するSOAPFaultの\ ``name``\属性を設定する
+          | \ ``name``\属性には、クライアントに送信するSOAPFaultの\ ``name``\属性を設定する。
           | \ ``targetNamespace``\属性には、使用するネームスペースを設定する。Webサービスと同じにする必要がある。
       * - | (2)
         - | faultInfoをフィールドに保持させるとともに、コード例のように以下のようなコンストラクタとメソッドを持たせる。
@@ -1114,9 +1114,9 @@ Webサービスの実装
 
    \ ``WebFaultException``\ の親クラスを\ ``RuntimeException``\ にすれば、例外の処理をもっと簡略化することができそうに見える。しかし、親クラスを\ ``RuntimeException``\ にしてはいけない。\ `JSR 224: JavaTM API for XML-Based Web Services <https://jcp.org/en/jsr/detail?id=224>`_\ でも明確にしてはいけないと宣言されている。実際に試してみても、APサーバのJAX-WS実装次第ではあるが、クライアントで\ ``@WebFault``\ を付けた例外クラス（\ ``WebFaultException``\ ）を取得することができず、エラーの種類やメッセージを取得することができなくなる。AOPを使用して例外処理を実施していないのも\ ``Exception``\ を継承しているためである。
              
- .. warning:: **WebFaultExceptionのコンストラクタとフィールドについて**
+  .. warning:: **WebFaultExceptionのコンストラクタとフィールドについて**
 
-  \ ``WebFaultException``\ には、デフォルトコンストラクタと各フィールドに対応するsetterが必須となる。これは、クライアントの内部処理で、\ ``WebFaultException``\ を作成する際に使用するためである。そのため、各フィールドをfinalにすることも不可能である。
+   \ ``WebFaultException``\ には、デフォルトコンストラクタと各フィールドに対応するsetterが必須となる。これは、クライアントの内部処理で、\ ``WebFaultException``\ を作成する際に使用するためである。そのため、各フィールドをfinalにすることも不可能である。
   
   
   |
@@ -1166,7 +1166,7 @@ Webサービスの実装
 
       * - | (1)
         - | WebFaultExceptionを継承し、コンストラクタのみ作成する。
-          | フィールドやその他メソッドは親クラスのメソッドを使用するため記述不要である
+          | フィールドやその他メソッドは親クラスのメソッドを使用するため記述不要である。
 
   |
 
@@ -1376,7 +1376,7 @@ MTOMを利用した大容量のバイナリデータを扱う方法
 | SOAPでは、バイナリデータを扱う場合、Byte配列にマッピングすることで、送受信を行うことができる。
 | ただし、大容量のバイナリデータを扱う場合、ヒープが枯渇するなどの問題が発生することがある。
 | そこで、MTOM（Message Transmission Optimization Mechanism）に準拠した実装を行うことで、最適化した状態で添付ファイルとしてバイナリデータを扱うことができる。
-| 詳細な定義は `SOAP Message Transmission Optimization Mechanism <http://www.w3.org/TR/soap12-mtom/>`_\ を参照されたい。
+| 詳細な定義は `W3C -SOAP Message Transmission Optimization Mechanism- <http://www.w3.org/TR/soap12-mtom/>`_\ を参照されたい。
 | 以下にその方法を記述する。
 
   - :file:`[server projectName]-webservice/src/main/java/com/example/ws/todo/TodoWebService.java`
@@ -1616,7 +1616,7 @@ Webサービス クライアントの実装
 
            .. Note:: **wsdlDocumentResourceへのWSDLファイルのURL以外の指定**
 
-             上記の例では、SOAPサーバがWSDLファイルを公開している前提である。classpath:やfile:を使用して指定することで静的ファイルを指定することもできる。指定できる文字列は\ `The ResourceLoader <http://docs.spring.io/autorepo/docs/spring/4.2.x/spring-framework-reference/html/resources.html>`_\ を参照されたい。
+             上記の例では、SOAPサーバがWSDLファイルを公開している前提である。classpath:やfile:を使用して指定することで静的ファイルを指定することもできる。指定できる文字列は、\ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-resourceloader>`_\ を参照されたい。
 
 |
 
@@ -1750,7 +1750,7 @@ Webサービス クライアントの実装
 
   リトライを考慮するなど、レスポンスの情報をクライアントで取得したい場合、以下のように\ ``javax.xml.ws.BindingProvider``\ クラスにキャストすることで取得できる。
 
-  .. code-block:: java
+   .. code-block:: java
 
     BindingProvider provider = (BindingProvider) todoWebService;
     int status = (int) provider.getResponseContext().get(MessageContext.HTTP_RESPONSE_CODE);
@@ -1919,7 +1919,8 @@ Webサービス クライアントの実装
         - | コネクションタイムアウトとリクエストタイムアウトを定義する。
           | それぞれの値をプロパティファイルに切り出した場合のサンプルである。
           
-          .. warning:: タイムアウト定義に使用するキーについて
+          .. warning:: **タイムアウト定義に使用するキーについて**
+
             それぞれのタイムアウトを定義するキーはJAX-WSの実装により異なる値を設定する必要がある。
             詳細は\ `JAX_WS-1166 Standardize timeout settings <https://java.net/jira/browse/JAX_WS-1166>`_\を参照されたい。
 
@@ -2266,10 +2267,10 @@ SOAPサーバのパッケージ構成
       * - | (5)
         - | アプリケーションで使用するプロパティを定義する。
       * - | (6)
-        - | SpringMVCの設定を行うBean定義を行う。
+        - | Spring MVCの設定を行うBean定義を行う。
           | Webサービスのみ作成する場合は削除してもよい。
       * - | (7)
-        - | SpringSecurityの設定を行うBean定義を行う。
+        - | Spring Securityの設定を行うBean定義を行う。
       * - | (8)
         - | Webサービスに関するBean定義を行う。
       * - | (9)
@@ -2529,7 +2530,7 @@ wsimportについて
           * -p 出力するソースのパッケージを指定する。
           * -s 出力するソースを格納する場所を指定する。
           
-        | その他オプションについては、\ `wsimportのリファレンス（Java8） <http://docs.oracle.com/javase/jp/8/docs/technotes/tools/windows/wsimport.html>`_\ を参照されたい。
+        | その他オプションについては、\ `Java Platform, Standard Edition Tools Reference -Web Services(wsimport)- <http://docs.oracle.com/javase/8/docs/technotes/tools/windows/wsimport.html>`_\ を参照されたい。
 
  .. note::
     wsimportはデフォルトの挙動としてclassファイルのみが出力される。動かすだけなら問題はないが、デバッグなどを実行したい場合に備えkeepオプションを付けてソースも保存することを推奨する。
