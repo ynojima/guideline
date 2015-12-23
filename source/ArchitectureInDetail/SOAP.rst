@@ -338,7 +338,7 @@ SOAPサーバの作成
 
 **パッケージのコンポーネントスキャン設定**
 
-Webサービスで使用するエラーハンドラーをコンポーネントスキャンするため、[server projectName]-ws.xmlを作成し、コンポーネントスキャンの定義を行い、Webサービスにインジェクションできるようにする。
+Webサービスで使用するエラーハンドラーをコンポーネントスキャンするため、\ ``[server projectName]-ws.xml``\ を作成し、コンポーネントスキャンの定義を行い、Webサービスにインジェクションできるようにする。
 
 *[server projectName]-web/src/main/resources/META-INF/spring/[server projectName]-ws.xml*
 
@@ -392,7 +392,7 @@ Webサービスで使用するエラーハンドラーをコンポーネント�
     * - 項番
       - 説明
     * - | (1)
-      - | [server projectName]-ws.xmlをルート\ ``ApplicationContext``\ 生成時の読み込み対象に加える。
+      - | \ ``[server projectName]-ws.xml``\ をルート\ ``ApplicationContext``\ 生成時の読み込み対象に加える。
  
 |
 
@@ -502,10 +502,10 @@ webserviceプロジェクト内にWebサービスを呼び出すインターフ�
         | \ ``targetNamespace``\ 属性には、名前空間を定義するが、これは作成するWebサービスのパッケージ名と合わせることを推奨する。
           
         .. warning::
-            targetNamespaceは一意にする必要がある。そのため、ガイドライン上のソースを流用する場合は必ず変更すること。
+            \ ``targetNamespace``\ 属性の値は一意にする必要がある。そのため、ガイドライン上のソースを流用する場合は必ず変更すること。
 
         .. Note::
-            targetNamespaceはWSDL上に定義され、このWebサービスの名前空間を決定し、一意に特定するために使用される。
+            \ ``targetNamespace``\ 属性の値はWSDL上に定義され、このWebサービスの名前空間を決定し、一意に特定するために使用される。
               
     * - | (2)
       - | Webサービスのメソッドとして公開するメソッドに\ ``@WebMethod``\ を付ける。
@@ -789,7 +789,7 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``<sec:global-method-security>``\ 要素の\ ``pre-post-annotations``\ 属性をenabledに指定する。
+      - | \ ``<sec:global-method-security>``\ 要素の\ ``pre-post-annotations``\ 属性を\ ``enabled``\ に指定する。
 
 |
 
@@ -886,17 +886,17 @@ SOAPサーバで発生した例外はこれから記述する例外を実装し�
       - クラス名
       - 概要
     * - | (1)
-      - | ErrorBean
+      - | \ ``ErrorBean``\
       - | 発生した例外のコードとメッセージなどを保持するクラス。
     * - | (2)
-      - | WebFaultType
+      - | \ ``WebFaultType``\
       - | 例外の種類を判別するために使用する列挙型。
     * - | (3)
-      - | WebFaultBean
-      - | ErrorBeanとWebFaultTypeを保持するクラス。ErrorBeanをListで保持して例外情報を複数保持できる。
+      - | \ ``WebFaultBean``\
+      - | \ ``ErrorBean``\ と\ ``WebFaultType``\ を保持するクラス。\ ``ErrorBean``\ を\ ``List``\ で保持して例外情報を複数保持できる。
     * - | (4)
-      - | WebFaultException
-      - | WebFaultBeanを保持する例外クラス。
+      - | \ ``WebFaultException``\
+      - | \ ``WebFaultBean``\ を保持する例外クラス。
   
 これらの例外はSOAPサーバ、クライアントで共用するため、[server projectName]-webserviceに配置する。
 
@@ -992,7 +992,7 @@ SOAPサーバで発生した例外はこれから記述する例外を実装し�
     * - 項番
       - 説明
     * - | (1)
-      - | ErrorBeanとWebFaultTypeを保持するクラスを作成する。
+      - | \ ``ErrorBean``\ と\ ``WebFaultType``\ を保持するクラスを作成する。
 
 |
 
@@ -1104,7 +1104,7 @@ SOAPサーバで発生した例外はこれから記述する例外を実装し�
     * - 項番
       - 説明
     * - | (1)
-      - | WebFaultExceptionを継承し、コンストラクタのみ作成する。
+      - | \ ``WebFaultException``\ を継承し、コンストラクタのみ作成する。
         | フィールドやその他メソッドは親クラスのメソッドを使用するため記述不要である。
 
 |
@@ -1253,7 +1253,7 @@ Serviceからスローされる例外は以下を想定している。必要に�
 
 .. note:: **その他の例外の扱いについて**
 
-    その他の例外発生時（上記のtranslateExceptionメソッドのelse部分）では、クライアントでは詳細な例外の内容は通知されず、\ ``com.sun.xml.internal.ws.fault.ServerSOAPFaultException``\ が発生するのみとなる。他の例外同様にラップしてクライアント側に通知することも可能である。
+    その他の例外発生時（上記の\ ``translateException``\ メソッドのelse部分）では、クライアントでは詳細な例外の内容は通知されず、\ ``com.sun.xml.internal.ws.fault.ServerSOAPFaultException``\ が発生するのみとなる。他の例外同様にラップしてクライアント側に通知することも可能である。
 
 |
 
@@ -1521,11 +1521,11 @@ WebServiceインターフェースを実装したプロキシクラスを生成�
       - | \ ``wsdlDocumentResource``\ プロパティに公開されているWDSLのURLを設定する。
         | ここでは後述するプロパティファイルにURLを記述するため、プロパティのキーを指定している。
     * - | (5)
-      - | [client projectName]-env.xmlで定義したプロパティのキーの値を設定する。WSDLのURLを記述する。
+      - | \ ``[client projectName]-env.xml``\ で定義したプロパティのキーの値を設定する。WSDLのURLを記述する。
 
         .. Note:: **wsdlDocumentResourceへのWSDLファイルのURL以外の指定**
 
-            上記の例では、SOAPサーバがWSDLファイルを公開している前提である。classpath:やfile:を使用して指定することで静的ファイルを指定することもできる。指定できる文字列は、\ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-resourceloader>`_\ を参照されたい。
+            上記の例では、SOAPサーバがWSDLファイルを公開している前提である。\ ``classpath:``\ や\ ``file:``\ プレフィックスを使用して指定することで静的ファイルを指定することもできる。指定できる文字列は、\ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-resourceloader>`_\ を参照されたい。
 
 
 .. Note:: **エンドポイントアドレスの上書き指定**
@@ -1569,7 +1569,7 @@ WebServiceインターフェースを実装したプロキシクラスを生成�
            - | エンドポイントアドレスを設定する。
              | ここでは後述するプロパティファイルにURLを記述するため、プロパティのキーを指定している。
          * - | (2)
-           - | [client projectName]-env.xmlで定義したプロパティのキーの値を設定する。エンドポイントアドレスを記述する。
+           - | \ ``[client projectName]-env.xml``\ で定義したプロパティのキーの値を設定する。エンドポイントアドレスを記述する。
 
 |
 
@@ -1691,7 +1691,7 @@ WebServiceインターフェースを実装したプロキシクラスを生成�
       - | \ ``org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean``\のbean定義にusernameとpasswordを加えることでBasic認証における、認証情報を送信することができる。
         | ユーザ名とパスワードをプロパティファイルに切り出した場合のサンプルである。
     * - | (2)
-      - | [client projectName]-env.xmlで定義したプロパティのキーの値を設定する。認証に使用するユーザ名とパスワードを記述する。
+      - | \ ``[client projectName]-env.xml``\ で定義したプロパティのキーの値を設定する。認証に使用するユーザ名とパスワードを記述する。
 
 |
 
@@ -1801,7 +1801,7 @@ WebServiceインターフェースを実装したプロキシクラスを生成�
             詳細は\ `JAX_WS-1166 Standardize timeout settings <https://java.net/jira/browse/JAX_WS-1166>`_\を参照されたい。
 
     * - | (3)
-      - | [client projectName]-env.xmlで定義したプロパティのキーの値を設定する。コネクションタイムアウトとリクエストタイムアウトを記述する。
+      - | \ ``[client projectName]-env.xml``\ で定義したプロパティのキーの値を設定する。コネクションタイムアウトとリクエストタイムアウトを記述する。
 
 
 |
@@ -1878,7 +1878,7 @@ modelプロジェクトの構成について説明する。
         * 依存ライブラリとビルド用プラグインの定義
         * jarファイルを作成するための定義
 
-| pom.xmlは以下のようなイメージになる。必要に応じて編集する必要がある。
+| \ ``pom.xml``\ は以下のようなイメージになる。必要に応じて編集する必要がある。
 | 実際には、「artifactId」と「groupId」はブランクプロジェクト作成時に指定した値を設定する必要がある。
 
 .. code-block:: xml
@@ -1945,7 +1945,7 @@ webserviceプロジェクトの構成について説明する。
         * 依存ライブラリとビルド用プラグインの定義
         * jarファイルを作成するための定義
 
-| pom.xmlは以下のようなイメージになる。必要に応じて編集する必要がある。
+| \ ``pom.xml``\ は以下のようなイメージになる。必要に応じて編集する必要がある。
 | 実際には、「artifactId」と「groupId」はブランクプロジェクト作成時に指定した値を設定する必要がある。
 
 .. code-block:: xml
@@ -2023,7 +2023,7 @@ SOAPサーバのパッケージ構成
 [server projectName]-domain
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-[server projectName]-modelの依存関係を追加するため、pom.xmlに以下を追加する。
+[server projectName]-modelの依存関係を追加するため、\ ``pom.xml``\ に以下を追加する。
 
 .. code-block:: xml
       
@@ -2039,7 +2039,7 @@ SOAPサーバのパッケージ構成
 [server projectName]-web
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-[server projectName]-webserviceの依存関係を追加するため、pom.xmlに以下を追加する。
+[server projectName]-webserviceの依存関係を追加するため、\ ``pom.xml``\ に以下を追加する。
 
 .. code-block:: xml
 
@@ -2232,7 +2232,7 @@ SOAPサーバのパッケージ構成
 [client projectName]-domain
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-SOAPサーバから提供される[server projectName]-webserviceの依存関係を追加するため、pom.xmlに以下を追加する。
+SOAPサーバから提供される[server projectName]-webserviceの依存関係を追加するため、\ ``pom.xml``\ に以下を追加する。
 
 .. code-block:: xml
       
@@ -2243,7 +2243,7 @@ SOAPサーバから提供される[server projectName]-webserviceの依存関係
 
 .. note:: **依存性の解決について**
 
-    [server projectName]-webと同様に、このpom.xmlには、[server projectName]-modelの依存関係の定義は不要である。これは[server projectName]-webserviceから[server projectName]-modelへの依存関係が定義されているため、推移的に依存関係が追加されるためである。
+    [server projectName]-webと同様に、この\ ``pom.xml``\ には、[server projectName]-modelの依存関係の定義は不要である。これは[server projectName]-webserviceから[server projectName]-modelへの依存関係が定義されているため、推移的に依存関係が追加されるためである。
 
 その他のパッケージ構成は、通常のdomainプロジェクトと変わらないため、「:doc:`../Overview/ApplicationLayering` の :ref:`application-layering_project-structure`」を参照されたい。
 
@@ -2372,8 +2372,8 @@ wsimportの使い方
 
 作成されるソースは公開されているWebサービスに依存するが、本ガイドラインで使用している以下のJavaクラスが出力される。
     
-* Webサービスインターフェース（ソース例ではTodoWebService.java）
-* Domain Object（ソース例ではTodo.java）
+* Webサービスインターフェース（ソース例では\ ``TodoWebService.java``\ ）
+* Domain Object（ソース例では\ ``Todo.java``\ ）
 
 | wsimportで生成したクラスを1つのクライアントプロジェクトのみでしか使用しない場合は、これらをdomainプロジェクトへ配置すればよい。
 | 生成したクラスはインフラストラクチャ層(\ :ref:`application-layering_Integration-System-Connector`\ )に所属するが、\ :ref:`application-layering_project-structure`\ のNoteで示したように通常はdomainプロジェクトに含めても問題ない。
@@ -2433,7 +2433,7 @@ CXFServletを使用する場合の設定
 
 |
 
-次にweb.xmlにSOAP Web Serviceを受け付ける\ ``CXFServlet``\ を定義する。
+次に\ ``web.xml``\ にSOAP Web Serviceを受け付ける\ ``CXFServlet``\ を定義する。
 
 .. code-block:: xml
       
@@ -2469,7 +2469,7 @@ CXFServletを使用する場合の設定
 
 |
 
-最後にweb.xmlで指定したbean定義ファイルにSOAPのエンドポイントとなるクラス名およびアドレスを定義する。
+最後に\ ``web.xml``\ で指定したbean定義ファイルにSOAPのエンドポイントとなるクラス名およびアドレスを定義する。
 
 *[server projectName]-web/src/main/resources/META-INF/spring/cxf-servlet.xml*
 
