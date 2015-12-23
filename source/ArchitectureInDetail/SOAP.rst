@@ -390,10 +390,8 @@ SOAPサーバの作成
   - :file:`[server projectName]-web/src/main/webapp/WEB-INF/web.xml`
  
     .. code-block:: xml
-      :emphasize-lines: 6,10
- 
-      <!-- omitted -->
- 
+      :emphasize-lines: 8
+
       <context-param>
           <param-name>contextConfigLocation</param-name>
           <!-- Root ApplicationContext -->
@@ -404,9 +402,7 @@ SOAPサーバの作成
               classpath*:META-INF/spring/[server projectName]-ws.xml
           </param-value>
       </context-param>
- 
-      <!-- omitted -->
- 
+
     .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
     .. list-table::
       :header-rows: 1
@@ -687,7 +683,6 @@ Webサービスの実装
           @Validated({ Default.class, Todo.Update.class }) // (4)
           Todo updateTodo(@Valid Todo todo);
 
-
       }
 
     .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
@@ -888,8 +883,6 @@ Webサービスの実装
 
     .. code-block:: xml
 
-       <!-- omitted -->
-
        <!-- (1) -->
        <sec:http pattern="/ws/**"
                  auto-config="true"
@@ -898,10 +891,6 @@ Webサービスの実装
           <sec:headers />
           <sec:csrf disabled="true">
        </sec:http>
-
-       <!-- omitted -->
-
-
 
     .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
     .. list-table::
@@ -1801,7 +1790,6 @@ Webサービス クライアントの実装
   - :file:`[client projectName]-env/src/main/resources/META-INF/spring/[client projectName]-infra.properties`
 
     .. code-block:: properties
-      :emphasize-lines: 1
 
           # (1)
           webservice.todoWebService.username=testuser
@@ -1929,7 +1917,6 @@ Webサービス クライアントの実装
   - :file:`[client projectName]-env/src/main/resources/META-INF/spring/[client projectName]-infra.properties`
 
     .. code-block:: properties
-      :emphasize-lines: 1
 
           # (1)
           webservice.request.timeout=3000
@@ -2176,16 +2163,11 @@ SOAPサーバのパッケージ構成
 
     .. code-block:: xml
       
-      <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>artifactId-model</artifactId>
         </dependency>
-        
-        <!-- omitted -->
-        
-      </dependencies>
-      
+
       
   | その他のパッケージ構成は、通常のdomainプロジェクトと変わらないため、「:doc:`../Overview/ApplicationLayering` の :ref:`application-layering_project-structure`」を参照されたい。
 
@@ -2197,17 +2179,11 @@ SOAPサーバのパッケージ構成
 
     .. code-block:: xml
       
-      <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>artifactId-webservice</artifactId>
         </dependency>
-        
-        <!-- omitted -->
-        
-      </dependencies>
-      
-  
+
   .. note:: **依存性の解決について** 
 
     [server projectName]-modelの依存関係の定義は不要である。これは[server projectName]-webserviceから[server projectName]-modelへの依存関係が定義されているため、推移的に依存関係が追加されるためである。
@@ -2392,16 +2368,11 @@ SOAPサーバのパッケージ構成
 
     .. code-block:: xml
       
-      <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>artifactId-webservice</artifactId>
         </dependency>
-        
-        <!-- omitted -->
-        
-      </dependencies>
-  
+
   .. note:: **依存性の解決について** 
 
     [server projectName]-webと同様に、このpom.xmlには、[server projectName]-modelの依存関係の定義は不要である。これは[server projectName]-webserviceから[server projectName]-modelへの依存関係が定義されているため、推移的に依存関係が追加されるためである。
