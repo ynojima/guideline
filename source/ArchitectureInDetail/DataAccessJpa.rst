@@ -3723,6 +3723,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
         private JpaEntityInformation<T, ID> entityInformation;
         private EntityManager entityManager;
+        Method versionMethod;
 
         // (7)
         public MyProjectRepositoryImpl(
@@ -3732,20 +3733,16 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
             this.entityInformation = entityInformation; // (8)
             this.entityManager = entityManager; // (8)
+            
+            try {
+                versionMethod = entityInformation.getJavaType().getMethod("getVersion");
+            } catch (NoSuchMethodException e) { }
 
         }
 
         // (9)
         public T findOneWithValidVersion(ID id, Integer version) {
-            Method versionMethod = null;
-            try {
-                versionMethod = entityInformation.getJavaType().getMethod("getVersion");
-            } catch (NoSuchMethodException | SecurityException e) {
-                throw new UnsupportedOperationException(
-                        String.format(
-                                "Does not found version field in entity class. class is '%s'.",
-                                entityInformation.getJavaType().getName()));
-            }
+
             if (versionMethod == null) {
                 throw new UnsupportedOperationException(
                         String.format(
