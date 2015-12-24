@@ -11,12 +11,12 @@ SOAP Web Service（サーバ/クライアント）
 
 Overview
 --------------------------------------------------------------------------------
-本節では、SOAP Web Serviceの基本的な概念とJAX-WSを使用したSOAPサーバ、クライアント双方の開発について説明する。
+本節では、SOAP Web Serviceの基本的な概念とJAX-WS(SpringのJAX-WS連携機能)を使用した開発について説明する。
 
 実装に対する具体的な説明については、
 
 * | 「:ref:`SOAPHowToUse`」
-  | JAX-WSを使用したSOAP Web Serviceのアプリケーション構成やAPIの実装方法について説明している。
+  | JAX-WSを使用したSOAP Web Serviceのアプリケーション構成や、SOAPサーバ及びSOAPクライアントの実装方法について説明している。
 
 を参照されたい。
 
@@ -26,14 +26,13 @@ Overview
 
 SOAPとは
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| SOAPとは、XMLで記述されたメッセージをコンピュータ間で送受信を行うためのプロトコルである。
-| もともとは「\ **S**\imple \ **O**\bject \ **A**\ccess \ **P**\rotocol」の略であった。
-| しかし現在では、「SOAP」はなにかの略ではなく、固有名詞であるとW3Cは宣言している。
-| W3CによるSOAP1.1、SOAP1.2の仕様はW3Cにより定義されている。
-| 詳細は、\ `W3C -SOAP Specifications- <http://www.w3.org/TR/soap/>`_\を参照されたい。
+| SOAPとは、XMLで記述されたメッセージをコンピュータ間で送受信するためのプロトコルである。
+| SOAPの仕様はW3Cによって策定されており、SOAP 1.1の時点では「\ **S**\imple \ **O**\bject \ **A**\ccess \ **P**\rotocol」の略であった。
+| しかしSOAP 1.2では、「SOAP」はなにかの略ではなく、固有名詞であるとW3Cは宣言している。
+| SOAPの詳細については、\ `W3C -SOAP Specifications- <http://www.w3.org/TR/soap/>`_\を参照されたい。
 
-| 本ガイドラインでは、以下の図のような構成でのSOAP Web Serviceを行う場合を想定して説明する。
-| ただし、下記の構成以外でのSOAP Web Serviceの場合にも応用可能である。（例：クライアントがバッチの場合など）
+| 本ガイドラインでは、SOAPサーバ及びSOAPクライアントの両方をSpringベースのWebアプリケーションとして開発する前提で説明する。
+| なお、SOAPクライアントは、Webアプリケーション以外の形態(Java FXで作成されたリッチクライアント、バッチアプリケーションなど)でも同じ要領で開発可能である。
 
 .. figure:: images_SOAP/SOAPServerAndClient.png
     :alt: Server and Client for SOAP
@@ -47,14 +46,14 @@ SOAPとは
     * - 項番
       - 説明
     * - | (1)
-      - | クライアントは、別のSOAPサーバへの通信を行うWebアプリケーションを想定している。
-        | クライアントと呼んでいるがWebアプリケーション想定なので注意が必要である。
+      - | SOAPクライアントは、SOAPサーバに公開されているWebサービスを呼び出す。
+        | 本ガイドラインでは、JAX-WSのSOAP Web Serviceを呼び出す際の実装方法について説明する。
     * - | (2)
-      - | SOAPサーバは、Webサービスを公開し、クライアントからのSOAP Web ServiceによるXMLを受信して処理を行う。データベースなどにアクセスを行い、業務処理を行うことを想定している。
+      - | SOAPサーバは、Webサービスを公開する。
+        | 本ガイドラインでは、JAX-WSのSOAP Web Serviceを作成する際の実装方法について説明する。
     * - | (3)
-      - | SOAP Web ServiceではXMLを使用して情報のやり取りを行う。
-        | 今回の想定では、SOAPサーバ、クライアントどちらもJavaである想定としているが、他のプラットフォームでも問題なく通信可能である。
-
+      - | SOAP Web ServiceではXMLを使用してメッセージのやり取りを行う。
+        | 本ガイドラインでは、SOAPサーバ及びSOAPクライアントどちらもJAX-WSベースのJavaアプリケーション前提であるが、Java以外で開発されたアプリケーションともメッセージのやり取りが可能である。
 
 |
 
@@ -62,12 +61,14 @@ SOAPとは
 
 JAX-WSとは
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| JAX-WSとは、「\ **J**\ava \ **A**\PI for \ **X**\ML-Based \ **W**\eb \ **S**\ervices」の略であり、SOAPなどを使ったWebサービスを扱うためのJava標準APIである。
-| JAX-WSを用いることで、JavaのオブジェクトをSOAPの仕様に沿ったXMLに変換して送信することが可能である。
-| そのため、SOAP Web Serviceとしては、XMLでやり取りが行われるものの、利用者は、XMLの構造をあまり意識せずデータを扱うことができる。
-| Oracle WebLogic ServerやJBoss Enterprise Application Platformなど主要なJava EEサーバはJAX-WS実装をサーバ側で有しており、特別なライブラリを追加せずにその機能を使用して簡単にWebサービスを公開することができる。
-| ただし、Tomcatは、JAX-WSを実装してしないため、使用する際には別途JAX-WS実装ライブラリを追加する必要がある。
-| 詳細は、「\ :ref:`SOAPAppendixTomcatWebService`\」を参照されたい。
+| JAX-WSとは、「\ **J**\ava \ **A**\PI for \ **X**\ML-Based \ **W**\eb \ **S**\ervices」の略であり、JavaでWebサービスを扱うための仕様である。
+| JAX-WSを使用すると、Webサービスを表現するJavaオブジェクトをSOAPサーバ上に公開することができ、SOAPクライアントはSOAPサーバ上に公開されているWebサービスのメソッドを呼び出すことで、オブジェクト(メッセージ)をやり取りする。
+| サーバとクライアント間のメッセージのやり取りはSOAP通信で行われるが、開発者はSOAP通信をほとんど意識する必要がない。
+| JAX-WSの詳細については、\ `The Java API for XML-Based Web Services (JAX-WS) 2.2 Specification <https://jcp.org/aboutJava/communityprocess/mrel/jsr224/index4.html>`_\ を参照されたい。
+
+| WebLogicやJBossなどのJava EEに準拠しているAPサーバはJAX-WSの実装を提供しているため、特別なライブラリを追加せずにWebサービスを公開することができる。
+| TomcatなどのJava EEに準拠していないAPサーバは、JAX-WSの実装を提供してしないため、別途JAX-WSの実装ライブラリが必要になる。
+| JAX-WS実装ライブラリを使用したWebサービスの開発方法については、「\ :ref:`SOAPAppendixTomcatWebService`\」を参照されたい。
 
 |
 
@@ -75,11 +76,13 @@ JAX-WSとは
 
 Spring FrameworkのJAX-WS連携機能について
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| Spring FrameworkはJAX-WSの連携機能をサポートしており、その機能を使用することでSOAPサーバ、クライアントともに簡単に実装することができる。
-| 以下はその機能を用いた、推奨アクセスフローの概要である。ここではSOAPのクライアント(図左)であるWebアプリケーションがSOAPサーバ(図右)にアクセスすることを前提としている。
+| Spring FrameworkはJAX-WSとの連携機能をサポートしており、SOAPサーバ及びSOAPクライアントを簡単に実装することができる。
+| SpringのJAX-WSの連携機能の詳細については、\ `Spring Framework Reference Documentation -Remoting and web services using Spring(Web services)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/remoting.html#remoting-web-services>`_\ を参照されたい。
+
+| 以下に、JAX-WSの連携機能を利用した際の処理の流れを説明する。
 
 .. figure:: images_SOAP/SOAPProcessFlow.png
-    :alt: Server and Client Projects for SOAP
+    :alt: Processing flow using Spring JAX-WS
     :width: 80%
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -90,42 +93,42 @@ Spring FrameworkのJAX-WS連携機能について
     * - 項番
       - 説明
     * - | (1)
-      - | [クライアント] ControllerがServiceを呼び出す。
+      - | [SOAPクライアント]
+        | ControllerがServiceを呼び出す。
         | 通常の呼び出しと変更点は特にない。
     * - | (2)
-      - | [クライアント] ServiceがSOAPサーバ提供側が用意したWebServiceインターフェースを呼び出す。
-        | この図では、ServiceがWebServiceインターフェースを呼び出しているが、要件に応じてControllerから直接WebServiceインターフェースを呼び出してもよい。
+      - | [SOAPクライアント]
+        | ServiceがSOAPサーバ提供側が用意したWebServiceインターフェースを呼び出す。
+        | この図では、ServiceがWebServiceインターフェースを呼び出しているが、アプリケーションの要件に応じてControllerから直接WebServiceインターフェースを呼び出してもよい。
     * - | (3)
-      - | [クライアント] WebServiceインターフェースが呼び出されると実体としてProxy Objectが呼び出される。
-        | このProxy Objectは\ ``org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean``\ が生成したWebServiceインターフェースの実装クラスである。
-        | この実装クラスがServiceにインジェクションされ、ServiceはWebServiceインターフェースのメソッドを呼び出すだけで、SOAP Web Serviceを利用した処理を行うことができる。
+      - | [SOAPクライアント]
+        | Serviceにインジェクションされるオブジェクトは\ ``org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean``\ が生成したProxy Objectになる。
+        | Proxy ObjectにはWebサービスと通信するための処理が実装されているため、ServiceはWebServiceインターフェースのメソッドを呼び出すだけでWebサービスを利用することができる。
     * - | (4)
-      - | ProxyObjectが、SOAPサーバのWebServiceインターフェースを呼び出す。
-        | SOAPサーバとクライアントでの値のやり取りはDomain Objectを使用して行う。
+      - | [SOAPクライアント]
+        | Proxy ObjectがSOAP Web Serviceを実行するためのメッセージをSOAPサーバに送信し、SOAP Web Serviceの実行結果を受信する。
+        | SOAPサーバとSOAPクライアント間のデータのやり取りは、Domain Objectを表現するXMLが使用される。
       
         .. Note::
 
-            厳密には、SOAPサーバとクライアントはXMLを使用して通信を行っている。
-            送信時、および受信時にはJAXBを使用して、Domain ObjectとXMLの相互変換が行われているが、SOAP Web Service作成者はXMLをあまり意識せず、開発を行うことができるようになっている。
+            メッセージの送受信時にJAXBを使用してDomain ObjectとXMLの相互変換が行われているが、開発者がXMLを意識する必要はない。
         
     * - | (5)
-      - | [サーバ] WebServiceインターフェースが呼び出されると実体としてWebService実装クラスが呼び出される。
-        | SOAPサーバでは、WebServiceインターフェースの実装クラスとしてWebService実装クラスを用意する。
-        | このWebService実装クラスは、\ ``org.springframework.web.context.support.SpringBeanAutowiringSupport``\を継承することで、SpringのDIコンテナ上のBeanを\ ``@Inject``\などでインジェクションすることができる。
+      - | [SOAPサーバ]
+        | WebServiceインターフェースが呼び出されると実体としてWebService実装クラスが呼び出される。
+        | WebService実装クラスは、\ ``org.springframework.web.context.support.SpringBeanAutowiringSupport``\を継承する。
+        | \ ``SpringBeanAutowiringSupport``\ を継承すると、SpringのDIコンテナ上で管理されているBeanを\ ``@Inject``\ などを使用してインジェクションすることができる。
     * - | (6)
-      - | [サーバ] WebService実装クラスでは、業務処理を行うServiceを呼び出す。
+      - | [SOAPサーバ]
+        | WebService実装クラスでは、業務処理を行うServiceを呼び出す。
     * - | (7)
-      - | [サーバ] Serviceでは、Repositoryなどを使用して業務処理を実行する。
+      - | [SOAPサーバ]
+        | Serviceでは、Repositoryなどを使用して業務処理を実行する。
         | 通常の呼び出しと変更点は特にない。
 
 .. note::
 
-    Springでは、ドキュメントドリブンでWebサービスを開発するSpring Web Servicesをが提供されているが、ここでは扱わない。
-    詳細は\ `Spring Web Services <http://projects.spring.io/spring-ws/>`_\ を参照されたい。
-
-.. note::
-
-    SpringでのJAX-WS実装の詳細は、\ `Spring Framework Reference Documentation -Remoting and web services using Spring(Web services)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/remoting.html#remoting-web-services>`_\ を参照されたい。
+    Springでは、ドキュメント駆動でWebサービスを開発する\ `Spring Web Services <http://projects.spring.io/spring-ws/>`_\ を提供しているが、本ガイドラインでは扱わない。
 
 |
 
@@ -133,32 +136,32 @@ Spring FrameworkのJAX-WS連携機能について
 
 JAX-WSを利用したWebサービスの開発について
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| TERASOLUNA Server Framework for Java (5.x)では、APサーバのJAX-WS実装とSpringの機能を利用してWebサービスの開発を行うことを推奨する。
+| TERASOLUNA Server Framework for Java (5.x)では、APサーバ提供のJAX-WS実装とSpringの機能を利用してWebサービスの開発を行う。
 
 |
 
 JAX-WSを利用したWebサービスのモジュールの構成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-JAX-WSを利用したWebサービスを作成する場合、既存のブランクプロジェクトとは別に以下2つのプロジェクトを追加することを推奨する。
+JAX-WSを利用したWebサービスを作成する場合、以下の2つのプロジェクトを追加することを推奨する。
 
 * modelプロジェクト
+
+   Webサービスの引数や返り値に使用するDomain Objectを格納する。
+
 * webserviceプロジェクト
 
-| modelプロジェクトは、Webサービスの引数や返り値に使用するDomain Objectを格納する。
-| webserviceプロジェクトは、Webサービスを呼び出すインターフェースを格納する。
-| この2つはSOAPサーバからクライアントに配布する必要があるクラスのみ格納するプロジェクトである。
-| 配布する範囲を明確に識別するため、別プロジェクトにすることを推奨している。
+   Webサービスを呼び出すインターフェースや例外クラスなどを格納する。
 
+この2つのプロジェクトは、SOAPサーバからSOAPクライアントに配布するクラスのみを格納する。
+配布する範囲を明確に識別するために別プロジェクトにすることを推奨している。
 
-本ガイドラインでは、マルチプロジェクトで以下のような構成を用いる。
-
-ここでもクライアントはWebアプリケーションであることを前提とするが、デスクトップアプリケーションやコマンドラインインターフェースから呼び出す場合も基本的な考え方は同じである。
+本ガイドラインで推奨しているマルチプロジェクト構成でWebサービスを開発する場合は、以下のような構成になる。
+ここでもSOAPクライアントはWebアプリケーションの前提であるが、Webアプリケーション以外の形態(Java FXで作成されたリッチクライアント、バッチアプリケーションなど)でも考え方は同じである。
 
 .. figure:: images_SOAP/SOAPClientAndServerProjects.png
-    :alt: Server and Client Projects for SOAP
+    :alt: Server and Client Project Structures for SOAP
     :width: 80%
-
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -168,32 +171,49 @@ JAX-WSを利用したWebサービスを作成する場合、既存のブラン�
     * - 項番
       - 説明
     * - | (1)
-      - | クライアントを作成する場合、従来のマルチプロジェクトにSOAPサーバから提供されるmodelプロジェクトとwebserviceプロジェクトを追加する。
-        | ここではサーバとクライアントをともに開発することを前提としている。
-        | これらのプロジェクトの詳細については「\ :ref:`SOAPHowToUseWebApplicationConstruction`\ 」で説明する。
-        | 追加方法については「\ :ref:`SOAPAppendixAddProject`\ 」を参照されたい。
+      - | SOAPクライアントを作成する場合、SOAPサーバから提供されるmodelプロジェクトとwebserviceプロジェクトを追加する。
+        | ここではSOAPサーバとSOAPクライアントを一緒に開発することを前提としている。
+        | プロジェクト構成の詳細については、「\ :ref:`SOAPHowToUseWebApplicationConstruction`\ 」で説明する。
+        | また、プロジェクトの追加方法については、「\ :ref:`SOAPAppendixAddProject`\ 」を参照されたい。
         |
-        | サーバとクライアントの開発が別々で、modelプロジェクトとwebserviceプロジェクトが提供されない場合、もしくはJava以外でSOAPサーバが作成されている場合には、modelプロジェクト内のDomain Objectとwebserviceプロジェクト内のWebサービスインターフェースを自分で作成する必要がある。
-        | wsimportを使用することで、WSDLから簡単にDomain ObjectとWebサービスインターフェースを作成することができる。
-        | 詳細については「\ :ref:`SOAPAppendixWsimport`\ 」を参照されたい。
+        | サーバとクライアントの開発が別々で、modelプロジェクトとwebserviceプロジェクトが提供されない場合、もしくはJava以外でSOAPサーバが作成されている場合には、modelプロジェクト内のDomain Objectとwebserviceプロジェクト内のWebサービスインターフェースや例外クラスを作成する必要がある。
+        | 手動で作成してもよいが、Java SEが提供しているwsimportコマンドを使用することで、WSDLからDomain ObjectとWebサービスインターフェースや例外クラスを自動作成することができる。
+        | wsimportコマンドについては「\ :ref:`SOAPAppendixWsimport`\ 」を参照されたい。
     * - | (2)
-      - | SOAPサーバを作成する場合、従来のマルチプロジェクトに追加してmodelプロジェクトとwebserviceプロジェクトを追加する。
-        | クライアントにこれら2つのプロジェクトを公開する。
+      - | SOAPサーバを作成する場合、modelプロジェクトとwebserviceプロジェクトを追加する。
+        | この2つのプロジェクトはSOAPクライアントにも公開する。
 
 |
 
-| 結果として、プロジェクトは次のような構成となる。
-| 以下は、SOAPサーバのプロジェクト構成である。
+結果として、プロジェクトは次のような構成となる。
 
-.. figure:: images_SOAP/SOAPServerPackageExplorer.png
-    :alt: Package explorer for SOAP server projects
-    :width: 50%
+**SOAPサーバのプロジェクト構成**
 
-以下は、クライアントのプロジェクト構成である。
+以下は、アーティファクトIDに\ ``soap-server``\ を指定した場合の構成例である。
 
-.. figure:: images_SOAP/SOAPClientPackageExplorer.png
-    :alt: Package explorer for SOAP client projects
-    :width: 42%
+.. code-block:: console
+
+    soap-server
+      ├─ soap-server-domain
+      ├─ soap-server-env
+      ├─ soap-server-initdb
+      ├─ soap-server-selenium
+      ├─ soap-server-web
+      ├─ soap-server-model
+      └─ soap-server-webservice
+
+**SOAPクライアントのプロジェクト構成**
+
+以下は、アーティファクトIDに\ ``soap-client``\ を指定した場合の構成例である。
+
+.. code-block:: console
+
+    soap-client
+      ├─ soap-client-domain
+      ├─ soap-client-env
+      ├─ soap-client-initdb
+      ├─ soap-client-selenium
+      └─ soap-client-web
 
 |
 
@@ -210,13 +230,13 @@ Webサービスとして公開されるURL
 
 
 
-| SOAP Web Serviceを作成するとWSDL（\ **W**\ eb \ **S**\ ervices \ **D**\ escription \ **L**\ anguage）というWebサービスのインターフェース定義が公開され、クライアントはこの定義をもとにSOAP Web Serviceを実行する。
+| SOAP Web Serviceを作成するとWSDL（\ **W**\ eb \ **S**\ ervices \ **D**\ escription \ **L**\ anguage）というWebサービスのインターフェース定義が公開され、SOAPクライアントはこの定義をもとにSOAP Web Serviceを実行する。
 | WSDLの詳細は、`W3C -Web Services Description Language (WSDL)- <http://www.w3.org/TR/wsdl>`_\を参照されたい。
 
 
 | WSDL内には、Webサービス実行時のアクセスURLやメソッド名、引数、戻り値などが定義される。
 | 本ガイドラインの通りにSOAP Web Serviceを作成すると、以下のURLでWSDLが公開される。
-| クライアントではこのURLを指定する必要がある。
+| SOAPクライアントではこのURLを指定する必要がある。
 
 * `http://AAA.BBB.CCC.DDD:XXXX/コンテキストルート/Webサービス名?wsdl`
   
@@ -227,22 +247,24 @@ WSDL内で定義されるエンドポイントアドレスは以下のURLであ�
 
 .. Note::
 
-    本ガイドラインでは、マルチプロジェクト構成のwebプロジェクトをWARファイル化して、APサーバにデプロイする前提である。その場合、コンテキストルートは基本的に、[server projectName]-webとなる。ただし、APサーバによって異なるので注意すること。
+    本ガイドラインでは、マルチプロジェクト構成のwebプロジェクトをWARファイル化してAPサーバにデプロイする前提である。その場合、コンテキストルートは基本的に、[server projectName]-webとなる。ただし、APサーバによって異なるので注意すること。
 
 
 .. Note::
 
-    本ガイドラインでは、SOAPサーバ、クライアントともにWebアプリケーションとして公開する前提であるため、クライアントではWSDLのURLを指定している。URLではなく、WSDLをファイルとして用意してクライアントを作成することも可能である。
+    本ガイドラインでは、SOAPサーバをWebアプリケーションとして公開する前提であるため、WSDLもWeb経由で取得している。
+    Web経由でWSDLを取得する場合は、クライアントアプリケーションを起動前にSOAPサーバが起動している必要がある。
+    SOAPサーバが起動していない状態でクライアントアプリケションを起動するケースがある場合は、WSDLを事前にファイルに保存しておくなどの工夫が必要になる。
     詳細は、\ :ref:`SOAPHowToUseWebServiceClient`\ を参照されたい。
 
 
 .. warning::
 
-    本ガイドラインでは、APサーバ（Tomcatの場合は使用するライブラリ）でコンテキストルートのマッピングを切り替え以下のようなURLでアクセスするように設定している。
+    本ガイドラインでは、Webサービスをコンテキストルート直下以外のパス(\ ``"/コンテキストルート/ws/"``\ ) にマッピングする前提で説明しており、SOAPクライアントは以下のようなURLでアクセスすることになる。
      
-    * `http://AAA.BBB.CCC.DDD:XXXX/[server projectName]-web/ws/TodoWebService?wsdl`
+    * `http://AAA.BBB.CCC.DDD:XXXX/コンテキストルート/ws/TodoWebService?wsdl`
        
-    このコンテキストルート直下ではないURLにWebサービスをマッピングさせる方法は、APサーバごとに異なる。
+    Webサービスをコンテキストルート直下以外のパスにマッピングする方法は、APサーバごとに異なる。
     詳細は以下を参照してほしい。
 
      .. tabularcolumns:: |p{0.10\linewidth}|p{0.50\linewidth}|p{0.40\linewidth}|
