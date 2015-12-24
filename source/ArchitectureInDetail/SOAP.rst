@@ -2394,7 +2394,7 @@ Tomcat上でのWebサービス開発
 | Apache CXFを使用する場合は、WebServiceクラスの実装方式は以下の2つが存在する。
 
 #. POJOでWebサービス実装クラスを記述する方式
-#. \ ``org.springframework.web.context.support.SpringBeanAutowiringSupport``\を継承してWebサービス実装クラスを作成する方式 (これまで説明してきた方法)
+#. \ ``SpringBeanAutowiringSupport``\を継承してWebサービス実装クラスを作成する方式 (これまで説明してきた方法)
 
 | 1の場合、Webサービス実装クラスがPOJOになるため、単体試験などをしやすくなる。ただし、この方式はTomcat以外のAPサーバでは、うまく動作しないことがある。そのため、ガイドライン本体では、この方式ではなく2の方式での実現を記述しているが、Tomcatのみを使用する場合、この1の方式を使用したほうがメリットが多いのでこちらを推奨する。
 | 2の場合、他のAPサーバ同様に実装をすることができる。運用はJava EEサーバであるが、開発中はTomcatを使用せざるをえないケースではこちらの方式を利用されたい。
@@ -2469,45 +2469,7 @@ CXFServletを使用する場合の設定
 
 |
 
-最後に\ ``web.xml``\ で指定したbean定義ファイルにSOAPのエンドポイントとなるクラス名およびアドレスを定義する。
-
-*[server projectName]-web/src/main/resources/META-INF/spring/cxf-servlet.xml*
-
-.. code-block:: xml
-
-    <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:soap="http://cxf.apache.org/bindings/soap"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans
-             http://www.springframework.org/schema/beans/spring-beans.xsd
-             http://www.springframework.org/schema/context
-             http://www.springframework.org/schema/context/spring-context.xsd
-             http://cxf.apache.org/jaxws
-             http://cxf.apache.org/schemas/jaxws.xsd
-             http://cxf.apache.org/bindings/soap
-             http://cxf.apache.org/schemas/configuration/soap.xsd">
-        <!-- (1) -->
-        <jaxws:endpoint id="todoWebEndpoint" implementor="com.example.ws.todo.TodoWebServiceImpl"
-            address="/TodoWebService" />
-
-    </beans>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | 公開するエンドポイントを定義する。
-        | \ ``implementor``\ 属性に公開するWebサービスの実装クラスを定義する。
-        | \ ``address``\ 属性にWebサービスにアクセスする際に使用するアドレスを定義する。
-        | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\を参照されたい。
-
-|
-
-POJOでWebサービス実装クラスを記述する方式のみで必要な設定
+POJO方式で必要な設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 CXFServletの設定に、コンポーネントスキャンを設定し、Webサービスをコンポーネント登録する。
@@ -2632,6 +2594,47 @@ Webサービス実装クラスのコンポーネントスキャンを設定す�
     * - | (2)
       - | コンポーネントスキャンにてDIコンテナへの登録が可能であるため、POJOとして作成する。つまり、\ ``org.springframework.web.context.support.SpringBeanAutowiringSupport``\を継承する必要がなくなる。
         |
+
+|
+
+SpringBeanAutowiringSupportを継承する方式で必要な設定
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+CXFServlet用のBean定義ファイルに、SOAPのエンドポイントとなるクラス名およびアドレスを定義する。
+
+*[server projectName]-web/src/main/resources/META-INF/spring/cxf-servlet.xml*
+
+.. code-block:: xml
+
+    <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:soap="http://cxf.apache.org/bindings/soap"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/context
+             http://www.springframework.org/schema/context/spring-context.xsd
+             http://cxf.apache.org/jaxws
+             http://cxf.apache.org/schemas/jaxws.xsd
+             http://cxf.apache.org/bindings/soap
+             http://cxf.apache.org/schemas/configuration/soap.xsd">
+        <!-- (1) -->
+        <jaxws:endpoint id="todoWebEndpoint" implementor="com.example.ws.todo.TodoWebServiceImpl"
+            address="/TodoWebService" />
+
+    </beans>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | 公開するエンドポイントを定義する。
+        | \ ``implementor``\ 属性に公開するWebサービスの実装クラスを定義する。
+        | \ ``address``\ 属性にWebサービスにアクセスする際に使用するアドレスを定義する。
+        | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\を参照されたい。
 
 .. raw:: latex
 
