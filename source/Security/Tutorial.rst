@@ -1230,7 +1230,7 @@ spring-security.xml
     * - | (2)
       - \ ``<sec:headers>``\ タグを使用して、セキュリティ対策用のレスポンスヘッダの付与を制御する。
 
-        使用方法については、「:ref:`SpringSecurityAppendixSecHeaders`」を参照されたい。
+        使用方法については、「:ref:`SpringSecutityLinkageWithBrowser`」を参照されたい。
     * - | (3)
       - \ ``<sec:csrf>``\ タグを使用して、CSRF対策を制御する。
 
@@ -1251,7 +1251,7 @@ spring-security.xml
     * - | (6)
       - \ ``<sec:session-management>``\ タグを使用して、Spring Securityのセッション管理方法を制御する。
 
-        使用方法については、「:ref:`authentication(spring_security)_how_to_use_sessionmanagement`」を参照されたい。
+        使用方法については、「:ref:`SpringSecuritySessionManagementSetup`」を参照されたい。
     * - | (7)
       - \ ``<sec:authentication-manager>``\ タグを使用して、認証処理を制御する。
 
