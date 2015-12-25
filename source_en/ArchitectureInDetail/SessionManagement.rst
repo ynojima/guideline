@@ -2096,9 +2096,9 @@ Implementation is as follows:
     * - Sr. No.
       - Description
     * - | (3)
-      - | Handler method to display product screen.
+      - | Processing method to display product screen.
     * - | (4)
-      - | Handler method to add specified products to cart.
+      - | Processing method to add specified products to cart.
     * - | (5)
       - | Pass \ ``Cart``\  object stored in the session in Service method.
     * - | (6)
@@ -2225,11 +2225,11 @@ Implementation is as follows:
     * - Sr. No.
       - Description
     * - | (12)
-      - | Handler method to display Order screen.
+      - | Processing method to display Order screen.
     * - | (13)
-      - | Handler method to place an Order.
+      - | Processing method to place an Order.
     * - | (14)
-      - | Handler method to display Order Completion screen.
+      - | Processing method to display Order Completion screen.
 
 - Product screen (JSP)
 
