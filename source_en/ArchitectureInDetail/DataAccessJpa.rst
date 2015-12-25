@@ -4191,7 +4191,7 @@ See the example below.
 
 |
 
-As default implementation, the values of ``org.joda.time.DateTime`` instance returned by ``getDateTime()`` method of 
+As default implementation, the values of ``java.util.Calendar`` instance returned by ``getNow()`` method of 
 ``org.springframework.data.auditing.CurrentDateTimeProvider`` are used for the values set in the fields with 
 ``@CreatedDate``  and ``@LastModifiedDate`` annotations.
 
@@ -4207,8 +4207,10 @@ Extended example of changing the method to create the values to be used is shown
         JodaTimeDateFactory dateFactory;
 
         // (3)
-        public DateTime getDateTime() {
-            return dateFactory.newDateTime();
+        @Override
+        public Calendar getNow() {
+            DateTime currentDatetime = dateFactory.newDateTime();
+            return currentDatetime.toCalendar(Locale.getDefault());
         }
 
     }
