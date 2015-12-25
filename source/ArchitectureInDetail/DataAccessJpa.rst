@@ -4195,8 +4195,8 @@ Spring Data JPAでは、新たに作成されたEntityと更新されたEntity�
 |
 
 ``@CreatedDate`` および ``@LastModifiedDate`` アノテーションが付与されたフィールドに設定される値は、
-デフォルト実装だと ``org.springframework.data.auditing.CurrentDateTimeProvider`` の ``getDateTime()`` メソッド
-から返却される ``org.joda.time.DateTime`` のインスタンスの値が使用される。
+デフォルト実装だと ``org.springframework.data.auditing.CurrentDateTimeProvider`` の ``getNow()`` メソッド
+から返却される ``java.util.Calendar`` のインスタンスの値が使用される。
 
 以下に、使用する値の生成方法を変更する場合の拡張例を示す。
 
@@ -4210,8 +4210,10 @@ Spring Data JPAでは、新たに作成されたEntityと更新されたEntity�
         JodaTimeDateFactory dateFactory;
 
         // (3)
-        public DateTime getDateTime() {
-            return dateFactory.newDateTime();
+        @Override
+        public Calendar getNow() {
+            DateTime currentDatetime = dateFactory.newDateTime();
+            return currentDatetime.toCalendar(Locale.getDefault());
         }
 
     }
