@@ -1648,7 +1648,7 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
 - :file:`spring-mvc-rest.xml`
 
  .. code-block:: xml
-    :emphasize-lines: 22, 30-32, 39-41, 44-47, 51, 61, 65
+    :emphasize-lines: 22, 32-34, 39-41, 44-47, 51, 61, 65
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans" 
@@ -1677,16 +1677,16 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
     
         <bean id="jsonMessageConverter"
             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-            <property name="objectMapper">
-                <bean id="objectMapper" class="com.fasterxml.jackson.datatype.joda.JodaMapper">
-                    <!-- (2) -->
-                    <property name="dateFormat">
-                        <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
-                    </property>
-                </bean>
-            </property>
+            <property name="objectMapper" ref="objectMapper" />
         </bean>
     
+        <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+            <!-- (2) -->
+            <property name="dateFormat">
+                <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
+            </property>
+        </bean>
+
         <!-- Register components of Spring MVC. -->
         <!-- (3) -->
          <mvc:annotation-driven>
@@ -1738,6 +1738,7 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
         | プロパティファイルから値を取得する方法の詳細ついては、「:doc:`PropertyManagement`」を参照されたい。
     * - | (2)
       - | JSONの日付フィールドの形式をISO-8601の拡張形式として扱うための設定を追加する。
+        | なお、リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、「\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ 」を行う必要がある。
     * - | (3)
       - | RESTful Web Serviceを提供するために必要となるSpring MVCのフレームワークコンポーネントをbean登録する。
         | 本設定を行うことで、リソースのフォーマットとしてJSONを使用する事ができる。
@@ -1758,6 +1759,36 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
     * - | (7)
       - | Spring MVCのフレームワークでハンドリングされた例外を、ログ出力するためのAOP定義を指定する。
         | \ ``HandlerExceptionResolverLoggingInterceptor``\については、「\ :doc:`ExceptionHandling`\」を参照されたい。
+
+.. note:: **ObjectMapperのBean定義方法について**
+
+    Jacksonの\ ``com.fasterxml.jackson.databind.ObjectMapper``\ のBean定義を行う場合は、
+    Springが提供している\ ``Jackson2ObjectMapperFactoryBean``\ を使用するとよい。
+    \ ``Jackson2ObjectMapperFactoryBean``\ を使用すると、JSR-310 Date and Time APIやJoda Time用の拡張モジュールを自動登録することができ、
+    さらにXMLのBean定義ファイル上で表現が難しかった\ ``ObjectMapper``\ のコンフィギュレーションも簡単に行うことができる。
+
+    なお、\ ``ObjectMapper``\ を直接Bean定義するスタイルから\ ``Jackson2ObjectMapperFactoryBean``\ を使用するスタイルに変更する場合は、
+    以下のコンフィギュレーションに対するデフォルト値がJacksonのデフォルト値と異なる(無効化されている)点に注意すること。
+
+    * `MapperFeature#DEFAULT_VIEW_INCLUSION <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/MapperFeature.html?is-external=true#DEFAULT_VIEW_INCLUSION>`_\
+    * `DeserializationFeature#FAIL_ON_UNKNOWN_PROPERTIES <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html?is-external=true#FAIL_ON_UNKNOWN_PROPERTIES>`_\
+
+    \ ``ObjectMapper``\の動作をJacksonのデフォルト動作にあわせたい場合は、\ ``featuresToEnable``\ プロパティを使用して上記のコンフィギュレーションを有効化する。
+
+     .. code-block:: xml
+
+        <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+            <!-- ... -->
+            <property name="featuresToEnable">
+                <array>
+                    <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+                    <util:constant static-field="com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES"/>
+                </array>
+            </property>
+        </bean>
+
+    \ ``Jackson2ObjectMapperFactoryBean``\ の詳細については、 `Jackson2ObjectMapperFactoryBeanのJavaDoc <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/http/converter/json/Jackson2ObjectMapperFactoryBean.html>`_\ を参照されたい。
+
 
 .. _REST_note_changed_jackson_version:
 
@@ -1786,7 +1817,6 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
      * http://fasterxml.github.io/jackson-core/javadoc/2.4/deprecated-list.html
      * http://fasterxml.github.io/jackson-databind/javadoc/2.4/deprecated-list.html
      * http://fasterxml.github.io/jackson-annotations/javadoc/2.4/deprecated-list.html
-
 
 |
 
@@ -4566,6 +4596,53 @@ CSRF対策
 
 Appendix
 --------------------------------------------------------------------------------
+
+.. _RESTAppendixUsingJSR310_JodaTime:
+
+JSR-310 Date and Time API / Joda Timeを使う場合の設定
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
+\ ``pom.xml``\ にJacksonから提供されている拡張モジュールを依存ライブラリに追加する。
+
+**JSR-310 Date and Time APIのクラスを使用する場合**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+**Joda Timeのクラスを使用する場合**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>org.terasoluna.gfw</groupId>
+        <artifactId>terasoluna-gfw-jodatime</artifactId>
+    </dependency>
+
+or
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-joda</artifactId>
+    </dependency>
+
+.. note::
+
+    上記以外にも、
+
+    * Java SE 7から追加された\ ``java.nio.file.Path``\
+    * Java SE 8から追加された\ ``java.util.Optional``\
+    * Hibernate ORMのLazy Load機能によってProxy化されたオブジェクト
+
+    などを扱うための拡張モジュール(\ ``jackson-datatype-xxx``\ )が、別途Jacksonから提供されている。
+
+|
 
 .. _RESTAppendixSettingsOfDeployInSameWarFileRestAndClientApplication:
 
