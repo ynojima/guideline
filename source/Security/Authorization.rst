@@ -10,12 +10,27 @@
 
 Overview
 --------------------------------------------------------------------------------
-本節では、Spring Securityで提供している認可機能を説明する。
+本節では、Spring Securityが提供している認可機能について説明する。
 
-Spring Securityのアクセス認可機能を利用して実現するため、Spring Securityの認証機能を用いることを前提とする。
-Spring Securityを利用した認証方法については、\ :doc:`Authentication`\ を参照されたい。
+認可処理は、アプリケーションの利用者がアクセスできるリソースを制御するための処理である。
+利用者がアクセスできるリソースを制御するためのもっとも標準的な方法は、
+リソース(又はリソースの集合)毎にアクセスポリシーを定義してき、利用者がリソースにアクセスしようとした時にアクセスポリシーを調べて制御する方法である。
 
-認可処理
+アクセスポリシーには、どのリソースにどのユーザーからのアクセスを許可するかを定義する。
+Spring Securityでは、以下の3つのリソースに対してアクセスポリシーを定義することができる。
+
+* Webリソース
+* Javaメソッド
+* ドメインオブジェクト \ [#fSpringSecurityAuthorization1]_\
+* JSPの画面項目
+
+本節では、「Webリソース」「Javaメソッド」「JSPの画面項目」のアクセスに対して認可処理を適用するための実装例(定義例)を紹介しながら、Spring Securityの認可機能について説明する。
+
+.. [#fSpringSecurityAuthorization1] ドメインオブジェクトのアクセスに対する認可処理については、 \ `Spring Security Reference -Domain Object Security (ACLs)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#domain-acls>`_\ を参照されたい。
+
+|
+
+認可処理のアーキテクチャ
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Spring Securityは、以下のような流れで認可処理を行う。
@@ -23,7 +38,7 @@ Spring Securityは、以下のような流れで認可処理を行う。
 .. figure:: ./images_Authorization/AuthorizationArchitecture.png
     :width: 100%
 
-    **認可機能のアーキテクチャ**
+    **認可処理のアーキテクチャ**
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -41,19 +56,23 @@ Spring Securityは、以下のような流れで認可処理を行う。
     * - | (4)
       - | \ ``FilterSecurityInterceptor``\ は、\ ``AccessDecisionManager``\ によってアクセス権が付与された場合に限り、リソースへアクセスする。
 
+|
 
 \ ``ExceptionTranslationFilter``\
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ ``ExceptionTranslationFilter``\ は、認可処理(\ ``AccessDecisionManager``\ )で発生した例外をハンドリングし、クライアントへ適切なレスポンスを行うためのサーブレットフィルタである。
+\ ``ExceptionTranslationFilter``\ は、認可処理(\ ``AccessDecisionManager``\ )で発生した例外をハンドリングし、クライアントへ適切なレスポンスを行うためのSecurity Filterである。
 デフォルトの実装では、未認証ユーザーからのアクセスの場合は認証を促すレスポンス、認証済みのユーザーからのアクセスの場合は認可エラーを通知するレスポンスを返却する。
 
+|
 
 \ ``FilterSecurityInterceptor``\
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ ``FilterSecurityInterceptor``\ は、HTTPリクエストに対して認可処理を適用するためのサーブレットフィルタで、実際の認可処理は\ ``AccessDecisionManager``\ に委譲するする。
+\ ``FilterSecurityInterceptor``\ は、HTTPリクエストに対して認可処理を適用するためのSecurity Filterで、実際の認可処理は\ ``AccessDecisionManager``\ に委譲する。
 \ ``AccessDecisionManager``\ インタフェースのメソッドを呼び出す際には、クライアントがアクセスしようとしたリソースに指定されているアクセスポリシーを連携する。
+
+|
 
 \ ``AccessDecisionManager``\
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -62,7 +81,7 @@ Spring Securityは、以下のような流れで認可処理を行う。
 
 Spring Securityが提供する実装クラスは3種類存在するが、いずれも\ ``AccessDecisionVoter``\というインタフェースのメソッドを呼び出してアクセス権を付与するか否かを判定させている。
 \ ``AccessDecisionVoter``\ は「付与」「拒否」「棄権」のいずれかを投票し、\ ``AccessDecisionManager``\ の実装クラスが投票結果を集約して最終的なアクセス権を判断する。
-アクセス権がないと判断した場合は、\ ``AccessDeniedException``\ を発生させアクセスを拒否を拒否する。
+アクセス権がないと判断した場合は、\ ``AccessDeniedException``\ を発生させアクセスを拒否する。
 
 .. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
 .. list-table:: **Spring Securityが提供するAccessDecisionManagerの実装クラス**
@@ -77,17 +96,20 @@ Spring Securityが提供する実装クラスは3種類存在するが、いず�
     * - | \ ``ConsensusBased``\
       - | 全ての\ ``AccessDecisionVoter``\ に投票させ、「付与」の投票数が多い場合にアクセス権を与える実装クラス。
     * - | \ ``UnanimousBased``\
-      - | 全ての\ ``AccessDecisionVoter``\ に投票させ、全ての\ ``AccessDecisionVoter``\ が付与」または「棄権」の場合にアクセス権を与える実装クラス。
-        | 言いかえれば、「拒否」を投票した\ ``AccessDecisionVoter``\ がいるとアクセス権の付与は行われない。
+      - | 全ての\ ``AccessDecisionVoter``\ に投票させ、全ての\ ``AccessDecisionVoter``\ が「付与」または「棄権」の場合にアクセス権を与える実装クラス。
+        | 言いかえると、「拒否」を投票した\ ``AccessDecisionVoter``\ がいるとアクセス権の付与は行われない。
 
-.. note:: **メモ**
+.. note::
 
-    使用する\ ``AccessDecisionVoter``\ が1つの場合はどの実装クラスを使っても動作に違いはないが、複数の\ ``AccessDecisionVoter``\ を使用する場合は、要件に合わせて実装クラスを選択されたい。
+    使用する\ ``AccessDecisionVoter``\ が1つの場合はどの実装クラスを使っても動作に違いはない。
+    複数の\ ``AccessDecisionVoter``\ を使用する場合は、要件に合わせて実装クラスを選択されたい。
+
+|
 
 \ ``AccessDecisionVoter``\
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ ``AccessDecisionVoter``\ は、アクセスしようとしたリソースに指定されている :ref:`アクセスポリシー<SpringSecurityAuthorizationPolicy>` を参照してアクセス権を付与するかを投票するためのインタフェースである。
+\ ``AccessDecisionVoter``\ は、アクセスしようとしたリソースに指定されているアクセスポリシーを参照してアクセス権を付与するかを投票するためのインタフェースである。
 
 Spring Securityが提供する主な実装クラスは以下の通り。
 
@@ -110,29 +132,17 @@ Spring Securityが提供する主な実装クラスは以下の通り。
 .. note:: **メモ**
 
     デフォルトで適用される\ ``AccessDecisionVoter``\ インタフェースの実装クラスは、Spring Security 4.0から\ ``WebExpressionVoter``\ に統一されている。
-    \ ``WebExpressionVoter``\ は、\ ``RoleVoter``\ 、\ ``RoleHierarchyVoter``\ 、\ ``AuthenticatedVoter``\ を使用した時と同じことが実現できるため、本節でも、デフォルトの\ ``WebExpressionVoter``\ を使って認可処理を行う前提で説明を進める。
+    \ ``WebExpressionVoter``\ は、\ ``RoleVoter``\ 、\ ``RoleHierarchyVoter``\ 、\ ``AuthenticatedVoter``\ を使用した時と同じことが実現できるため、
+    本ガイドラインでも、デフォルトの\ ``WebExpressionVoter``\ を使って認可処理を行う前提で説明を行う。
+
+|
 
 How to use
 --------------------------------------------------------------------------------
 
-認可処理は、アプリケーションの利用者がアクセスできるリソースを制御するための処理である。
-利用者がアクセスできるリソースを制御するためのもっとも標準的な方法は、
-リソース(又はリソースの集合)毎にアクセスポリシーを定義してき、利用者がリソースにアクセスしようとした時にアクセスポリシーを調べて制御する方法である。
+認可機能を使用するために必要となるbean定義例(アクセスポリシーの指定方法)や実装方法について説明する。
 
-アクセスポリシーには、どのリソースにどのユーザーからのアクセスを許可するかを定義する。
-Spring Securityでは、以下の3つのリソースに対してアクセスポリシーを定義することができる。
-
-* Webリソース
-* Javaメソッド
-* ドメインオブジェクト \ [#fSpringSecurityAuthorization1]_\
-
-本節では、WebリソースとJavaメソッドのアクセスに対して認可処理を適用するための実装例(定義例)を紹介しながら、Spring Securityの認可機能について説明する。
-
-なお、アクセスポリシーの実践的な定義方法の説明は、
-「:ref:`SpringSecurityAuthorizationAccessPolicyDefinition`」で説明する。
-
-
-.. [#fSpringSecurityAuthorization1] ドメインオブジェクトのアクセスに対する認可処理については、 http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#domain-acls を参照されたい。
+|
 
 .. _SpringSecurityAuthorizationPolicy:
 
@@ -141,15 +151,11 @@ Spring Securityでは、以下の3つのリソースに対してアクセスポ�
 
 アクセスポリシーの記述方法を説明する。
 
-Spring Securityは、アクセスポリシーを指定する記述方法としてSpring Expression Language(SpEL \ [#fSpringSecurityAuthorization2]_\)をサポートしている。
-SpELを使わない方法もあるが、本節ではExpressionを使ってアクセスポリシーを指定する方法で説明を行う。
+Spring Securityは、アクセスポリシーを指定する記述方法としてSpring Expression Language(SpEL)をサポートしている。
+SpELを使わない方法もあるが、本ガイドラインではExpressionを使ってアクセスポリシーを指定する方法で説明を行う。
+SpELの使い方については本節でも紹介するが、より詳しい使い方を知りたい場合は \ `Spring Framework Reference Documentation -Spring Expression Language (SpEL)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/htmlsingle/#expressions>`_\ を参照されたい。
 
-.. note:: **メモ**
-
-    Spring Securityでは、コンフィギュレーションクラス、bean定義ファイル、
-    アノテーションにアクセスポリシーを定義する。
-
-.. [#fSpringSecurityAuthorization2] SpELの使い方については本節でも紹介するが、より詳しい使い方を知りたい場合は http://docs.spring.io/spring/docs/4.2.2.RELEASE/spring-framework-reference/htmlsingle/#expressions を参照されたい。
+|
 
 Built-InのCommon Expressions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -197,6 +203,7 @@ Spring Securityが用意している共通的なExpressionは以下の通り。
     * Spring Secuirty 3.2以前 : \ ``hasRole('ROLE_USER')``\ 
     * Spring Security 4.0以降 : \ ``hasRole('USER')``\ 
 
+|
 
 Built-InのWeb Expressions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -213,6 +220,8 @@ Spring Securityが用意しているWebアプリケーション向けExpression�
     * - | \ ``hasIpAddress(String ipAddress)``\
       - | リクエスト元のIPアドレスが、引数に指定したIPアドレス体系に一致する場合に\ ``true``\ を返却する。
 
+|
+
 Webリソースへの認可
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -223,13 +232,13 @@ Spring Securityは、サーブレットフィルタの仕組みを利用してWe
 
 Webリソースに対して認可処理を適用する場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
-    <sec:http use-expressions="true"> <!-- (1) -->
+    <sec:http>
         <!-- omitted -->
-        <sec:intercept-url pattern="/**" access="isAuthenticated()" />  <!-- (2) -->
+        <sec:intercept-url pattern="/**" access="isAuthenticated()" />  <!-- (1) -->
         <!-- omitted -->
     </sec:http>
 
@@ -241,26 +250,31 @@ Webリソースに対して認可処理を適用する場合は、以下のよ�
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``http``\ 要素の\ ``use-expressions``\ 属性に\ ``true``\ を設定し、Expression Language(EL式)を使用してアクセスポリシーの定義が行えるようにする。
-    * - | (2)
-      - | \ ``intercept-url``\ 要素に、HTTPリクエストに対してアクセスポリシーを定義する。
+      - | \ ``<sec:intercept-url>``\ タグに、HTTPリクエストに対してアクセスポリシーを定義する。
         | ここでは、Expression Language(EL式)を使用して、全てのWebリソースに対して「認証済みのユーザーのみアクセスを許可する」というアクセスポリシーを定義している。
 
 .. note:: **use-expressionsのデフォルト定義**
 
-    Spring Security 4.0から \ ``use-expressions``\ 属性のデフォルト値が\ ``true``\ に変更になっている。
+    Spring Security 4.0から、\ ``<sec:http>``\  タグの\ ``use-expressions``\ 属性のデフォルト値が\ ``true``\ に変更になっている。
 
 .. note:: **アクセスポリシーの定義方法**
 
     アクセスポリシーの定義方法については、「:ref:`SpringSecurityAuthorizationAccessPolicyDefinitionWebBeanFile`」で説明する。
 
+|
+
 メソッドへの認可
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Spring Securityは、Spring AOPの仕組みを利用してアプリケーションコンテキスト内で管理しているBeanのメソッド呼び出しに対して認可処理を行う。
+Spring Securityは、Spring AOPの仕組みを利用してDIコンテナで管理しているBeanのメソッド呼び出しに対して認可処理を行う。
 
 メソッドに対する認可処理は、ドメイン層(サービス層)のメソッド呼び出しに対して行うことを想定して提供されている。
 メソッドに対する認可処理を使用すると、ドメインオブジェクトのプロパティを参照することができるため、きめの細かいアクセスポリシーの定義を行うことが可能になる。
+
+|
+
+AOPの有効化
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 メソッドへの認可処理を使用する場合は、メソッド呼び出しに対して認可処理を行うためのコンポーネント(AOP)を有効化する必要がある。
 AOPを有効化すると、アクセスポリシーをメソッドのアノテーションに定義できるようになる。
@@ -271,12 +285,9 @@ Spring Securityは、以下のアノテーションをサポートしている�
 * JSR-250 (\ ``javax.annotation.security``\ パッケージ)のアノテーション(\ ``@RolesAllowed``\ など)
 * \ ``@Secured``\
 
-本節では、アクセスポリシーをExpressionを使用することができる\ ``@PreAuthorize``\、\ ``@PostAuthorize``\ の使用する方法を説明する。
+本ガイドラインでは、アクセスポリシーをExpressionを使用することができる\ ``@PreAuthorize``\、\ ``@PostAuthorize``\ の使用する方法を説明する。
 
-AOPの有効化
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-* \ ``spring-security.xml``\ の定義例
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
@@ -290,15 +301,19 @@ AOPの有効化
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``<sec:global-method-security>``\ 要素を付与すると、メソッド呼び出しに対する認可処理を行うAOPが有効になる。
+      - | \ ``<sec:global-method-security>``\ タグを付与すると、メソッド呼び出しに対する認可処理を行うAOPが有効になる。
     * - | (2)
       - | \ ``pre-post-annotations``\ 属性に\ ``true``\ を指定する。
         | \ ``pre-post-annotations``\ 属性に\ ``true``\ を指定すると、Expressionを指定してアクセスポリシーを定義できるアノテーションが有効になる。
+
+|
 
 認可処理の適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 メソッドに対して認可処理を適用する際は、アクセスポリシーを指定するアノテーションを使用して、メソッド毎にアクセスポリシーを定義する。
+
+*アクセスポリシーの定義例*
 
 .. code-block:: java
 
@@ -325,6 +340,8 @@ AOPの有効化
 
     アクセスポリシーの定義方法の説明については、「:ref:`SpringSecurityAuthorizationAccessPolicyDefinition`」で説明する。
 
+|
+
 JSPの画面項目への認可
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -332,11 +349,14 @@ Spring Securityは、JSPタグライブラリを使用してJSPの画面項目�
 
 ここでは最もシンプルな定義を例に、JSPの画面項目のアクセスに対して認可処理を適用する方法について説明する。
 
+|
 
 アクセスポリシーの定義
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 JSPタグライブラリを使用してJSPの画面項目に対してアクセスポリシーを定義する際は、表示を許可する条件(アクセスポリシー)をJSPに定義する。
+
+*アクセスポリシー定義例*
 
 .. code-block:: jsp
 
@@ -344,7 +364,7 @@ JSPタグライブラリを使用してJSPの画面項目に対してアクセ�
 
     <!-- (1) -->
     <sec:authorize access="hasRole('ROLE_ADMIN')"> <!-- (2) -->
-        <h2>管理者メニュー</h2>
+        <h2>Admin Menu</h2>
         <!-- omitted -->
     </sec:authorize>
 
@@ -356,18 +376,22 @@ JSPタグライブラリを使用してJSPの画面項目に対してアクセ�
     * - 項番
       - 説明
     * - | (1)
-      - | アクセスポリシーを適用したい部分を\ ``<sec:authorize>``\ 要素で囲む。
+      - | アクセスポリシーを適用したい部分を\ ``<sec:authorize>``\ タグで囲む。
     * - | (2)
-      - | ``<sec:authorize>``\ 要素の\ ``access``\ 属性にアクセスポリシーを定義する。ここでは、「管理者の場合は表示を許可する」というアクセスポリシーを定義している。
+      - | \ ``access``\ 属性にアクセスポリシーを定義する。ここでは、「管理者の場合は表示を許可する」というアクセスポリシーを定義している。
 
 .. note:: **アクセスポリシーの定義**
 
     アクセスポリシーの定義方法の説明については、「:ref:`SpringSecurityAuthorizationAccessPolicyDefinitionJsp`」で説明する。
 
+|
+
 Webリソースに指定したアクセスポリシーとの連動
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-ボタンやリンクなど(サーバーへのリクエストを伴う画面項目)に対してアクセスポリシーを定義する際は、リクエスト先のWebリソースに定義されているアクセスポリシーと連動させることができる。
+ボタンやリンクなど(サーバーへのリクエストを伴う画面項目)に対してアクセスポリシーを定義する際は、リクエスト先のWebリソースに定義されているアクセスポリシーと連動させる。
+
+*Webリソースに定義されているアクセスポリシーとの連携例*
 
 .. code-block:: jsp
 
@@ -375,7 +399,7 @@ Webリソースに指定したアクセスポリシーとの連動
         <!-- (1) -->
         <sec:authorize url="/admin/accounts"> <!-- (2) -->
             <li>
-                <a href="<c:url value='/admin/accounts' />">アカウント管理</a>
+                <a href="<c:url value='/admin/accounts' />">Account Management</a>
             </li>
         </sec:authorize>
     </ul>
@@ -388,41 +412,26 @@ Webリソースに指定したアクセスポリシーとの連動
     * - 項番
       - 説明
     * - | (1)
-      - | ボタンやリンクを出力する部分を\ ``<sec:authorize>``\ 要素で囲む。
+      - | ボタンやリンクを出力する部分を\ ``<sec:authorize>``\ タグで囲む。
     * - | (2)
-      - | \ ``<sec:authorize>``\ 要素の\ ``url``\ 属性にWebリソースへアクセスするためのURLを指定する。
+      - | \ ``<sec:authorize>``\ タグの\ ``url``\ 属性にWebリソースへアクセスするためのURLを指定する。
         | ここでは、「\ ``"/admin/accounts"``\ というURLが割り振られているWebリソースにアクセス可能な場合は表示を許可する」というアクセスポリシーを定義しており、Webリソースに定義されているアクセスポリシーを直接意識する必要がない。
 
-例えば、Webリソースに以下のようなアクセスポリシーが定義されている場合は、\ ``"ROLE_ACCOUNT_MANAGER"``\ というロールを保持しているログインユーザーに対してのみ「アカウント管理」のリンクが表示される。
-
-.. code-block:: java
-
-    http.authorizeRequests()
-            .antMatchers("/admin/accounts/**").hasRole("ACCOUNT_MANAGER")
-
-これは、JSPを以下のように実装したのと同じ動きになるが、アクセスポリシーの定義がいろいろな場所に分散してしまうため、推奨されない。
-
-.. code-block:: jsp
-
-    <ul>
-        <sec:authorize access="hasRole('ACCOUNT_MANAGER')">
-            <li>
-                <a href="<c:url value="/admin/accounts" />">アカウント管理</a>
-            </li>
-        </sec:authorize>
-    </ul>
-
-.. note:: **表示制御に関する留意点**
+.. warning:: **表示制御に関する留意点**
 
     ボタンやリンクなどの表示制御を行う場合は、必ずWebリソースに定義されているアクセスポリシーと連動させること。
 
-    これには、ボタンやリンクに対して直接アクセスポリシーの指定を行い、Webリソース自体にアクセスポリシーを定義していないケースが該当する。
-    この場合、アプリケーションが提供している画面だけを使って操作してくれるユーザーだけなら問題はないが、URLを直接してアクセスするような不正なアクセスを防ぐことができなくなるため、注意されたい。
+    ボタンやリンクに対して直接アクセスポリシーの指定を行い、Webリソース自体にアクセスポリシーを定義していないと、
+    URLを直接してアクセスするような不正なアクセスを防ぐことができない。
+
+|
 
 認可処理の判定結果を変数に格納
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ ``<sec:authorize>``\ 要素を使って呼び出した認可処理の判定結果は、変数に格納して使いまわすことができる。
+\ ``<sec:authorize>``\ タグを使って呼び出した認可処理の判定結果は、変数に格納して使いまわすことができる。
+
+*JSPの実装例*
 
 .. code-block:: jsp
 
@@ -441,10 +450,12 @@ Webリソースに指定したアクセスポリシーとの連動
     * - 項番
       - 説明
     * - |  (1)
-      - | \ ``<sec:authorize>``\ 要素の\ ``var``\ 属性に、認可処理の判定結果を格納するための変数名を指定する。
+      - | \ ``var``\ 属性に判定結果を格納するための変数名を指定する。
         | アクセスが許可された場合は、変数に\ ``true``\ が設定される。
     * - | (2)
       - | 変数の値を参照して表示処理を実装する。
+
+|
 
 認可エラー時のレスポンス
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -472,6 +483,8 @@ Spring Securityは、リソースへのアクセスを拒否した場合、以�
     * - | (4)
       - | 未認証のユーザーからのアクセスの場合は、\ ``AuthenticationEntryPoint``\ インタフェースのメソッドを呼び出してエラー応答を行う。
 
+|
+
 \ ``AccessDeniedHandler``\
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -497,6 +510,8 @@ Spring Securityは、\ ``AccessDeniedHandler``\ インタフェースの実装�
 
 
 Spring Securityのデフォルトの設定では、エラーページの指定がない\ ``AccessDeniedHandlerImpl``\ が使用される。
+
+|
 
 \ ``AuthenticationEntryPoint``\
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -526,24 +541,25 @@ Spring Securityは、\ ``AuthenticationEntryPoint``\ インタフェースの実
 
 Spring Securityのデフォルトの設定では、認証方式に対応する\ ``AuthenticationEntryPoint``\ インタフェースの実装クラスが使用される。
 
+|
+
 認可エラー時の遷移先
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Spring Securityのデフォルトの設定だと、認証済みのユーザーからのアクセスを拒否した際に、アプリケーションサーバのエラーページが表示されることになる。
-アプリケーションサーバーのエラーページを表示してしまうと、システムのセキュリティを低下させる要因になるのため適切なエラー画面を表示することを推奨する。
+Spring Securityのデフォルトの設定だと、認証済みのユーザーからのアクセスを拒否した際は、アプリケーションサーバのエラーページが表示される。
+アプリケーションサーバーのエラーページを表示してしまうと、システムのセキュリティを低下させる要因になるのため、適切なエラー画面を表示することを推奨する。
 エラーページの指定は、以下のようなbean定義を行うことで可能である。
 
-* \ ``spring-security.xml``\ の定義例
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
     <sec:http>
         <!-- omitted -->
         <sec:access-denied-handler
-            error-page="/error/accessDeniedError" /> <!-- (1) -->
+            error-page="/WEB-INF/views/common/error/accessDeniedError.jsp" /> <!-- (1) -->
         <!-- omitted -->
     </sec:http>
-
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -553,49 +569,54 @@ Spring Securityのデフォルトの設定だと、認証済みのユーザー�
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``<sec:access-denied-handler>``\ 要素の\ ``error-page``\ 属性に認可エラーのエラーページを指定する。
+      - | \ ``<sec:access-denied-handler>``\ タグの\ ``error-page``\ 属性に認可エラー用のエラーページを指定する。
 
-.. note:: **コラム**
+.. note:: **サーブレットコンテナのエラーページ機能の利用**
 
-    認可エラーのエラーページは、サーブレットコンテナのエラーページ機能を使って指定することも可能である。
+    認可エラーのエラーページは、サーブレットコンテナのエラーページ機能を使って指定することもできる。
 
-    サーブレットコンテナのエラーページ機能を使う場合は、\ ``web.xml``\ の\ ``<error-page>`` 要素を使用してエラーページを指定する。
+    サーブレットコンテナのエラーページ機能を使う場合は、\ ``web.xml``\ の\ \ ``<error-page>``\ タグを使用してエラーページを指定する。
 
-    .. code-block:: xml
+     .. code-block:: xml
 
-        <error-page>
-            <error-code>403</error-code>
-            <location>/WEB-INF/views/accessDeniedError.jsp</location>
-        </error-page>
+         <error-page>
+             <error-code>403</error-code>
+             <location>/WEB-INF/views/common/error/accessDeniedError.jsp</location>
+         </error-page>
+
+|
 
 .. _SpringSecurityAutorizationNoAutorizationUrl:
 
 アクセス認可制御を行わないURLの設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-トップページやログイン画面、cssファイルへのパスなど、認証が必要のないURLに対しては、http要素のpattern属性、およびsecurity属性を利用する。
+セキュリティ対策が不要なリソースのパス(cssファイルやimageファイルにアクセスするためのパスなど)に対しては、
+\ ``<sec:http>``\ タグを使用して、Spring Securityのセキュリティ機能(Security Filter)が適用されないように制御することができる。
 
-* \ ``spring-security.xml``\ の定義例
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+
+.. code-block:: xml
   
-  .. code-block:: xml
-  
-    <sec:http pattern="/css/**" security="none"/>  <!-- 属性の指定順番で(1)～(2) -->
-    <sec:http pattern="/login" security="none"/>
+    <sec:http pattern="/resources/**" security="none"/>  <!-- (1) (2) -->
     <sec:http>
         <!-- omitted -->
     </sec:http>
   
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
   
-     * - 項番
-       - 説明
-     * - | (1)
-       - | \ ``pattern``\ 属性に設定を行う対象のURLパターンを記述する。\ ``pattern``\ 属性を記述しない場合、すべてのパターンにマッチする。
-     * - | (2)
-       - | \ ``security``\ 属性に\ ``none``\ を指定することで、\ ``pattern``\ 属性に記述されたパスは、Spring Securityフィルタチェインを回避することができる。
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``pattern``\ 属性にセキュリティ機能を適用しないパスのパターンを指定する。
+    * - | (2)
+      - | \ ``security``\ 属性に\ ``none``\ を指定する。
+        | \ ``none``\ を指定すると、Spring Securityのセキュリティ機能(Security Filter)が適用されない。
+
+|
 
 .. _SpringSecurityAuthorizationAccessPolicyDefinition:
 
@@ -615,7 +636,7 @@ bean定義ファイルを使用して、Webリソースに対してアクセス�
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 まず、アクセスポリシーを適用するリソース(HTTPリクエスト)を指定する。
-アクセスポリシーを適用するリソースの指定は、\ ``<sec:intercept-url>``\ 要素の以下の属性を使用する。
+アクセスポリシーを適用するリソースの指定は、\ ``<sec:intercept-url>``\ タグの以下の属性を使用する。
 
 .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
 .. list-table:: **アクセスポリシーを適用するリソースを指定するための属性**
@@ -636,7 +657,7 @@ bean定義ファイルを使用して、Webリソースに対してアクセス�
 
 上記以外の属性については、\ `<intercept-url> <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-intercept-url>`_\ を参照されたい。
 
-* \ ``<sec:intercept-url>``\ 要素\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
+* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
 
 .. code-block:: xml
 
@@ -654,7 +675,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 .. note:: **パスパターンの解釈**
 
     Spring Securityのデフォルトの動作では、パスパターンはAnt形式で解釈する。
-    パスパターンを正規表現で指定したい場合は、\ ``<sec:http>``\ 要素の\ ``request-matcher``\ 属性に
+    パスパターンを正規表現で指定したい場合は、\ ``<sec:http>``\ タグの\ ``request-matcher``\ 属性に
     \ ``"regex"``\ を指定すること。
 
       .. code-block:: xml
@@ -668,9 +689,9 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 つぎに、アクセスポリシーを指定する。
-アクセスポリシーの指定は、\ ``<sec:intercept-url>``\ 要素の\ ``access``\ 属性に指定する。
+アクセスポリシーの指定は、\ ``<sec:intercept-url>``\ タグの\ ``access``\ 属性に指定する。
 
-* \ ``<sec:intercept-url>``\ 要素\ ``access``\ 属性の定義例（\ ``spring-security.xml``\ ）
+* \ ``<sec:intercept-url>``\ タグ\ ``access``\ 属性の定義例（\ ``spring-security.xml``\ ）
 
   .. code-block:: xml
   
@@ -702,7 +723,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 
 | ログインユーザーに「ROLE_USER」「ROLE_ADMIN」というロールがある場合を例に、設定例を示す。
 
-* \ ``<sec:intercept-url>``\ 要素\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
+* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
 
   .. code-block:: xml
   
@@ -888,9 +909,9 @@ JSPタグライブラリを使用して、画面項目に対してアクセス�
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 まず、アクセスポリシーを適用する画面項目を指定する。
-アクセスポリシーを適用する画面項目の指定は、\ ``<sec:authorize>``\ 要素で囲む。
+アクセスポリシーを適用する画面項目の指定は、\ ``<sec:authorize>``\ タグで囲む。
 
-* \ ``<sec:authorize>``\ 要素の使用例
+* \ ``<sec:authorize>``\ タグの使用例
 
 .. code-block:: jsp
 
@@ -902,11 +923,11 @@ JSPタグライブラリを使用して、画面項目に対してアクセス�
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 つぎに、アクセスポリシーを指定する。
-アクセスポリシーの指定は、\ ``<sec:authorize>``\ 要素の\ ``access``\ 属性に指定する。
+アクセスポリシーの指定は、\ ``<sec:authorize>``\ タグの\ ``access``\ 属性に指定する。
 
-\ ``access``\ 属性に指定したExpressionの結果が\ ``true``\ になると\ ``<sec:authorize>``\ 要素の中に実装したJSPの処理が実行される。
+\ ``access``\ 属性に指定したExpressionの結果が\ ``true``\ になると\ ``<sec:authorize>``\ タグの中に実装したJSPの処理が実行される。
 
-* \ ``<sec:authorize>``\ 要素の\ ``access``\ 属性の定義例
+* \ ``<sec:authorize>``\ タグの\ ``access``\ 属性の定義例
 
 .. code-block:: jsp
 
@@ -918,11 +939,11 @@ Webリソースに指定したアクセスポリシーとの連動
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 アクセスポリシーを直接指定するのではなく、Webリソースに指定したアクセスポリシーと連動させることができる。
-Webリソースに指定したアクセスポリシーと連動させる場合は、\ ``<sec:authorize>``\ 要素の\ ``url``\ 属性を使用する。
+Webリソースに指定したアクセスポリシーと連動させる場合は、\ ``<sec:authorize>``\ タグの\ ``url``\ 属性を使用する。
 
-\ ``url``\ 属性に指定したWebリソースにアクセスできる場合に限り\ ``<sec:authorize>``\ 要素の中に実装したJSPの処理が実行される。
+\ ``url``\ 属性に指定したWebリソースにアクセスできる場合に限り\ ``<sec:authorize>``\ タグの中に実装したJSPの処理が実行される。
 
-* \ ``<sec:authorize>``\ 要素の\ ``url``\ 属性の定義例
+* \ ``<sec:authorize>``\ タグの\ ``url``\ 属性の定義例
 
 .. code-block:: jsp
 
@@ -934,7 +955,9 @@ Webリソースに指定したアクセスポリシーと連動させる場合�
 
 .. note:: **HTTPメソッドによるポリシーの指定**
 
-    Webリソースのアクセスポリシーの定義をする際に、HTTPメソッドによって異なるアクセスポリシーを指定している場合は、\ ``<sec:authorize>``\ 要素の\ ``method``\ 属性を指定して、連動させる定義を特定すること。
+    Webリソースのアクセスポリシーの定義をする際に、HTTPメソッドによって異なるアクセスポリシーを指定している場合は、\ ``<sec:authorize>``\ タグの\ ``method``\ 属性を指定して、連動させる定義を特定すること。
+
+|
 
 How to extend
 --------------------------------------------------------------------------------
@@ -944,6 +967,8 @@ How to extend
 Spring Securityは、多くのカスタマイズポイントを提供しているため、すべてのカスタマイズポイントは紹介しない。
 本節では代表的なカスタマイズポイントに絞って説明を行う。
 
+|
+
 認可エラー時のレスポンス (認証済みユーザー編)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -952,12 +977,12 @@ Spring Securityは、多くのカスタマイズポイントを提供してい�
 \ ``AccessDeniedHandler``\ の適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、以下のようなbean定義を行うことで\ ``AccessDeniedHandler``\ インタフェースの実装クラスを直接適用することができる。
+Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、\ ``AccessDeniedHandler``\ インタフェースの実装クラスを直接適用することができる。
 
-例えば、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合では、エラーページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがあると思われる。
+例えば、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合は、エラーページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがある。
 そのような場合は、\ ``AccessDeniedHandler``\ インタフェースの実装クラスを作成してSpring Securityに適用することで実現することができる。
 
-* \ ``AccessDeniedHandler``\ インタフェースの実装例
+*AccessDeniedHandlerインタフェースの実装クラスの作成例*
 
 .. code-block:: java
 
@@ -976,11 +1001,11 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
                            AccessDeniedException accessDeniedException)
                 throws IOException, ServletException {
             if (jsonRequestMatcher.matches(request)) {
-                // エラー情報をJSON形式で応答
+                // response error information of JSON format
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 // omitted
             } else {
-                // エラーページをHTMLとして応答
+                // response error page of HTML format
                 delegateHandler.handle(
                         request, response, accessDeniedException);
             }
@@ -988,13 +1013,13 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 
     }
 
-* \ ``spring-security.xml``\ の定義例
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
     <!-- (1) -->
     <bean id="accessDeniedHandler"
-          class="springbook.web.JsonDelegatingAccessDeniedHandler">
+          class="com.example.web.security.JsonDelegatingAccessDeniedHandler">
         <constructor-arg>
             <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
                 <constructor-arg value="/api/**"/>
@@ -1003,7 +1028,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
         <constructor-arg>
             <bean class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
                 <property name="errorPage"
-                          value="/WEB-INF/views/accessDeniedError.jsp"/>
+                          value="/WEB-INF/views/common/error/accessDeniedError.jsp"/>
             </bean>
         </constructor-arg>
     </bean>
@@ -1024,7 +1049,9 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
     * - \ (1)
       - \ ``AccessDeniedHandler``\ インタフェースの実装クラスをbean定義してDIコンテナに登録する。
     * - \ (2)
-      - \ ``<sec:access-denied-handler>``\ 要素の\ ``ref``\ 属性に\ ``AccessDeniedHandler``\ のbeanを指定する。
+      - \ ``<sec:access-denied-handler>``\ タグの\ ``ref``\ 属性に\ ``AccessDeniedHandler``\ のbeanを指定する。
+
+|
 
 認可エラー時のレスポンス (未認証ユーザー編)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1034,10 +1061,10 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 リクエスト毎に\ ``AuthenticationEntryPoint``\ を適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-認証済みユーザーと同様に、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合は、ログインページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがあると思われる。
+認証済みユーザーと同様に、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合は、ログインページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがある。
 そのような場合は、リクエストのパターン毎に\ ``AuthenticationEntryPoint``\ インタフェースの実装クラスをSpring Securityに適用することで実現することができる。
 
-* \ ``spring-security.xml``\ の定義例
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
@@ -1052,7 +1079,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
                             <constructor-arg value="/api/**"/>
                         </bean>
                     </key>
-                    <bean class="springbook.web.JsonAuthenticationEntryPoint"/>
+                    <bean class="com.example.web.security.JsonAuthenticationEntryPoint"/>
                 </entry>
             </map>
         </constructor-arg>
@@ -1078,50 +1105,50 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
       - | \ ``AuthenticationEntryPoint``\ インタフェースの実装クラスをbean定義してDIコンテナに登録する。
         | ここでは、Spring Securityが提供している\ ``DelegatingAuthenticationEntryPoint``\ クラスを利用して、リクエストのパターン毎に\ ``AuthenticationEntryPoint``\ インタフェースの実装クラスを適用している。
     * - | (2)
-      - | \ ``<sec:http>``\ 要素の\ ``entry-point-ref``\ 属性に\ ``AuthenticationEntryPoint``\ のbeanを指定する。
+      - | \ ``<sec:http>``\ タグの\ ``entry-point-ref``\ 属性に\ ``AuthenticationEntryPoint``\ のbeanを指定する。
 
 .. note:: **デフォルトで適用されるAuthenticationEntryPoint**
 
     リクエストに対応する\ \ ``AuthenticationEntryPoint``\ インタフェースの実装クラスの指定がない場合は、Spring Securityがデフォルトで定義する\ ``AuthenticationEntryPoint``\ インタフェースの実装クラスが使用される仕組みになっている。
     認証方式としてフォーム認証を使用する場合は、\ ``LoginUrlAuthenticationEntryPoint``\ クラスが使用されログインフォームが表示される。
 
+|
 
-ロール階層機能
+ロールの階層化
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-認可で扱うロールには、階層関係を設定することが可能である。
-上位に設定したロールは、下位ロールに認可されたすべてのアクセスが可能となる。
-ロールの関係が複雑な場合は、階層機能を利用することも検討されたい。
+認可処理では、ロールに階層関係を設けることができる。
 
-ここでは、 **「ROLE_ADMIN」を上位ロール、「ROLE_USER」を下位ロール** として階層関係を設定する例で説明する。
+上位に指定したロールは、下位のロールにアクセスが許可されているリソースにもアクセスすることができる。
+ロールの関係が複雑な場合は、階層関係も設けることも検討されたい。
 
-「ROLE_ADMIN」を上位ロール、「ROLE_USER」を下位ロールとする場合、下記のようにアクセス認可を設定すると、「ROLE_ADMIN」のロールを持つユーザは、「/user/\*」のURLにアクセス可能である。
+例えば、「ROLE_ADMIN」が上位ロール、「ROLE_USER」が下位ロールという階層関係を設けた場合、
+下記のようアクセスポリシーを設定すると、「ROLE_ADMIN」権限を持つユーザーは、
+\ ``"/user"``\ 配下のパス(「ROLE_USER」権限を持つユーザーがアクセスできるパス)にアクセスすることができる。
 
-**Spring Security 設定ファイル**
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
-  <sec:http>
-      <sec:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_USER')" />
-      <!-- omitted -->
-  </sec:http>
+    <sec:http>
+        <sec:intercept-url pattern="/user/**" access="hasAnyRole('USER')" />
+        <!-- omitted -->
+    </sec:http>
 
-アクセス認可(リクエストURL)、アクセス認可(JSP)、アクセス認可(Method)のそれぞれで設定方法が異なるため、使用方法については以降で説明する。
+|
 
-
-共通設定
+階層関係の設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-ロールの階層を使用する際に、共通で必要な設定について以下に示す。
 
-階層関係を管理する\ ``org.springframework.security.access.hierarchicalroles.RoleHierarchy`` クラスのBean定義を行う。
+ロールの階層関係は、\ ``org.springframework.security.access.hierarchicalroles.RoleHierarchy``\ インタフェースの実装クラスで解決する。
 
-* spring-security.xml
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
 
     <bean id="roleHierarchy"
         class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl"> <!-- (1) -->
-        <property name="hierarchy">
-            <value> <!-- (2) -->
+        <property name="hierarchy"> <!-- (2) -->
+            <value>
                 ADMIN > STAFF
                 STAFF > USER
             </value>
@@ -1136,20 +1163,25 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
      * - 項番
        - 説明
      * - | (1)
-       - | \ ``RoleHierarchy``\ のデフォルト ``org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl`` クラスを指定する。
+       - | \ ``org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl`` クラスを指定する。
+         | \ ``RoleHierarchyImpl``\ は、Spring Securityが提供するデフォルトの実装クラスである。
      * - | (2)
        - | \ ``hierarchy``\ プロパティに階層関係を定義する。
-         | 書式:
-         | [上位ロール] > [下位ロール]
-         | 例では、STAFFはUSERに認可されたすべてのリソースに、アクセス可能である。
-         | ADMINはUSER、STAFFに認可されたすべてのリソースに、アクセス可能である。
+         |
+         | 書式: [上位ロール] > [下位ロール]
+         |
+         | 上記例では、
+         | STAFFは、USERに認可されたリソースにもアクセス可能である。
+         | ADMINは、USERとSTAFFに認可されたリソースにもアクセス可能である。
 
+|
 
-アクセス認可(リクエストURL)、アクセス認可(JSP)での使用方法
+Webリソースの認可処理への適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-リクエストURL、JSPに対するロール階層の設定について説明する。
 
-* \ ``spring-security.xml``\ の定義例
+ロールの階層化を、WebリソースとJSPの画面項目に対する認可処理に適用する方法を説明する。
+
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
   
@@ -1159,7 +1191,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
         <property name="roleHierarchy" ref="roleHierarchy"/>  <!-- (2) -->
     </bean>
   
-    <sec:http use-expression="true">
+    <sec:http>
         <!-- omitted -->
         <sec:expression-handler ref="webExpressionHandler" />  <!-- (3) -->
     </sec:http>
@@ -1172,18 +1204,20 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
      * - | 項番
        - | 説明
      * - | (1)
-       - | クラスに\ ``org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler``\ を指定する。
+       - | \ ``org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler``\ のBeanを定義する。
      * - | (2)
-       - | \ ``roleHierarchy``\ プロパティに\ ``RoleHierarchy``\ のBeanをプロパティに設定する。
+       - | \ ``roleHierarchy``\ プロパティに\ ``RoleHierarchy``\ インタフェースの実装クラスのBeanを指定する。
      * - | (3)
-       - | \ ``expression-handler``\ 要素に、\ ``org.springframework.security.access.expression.SecurityExpressionHandler``\ を実装したハンドラクラスのBeanを指定する。
+       - | \ ``<sec:expression-handler>``\ タグの\ ``ref``\ 属性に、\ ``org.springframework.security.access.expression.SecurityExpressionHandler``\ インタフェースの実装クラスのBeanを指定する。
 
+|
 
-アクセス認可(Method)での使用方法
+メソッドの認可処理への適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Serviceのメソッドにアノテーションをつけて認可制御を行う場合のロール階層設定について説明する。
 
-* \ ``spring-security.xml``\ の定義例
+ロールの階層化を、Javaメソッドに対する認可処理に適用する方法を説明する。
+
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
 .. code-block:: xml
   
@@ -1204,11 +1238,11 @@ Serviceのメソッドにアノテーションをつけて認可制御を行う�
      * - 項番
        - 説明
      * - | (1)
-       - | クラスに\ ``org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler``\ を指定する。
+       - | \ ``org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler``\ のBeanを定義する。
      * - | (2)
-       - | \ ``roleHierarchy``\ プロパティに\ ``RoleHierarchy``\ のBean IDをプロパティに設定する。
+       - | \ ``roleHierarchy``\ プロパティに\ ``RoleHierarchy``\ インタフェースの実装クラスのBeanを指定する。
      * - | (3)
-       - | \ ``expression-handler``\ 要素に、\ ``org.springframework.security.access.expression.SecurityExpressionHandler``\ を実装したハンドラクラスのBeanを指定する。
+       - | \ ``<sec:expression-handler>``\ タグの\ ``ref``\ 属性に、\ ``org.springframework.security.access.expression.SecurityExpressionHandler``\ インタフェースの実装クラスのBeanを指定する。
 
 .. raw:: latex
 
