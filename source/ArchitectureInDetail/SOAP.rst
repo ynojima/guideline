@@ -197,11 +197,14 @@ JAX-WSを利用したWebサービスを作成する場合、既存のブラン�
 
 |
 
-.. Note:: **デプロイ方針について**
+.. Note:: **上記の構成におけるWARファイルの作成について**
 
-    SOAPサーバ、クライアントどちらにおいても、webプロジェクトから作成したWARファイルをAPサーバにデプロイすることで、SOAP Web Serviceを実現する。
+    SOAPサーバ、クライアントどちらにおいても、通常のWebアプリケーション同様に、webプロジェクトから作成したWARファイルをAPサーバにデプロイすることで、SOAP Web Serviceを実現することができる。
 
-    SOAPサーバで、SOAP Web Serviceのみを作成する場合、Spring MVCの設定ファイルなどは不要となるため、削除したほうが望ましい。対象ファイルについては、「\ :ref:`SOAPAppendixPackageServer`\ 」を参照されたい。
+.. Note:: **SOAPサーバの不要なファイル**
+
+    SOAPサーバで、SOAP Web Serviceのみを作成する場合、ブランクプロジェクトに存在するSpring MVCの設定ファイルなどは不要となるため、削除したほうが望ましい。削除する対象については、「\ :ref:`SOAPAppendixPackageServer`\ 」を参照されたい。
+
 
 |
 
