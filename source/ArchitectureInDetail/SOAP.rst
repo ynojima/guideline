@@ -519,9 +519,20 @@ webserviceプロジェクト内にWebサービスを呼び出すインターフ�
         | \ ``WebFaultException``\ の詳細は「\ :ref:`SOAPHowToUseExceptionHandler`\ 」を参照されたい。
 
 
-.. note::
+.. note:: **パッケージ名および、ネームスペースの付け方について**
 
-    Namespaceは以下のようなJavaのパッケージと紐づけられる。
+    パッケージ名が以下のような形式になっている場合
+
+      * 【ドメイン】.【アプリケーション名(システム名)】.ws.【ユースケース名】
+
+    本ガイドラインでは、以下のようなネームスペースにすることを推奨する。
+
+      * http://【ドメイン】/【アプリケーション名(システム名)】
+      
+      
+.. note:: **ネームスペースとパッケージ名の関係**
+
+    ドメインをcom.example、アプリケーション名をtodoとした場合、Namespaceは以下のようなJavaのパッケージと紐づけられる。
 
     .. figure:: images_SOAP/SOAPURL.png
         :alt: Server and Client Projects for SOAP
@@ -531,6 +542,8 @@ webserviceプロジェクト内にWebサービスを呼び出すインターフ�
 
 |
 
+    
+      
 **WebService実装クラスの作成**
 
 webプロジェクト内にWebServiceインターフェースの実装クラスを作成する。
