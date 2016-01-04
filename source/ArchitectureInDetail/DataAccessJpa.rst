@@ -3736,7 +3736,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
             
             try {
                 versionMethod = entityInformation.getJavaType().getMethod("getVersion");
-            } catch (NoSuchMethodException e) { }
+            } catch (NoSuchMethodException | SecurityException e) { }
 
         }
 
