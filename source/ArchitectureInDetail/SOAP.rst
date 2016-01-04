@@ -338,7 +338,7 @@ SOAPサーバの作成
 
 **パッケージのコンポーネントスキャン設定**
 
-Webサービスで使用するエラーハンドラーをコンポーネントスキャンするため、\ ``[server projectName]-ws.xml``\ を作成し、コンポーネントスキャンの定義を行い、Webサービスにインジェクションできるようにする。
+Webサービスで使用するコンポーネントをスキャンするため、\ ``[server projectName]-ws.xml``\ を作成し、コンポーネントスキャンの定義を行い、Webサービスにインジェクションできるようにする。
 
 *[server projectName]-web/src/main/resources/META-INF/spring/[server projectName]-ws.xml*
 
@@ -353,7 +353,7 @@ Webサービスで使用するエラーハンドラーをコンポーネント�
              http://www.springframework.org/schema/context
              http://www.springframework.org/schema/context/spring-context.xsd">
         <!-- (1) -->
-        <context:component-scan base-package="com.example.ws.exception" />
+        <context:component-scan base-package="com.example.ws" />
     </beans>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -364,7 +364,7 @@ Webサービスで使用するエラーハンドラーをコンポーネント�
     * - 項番
       - 説明
     * - | (1)
-      - | エラーハンドラーを配置したパッケージ名を設定する。
+      - | コンポーネントスキャンするパッケージを設定する。
 
 |
 
