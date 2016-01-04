@@ -2472,36 +2472,7 @@ CXFServletを使用する場合の設定
 POJO方式で必要な設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-CXFServletの設定に、コンポーネントスキャンを設定し、Webサービスをコンポーネント登録する。
-
-*[server projectName]-web/src/main/resources/META-INF/spring/[server projectName]-ws.xml*
-
-.. code-block:: xml
-
-    <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:context="http://www.springframework.org/schema/context"
-        xsi:schemaLocation="
-             http://www.springframework.org/schema/beans
-             http://www.springframework.org/schema/beans/spring-beans.xsd
-             http://www.springframework.org/schema/context
-             http://www.springframework.org/schema/context/spring-context.xsd">
-        <!-- (1) -->
-        <context:component-scan base-package="com.example.ws" />
-    </beans>
-      
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | Webサービス実装クラスをコンポーネントスキャンの対象に含める。
-
-| 
-
-Webサービス実装クラスのコンポーネントスキャンを設定する。
+Webサービス実装クラスをエンドポイントとして設定する。
 
 
 *[server projectName]-web/src/main/resources/META-INF/spring/cxf-servlet.xml*
@@ -2533,10 +2504,12 @@ Webサービス実装クラスのコンポーネントスキャンを設定す�
 
     * - 項番
       - 説明
-
     * - | (1)
-      - | \ ``implementor``\ 属性に指定していたクラス名を変更し、#bean名とすることでDIコンテナからWebサービス実装クラスを取得する。
-        |
+      - | 公開するエンドポイントを定義する。
+        | \ ``implementor``\ 属性に#bean名とすることでDIコンテナからWebサービス実装クラスを取得する。
+        | \ ``address``\ 属性にWebサービスにアクセスする際に使用するアドレスを定義する。
+        | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\を参照されたい。
+
 
 |
 
