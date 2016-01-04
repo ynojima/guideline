@@ -4087,7 +4087,7 @@ See the example below.
       - | When ``org.joda.time.DateTime`` type is to be used, assign ``@org.hibernate.annotations.Type`` annotation to the field in order to handle in Hibernate.
         | type attribute is fixed to ``"org.jadira.usertype.dateandtime.joda.PersistentDateTime"``. This is applicable for "Last modified date-time" field also.
     * - | (4)
-      - | Field type that stores the "Created date-time" supports ``org.joda.time.DateTime``, ``java.util.Date`` , ``java.lang.Long`` and ``long`` types.
+      - | Field type that stores the "Created date-time" supports ``org.joda.time.DateTime``, ``java.util.Date``, ``java.util.Calendar``, ``java.lang.Long``, ``long`` types as well JDK8 Date/Time API (JSR-310) etc.
         | This is applicable for "Last modified date" field also.
     * - | (5)
       - | Assign ``@org.springframework.data.annotation.LastModifiedBy`` annotation to the field type that stores "Last modified by".
@@ -4209,8 +4209,8 @@ Extended example of changing the method to create the values to be used is shown
         // (3)
         @Override
         public Calendar getNow() {
-            DateTime currentDatetime = dateFactory.newDateTime();
-            return currentDatetime.toCalendar(Locale.getDefault());
+            DateTime currentDateTime = dateFactory.newDateTime();
+            return currentDateTime.toGregorianCalendar();
         }
 
     }
