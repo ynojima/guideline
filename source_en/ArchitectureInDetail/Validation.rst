@@ -3838,6 +3838,364 @@ In hibernate-validator-<version>.jar, there is a ValidationMessages.properties f
   org.hibernate.validator.constraints.br.TituloEleitoral.message      = invalid Brazilian Voter ID card number
 
 
+.. _Validation_terasoluna_gfw:
+
+Input check rules provided by a common library
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A common library provides an independent annotation for verification.
+Here, how to specify input check rules which use annotation provided by common library is explained.
+
+.. _Validation_terasoluna_gfw_list:
+
+terasoluna-gfw-common check rules
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Annotation provided by \ `terasoluna-gfw-common <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-common>`_\  (\ ``org.terasoluna.gfw.common.codelist.*``\ ) is shown below.
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 15 30 30 25
+
+    * - Annotation
+      - Target type
+      - Description
+      - Usage example
+    * - \ ``@ExistInCodeList``\
+      - | \ ``Character``\
+        | Implementation class of \ ``CharSequence``\ 
+        | (\ ``String``\, \ ``StringBuilder``\ etc)
+      - Verify whether value is incorporated in the code list.
+      - Refer \ :ref:`@ExistInCodeList <codelist-validate>`\ 
+
+
+terasoluna-gfw-validator check rules
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Annotation provided by \ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\  (\ ``org.terasoluna.gfw.common.validator.constraints.*``\ ) is shown below.
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 15 30 30 25
+
+    * - Annotation
+      - Target type
+      - Description
+      - Usage example
+    * - \ ``@ByteMin``\
+      - | Implementation class of \ ``CharSequence``\ 
+        | (\ ``String``\, \ ``StringBuilder``\  etc)
+      - | Verify whether byte length value is greater than or equal to minimum value.
+        |
+        | **[Annotation attributes]**
+        | \ ``long value``\  - Specify minimum value of byte length.
+        | \ ``String charset``\  - Specify string character set used while encoding the value in byte sequence. Default value is \ ``UTF-8``\ .
+      - Refer \ ``@ByteMax``\ 
+    * - \ ``@ByteMax``\
+      - | Implementation class of \ ``CharSequence``\ 
+        | (\ ``String``\, \ ``StringBuilder``\  etc)
+      - | Verify whether byte length value is less than or equal to maximum value.
+        |
+        | **[Annotation attribute]**
+        | \ ``long value``\  - Specify maximum value for byte length.
+        | \ ``String charset``\  - Specify string character set used while encoding the value in byte sequence. Default value is \ ``UTF-8``\ .
+      - .. code-block:: java
+
+             @ByteMin(1)
+             @ByteMax(value = 100,
+                     charset = "Shift_JIS")
+             private String id;
+
+    * - \ ``@Compare``\
+      - | Implementation class of \ ``Comparable``\  interface can be applied to any JavaBean with a property
+      - | Verify that the magnitude relation of specified property value is correct.
+        |
+        | **[Annotation attribute]**
+        | \ ``String left``\  - Specify the property name to be used as a comparison source in the object. A message is displayed in the property in case of a validation error.
+        | \ ``String right``\  - Specify property name to be used as a comparison destination in the object.
+        | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Operator operator``\  - Specify Enum type \ ``Operator``\  value which shows expected magnitude relation. Values that can be specified are as below.
+
+        * \ ``EQUAL``\  : \ ``left = right``\ 
+        * \ ``GREATER_THAN``\  : \ ``left > right``\ 
+        * \ ``GREATER_THAN_OR_EQUAL``\  : \ ``left >= right``\ 
+        * \ ``LESS_THAN``\  : \ ``left < right``\ 
+        * \ ``LESS_THAN_OR_EQUAL``\  : \ ``left <= right``\ 
+
+        | \ ``boolean requireBoth``\  - Specify whether values must be entered in the fields specified by both \ ``left``\  attribute and \ ``right``\  attribute (should not be \ ``null``\ ).
+
+        * \ ``true``\  : Considered as a validation error if value is entered in only one of the fields. However, considered as "validation success" when values are not entered in both the fields.
+        * \ ``false``\  : Considered as "validation success" when only one of the fields contain a value. (Default)
+
+        | \ ``org.terasoluna.gfw.common.validator.constraints.Compare.Node node``\  - Specify Enum type \ ``Node``\  value which indicates path to output error message. Values that can be specified are as below.
+
+        * \ ``PROPERTY``\  : Output as an error for the field specified in \ ``left``\  attribute. (Default)
+        * \ ``ROOT_BEAN``\  : Output as an error of object which has been checked.
+
+      - Check whether the mail address matches with the mail address entered for checking. Implementation is as below when entire form is to be displayed as an error message.
+
+        .. code-block:: java
+
+             @Compare(left = "email",
+                     right = "confirmEmail",
+                     operator = Compare.Operator.EQUAL,
+                     requireBoth = true,
+                     node = Compare.Node.ROOT_BEAN)
+             public class UserRegisterForm {
+                 private String email;
+                 private String confirmEmail;
+             }
+
+        |
+
+        When period start date and period end date are both entered, check that start date is earlier than the end date. Implementation is as below when error message is displayed for period start date.
+
+        .. code-block:: java
+
+             @Compare(left = "form",
+                     right = "to",
+                     operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+             public class Period {
+                 private Date from;
+                 private Date to;
+             }
+
+.. note:: **For mandatory input during correlated item check**
+  
+  For unit item check, whether a value is entered in the input field（ should not be \ ``null``\ ) can be checked by using \ ``@NotNull``\  in combination. However, in correlated item check, the check like "if value is entered in one field, value is entered forcefully in another field" cannot be implemented by using \ ``@NotNull``\  alone. Hence, \ ``@Compare``\  provides \ ``requireBoth``\  attribute which controls mandatory input for checking which can then be used for implementing the check whenever required.
+
+  Also, when a value is not entered in the input field, \ ``requireBoth``\  attribute can be used only when \ ``null``\  is bound. If a form is sent in Spring MVC when a value is not entered in input field of string, it must be noted that empty string is bound in the form object by default instead of \ ``null``\ . When a value is not entered in the string field, refer \ :ref:`Validation_string_trimmer_editor`\  to bind \ ``null``\  in form object instead of empty string.
+  
+  Expected check requirements and configuration example are shown below using "checking whether period start date is earlier than end date" as an example.
+  
+    .. tabularcolumns:: |p{0.50\linewidth}|p{0.50\linewidth}|
+    .. list-table::
+        :header-rows: 1
+        :widths: 50 50
+
+        * - Check requirements
+          - Configuration example
+        * - \ ``from``\  and \ ``to``\  both are mandatory, compare \ ``from``\  and \ ``to``\ .
+          - Assign \ ``@NotNull``\ in \ ``from``\  and \ ``to``\  and use default value （ \ ``false``\ ）in \ ``requireBoth``\  attribute.
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  @NotNull
+                  LocalDate from;
+                  @NotNull
+                  LocalDate to;
+                }
+
+        * - Only \ ``from``\  is mandatory, however carry out comparison check when a value is entered in \ ``to``\  as well.
+          - Assign \ ``@NotNull``\ only in  \ ``from``\  and use default value （ \ ``false``\ ）in \ ``requireBoth``\  attribute.
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  @NotNull
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+        * - \ ``from``\  and \ ``to``\  are not both required, carry out comparison check only when values are entered in both \ ``from``\  and \ ``to``\ . When the value is entered in only one of the fields, comparison check is not carried out.
+          - Do not assign \ ``@NotNull``\ and use default value （ \ ``false``\ ）in \ ``requireBoth``\  attribute.
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL)
+                public class Period {
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+        * - \ ``from``\  and \ ``to``\  are not both required, when values are entered in either of the \ ``from``\ or \ ``to``\ , carry out comparison check by always entering values in both fields.
+          - Do not assign \ ``@NotNull``\ and specify \ ``true``\  in \ ``requireBoth``\  attribute.
+
+            .. code-block:: java
+
+                @Compare(left = "from", right = "to", operator = Compare.Operator.LESS_THAN_OR_EQUAL, requireBoth = true)
+                public class Period {
+                  LocalDate from;
+                  LocalDate to;
+                }
+
+
+|
+
+.. _Validation_terasoluna_gfw_how_to_use:
+
+How to apply check rules of common library
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Apply check rules of common library using the procedure below.
+
+Add a dependent library. \ ``terasoluna-gfw-validator``\  can be used in version 5.1.0.RELEASE.
+
+.. code-block:: xml
+
+    <dependencies>
+        <dependency>
+            <groupId>org.terasoluna.gfw</groupId>
+            <artifactId>terasoluna-gfw-validator</artifactId>
+        </dependency>
+    </dependencies>
+
+.. note::
+
+    When \ ``@ExistInCodeList``\  is used, add \ ``terasoluna-gfw-common``\  as a dependent library.
+
+Next, a message definition corresponding to annotation is added to :file:`ValidationMessages.properties`  as explained in \ :ref:`Validation_message_in_validationmessages`\ .
+
+.. code-block:: properties
+
+  # (1)
+  org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be greater than or equal to {value} Bytes
+  org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be less than or equal to {value} Bytes
+  org.terasoluna.gfw.common.validator.constraints.Compare.message = not match '{left}' and '{right}'
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - Add a message definition for each annotation. Annotation attribute value can be incorporated in the message by using placeholder (\ ``{attribute name}``\  format).
+
+In the end, assign an annotation to JavaBean property as explained in \ :ref:`Validation_basic_validation`\ .
+
+.. note::
+
+    When validation cannot be implemented in Bean Validation due to invalid attribute value of annotation, \ ``javax.validation.ValidationException``\  is thrown. Modify the attribute value to a valid value by referring the reason that is output in stack trace.
+    
+    Refer Chapter 9 of \ `Bean Validation specification <http://download.oracle.com/otn-pub/jcp/bean_validation-1_1-fr-eval-spec/bean-validation-specification.pdf>`_\  for details.
+
+
+.. _Validation_terasoluna_gfw_how_to_extend:
+
+How to extend check rules of common library
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Any rule can be created by using check rules provided by common library.
+
+An example is introduced below wherein \ ``@Confirm``\  annotation independently implemented by \ :ref:`Validation_correlation_item_check`\  is created by using check rules provided by common library.
+
+Create \ ``@Confirm``\  annotation by using \ ``@Compare``\  as described in \ :ref:`Validation_convine_existing_constraint`\ .
+
+.. code-block:: java
+
+    package com.example.sample.domain.validation;
+
+    import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+    import static java.lang.annotation.ElementType.TYPE;
+    import static java.lang.annotation.RetentionPolicy.RUNTIME;
+    
+    import java.lang.annotation.Documented;
+    import java.lang.annotation.Retention;
+    import java.lang.annotation.Target;
+    
+    import javax.validation.Constraint;
+    import javax.validation.OverridesAttribute;
+    import javax.validation.Payload;
+    import javax.validation.ReportAsSingleViolation;
+    
+    import org.terasoluna.gfw.common.validator.constraints.Compare;
+    
+    @Documented
+    @Constraint(validatedBy = {})
+    @Target({ TYPE, ANNOTATION_TYPE }) // (1)
+    @Retention(RUNTIME)
+    @ReportAsSingleViolation // (2)
+    @Compare(left = "", right = "", operator = Compare.Operator.EQUAL, requireBoth = true) // (3)
+    public @interface Confirm {
+    
+        String message() default "{com.example.sample.domain.validation.Confirm.message}"; // (4)
+    
+        Class<?>[] groups() default {};
+    
+        Class<? extends Payload>[] payload() default {};
+    
+        @OverridesAttribute(constraint = Compare.class, name = "left") // (5)
+        String field();
+    
+        @OverridesAttribute(constraint = Compare.class, name = "right") // (6)
+        String confirmField();
+    
+        @Documented
+        @Target({ TYPE, ANNOTATION_TYPE })
+        @Retention(RUNTIME)
+        public @interface List {
+            Confirm[] value();
+        }
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Restrict the location where the annotation can be assigned to class or annotation.
+    * - | (2)
+      - | Message specified in \ ``message``\  attribute of this annotation should be used at the time of error.
+    * - | (3)
+      - | Specify \ ``Compare.Operator.EQUAL``\ (should be equivalent value) in \ ``operator``\  attribute of \ ``@Compare``\  annotation. Specify \ ``true``\  in \ ``requireBoth``\ attribute since an error occurs if a value is not entered in either of the fields.
+    * - | (4)
+      - | Define default value of error message.
+    * - | (5)
+      - | Override \ ``left``\  attribute of \ ``@Compare``\  annotation and change attribute name to \ ``field``\ .
+    * - | (6)
+      - | Similarly, override \ ``right``\  attribute and change attribute name to \ ``confirmField``\ .
+
+Use annotation created above instead of annotation implemented in \ :ref:`Validation_correlation_item_check`\ .
+
+.. code-block:: java
+
+    package com.example.sample.app.validation;
+
+    import java.io.Serializable;
+
+    import javax.validation.constraints.NotNull;
+    import javax.validation.constraints.Size;
+
+    import com.example.common.validation.Confirm;
+
+    @Confirm(field = "password", confirmField = "confirmPassword") // (1)
+    public class PasswordResetForm implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @NotNull // (2)
+        @Size(min = 8)
+        private String password;
+
+        @NotNull // (3)
+        private String confirmPassword;
+
+        // omitted geter/setter
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Assign \ ``@Confirm``\  annotation to class level.
+    * - | (2)
+      - | Since \ ``@Confirm``\  verification is passed when \ ``password``\  field is \ ``null``\ , perform \ ``null``\  check by assigning \ ``@NotNull``\  annotation.
+    * - | (3)
+      - | Similarly assign \ ``@NotNull``\  annotation in \ ``confirmPassword``\  field as well.
+
+
 Type mismatch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
