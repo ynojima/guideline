@@ -4090,7 +4090,7 @@ Spring Data JPAでは、新たに作成されたEntityと更新されたEntity�
       - | ``org.joda.time.DateTime`` 型を使用する場合は、Hibernateで扱えるようにするために、 フィールドに ``@org.hibernate.annotations.Type`` アノテーションを付与する。
         | type属性は、 ``"org.jadira.usertype.dateandtime.joda.PersistentDateTime"`` 固定。最終更新日時のフィールドも同様。
     * - | (4)
-      - | 作成日時を保持するフィールドの型は、 ``org.joda.time.DateTime`` 、``java.util.Date`` 、``java.util.Calendar`` 、 ``java.lang.Long`` 、 ``long`` 型 、JDK8 Date/Time API (JSR-310) などをサポートしている。
+      - | 作成日時を保持するフィールドの型は、 ``org.joda.time.DateTime`` 、``java.util.Date`` 、``java.util.Calendar`` 、 ``java.lang.Long`` 、 ``long`` 型 、Java 8から追加されたDate and Time APIなどをサポートしている。
         | 最終更新日時のフィールドも同様。
     * - | (5)
       - | 最終更新者を保持するフィールドの型に ``@org.springframework.data.annotation.LastModifiedBy`` アノテーションを付与する。
