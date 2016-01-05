@@ -2536,7 +2536,7 @@ Webサービス実装クラスをエンドポイントとして設定する。
         | \ ``implementor``\ 属性に、DIコンテナに登録済みのWebサービスクラスのbean名(「#bean名」形式)を指定する。
         | \ ``address``\ 属性にWebサービスを公開するアドレスを指定する。
         | アドレスは、公開するエンドポイントのパス部分のみ記述する。
-        | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\を参照されたい。
+        | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\ を参照されたい。
 
 
 |
@@ -2636,7 +2636,7 @@ CXFServlet用のBean定義ファイルに、SOAPのエンドポイントとな�
         | \ ``implementor``\ 属性に公開するWebサービスの実装クラスを指定する。
         | \ ``address``\ 属性にWebサービスを公開するアドレスを指定する。
         | アドレスは、公開するエンドポイントのパス部分のみ記述する。
-        | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\を参照されたい。
+        | 属性の詳細については\ `Apache CXF JAX-WS Configuration`_\ を参照されたい。
 
 .. raw:: latex
 
