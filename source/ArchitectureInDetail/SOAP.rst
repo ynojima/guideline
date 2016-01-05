@@ -135,6 +135,12 @@ JAX-WSを利用したWebサービスの開発について
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | TERASOLUNA Server Framework for Java (5.x)では、APサーバのJAX-WS実装とSpringの機能を利用してWebサービスの開発を行うことを推奨する。
 
+
+.. Note:: **APサーバへのデプロイについて**
+
+    SOAPサーバ、クライアントどちらにおいても、通常のWebアプリケーション同様に、ブランクプロジェクト内のwebプロジェクトから作成したWARファイルをAPサーバにデプロイすることで、SOAP Web Serviceを実現することができる。
+
+
 |
 
 JAX-WSを利用したWebサービスのモジュールの構成
@@ -194,13 +200,6 @@ JAX-WSを利用したWebサービスを作成する場合、既存のブラン�
 .. figure:: images_SOAP/SOAPClientPackageExplorer.png
     :alt: Package explorer for SOAP client projects
     :width: 42%
-
-|
-
-.. Note:: **上記の構成におけるWARファイルの作成について**
-
-    SOAPサーバ、クライアントどちらにおいても、通常のWebアプリケーション同様に、webプロジェクトから作成したWARファイルをAPサーバにデプロイすることで、SOAP Web Serviceを実現することができる。
-
 
 
 |
