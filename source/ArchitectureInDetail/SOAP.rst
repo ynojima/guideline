@@ -2531,7 +2531,7 @@ Webサービス実装クラスをエンドポイントとして設定する。
       - 説明
     * - | (1)
       - | 公開するエンドポイントを定義する。
-        | \ ``implementor``\ 属性に#bean名とすることでDIコンテナからWebサービス実装クラスを取得する。
+        | \ ``implementor``\ 属性に、DIコンテナに登録済みのWebサービスクラスのbean名(「#bean名」形式)を指定する。
         | \ ``address``\ 属性にWebサービスにアクセスする際に使用するアドレスを定義する。
         | 属性の詳細については\ `Apache CXF JAX-WS Configuration <https://cwiki.apache.org/confluence/display/CXF20DOC/JAX-WS+Configuration>`_\を参照されたい。
 
