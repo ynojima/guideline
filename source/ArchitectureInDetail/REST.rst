@@ -5316,20 +5316,11 @@ RESTful Web Service向けのリクエストに対して、CSRF対策の処理が
     <sec:http
         pattern="/api/v1/**"
         auto-config="true"
-        use-expressions="true"
         create-session="stateless">
-        <sec:headers />
+        <sec:csrf disabled="true"/>
     </sec:http>
 
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:headers>
-            <sec:cache-control />
-            <sec:content-type-options />
-            <sec:hsts />
-            <sec:frame-options />
-            <sec:xss-protection />
-        </sec:headers>
-        <sec:csrf />
+    <sec:http auto-config="true">
         <sec:access-denied-handler ref="accessDeniedHandler"/>
         <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
         <sec:session-management />
@@ -5350,7 +5341,7 @@ RESTful Web Service向けのリクエストに対して、CSRF対策の処理が
        | 上記例では、\ ``/api/v1/``\で始まるリクエストパスをREST API用のリクエストパスとして扱う。
        | また、\ ``create-session``\属性を\ ``stateless``\とする事で、Spring Securityの処理でセッションが使用されなくなる。
        |
-       | CSRF対策を無効化するために、\ ``<sec:csrf>``\ 要素は指定していない。
+       | CSRF対策を無効化するために、\ ``<sec:csrf>``\ 要素に \ ``disabled="true"``\ を指定している。
 
 |
 
