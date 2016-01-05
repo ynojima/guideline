@@ -3868,7 +3868,9 @@ hibernate-validator-<version>.jar内のorg/hibernate/validatorに、ValidationMe
 terasoluna-gfw-commonのチェックルール
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ `terasoluna-gfw-common <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-common>`_\ が提供するアノテーション(\ ``org.terasoluna.gfw.common.codelist.*``\ )を以下に示す。
+\ `terasoluna-gfw-common <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-common>`_\ が提供するアノテーションを以下に示す。
+
+* \ ``org.terasoluna.gfw.common.codelist.*``\ パッケージ
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
@@ -3885,6 +3887,24 @@ terasoluna-gfw-commonのチェックルール
         | (\ ``String``\, \ ``StringBuilder``\ など)
       - 値がコードリストに含まれているかどうかを検証する。
       - \ :ref:`@ExistInCodeList <codelist-validate>`\ 参照
+
+* \ ``org.terasoluna.gfw.common.codepoints.*``\ パッケージ
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 15 30 30 25
+
+    * - アノテーション
+      - 対象の型
+      - 説明
+      - 使用例
+    * - \ ``@ConsistOf``\
+      - | \ ``Character``\
+        | \ ``CharSequence``\ の実装クラス
+        | (\ ``String``\, \ ``StringBuilder``\ など)
+      - チェック対象の文字列が指定したコードポイント集合に全て含まれるかどうかを検証する。
+      - \ :ref:`@ConsistOf <StringProcessingHowToUseCodePointsValidator>`\ 参照
 
 
 terasoluna-gfw-validatorのチェックルール
