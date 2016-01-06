@@ -1149,8 +1149,8 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
         class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl"> <!-- (1) -->
         <property name="hierarchy"> <!-- (2) -->
             <value>
-                ADMIN > STAFF
-                STAFF > USER
+                ROLE_ADMIN > ROLE_STAFF
+                ROLE_STAFF > ROLE_USER
             </value>
         </property>
     </bean>
