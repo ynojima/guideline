@@ -3887,10 +3887,31 @@ terasoluna-gfw-commonのチェックルール
       - \ :ref:`@ExistInCodeList <codelist-validate>`\ 参照
 
 
+terasoluna-gfw-codepointsのチェックルール
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ `terasoluna-gfw-codepoints <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-codepoints>`_\ が提供するアノテーション(\ ``org.terasoluna.gfw.common.codepoints.*``\ )を以下に示す。なお、\ ``terasoluna-gfw-codepoints``\ はバージョン5.1.0.RELEASE以上で利用することができる。
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 15 30 30 25
+
+    * - アノテーション
+      - 対象の型
+      - 説明
+      - 使用例
+    * - \ ``@ConsistOf``\
+      - | \ ``CharSequence``\ の実装クラス
+        | (\ ``String``\, \ ``StringBuilder``\ など)
+      - チェック対象の文字列が指定したコードポイント集合に全て含まれるかどうかを検証する。
+      - \ :ref:`@ConsistOf <StringProcessingHowToUseCodePointsValidator>`\ 参照
+
+
 terasoluna-gfw-validatorのチェックルール
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\ が提供するアノテーション(\ ``org.terasoluna.gfw.common.validator.constraints.*``\ )を以下に示す。
+\ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\ が提供するアノテーション(\ ``org.terasoluna.gfw.common.validator.constraints.*``\ )を以下に示す。なお、\ ``terasoluna-gfw-validator``\ はバージョン5.1.0.RELEASE以上で利用することができる。
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
@@ -4050,7 +4071,7 @@ terasoluna-gfw-validatorのチェックルール
 
 以下の手順で、共通ライブラリのチェックルールを適用する。
 
-依存ライブラリを追加する。 \ ``terasoluna-gfw-validator``\ はバージョン5.1.0.RELEASE以上で利用することができる。
+使用したいチェックルールに応じて、依存ライブラリを追加する。\ ``terasoluna-gfw-validator``\ を追加する例を以下に示す。
 
 .. code-block:: xml
 
@@ -4060,10 +4081,6 @@ terasoluna-gfw-validatorのチェックルール
             <artifactId>terasoluna-gfw-validator</artifactId>
         </dependency>
     </dependencies>
-
-.. note::
-
-    \ ``@ExistInCodeList``\ を利用する場合は、依存ライブラリとして\ ``terasoluna-gfw-common``\ を追加する。
 
 次に、\ :ref:`Validation_message_in_validationmessages`\ で説明したように :file:`ValidationMessages.properties` に、アノテーションに対応する任意のメッセージ定義を追加する。
 
