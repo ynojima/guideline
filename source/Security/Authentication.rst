@@ -240,7 +240,7 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
         <h3>Login Screen</h3>
         <%-- (1) --%>
         <c:if test="${param.error}">
-            <t:messagesPanel
+            <t:messagesPanel messagesType="error"
                 messagesAttributeName="SPRING_SECURITY_LAST_EXCEPTION"/> <%-- (2) --%>
         </c:if>
         <form:form action="${pageContext.request.contextPath}/login" method="post"> <%-- (3) --%>
