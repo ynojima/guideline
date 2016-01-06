@@ -860,7 +860,7 @@ Spring Securityは、\ ``PasswordEncoder``\ インタフェースの実装クラ
     * - | \ ``BCryptPasswordEncoder``\
       - | BCryptアルゴリズムを使用してパスワードのハッシュ化及び照合を行う実装クラス。
         | **パスワードのハッシュ化要件に制約がない場合は、このクラスを使用することを推奨する。**
-        | 詳細は、\ `BCryptPasswordEncoderのJavaDoc <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/crypto/password/BCryptPasswordEncoder.html>`_\ を参照されたい。
+        | 詳細は、\ `BCryptPasswordEncoderのJavaDoc <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html>`_\ を参照されたい。
     * - | \ ``StandardPasswordEncoder``\
       - | SHA-256アルゴリズムを使用してパスワードのハッシュ化及び照合を行う実装クラス。
         | 詳細は、\ `StandardPasswordEncoderのJavaDoc <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/crypto/password/StandardPasswordEncoder.html>`_\ を参照されたい。
