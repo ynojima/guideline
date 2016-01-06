@@ -318,7 +318,7 @@ Spring Securityは、以下のアノテーションをサポートしている�
 .. code-block:: java
 
     // (1) (2)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (#username == principal.username)")
+    @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
     public Account findOne(String username) {
         return accountRepository.findOne(username);
     }
@@ -363,7 +363,7 @@ JSPタグライブラリを使用してJSPの画面項目に対してアクセ�
     <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
     <!-- (1) -->
-    <sec:authorize access="hasRole('ROLE_ADMIN')"> <!-- (2) -->
+    <sec:authorize access="hasRole('ADMIN')"> <!-- (2) -->
         <h2>Admin Menu</h2>
         <!-- omitted -->
     </sec:authorize>
@@ -766,7 +766,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
   .. code-block:: xml
   
     <sec:http>
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>  <!-- (1) -->
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>  <!-- (1) -->
         <!-- omitted -->
     </sec:http>
   
@@ -792,7 +792,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
   .. code-block:: xml
   
     <sec:http>
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN') and hasIpAddress('192.168.10.1')"/>
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN') and hasIpAddress('192.168.10.1')"/>
         <!-- omitted -->
     </sec:http>
   
@@ -832,7 +832,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 .. code-block:: java
 
     // (1) (2)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (#username == principal.username)")
+    @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
     public Account findOne(String username) {
         return accountRepository.findOne(username);
     }
@@ -867,7 +867,7 @@ Expression内で「# + 引数名」形式のExpressionを指定することで�
 
       .. code-block:: java
 
-          @PreAuthorize("hasRole('ROLE_ADMIN') or (#username == principal.username)")
+          @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
           public Account findOne(@P("username") String username) {
               return accountRepository.findOne(username);
           }
@@ -931,7 +931,7 @@ JSPタグライブラリを使用して、画面項目に対してアクセス�
 
 .. code-block:: jsp
 
-    <sec:authorize access="hasRole('ROLE_ADMIN')">
+    <sec:authorize access="hasRole('ADMIN')">
         <!-- omitted -->
     </sec:authorize>
 
