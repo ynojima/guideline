@@ -2178,9 +2178,7 @@ Authentication Filterの作成
 .. note:: **認証情報の入力チェックについて**
 
     DBサーバへの負荷軽減等で、あきらかな入力誤りに対しては、事前にチェックを行いたい場合がある。
-    その場合は、\ :ref:`authentication_custom_usernamepasswordauthenticationfilter`\ のように、
-    \ ``UsernamePasswordAuthenticationFilter``\ を拡張することで、入力チェック処理を行うことができる。
-    なお、上記例では入力チェックは行っていない。
+    その場合は、\ ``UsernamePasswordAuthenticationFilter``\ を拡張することで、入力チェック処理を行うことができる。
     
     また、Bean Validationを使用した入力チェックも可能である。
     以下にBean Validationを使用した入力チェックの例を説明する。
@@ -2210,7 +2208,7 @@ Authentication Filterの作成
             * - 項番
               - 説明
             * - | (1)
-              - | 本サンプルでは、\ ``username``\ 、\ ``password``\ をそれぞれ必須入力としている。
+              - | 本例では、\ ``username``\ 、\ ``password``\ をそれぞれ必須入力としている。
 
 
     * コントローラクラスの実装例
