@@ -297,8 +297,9 @@ hidden項目の自動出力
 Spring Securityは、CSRFトークン値のhidden項目を自動で出力するためのコンポーネントとして、\ ``CsrfRequestDataValueProcessor``\ というクラスを提供している。
 \ ``CsrfRequestDataValueProcessor``\ をSpring MVCに適用すると、Spring MVCから提供されているJSPタグライブラリを使用した際に、CSRFトークン値のhidden項目を自動かつ安全に出力することが可能である。
 
-\ ``CsrfRequestDataValueProcessor``\ をSpring MVCに適用する場合は、以下のようなbean定義を行う。
-bean定義ファイルを使用する場合は、\ ``<sec:csrf>``\ 要素を指定してCSRF対策機能を有効にすると、自動で\ ``CsrfRequestDataValueProcessor``\ がSpring MVCに適用される仕組みになっているため、明示的に定義を追加する必要はない。
+Spring SecurityではデフォルトでCSRF対策機能が有効になっており、自動で\ ``CsrfRequestDataValueProcessor``\ がSpring MVCに適用される仕組みになっている。
+このため、\ ``CsrfRequestDataValueProcessor``\ をSpring MVCに適用するための明示的な設定は不要である。
+
 
 HTMLフォームを作成する際は、以下のようなJSPの実装を行う。
 
