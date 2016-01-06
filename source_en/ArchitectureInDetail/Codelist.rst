@@ -415,12 +415,12 @@ For details on settings shown below, refer to :ref:`Using codelist in Java class
 Using JdbcCodeList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| ``org.terasoluna.gfw.common.codelist.JdbcCodeList`` is a class for creating codelist by fetching values from DB at the time of launching the application.
-| ``JdbcCodeList`` create a cache when the application starts. Therefore, There is no delay by the DB access to when you want to display list.
+| ``org.terasoluna.gfw.common.codelist.JdbcCodeList`` is a class for creating codelist by fetching values from DB at the time of starting the application.
+| Since ``JdbcCodeList`` creates a cache while starting the application, no delay occurs during DB access when you want to display a list.
 
-| If you want to reduce the load time of startup, it is preferable to set an upper limit on the number of acquisition.
-| The ``JdbcCodeList`` there is a field to set the ``org.springframework.jdbc.core.JdbcTemplate``.
-| If you set the upper limit on the ``fetchSize`` of ``JdbcTemplate``, the upper limit amount record is loaded at startup.
+| If you want to reduce the read time for the startup, it is preferable to set an upper limit on the number of acquisitions.
+| ``JdbcCodeList`` consists of a field which sets the ``org.springframework.jdbc.core.JdbcTemplate``.
+| If an upper limit is set for the ``fetchSize`` of ``JdbcTemplate``, the records only till the upper limit are read at the startup.
 | The fetched values can be changed dynamically by reloading. For details, refer to :ref:`codeListTaskScheduler`.
 
 **JdbcCodeList image**
@@ -485,30 +485,30 @@ Example of codelist settings
    * - Sr. No.
      - Description
    * - | (1)
-     - | Define a bean of ``org.springframework.jdbc.core.JdbcTemplate`` class.
-       | It is necessary for setting the fetchSize independently.
+     - | Define a bean for ``org.springframework.jdbc.core.JdbcTemplate`` class.
+       | It is necessary for independently setting the fetchSize.
    * - | (2)
      - | Set the fetchSize.
-       | FetchSize may be set to Fetch All by default.By setting an appropriate value.
-       | When large number of records (in hundreds) need to be read from JdbcCodeList, When the setting of fetchSize is it FetchAll, it takes time to get a list from DB.
+       | An appropriate value must be set since FetchSize is set to Fetch All by default.
+       | When ``fetchSize`` is set to "fetch all" and when the records that are required to be read by ``JdbcCodeList`` are large, process efficiency while fetching a list from DB is likely to reduce resulting in prolonged startup time of application.
    * - | (3)
      - | Define a common bean of JdbcCodeList.
-       | Common parts of other JdbcCodeList are set. Therefore, for bean definition of basic JdbcCodeList, set this bean definition in parent class.
-       | This bean class cannot be instantiated by setting ``abstract`` attribute to true.
+       | Common parts of another ``JdbcCodeList`` are specified. Therefore, the bean is defined in parent class for bean definition of basic ``JdbcCodeList``.
+       | An instance cannot be created for this bean by setting abstract attribute to true.
    * - | (4)
-     - | Set the jdbcTemplate referring to (1).
-       | JdbcTemplate for which fetchSize value is set is stored in JdbcCodeList.
+     - | Specify ``jdbcTemplate`` set in (1).
+       | ``JdbcTemplate`` which specifies ``fetchSize`` is stored in ``JdbcCodeList``.
    * - | (5)
      - | Bean definition of JdbcCodeList
-       | By setting Bean defined in (3) as parent class in parent attribute, JdbcCodeList is set with fetchSize.
+       | By setting Bean defined in (3) as parent class in parent attribute, ``JdbcCodeList`` which specifies ``fetchSize`` is set.
        | In this bean definition, only the query related settings are carried out and the required CodeList is created.
    * - | (6)
-     - | Write an SQL for fetching the codelist in querySql property. At that time, **make sure to specify ORDER BY clause to define the order**.
-       | If ORDER BY is not specified, the order gets changed every time when records are fetched using SQL.
+     - | Write an SQL to be fetched in querySql property. At that time, **always specify "ORDER BY" clause and determine the order**.
+       | If "ORDER BY" is not specified, the order gets changed while fetching the records.
    * - | (7)
      - | Set the value corresponding to the Key of Map in valueColumn property. In this example, authority_id is set.
    * - | (8)
-     - | Set the value corresponding to the Value of Map in labelColumn property. In this example, authority_name is set.
+     - | Set the value corresponding to Value of Map in labelColumn property. In this example, authority_name is set.      
 
 |
 
