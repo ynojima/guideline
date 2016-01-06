@@ -121,7 +121,7 @@ Spring Securityが提供する主な実装クラスは以下の通り。
     * - クラス名
       - 説明
     * - | \ ``WebExpressionVoter``\
-      - | Expression Language(EL式)経由で認証情報(\ ``Authentication``\ )が保持する権限情報とリクエスト情報(\ ``HttpServletRequest``\ )を参照して投票を行う実装クラス。
+      - | SpEL経由で認証情報(\ ``Authentication``\ )が保持する権限情報とリクエスト情報(\ ``HttpServletRequest``\ )を参照して投票を行う実装クラス。
     * - | \ ``RoleVoter``\
       - | 利用者が持つロールを参照して投票を行う実装クラス。
     * - | \ ``RoleHierarchyVoter``\
@@ -251,7 +251,7 @@ Webリソースに対して認可処理を適用する場合は、以下のよ�
       - 説明
     * - | (1)
       - | \ ``<sec:intercept-url>``\ タグに、HTTPリクエストに対してアクセスポリシーを定義する。
-        | ここでは、Expression Language(EL式)を使用して、全てのWebリソースに対して「認証済みのユーザーのみアクセスを許可する」というアクセスポリシーを定義している。
+        | ここでは、SpELを使用して、全てのWebリソースに対して「認証済みのユーザーのみアクセスを許可する」というアクセスポリシーを定義している。
 
 .. note:: **use-expressionsのデフォルト定義**
 
