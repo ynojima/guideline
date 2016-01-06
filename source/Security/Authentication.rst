@@ -914,7 +914,7 @@ Spring Securityは、\ ``PasswordEncoder``\ インタフェースの実装クラ
   
     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6521844
   
-    本事象が発生する場合は、JVNのシステムプロパティに以下の設定を追加することで回避することができる。
+    本事象が発生する場合は、JVMのシステムプロパティに以下の設定を追加することで回避することができる。
   
     * ``-Djava.security.egd=file:/dev/./urandom``
 
