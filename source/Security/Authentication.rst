@@ -2184,14 +2184,46 @@ Authentication Filterの作成
     
     また、Bean Validationを使用した入力チェックも可能である。
     以下にBean Validationを使用した入力チェックの例を説明する。
-    Bean Validationに関する記述は割愛する。詳細は \ :doc:`../ArchitectureInDetail/Validation`\ を参照すること。
+    Bean Validationに関する詳細は \ :doc:`../ArchitectureInDetail/Validation`\ を参照すること。
+
+    * フォームクラスの実装例
+
+        .. code-block:: java
+
+            public class LoginForm implements Serializable {
+
+                // omitted
+                @NotEmpty // (1)
+                private String username;
+
+                @NotEmpty // (1)
+                private String password;
+                // omitted
+
+            }
+
+        .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+        .. list-table::
+            :header-rows: 1
+            :widths: 10 90
+
+            * - 項番
+              - 説明
+            * - | (1)
+              - | 本サンプルでは、\ ``username``\ 、\ ``password``\ をそれぞれ必須入力としている。
+
 
     * コントローラクラスの実装例
 
         .. code-block:: java
 
+            @ModelAttribute
+            public LoginForm setupForm() { // (1)
+                return new LoginForm();
+            }
+
             @RequestMapping(value = "login")
-            public String login(@LoginForm form, BindingResult result) {
+            public String login(@Validated LoginForm form, BindingResult result) {
                 // omitted
                 if (result.hasErrors()) {
                     // omitted
@@ -2207,6 +2239,8 @@ Authentication Filterの作成
             * - 項番
               - 説明
             * - | (1)
+              - | \ ``LoginForm``\ を初期化する。
+            * - | (2)
               - | forwardで\ ``<sec:form-login>``\ 要素の\ ``login-processing-url``\ 属性に指定したパスに **Forward** する。
                 | 認証に関する設定は、\ :ref:`SpringSecurityAuthenticationCustomizingForm`\を参照すること。
     
