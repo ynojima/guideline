@@ -203,7 +203,9 @@ How to use
     
 .. code-block:: xml 
 
-    <sec:cache-control disabled="true"/> <!-- disabled属性にtrueを設定して無効化 --> 
+    <sec:headers>
+        <sec:cache-control disabled="true"/> <!-- disabled属性にtrueを設定して無効化 --> 
+    </sec:headers>
 
 上記の例だと、Cache-Control関連のヘッダだけが出力されなくなる。 
 
