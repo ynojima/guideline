@@ -285,7 +285,7 @@ Spring Securityは、以下のアノテーションをサポートしている�
 * JSR-250 (\ ``javax.annotation.security``\ パッケージ)のアノテーション(\ ``@RolesAllowed``\ など)
 * \ ``@Secured``\
 
-本ガイドラインでは、アクセスポリシーをExpressionを使用することができる\ ``@PreAuthorize``\、\ ``@PostAuthorize``\ の使用する方法を説明する。
+本ガイドラインでは、アクセスポリシーをExpressionで使用することができる\ ``@PreAuthorize``\、\ ``@PostAuthorize``\ を使用する方法を説明する。
 
 *xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
