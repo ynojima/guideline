@@ -16,7 +16,7 @@ Overview
 * 必要となるセキュリティ対策
 * Spring Securityがサポートしている対策
 
-を紹介しながら、Spring Securityが提供しているセッション管理機能について説明する。
+を紹介しながら、Spring SecurityやServletコンテナが提供しているセッション管理機能について説明する。
 
 Spring Securityでは以下のセッションについて、主に以下の機能が提供されている。
 
