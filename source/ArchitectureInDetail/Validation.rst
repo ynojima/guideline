@@ -3900,8 +3900,7 @@ terasoluna-gfw-commonのチェックルール
       - 説明
       - 使用例
     * - \ ``@ConsistOf``\
-      - | \ ``Character``\
-        | \ ``CharSequence``\ の実装クラス
+      - | \ ``CharSequence``\ の実装クラス
         | (\ ``String``\, \ ``StringBuilder``\ など)
       - チェック対象の文字列が指定したコードポイント集合に全て含まれるかどうかを検証する。
       - \ :ref:`@ConsistOf <StringProcessingHowToUseCodePointsValidator>`\ 参照
