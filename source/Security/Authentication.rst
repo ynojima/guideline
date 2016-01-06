@@ -1901,7 +1901,7 @@ Spring Securityのデフォルトでは、ログアウト処理を実行する�
     </bean>
 
   <sec:http>
-      <sec:form-login authentication-failure-handler-ref="authenticationFailureHandler />
+      <sec:form-login authentication-failure-handler-ref="authenticationFailureHandler" />
   </sec:http>
 
 |
