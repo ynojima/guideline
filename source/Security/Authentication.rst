@@ -243,7 +243,7 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
             <t:messagesPanel
                 messagesAttributeName="SPRING_SECURITY_LAST_EXCEPTION"/> <%-- (2) --%>
         </c:if>
-        <form action="<c:url value='/login' />" method="post"> <%-- (3) --%>
+        <form:form action="${pageContext.request.contextPath}/login" method="post"> <%-- (3) --%>
             <table>
                 <tr>
                     <td><label for="username">User Name</label></td>
@@ -258,8 +258,7 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
                     <td><button>Login</button></td>
                 </tr>
             </table>
-            <sec:csrfInput /> <%-- (4) --%>
-        </form>
+        </form:form>
     </div>
     <%-- omitted --%>
 
@@ -280,9 +279,8 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
     * - | (3)
       - | ユーザー名とパスワードを入力するためのログインフォーム。
         | ここではユーザー名を\ ``username``\、パスワードを\ ``passowrd``\ というリクエストパラメータで送信する。
-    * - | (4)
-      - | CSRF対策用のトークン値をリクエストパラメータ。
-        | \ ``<sec:csrfInput />``\ については、「:ref:`SpringSecurityCsrf`」で説明する。
+        | また、\ ``<form:form>``\ を使用することで、CSRF対策用のトークン値がリクエストパラメータで送信される。
+        | CSRF対策については、「:ref:`SpringSecurityCsrf`」で説明する。
 
 .. note:: **静的リソースへのアクセス**
 
@@ -1175,10 +1173,9 @@ Spring Securityのデフォルトの動作では、\ ``"/logout"``\ というパ
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
     <%-- omitted --%>
-    <form action="<c:url value='/logout'/>" method="post"> <%-- (1) --%>
-        <sec:csrfInput/>  <%-- (2) --%>
+    <form:form action="${pageContext.request.contextPath}/logout" method="post"> <%-- (1) --%>
         <button>ログアウト</button>
-    </form>
+    </form:form>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -1189,9 +1186,8 @@ Spring Securityのデフォルトの動作では、\ ``"/logout"``\ というパ
       - 説明
     * - | (1)
       - | ログアウト用のフォームを作成する。
-    * - | (2)
-      - | CSRF対策用のトークン値をリクエストパラメータに埋め込む。
-        | \ ``<sec:csrfInput />``\ については、「:ref:`SpringSecurityCsrf`」で説明する。
+        | また、\ ``<form:form>``\ を使用することで、CSRF対策用のトークン値がリクエストパラメータで送信される。
+        | CSRF対策については、「:ref:`SpringSecurityCsrf`」で説明する。
 
 .. note:: **CSRFトークンの送信**
 
@@ -2208,7 +2204,7 @@ Authentication Filterの作成
 
 .. code-block:: jsp
 
-    <form:form action="<c:url value='/login' />" method="post">
+    <form:form action="${pageContext.request.contextPath}/login" method="post">
         <!-- omitted -->
         <span>User Id</span><br>
         <input type="text" id="username" name="username"><br>
@@ -2794,14 +2790,14 @@ Remember Me認証を利用する場合は、\ ``<sec:remember-me>``\ タグを�
 
 .. code-block:: jsp
 
-    <form method="post"
+    <form:form method="post"
         action="${pageContext.request.contextPath}/authentication">
         <!-- omitted -->
         <label for="remember-me">Remember Me : </label>
         <input name="remember-me" id="remember-me" type="checkbox" checked="checked"> <!-- (1) -->
         <input type="submit" value="LOGIN">
         <!-- omitted -->
-    </form>
+    </form:form>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
