@@ -156,9 +156,8 @@ Cookieを使えないクライアントをサポートする必要がある場�
     * - 項番
       - 説明
     * - | (1)
-      - | bean定義ファイルを使用した時のデフォルトの動作は、URL Rewritingが行われる可能性がある。
-        | そのため、URL Rewritingが行われないようにする際は、\ ``<sec:http>``\ 要素の \ ``disable-url-rewriting``\ 属性に\ ``true``\ を設定する。
-        | なお、Spring Security 4.0では、デフォルト値が\ ``true``\ である。
+      - | Spring Securityのデフォルトでは、\ ``disable-url-rewriting``\ の値は \ ``true``\であるため、URL Rewritingは行われない。
+        | URL Rewritingを有効にする際は、\ ``<sec:http>``\ 要素の \ ``disable-url-rewriting``\ 属性に\ ``false``\ を設定する。
 
 .. note:: **コラム**
 
