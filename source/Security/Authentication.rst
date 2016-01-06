@@ -637,6 +637,54 @@ Spring Securityは、\ ``UserDetails``\ の実装クラスとして\ ``User``\ �
 
 ここでは、データベースからアカウント情報を検索して、\ ``UserDetails``\ のインスタンス
 を生成するためのサービスクラスを作成する。
+本サンプルでは、\ ``SharedService``\ を使用して、アカウント情報を取得している。
+\ ``SharedService``\ については、:ref:`service-label`\ を参照されたい。
+
+*AccountSharedServiceインタフェースの作成例*
+
+.. code-block:: java
+
+    public interface AccountSharedService {
+        Account findOne(String username);
+    }
+
+*AccountSharedServiceの実装クラスの作成例*
+
+.. code-block:: java
+
+    // (1)
+    @Service
+    @Transactional
+    public class AccountSharedServiceImpl implements AccountSharedService {
+        @Inject
+        AccountRepository accountRepository;
+
+        // (2)
+        @Override
+        public Account findOne(String username) {
+            Account account = accountRepository.findOneByUsername(username);
+            if (account == null) {
+                throw new ResourceNotFoundException("The given account is not found! username="
+                        + username);
+            }
+            return account;
+        }
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``AccountSharedService``\ インタフェースを実装したクラスを作成し、\ ``@Service``\ を付与する。
+        | 上記例では、コンポーネントスキャン機能を使って\ ``AccountSharedServiceImpl``\ をDIコンテナに登録している。
+    * - |  (2)
+      - | データベースからアカウント情報を検索する。
+        | アカウント情報が見つからない場合は、共通フレームワークの例外である\ ``ResourceNotFoundException``\ を発生させる。
+        | Repositoryの作成例については、「:doc:`Tutorial`」を参照されたい。
 
 *UserDetailsServiceの実装クラスの作成例*
 
@@ -647,17 +695,19 @@ Spring Securityは、\ ``UserDetails``\ の実装クラスとして\ ``User``\ �
     @Transactional
     public class AccountUserDetailsService implements UserDetailsService {
         @Inject
-        AccountRepository accountRepository;
+        AccountSharedService accountSharedService;
 
         public UserDetails loadUserByUsername(String username)
                 throws UsernameNotFoundException {
-            // (2)
-            Account account = accountRepository.findOneByUsername(username);
-            if(account == null){
-                throw new UsernameNotFoundException("user not found."));
+
+            try {
+                Account account = accountSharedService.findOne(username);
+                // (2)
+                return new AccountUserDetails(account, getAuthorities(account));
+            } catch (ResourceNotFoundException e) {
+                // (3)
+                throw new UsernameNotFoundException("user not found", e);
             }
-            // (3)
-            return new AccountUserDetails(account, getAuthorities(account));
         }
 
         // (4)
@@ -680,13 +730,12 @@ Spring Securityは、\ ``UserDetails``\ の実装クラスとして\ ``User``\ �
     * - | (1)
       - | \ ``UserDetailsService``\ インタフェースを実装したクラスを作成し、\ ``@Service``\ を付与する。
         | 上記例では、コンポーネントスキャン機能を使って\ ``UserDetailsService``\ をDIコンテナに登録している。
-    * - |  (2)
-      - | データベースからアカウント情報を検索する。
-        | アカウント情報が見つからない場合は、\ ``UsernameNotFoundException``\ を発生させる。
-        | Repositoryの作成例については、「:doc:`Tutorial`」を参照されたい。
-    * - | (3)
-      - | アカウント情報が見つかった場合は、\ ``UserDetails``\ を生成する。
+    * - | (2)
+      - | \ ``AccountSharedService``\ を使用してアカウント情報を取得する。
+        | アカウント情報が見つかった場合は、\ ``UserDetails``\ を生成する。
         | 上記例では、ユーザー名、パスワード、ユーザーの有効状態をアカウント情報から取得している。
+    * - | (3)
+      - | アカウント情報が見つからない場合は、\ ``UsernameNotFoundException``\ を発生させる。
     * - | (4)
       - | ユーザーが保持する権限(ロール)情報を生成する。ここで生成した権限(ロール)情報は、認可処理で使用される。
 
