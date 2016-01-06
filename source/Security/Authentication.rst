@@ -2206,12 +2206,18 @@ Authentication Filterの作成
 
     <form:form action="${pageContext.request.contextPath}/login" method="post">
         <!-- omitted -->
-        <span>User Id</span><br>
-        <input type="text" id="username" name="username"><br>
-        <span>Company Id</span><br>
-        <input type="text" id="companyid" name="companyId"><br> <!-- (1) -->
-        <span>Password</span><br>
-        <input type="password" id="password" name="password"><br>
+            <tr>
+                <td><label for="username">User Name</label></td>
+                <td><input type="text" id="username" name="username"></td>
+            </tr>
+            <tr>
+                <td><label for="companyId">Company Id</label></td>
+                <td><input type="text" id="companyId" name="companyId"></td> <!-- (1) -->
+            </tr>
+            <tr>
+                <td><label for="password">Password</label></td>
+                <td><input type="password" id="password" name="password"></td>
+            </tr>
         <!-- omitted -->
     </form:form>
 
@@ -2667,10 +2673,15 @@ Spring Securityを使用した認証では、認証に成功した場合は、
 .. code-block:: jsp
 
     <form:form action="${pageContext.request.contextPath}/authentication" method="post">
-        <!-- omitted -->
-        <input type="submit" value="Login">
-        <input type="hidden" name="redirectTo" value="${f:h(param.redirectTo)}" />  <!-- (1) -->
-        <!-- omitted -->
+            <!-- omitted -->
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <button>Login</button>
+                    <input type="hidden" name="redirectTo" value="${f:h(param.redirectTo)}" />  <!-- (1) -->
+                </td>
+            </tr>
+            <!-- omitted -->
     </form:form>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2790,13 +2801,13 @@ Remember Me認証を利用する場合は、\ ``<sec:remember-me>``\ タグを�
 
 .. code-block:: jsp
 
-    <form:form method="post"
-        action="${pageContext.request.contextPath}/authentication">
-        <!-- omitted -->
-        <label for="remember-me">Remember Me : </label>
-        <input name="remember-me" id="remember-me" type="checkbox" checked="checked"> <!-- (1) -->
-        <input type="submit" value="LOGIN">
-        <!-- omitted -->
+    <form:form action="${pageContext.request.contextPath}/login" method="post">
+            <!-- omitted -->
+            <tr>
+                <td><label for="remember-me">Remember Me : </label></td>
+                <td><input name="remember-me" id="remember-me" type="checkbox" checked="checked"></td> <!-- (1) -->
+            </tr>
+            <!-- omitted -->
     </form:form>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
