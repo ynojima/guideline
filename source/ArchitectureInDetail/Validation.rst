@@ -3868,9 +3868,7 @@ hibernate-validator-<version>.jar内のorg/hibernate/validatorに、ValidationMe
 terasoluna-gfw-commonのチェックルール
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ `terasoluna-gfw-common <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-common>`_\ が提供するアノテーションを以下に示す。
-
-* \ ``org.terasoluna.gfw.common.codelist.*``\ パッケージ
+\ `terasoluna-gfw-common <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-common>`_\ が提供するアノテーション(\ ``org.terasoluna.gfw.common.codelist.*``\ )を以下に示す。
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
@@ -3888,7 +3886,11 @@ terasoluna-gfw-commonのチェックルール
       - 値がコードリストに含まれているかどうかを検証する。
       - \ :ref:`@ExistInCodeList <codelist-validate>`\ 参照
 
-* \ ``org.terasoluna.gfw.common.codepoints.*``\ パッケージ
+
+terasoluna-gfw-codepointsのチェックルール
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ `terasoluna-gfw-codepoints <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-codepoints>`_\ が提供するアノテーション(\ ``org.terasoluna.gfw.common.codepoints.*``\ )を以下に示す。なお、\ ``terasoluna-gfw-codepoints``\ はバージョン5.1.0.RELEASE以上で利用することができる。
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
