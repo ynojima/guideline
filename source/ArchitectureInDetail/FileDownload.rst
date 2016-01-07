@@ -38,7 +38,7 @@ Overview
 | クラスは、modelの情報を用いてPDFファイルをレンダリングするときに、サブクラスとして利用するクラスである。
 |
 | **Excelファイルの場合**
-| Springから提供されている\ ``org.springframework.web.servlet.view.document.AbstractExcelView``\
+| Springから提供されている\ ``org.springframework.web.servlet.view.document.AbstractXlsxView``\
 | クラスは、modelの情報を用いてExcelファイルをレンダリングするときに、サブクラスとして利用するクラスである。
 |
 | Spring では上記以外にも、いろいろなViewの実装を提供している。
@@ -262,26 +262,26 @@ Springのコンテキストで管理されたbean名を用いて実行する\ ``
 Excelファイルのダウンロード
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | EXCELファイルのレンダリングには、Springから提供されている、
-| \ ``org.springframework.web.servlet.view.document.AbstractExcelView``\ を継承したクラスを作成する必要がある。
+| \ ``org.springframework.web.servlet.view.document.AbstractXlsxView``\ を継承したクラスを作成する必要がある。
 | コントローラでEXCELファイルをダウンロードを実装するための手順は、以下で説明する。
 
 カスタムViewの実装
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-**AbstractExcelViewを継承したクラスの実装例**
+**AbstractXlsxViewを継承したクラスの実装例**
 
 .. code-block:: java
 
         @Component  // (1)
-        public class SampleExcelView extends AbstractExcelView {  // (2)
+        public class SampleExcelView extends AbstractXlsxView {  // (2)
 
             @Override
             protected void buildExcelDocument(Map<String, Object> model,
-                    HSSFWorkbook workbook, HttpServletRequest request,
+                    Workbook workbook, HttpServletRequest request,
                     HttpServletResponse response) throws Exception {  // (3)
-                HSSFSheet sheet;
-                HSSFCell cell;
-
+                Sheet sheet;
+                Cell cell;
+ 
                 sheet = workbook.createSheet("Spring");
                 sheet.setDefaultColumnWidth(12);
 
@@ -305,11 +305,11 @@ Excelファイルのダウンロード
      - | 本例では、\ ``@Component``\ アノテーションを使用して、component-scanの対象としている。
        | 前述した、\ ``org.springframework.web.servlet.view.BeanNameViewResolver``\ の対象とすることができる。
    * - | (2)
-     - | AbstractExcelViewを継承する。
+     - | AbstractXlsxViewを継承する。
    * - | (3)
      - | buildExcelDocumentメソッドを実装する。
 
-| AbstractExcelViewは、EXCELのレンダリングに、\ `Apache POI <http://poi.apache.org/>`_\ を利用している。
+| AbstractXlsxViewは、EXCELのレンダリングに、\ `Apache POI <http://poi.apache.org/>`_\ を利用している。
 | そのため、Mavenのpom.xmlに POIの定義を追加する必要がある。
 
 .. code-block:: xml
@@ -318,16 +318,14 @@ Excelファイルのダウンロード
       <!-- omitted -->
       <dependency>
           <groupId>org.apache.poi</groupId>
-          <artifactId>poi</artifactId>
-          <version>${org.apache.poi.poi.version}</version>
+          <artifactId>poi-ooxml</artifactId>
       </dependency>
   </dependencies>
-  
-  <properties>
-      <!-- omitted -->
-      <org.apache.poi.poi.version>3.9</org.apache.poi.poi.version>
-  </properties>
+
         
+\
+    .. note::
+        poi-ooxmlのバージョンはSpring IO Platformにて定義されている。
 
 ViewResolverの定義
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
