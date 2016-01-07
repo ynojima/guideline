@@ -80,6 +80,8 @@ Spring Securityがサポートしている主な認証方式は以下の通り�
       - | Remember Me認証用のサーブレットフィルタクラスで、HTTPリクエストのCookieから資格情報を取得する。
         | Remember Me認証を有効にすると、ブラウザを閉じたりセッションタイムアウトが発生しても、ログイン状態を保つことができる。
 
+これらのサーブレットフィルタは、 :ref:`SpringSecurityProcess`\ で紹介したAuthentication Filterの１つである。
+
 .. note::
 
     Spring Securityによってサポートされていない認証方式を実現する必要がある場合は、
