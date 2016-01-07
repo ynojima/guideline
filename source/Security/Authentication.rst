@@ -434,8 +434,8 @@ Spring Securityは、以下のような流れでDB認証を行う。
 
     Spring Securityは、ユーザー情報をリレーショナルデータベースからJDBC経由で取得するための実装クラスを提供している。
 
-    * \ ``org.springframework.security.core.userdetails.User``\
-    * \ ``org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl``\
+    * \ ``org.springframework.security.core.userdetails.User``\ (\ ``UserDetails``\ の実装クラス)
+    * \ ``org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl`` \ (\ ``UserDetailsService``\ の実装クラス)
 
     これらの実装クラスは最低限の認証処理(パスワードの照合、有効ユーザーの判定)しか行わないため、そのまま利用できるケースは少ない。
     そのため、本ガイドラインでは、\ ``UserDetails``\ と\ ``UserDetailsService``\ の実装クラスを作成する方法について説明する。
