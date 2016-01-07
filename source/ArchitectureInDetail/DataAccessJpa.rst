@@ -3723,6 +3723,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
         private JpaEntityInformation<T, ID> entityInformation;
         private EntityManager entityManager;
+        Method versionMethod;
 
         // (7)
         public MyProjectRepositoryImpl(
@@ -3732,16 +3733,16 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
             this.entityInformation = entityInformation; // (8)
             this.entityManager = entityManager; // (8)
-
+            
             try {
-                return domainClass.getMethod("getVersion");
-            } catch (NoSuchMethodException | SecurityException e) {
-                return null;
-            }
+                versionMethod = entityInformation.getJavaType().getMethod("getVersion");
+            } catch (NoSuchMethodException | SecurityException e) { }
+
         }
 
         // (9)
         public T findOneWithValidVersion(ID id, Integer version) {
+
             if (versionMethod == null) {
                 throw new UnsupportedOperationException(
                         String.format(
@@ -3791,96 +3792,11 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
     デフォルト実装( ``SimpleJpaRepository`` )の振る舞いを変更する場合は、このクラスで振る舞いを変更したいメソッドをオーバーライドすればよい。
 
--  共通Repositoryインタフェースの実装クラスのインスタンスを生成するためのFactoryクラス
-
- .. code-block:: java
-
-    // (10)
-    private static class MyProjectRepositoryFactory<T, ID extends Serializable>
-            extends JpaRepositoryFactory {
-
-        // (11)
-        public MyProjectRepositoryFactory(EntityManager entityManager) {
-            super(entityManager);
-        }
-
-        // (12)
-        protected JpaRepository<T, ID> getTargetRepository(
-                RepositoryMetadata metadata, EntityManager entityManager) {
-
-            @SuppressWarnings("unchecked")
-            JpaEntityInformation<T, ID> entityInformation = getEntityInformation((Class<T>) metadata
-                    .getDomainType());
-
-            MyProjectRepositoryImpl<T, ID> repositoryImpl = new MyProjectRepositoryImpl<T, ID>(
-                    entityInformation, entityManager);
-            repositoryImpl
-                    .setLockMetadataProvider(LockModeRepositoryPostProcessor.INSTANCE
-                            .getLockMetadataProvider()); // (13)
-
-            return repositoryImpl;
-        }
-
-        // (14)
-        protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-            return MyProjectRepository.class;
-        }
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :widths: 10 90
-    :header-rows: 1
-
-    * - 項番
-      - 説明
-    * - | (10)
-      - | 共通Repositoryインタフェースの実装クラスのインスタンスを生成するためのFactoryクラスを作成する。
-        | 例では、Factoryクラスの実装を最小限にするために、 ``org.springframework.data.jpa.repository.support.JpaRepositoryFactory`` を継承している。
-    * - | (11)
-      - | ``EntityManager`` を引数とするコンストラクタを定義し、親クラスのコンストラクタを呼び出す。
-    * - | (12)
-      - | 実装クラスのインスタンスを生成するメソッドをオーバライドし、作成した実装クラス(例だと ``MyProjectRepositoryImpl`` )のインスタンスを生成し返却する。
-    * - | (13)
-      - | Spring Data JPAより提供されている ``SimpleJpaRepository`` クラスの ``findOne`` メソッドおよび ``findAll`` 系メソッドに対して、 ``@Lock`` アノテーションを使ってロックモードを指定できるようにするために必要なコードとなる。
-        | オーバーライド元の ``JpaRepositoryFactory`` のメソッドで実装されている処理なので、必ず実装すること。
-        | 拡張するメソッドの中で ``findOne`` メソッドや ``findAll`` メソッドを使う際に、ロックモードを指定したい場合に必要になる。
-    * - | (14)
-      - | Entity毎のRepositoryインタフェースの基底インタフェースを返却するメソッドをオーバライドし、作成したインタフェース(例だと ``MyProjectRepository`` )の型を返却する。
-
-- Factoryクラスのインスタンスを生成するためのFactoryBean
-
- .. code-block:: java
-
-    // (15)
-    public class MyProjectRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, ID extends Serializable>
-            extends JpaRepositoryFactoryBean<R, T, ID> {
-
-        // (16)
-        protected RepositoryFactorySupport createRepositoryFactory(
-                EntityManager entityManager) {
-            return new MyProjectRepositoryFactory<T, ID>(entityManager);
-        }
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :widths: 10 90
-    :header-rows: 1
-
-    * - 項番
-      - 説明
-    * - | (15)
-      - | Factoryクラスのインスタンスを作成するためのFactoryBeanクラスを作成する。
-        | 例では、FactoryBeanクラスの実装を最小限にするために、 ``org.springframework.data.jpa.repository.support.JpaRepositoryFactory`` を継承している。
-    * - | (16)
-      - | Factoryクラスのインスタンスを作成するためのメソッドをオーバーライドし、作成したFactoryクラスのインスタンスを生成し返却する。
-
 - Entity毎のRepositoryインタフェース
 
  .. code-block:: java
 
-    public interface OrderRepository extends MyProjectRepository<Order, Integer> { // (17)
+    public interface OrderRepository extends MyProjectRepository<Order, Integer> { // (10)
         // ...
     }
 
@@ -3891,7 +3807,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
     * - 項番
       - 説明
-    * - | (17)
+    * - | (10)
       - | Entity毎のRepositoryインタフェースでは、作成した共通インタフェース(例だと ``MyProjectRepository`` )を継承先として指定する。
 
 - ``xxx-infra.xml``
@@ -3899,7 +3815,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
  .. code-block:: xml
 
     <jpa:repositories base-package="x.y.z.domain.repository"
-        factory-class="x.y.z.domain.repository.MyProjectRepositoryFactoryBean" /> <!-- (18) -->
+        base-class="x.y.z.domain.repository.MyProjectRepositoryImpl" /> <!-- (11) -->
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
  .. list-table::
@@ -3908,8 +3824,8 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
     * - 項番
       - 説明
-    * - | (18)
-      - | <jpa:repositories>要素のfactory-class属性に、作成したFactoryBeanクラス(例だと ``MyProjectRepositoryFactoryBean``) のクラス名を指定する。
+    * - | (11)
+      - | <jpa:repositories>要素のbase-class属性に、作成した共通Repositoryインタフェースの実装クラス(例だと ``MyProjectRepositoryImpl``) のクラス名を指定する。
 
 - Service(Caller)
 
@@ -3917,7 +3833,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
     public Order updateOrder(Order chngedOrder, Integer version) {
 
-        Order order = orderRepository.findOneWithValidVersion(chngedOrder.getId(), version); // (19)
+        Order order = orderRepository.findOneWithValidVersion(chngedOrder.getId(), version); // (12)
 
         // ....
 
@@ -3931,7 +3847,7 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 
     * - 項番
       - 説明
-    * - | (19)
+    * - | (12)
       - | 呼び出し側は、他のメソッドと同様にEntity毎のRepositoryインタフェースのメソッドを呼び出せばよい。
         | 上記例では、``OrderRepository#findOneWithValidVersion(Integer, Integer)`` を呼び出すと ``MyProjectRepositoryImpl#findOneWithValidVersion(Integer, Integer)`` が実行される。
 
