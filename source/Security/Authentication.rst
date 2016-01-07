@@ -282,11 +282,6 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
         | また、\ ``<form:form>``\ を使用することで、CSRF対策用のトークン値がリクエストパラメータで送信される。
         | CSRF対策については、「:ref:`SpringSecurityCsrf`」で説明する。
 
-.. note:: **静的リソースへのアクセス**
-
-    JSPでCSS等の静的リソースを使用している場合は、それらを格納するフォルダにアクセス権を付与する必要がある。
-    詳細は、:ref:`SpringSecurityAutorizationNoAutorizationUrl` を参照されたい。 
-
 |
 
 つぎに、作成したログインフォームをSpring Securityに適用する。

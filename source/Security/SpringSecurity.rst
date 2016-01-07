@@ -414,6 +414,11 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
       - \ ``<sec:authentication-manager />``\ タグを定義して、認証機能用のコンポーネントをbean定義する。
         このタグを定義しておかないとサーバ起動時にエラーが発生する。
 
+.. note:: **静的リソースへのアクセス**
+
+    JSPでCSS等の静的リソースを使用している場合は、それらを格納するフォルダにアクセス権を付与する必要がある。
+    詳細は、:ref:`SpringSecurityAutorizationNoAutorizationUrl` を参照されたい。 
+
 |
 
 作成したbean定義ファイルを使用してSpringのDIコンテナを生成するように定義する。
