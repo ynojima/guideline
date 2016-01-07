@@ -765,11 +765,6 @@ PRG(Post-Redirect-Get)パターンの適用
        | type = TransactionTokenType.IN
        |
 
- .. warning::
-
-   value属性またはnamespace属性を設定する場合はどちらか一方を設定すること。
-   同レベルのクラスアノテーションまたは同レベルのメソッドアノテーションに両方設定するとエラーになる。
-
  .. note::
  
     value属性またはnamespace属性に設定する値は、\ ``@RequestMapping``\ アノテーションのvalue属性の設定値と、同じ値を設定することを推奨する。
