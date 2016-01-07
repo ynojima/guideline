@@ -1327,6 +1327,7 @@ Javaからのアクセス
 
     Spring Securityでは、Spring MVCの機能と連携してコンポーネント間の疎結合性を保つための仕組みを別途提供している。
     Spring MVCとの連携方法については、「:ref:`SpringSecurityAuthenticationIntegrationWithSpringMVC`」で説明する。
+    **本ガイドラインではSpring MVCとの連携を使用して認証情報を取得することを推奨する。**
 
 |
 
