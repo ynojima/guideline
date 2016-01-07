@@ -741,15 +741,15 @@ PRG(Post-Redirect-Get)パターンの適用
      - value
      - | 任意文字列。NameSpaceとして使用される。
      - 無
-     - | value = "create"
-       | 引数が1つのみの場合は、"value ="部分は省略できる。
+     - | \ ``value = "create"``\ 
+       | 引数が1つのみの場合は、\ ``value =``\ 部分は省略できる。
    * - (2)
      - namespace
      - | 任意文字列。NameSpaceとして使用される。
        | value属性のエイリアスである。
      - 無
-     - | namespace = "create"
-       | value = "create"と同じ意味をしている。
+     - | \ ``namespace = "create"``\ 
+       | \ ``value = "create"``\ と同義である。\ ``@TransactionTokenCheck``\ をメタアノテーションとして利用する際には value属性が使用できないため、value属性の代わりとして利用する。
    * - (3)
      - type
      - | **BEGIN**
