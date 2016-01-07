@@ -1717,6 +1717,18 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
     * - | (7)
       - | \ ``authentication-failure-handler-ref``\ 属性に\ ``authenticationFailureHandler``\ を設定する。
 
+.. note:: **例外発生時の制御**
+
+    \ ``exceptionMappings``\ プロパティに定義した例外が発生した場合、例外にマッピングした遷移先にリダイレクトされるが、
+    発生した例外オブジェクトがセッションスコープに格納されないため、Spring Securityが生成したエラーメッセージを画面に表示する事ができない。
+
+    そのため、遷移先の画面で表示するエラーメッセージは、リダイレクト先の処理(Controller又はViewの処理)で生成する必要がある。
+
+    また、以下のプロパティを参照する処理が呼び出されないため、設定値を変更しても動作が変わらないという点を補足しておく。
+
+    * ``useForward``
+    * ``allowSessionCreation``
+
 |
 
 ログアウト処理のカスタマイズ
