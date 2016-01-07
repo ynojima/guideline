@@ -1946,6 +1946,114 @@ Spring Securityのデフォルトでは、ログアウト処理を実行する�
 
 |
 
+.. _SpringSecurityAuthenticationBeanValidation:
+
+認証時の入力チェック
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+DBサーバへの負荷軽減等で、認証ページおける、あきらかな入力誤りに対しては、事前にチェックを行いたい場合がある。
+このような場合は、Bean Validationを使用した入力チェックも可能である。
+
+Bean Validationによる入力チェック
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+以下にBean Validationを使用した入力チェックの例を説明する。
+Bean Validationに関する詳細は \ :doc:`../ArchitectureInDetail/Validation`\ を参照すること。
+
+* フォームクラスの実装例
+
+.. code-block:: java
+
+    public class LoginForm implements Serializable {
+
+        // omitted
+        @NotEmpty // (1)
+        private String username;
+
+        @NotEmpty // (1)
+        private String password;
+        // omitted
+
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | 本例では、\ ``username``\ 、\ ``password``\ をそれぞれ必須入力としている。
+
+
+* コントローラクラスの実装例
+
+.. code-block:: java
+
+    @ModelAttribute
+    public LoginForm setupForm() { // (1)
+        return new LoginForm();
+    }
+
+    @RequestMapping(value = "login")
+    public String login(@Validated LoginForm form, BindingResult result) {
+        // omitted
+        if (result.hasErrors()) {
+            // omitted
+        }
+        return "forward:/authenticate"; // (1)
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``LoginForm``\ を初期化する。
+    * - | (2)
+      - | forwardで\ ``<sec:form-login>``\ 要素の\ ``login-processing-url``\ 属性に指定したパスに **Forward** する。
+        | 認証に関する設定は、\ :ref:`SpringSecurityAuthenticationCustomizingForm`\を参照すること。
+
+加えて、Forwardによる遷移でもSpring Securityの処理が行われるよう、認証パスをSpring Securityサーブレットフィルタに追加する。
+
+* \ ``web.xml``\ の設定例
+
+.. code-block:: xml
+
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>
+            org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- (1) -->
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/authenticate</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>    
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | Forwardで認証するためのパターンを指定する
+        | ここでは認証パスである\ ``"/authenticate"``\ を指定している。
+
+|
+
 認証処理の拡張
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2187,107 +2295,6 @@ Authentication Filterの作成
        | \ ``AuthenticationManager``\ のメソッドを呼び出すと、\ ``AuthenticationProvider``\ の認証処理が呼び出される。
    * - | (3)
      - | 会社識別子は、\ ``"companyId"``\ というリクエストパラメータより取得する。
-
-.. note:: **認証情報の入力チェックについて**
-
-    DBサーバへの負荷軽減等で、あきらかな入力誤りに対しては、事前にチェックを行いたい場合がある。
-    その場合は、\ ``UsernamePasswordAuthenticationFilter``\ を拡張することで、入力チェック処理を行うことができる。
-    
-    また、Bean Validationを使用した入力チェックも可能である。
-    以下にBean Validationを使用した入力チェックの例を説明する。
-    Bean Validationに関する詳細は \ :doc:`../ArchitectureInDetail/Validation`\ を参照すること。
-
-    * フォームクラスの実装例
-
-        .. code-block:: java
-
-            public class LoginForm implements Serializable {
-
-                // omitted
-                @NotEmpty // (1)
-                private String username;
-
-                @NotEmpty // (1)
-                private String password;
-                // omitted
-
-            }
-
-        .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-        .. list-table::
-            :header-rows: 1
-            :widths: 10 90
-
-            * - 項番
-              - 説明
-            * - | (1)
-              - | 本例では、\ ``username``\ 、\ ``password``\ をそれぞれ必須入力としている。
-
-
-    * コントローラクラスの実装例
-
-        .. code-block:: java
-
-            @ModelAttribute
-            public LoginForm setupForm() { // (1)
-                return new LoginForm();
-            }
-
-            @RequestMapping(value = "login")
-            public String login(@Validated LoginForm form, BindingResult result) {
-                // omitted
-                if (result.hasErrors()) {
-                    // omitted
-                }
-                return "forward:/authenticate"; // (1)
-            }
-
-        .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-        .. list-table::
-            :header-rows: 1
-            :widths: 10 90
-
-            * - 項番
-              - 説明
-            * - | (1)
-              - | \ ``LoginForm``\ を初期化する。
-            * - | (2)
-              - | forwardで\ ``<sec:form-login>``\ 要素の\ ``login-processing-url``\ 属性に指定したパスに **Forward** する。
-                | 認証に関する設定は、\ :ref:`SpringSecurityAuthenticationCustomizingForm`\を参照すること。
-    
-    加えて、Forwardによる遷移でもSpring Securityの処理が行われるよう、認証パスをSpring Securityサーブレットフィルタに追加する。
-
-    * \ ``web.xml``\ の設定例
-
-        .. code-block:: xml
-
-            <filter>
-                <filter-name>springSecurityFilterChain</filter-name>
-                <filter-class>
-                    org.springframework.web.filter.DelegatingFilterProxy
-                </filter-class>
-            </filter>
-            <filter-mapping>
-                <filter-name>springSecurityFilterChain</filter-name>
-                <url-pattern>/*</url-pattern>
-            </filter-mapping>
-            <!-- (1) -->
-            <filter-mapping>
-                <filter-name>springSecurityFilterChain</filter-name>
-                <url-pattern>/authenticate</url-pattern>
-                <dispatcher>FORWARD</dispatcher>
-            </filter-mapping>    
-
-        .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-        .. list-table::
-            :header-rows: 1
-            :widths: 10 90
-
-            * - 項番
-              - 説明
-            * - | (1)
-              - | Forwardで認証するためのパターンを指定する
-                | ここでは認証パスである\ ``"/authenticate"``\ を指定している。
 
 |
 
