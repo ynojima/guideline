@@ -4087,9 +4087,9 @@ terasoluna-gfw-validatorのチェックルール
 .. code-block:: properties
 
   # (1)
-  org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be greater than or equal to {value} Bytes
-  org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be less than or equal to {value} Bytes
-  org.terasoluna.gfw.common.validator.constraints.Compare.message = not match '{left}' and '{right}'
+  org.terasoluna.gfw.common.validator.constraints.ByteMin.message = must be greater than or equal to {value} bytes
+  org.terasoluna.gfw.common.validator.constraints.ByteMax.message = must be less than or equal to {value} bytes
+  org.terasoluna.gfw.common.validator.constraints.Compare.message = invalid combination of {left} and {right}
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
