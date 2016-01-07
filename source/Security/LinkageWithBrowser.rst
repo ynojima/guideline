@@ -218,7 +218,7 @@ How to use
     * https://www.owasp.org/index.php/List_of_useful_HTTP_headers (X-Content-Type-Options, X-XSS-Protection)
 
 
-詳細については\ `公式リファレンス <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#default-security-headers>`_\ を参照されたい。
+セキュリティヘッダの詳細については\ `公式リファレンス <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#default-security-headers>`_\ を参照されたい。
 
 
 セキュリティヘッダのオプション指定
