@@ -94,7 +94,7 @@ Spring Securityは、コンポーネントの役割などに応じて、以下�
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 標準的なWebアプリケーションに対してセキュリティ対策行う際に必要となるモジュールは、以下の4つとなる。
-本ガイドラインでもこの4つのモジュールを利用してセキュリティ対策を行う方法について説明する。
+本ガイドラインでもこれらのモジュールを利用してセキュリティ対策を行う方法について説明する。
 
 \
 
@@ -116,6 +116,17 @@ Spring Securityは、コンポーネントの役割などに応じて、以下�
         このモジュールを使用すると、Spring Securityのbean定義を簡単に行うことができる。
     * - \ ``spring-security-taglibs``\
       - 認証情報や認可機能にアクセスするためのJSPタグライブラリが格納されている。
+    * - \ ``spring-security-ldap``\
+      - Lightweight Directory Access Protocol(LDAP)を使用した認証を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-openid``\
+      - OpenID\ [#fSpringSecurityArchitecture1]_\ を使用した認証を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-cas``\
+      - Central Authentication Service(CAS)\ [#fSpringSecurityArchitecture2]_\ と連携するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-acl``\
+      - EntityなどのドメインオブジェクトをAccess Control List(ACL)を使用して認可制御するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-crypto``\
+      - 暗号化、キーの生成、ハッシュアルゴリズムを利用したパスワードエンコーディングを行うためのコンポーネントが格納されている。
+
 
 要件に合わせて利用する拡張モジュール群
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -133,16 +144,6 @@ Spring Securityは、コンポーネントの役割などに応じて、以下�
 
     * - モジュール名
       - 説明
-    * - \ ``spring-security-ldap``\
-      - Lightweight Directory Access Protocol(LDAP)を使用した認証を実現するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-openid``\
-      - OpenID\ [#fSpringSecurityArchitecture1]_\ を使用した認証を実現するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-cas``\
-      - Central Authentication Service(CAS)\ [#fSpringSecurityArchitecture2]_\ と連携するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-acl``\
-      - EntityなどのドメインオブジェクトをAccess Control List(ACL)を使用して認可制御するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-crypto``\
-      - 暗号化、キーの生成、ハッシュアルゴリズムを利用したパスワードエンコーディングを行うためのコンポーネントが格納されている。
     * - \ ``spring-security-remoting``\
       - JNDI経由でDNSにアクセス、Basic認証が必要なWebサイトにアクセス、Spring Securityを使用してセキュリティ対策しているメソッドにRMI経由でアクセスする際に必要となるコンポーネントが格納されている。
     * - \ ``spring-security-aspects``\
