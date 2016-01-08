@@ -325,7 +325,11 @@ Excelファイルのダウンロード
         
 \
     .. note::
-        poi-ooxmlのバージョンはSpring IO Platformにて定義されている。
+        poi-ooxmlのバージョンはSpring IO Platformにて定義されているものを利用するため、設定例では <version> を省略している。
+
+        また、AbstractExcelViewはSpring Framework 4.2から@Deprecatedとなった。そのため、xlsファイルを使用したい場合も同様にAbstractXlsxViewの使用を推奨する。
+        詳細は、Spring の公式ドキュメント\ `Spring reference <https://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/web/servlet/view/document/AbstractExcelView.html>`_\ を参照されたい。
+          
 
 ViewResolverの定義
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
