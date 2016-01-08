@@ -252,11 +252,10 @@ Webアプリケーション向けのフレームワーク処理を構成する�
 ``SecurityFilterChain``
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-\ ``SecurityFilterChain``\ インタフェースは、\ ``FilterChainProxy``\ が受け取ったリクエストに対して適用するSecurity Filterのリストを管理するためのインタフェースである。
+\ ``SecurityFilterChain``\ インタフェースは、\ ``FilterChainProxy``\ が受け取ったリクエストに対して、適用するSecurity Filterのリストを管理するためのインタフェースである。
 デフォルトでは\ ``DefaultSecurityFilterChain``\ クラスが使用され、適用するSecurity Filterのリストを、リクエストURLのパターン毎に管理する。
 
-
-たとえば、以下のようなbean定義を行うと、指定したパスのパターン毎に異なるセキュリティ対策を適用することが可能となる。
+たとえば、以下のようなbean定義を行うと、URLに応じて異なる内容のセキュリティ対策を適用することができる。
 
 *spring-security.xmlの定義例*
 
