@@ -257,9 +257,191 @@ Webリソースに対して認可処理を適用する場合は、以下のよ�
 
     Spring Security 4.0から、\ ``<sec:http>``\  タグの\ ``use-expressions``\ 属性のデフォルト値が\ ``true``\ に変更になっている。
 
-.. note:: **アクセスポリシーの定義方法**
+アクセスポリシーの定義
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-    アクセスポリシーの定義方法については、「:ref:`SpringSecurityAuthorizationAccessPolicyDefinitionWebBeanFile`」で説明する。
+bean定義ファイルを使用して、Webリソースに対してアクセスポリシーを定義する方法について説明する。
+
+アクセスポリシーを適用するWebリソースの指定
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+まず、アクセスポリシーを適用するリソース(HTTPリクエスト)を指定する。
+アクセスポリシーを適用するリソースの指定は、\ ``<sec:intercept-url>``\ タグの以下の属性を使用する。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+.. list-table:: **アクセスポリシーを適用するリソースを指定するための属性**
+    :header-rows: 1
+    :widths: 20 80
+
+    * - メソッド
+      - 説明
+    * - | \ ``pattern``\
+      - | Ant形式又は正規表現で指定したパスパターンに一致するリソースを適用対象にするための属性。
+    * - | \ ``method``\
+      - | 指定したHTTPメソッド(GET,POSTなど)を使ってアクセスがあった場合に適用対象にするための属性。
+    * - | \ ``access``\ 
+      - | SpELでのアクセス制御式や、アクセス可能なロールを指定するための属性。
+    * - | \ ``requires-channel``\ 
+      - | 「http」、もしくは「https」を指定する。指定したプロトコルでのアクセスを強制するための属性。
+        | 指定しない場合、どちらでもアクセス可能である。
+
+上記以外の属性については、\ `<intercept-url> <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-intercept-url>`_\ を参照されたい。
+
+* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
+
+.. code-block:: xml
+
+    <sec:http >
+        <sec:intercept-url pattern="/admin/accounts/**" access="..."/>
+        <sec:intercept-url pattern="/admin/**" access="..."/>
+        <sec:intercept-url pattern="/**" access="..."/>
+        <!-- omitted -->
+    </sec:http>
+
+
+Spring Securityは定義した順番でリクエストとのマッチング処理を行い、最初にマッチした定義を適用する。
+そのため、bean定義ファイルを使用してアクセスポリシーを指定する場合も定義順番には注意が必要である。
+
+.. note:: **パスパターンの解釈**
+
+    Spring Securityのデフォルトの動作では、パスパターンはAnt形式で解釈する。
+    パスパターンを正規表現で指定したい場合は、\ ``<sec:http>``\ タグの\ ``request-matcher``\ 属性に
+    \ ``"regex"``\ を指定すること。
+
+      .. code-block:: xml
+
+          <sec:http path-type="regex">
+              <sec:intercept-url pattern="/admin/accounts/.*" access=hasRole('ACCOUNT_MANAGER')" />
+              <!-- omitted -->
+          </sec:http>
+
+アクセスポリシーの指定
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+つぎに、アクセスポリシーを指定する。
+アクセスポリシーの指定は、\ ``<sec:intercept-url>``\ タグの\ ``access``\ 属性に指定する。
+
+* \ ``<sec:intercept-url>``\ タグ\ ``access``\ 属性の定義例（\ ``spring-security.xml``\ ）
+
+  .. code-block:: xml
+  
+    <sec:http>
+        <sec:intercept-url pattern="/admin/accounts/**" access="hasRole('ACCOUNT_MANAGER')"/>
+        <sec:intercept-url pattern="/admin/configurations/**" access="hasIpAddress('127.0.0.1') and hasRole('CONFIGURATION_MANAGER')" />
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
+        <!-- omitted -->
+    </sec:http>
+  
+  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 20 80
+  
+     * - 属性名
+       - 説明
+     * - | \ ``pattern``\ 
+       - | アクセス認可を行う対象のURLパターンを記述する。ワイルドカード「*」、「**」が使用できる。
+         | 「*」では、同一階層のみが対象であるのに対し、「**」では、指定階層以下の全URLが、認可設定の対象となる。
+     * - | \ ``access``\ 
+       - | SpELでのアクセス制御式や、アクセス可能なロールを指定する。
+     * - | \ ``method``\ 
+       - | HTTPメソッド（GETやPOST等）を指定する。指定したメソッドのみに関して、URLパターンとマッチングを行う。
+         | 指定しない場合は、任意のHTTPメソッドに適用される。主にRESTを利用したWebサービスの利用時に活用できる。
+     * - | \ ``requires-channel``\ 
+       - | 「http」、もしくは「https」を指定する。指定したプロトコルでのアクセスを強制する。
+         | 指定しない場合、どちらでもアクセスできる。
+
+| ログインユーザーに「ROLE_USER」「ROLE_ADMIN」というロールがある場合を例に、設定例を示す。
+
+* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
+
+  .. code-block:: xml
+  
+    <sec:http>
+        <sec:intercept-url pattern="/reserve/**" access="hasAnyRole('USER','ADMIN')" /> <!-- (1) -->
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')" /> <!-- (2) -->
+        <sec:intercept-url pattern="/**" access="denyAll" /> <!-- (3) -->
+        <!-- omitted -->
+    </sec:http>
+  
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 10 90
+  
+     * - 項番
+       - 説明
+     * - | (1)
+       - | 「/reserve/\**」にアクセスするためには、「ROLE_USER」もしくは「ROLE_ADMIN」ロールが必要である。
+         | \ ``hasAnyRole``\ については、後述する。
+     * - | (2)
+       - | 「/admin/\**」にアクセスするためには、「ROLE_ADMIN」ロールが必要である。
+         | \ ``hasRole``\ については、後述する。
+     * - | (3)
+       - | \ ``denyAll``\ を全てのパターンに設定し、
+         | 権限設定が記述されていないURLに対してはどのユーザーもアクセス出来ない設定としている。
+         | \ ``denyAll``\ については、後述する。
+
+  .. note::    **URLパターンの記述順序について**
+
+     クライアントからのリクエストに対して、intercept-urlで記述されているパターンに、上から順にマッチさせ、マッチしたパターンに対してアクセス認可を行う。
+     そのため、パターンの記述は、必ず、より限定されたパターンから記述すること。
+
+\ Spring Securiyではデフォルトで、SpELが有効になっている。 
+\ ``access``\ 属性に記述したSpELは真偽値で評価され、式が真の場合に、アクセスが認可される。
+以下に、使用例を示す。
+
+* \ ``spring-security.xml``\ の定義例
+
+  .. code-block:: xml
+  
+    <sec:http>
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>  <!-- (1) -->
+        <!-- omitted -->
+    </sec:http>
+  
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 10 90
+  
+     * - 項番
+       - 説明
+     * - | (1)
+       - | \ ``hasRole('ロール名')``\ を指定することで、ログインユーザーが指定したロールを保持していれば真を返す。
+  
+  .. _spring-el:
+  
+使用可能な主なExpressionは、:ref:`SpringSecurityAuthorizationPolicy` を参照されたい。
+
+また、演算子を使用した判定も行うことができる。
+以下の例では、ロールと、リクエストされたIPアドレス両方に合致した場合、アクセス可能となる。
+
+* \ ``spring-security.xml``\ の定義例
+
+  .. code-block:: xml
+  
+    <sec:http>
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN') and hasIpAddress('192.168.10.1')"/>
+        <!-- omitted -->
+    </sec:http>
+  
+  **使用可能な演算子一覧**
+  
+  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 20 80
+  
+     * - 演算子
+       - 説明
+     * - | \ ``[式1] and [式2]``\ 
+       - | 式1、式2が、どちらも真の場合に、真を返す。
+     * - | \ ``[式1] or [式2]``\ 
+       - | いずれかの式が、真の場合に、真を返す。
+     * - | \ ``![式]``\ 
+       - | 式が真の場合は偽を、偽の場合は真を返す。
 
 |
 
@@ -313,7 +495,18 @@ Spring Securityは、以下のアノテーションをサポートしている�
 
 メソッドに対して認可処理を適用する際は、アクセスポリシーを指定するアノテーションを使用して、メソッド毎にアクセスポリシーを定義する。
 
-*アクセスポリシーの定義例*
+アクセスポリシーの定義
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+メソッド実行前に適用するアクセスポリシーの指定
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+メソッドの実行前に適用するアクセスポリシーを指定する場合は、\ ``@PreAuthorize``\ を使用する。
+
+\ ``@PreAuthorize``\ の\ ``value``\ 属性に指定したExpressionの結果が\ ``true``\ になるとメソッドの実行が許可される。
+下記例では、管理者以外は、他人のアカウント情報にアクセスできないように定義している。
+
+* \ ``@PreAuthorize``\ の定義例
 
 .. code-block:: java
 
@@ -336,9 +529,52 @@ Spring Securityは、以下のアノテーションをサポートしている�
       - | \ ``value``\ 属性に、メソッドに対してアクセスポリシーを定義する。
         | ここでは、「管理者の場合は全てのアカウントへのアクセスを許可する」「管理者以外の場合は自身のアカウントへのアクセスのみ許可する」というアクセスポリシーを定義している。
 
-.. note:: **アクセスポリシーの定義**
+ここでポイントになるのは、Expressionの中からメソッドの引数にアクセスしている部分である。
+具体的には、「\ ``#username``\ 」の部分が引数にアクセスしている部分である。
+Expression内で「# + 引数名」形式のExpressionを指定することで、メソッドの引数にアクセスすることができる。
 
-    アクセスポリシーの定義方法の説明については、「:ref:`SpringSecurityAuthorizationAccessPolicyDefinition`」で説明する。
+.. note:: **メモ**
+
+    Spring Securityは、クラスに出力されているデバッグ情報から引数名を解決する仕組み
+    になっているが、アノテーション(\ ``@org.springframework.security.access.method.P``\ )
+    を使用して明示的に引数名を指定することもできる。
+
+    以下のケースにあてはまる場合は、アノテーションを使用して明示的に変数名を指定する。
+
+    * クラスに変数のデバッグ情報を出力しない
+    * Expressionの中から実際の変数名とは別の名前を使ってアクセスしたい (例えば短縮した名前)
+
+      .. code-block:: java
+
+          @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
+          public Account findOne(@P("username") String username) {
+              return accountRepository.findOne(username);
+          }
+
+    JDK 8 から追加されたコンパイルオプション(\ ``-parameters``\ )を使用すると、メソッドパラメータにリフレクション用のメタデータが生成されるため、アノテーションを指定しなくても引数名が解決される。
+
+メソッド実行後に適用するアクセスポリシーの指定
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+メソッドの実行後に適用するアクセスポリシーを指定する場合は、\ ``@PostAuthorize``\ を使用する。
+
+\ ``@PostAuthorize``\ の\ ``value``\ 属性に指定したExpressionの結果が\ ``true``\ になるとメソッドの実行結果が呼び出し元に返却される。
+下記例では、所属する部署が違うユーザーのアカウント情報にアクセスできないように定義している。
+
+* \ ``@PostAuthorize``\ の定義例
+
+.. code-block:: java
+
+    @PreAuthorize("...")
+    @PostAuthorize("(returnObject == null) " +
+            "or (returnObject.departmentCode == principal.account.departmentCode)")
+    public Account findOne(String username) {
+        return accountRepository.findOne(username);
+    }
+
+ここでポイントになるのは、Expressionの中からメソッドの返り値にアクセスしている部分である。
+具体的には、「\ ``returnObject.departmentCode``\ 」の部分が返り値にアクセスしている部分である。
+Expression内で「\ ``returnObject``\ 」を指定すると、メソッドの返り値にアクセスすることができる。
 
 |
 
@@ -380,16 +616,15 @@ JSPタグライブラリを使用してJSPの画面項目に対してアクセ�
     * - | (2)
       - | \ ``access``\ 属性にアクセスポリシーを定義する。ここでは、「管理者の場合は表示を許可する」というアクセスポリシーを定義している。
 
-.. note:: **アクセスポリシーの定義**
-
-    アクセスポリシーの定義方法の説明については、「:ref:`SpringSecurityAuthorizationAccessPolicyDefinitionJsp`」で説明する。
-
 |
 
 Webリソースに指定したアクセスポリシーとの連動
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 ボタンやリンクなど(サーバーへのリクエストを伴う画面項目)に対してアクセスポリシーを定義する際は、リクエスト先のWebリソースに定義されているアクセスポリシーと連動させる。
+Webリソースに指定したアクセスポリシーと連動させる場合は、\ ``<sec:authorize>``\ タグの\ ``url``\ 属性を使用する。
+
+\ ``url``\ 属性に指定したWebリソースにアクセスできる場合に限り\ ``<sec:authorize>``\ タグの中に実装したJSPの処理が実行される。
 
 *Webリソースに定義されているアクセスポリシーとの連携例*
 
@@ -416,6 +651,10 @@ Webリソースに指定したアクセスポリシーとの連動
     * - | (2)
       - | \ ``<sec:authorize>``\ タグの\ ``url``\ 属性にWebリソースへアクセスするためのURLを指定する。
         | ここでは、「\ ``"/admin/accounts"``\ というURLが割り振られているWebリソースにアクセス可能な場合は表示を許可する」というアクセスポリシーを定義しており、Webリソースに定義されているアクセスポリシーを直接意識する必要がない。
+
+.. note:: **HTTPメソッドによるポリシーの指定**
+
+    Webリソースのアクセスポリシーの定義をする際に、HTTPメソッドによって異なるアクセスポリシーを指定している場合は、\ ``<sec:authorize>``\ タグの\ ``method``\ 属性を指定して、連動させる定義を特定すること。
 
 .. warning:: **表示制御に関する留意点**
 
@@ -615,347 +854,6 @@ Spring Securityのデフォルトの設定だと、認証済みのユーザー�
     * - | (2)
       - | \ ``security``\ 属性に\ ``none``\ を指定する。
         | \ ``none``\ を指定すると、Spring Securityのセキュリティ機能(Security Filter)が適用されない。
-
-|
-
-.. _SpringSecurityAuthorizationAccessPolicyDefinition:
-
-アクセスポリシーの定義
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-本節では、アクセスポリシーを定義方法の説明を交えながら、より実践的な定義を行うための方法を説明する。
-
-.. _SpringSecurityAuthorizationAccessPolicyDefinitionWebBeanFile:
-
-Webリソース
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-bean定義ファイルを使用して、Webリソースに対してアクセスポリシーを定義する方法について説明する。
-
-アクセスポリシーを適用するWebリソースの指定
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-まず、アクセスポリシーを適用するリソース(HTTPリクエスト)を指定する。
-アクセスポリシーを適用するリソースの指定は、\ ``<sec:intercept-url>``\ タグの以下の属性を使用する。
-
-.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-.. list-table:: **アクセスポリシーを適用するリソースを指定するための属性**
-    :header-rows: 1
-    :widths: 20 80
-
-    * - メソッド
-      - 説明
-    * - | \ ``pattern``\
-      - | Ant形式又は正規表現で指定したパスパターンに一致するリソースを適用対象にするための属性。
-    * - | \ ``method``\
-      - | 指定したHTTPメソッド(GET,POSTなど)を使ってアクセスがあった場合に適用対象にするための属性。
-    * - | \ ``access``\ 
-      - | SpELでのアクセス制御式や、アクセス可能なロールを指定するための属性。
-    * - | \ ``requires-channel``\ 
-      - | 「http」、もしくは「https」を指定する。指定したプロトコルでのアクセスを強制するための属性。
-        | 指定しない場合、どちらでもアクセス可能である。
-
-上記以外の属性については、\ `<intercept-url> <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-intercept-url>`_\ を参照されたい。
-
-* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
-
-.. code-block:: xml
-
-    <sec:http >
-        <sec:intercept-url pattern="/admin/accounts/**" access="..."/>
-        <sec:intercept-url pattern="/admin/**" access="..."/>
-        <sec:intercept-url pattern="/**" access="..."/>
-        <!-- omitted -->
-    </sec:http>
-
-
-Spring Securityは定義した順番でリクエストとのマッチング処理を行い、最初にマッチした定義を適用する。
-そのため、bean定義ファイルを使用してアクセスポリシーを指定する場合も定義順番には注意が必要である。
-
-.. note:: **パスパターンの解釈**
-
-    Spring Securityのデフォルトの動作では、パスパターンはAnt形式で解釈する。
-    パスパターンを正規表現で指定したい場合は、\ ``<sec:http>``\ タグの\ ``request-matcher``\ 属性に
-    \ ``"regex"``\ を指定すること。
-
-      .. code-block:: xml
-
-          <sec:http path-type="regex">
-              <sec:intercept-url pattern="/admin/accounts/.*" access=hasRole('ACCOUNT_MANAGER')" />
-              <!-- omitted -->
-          </sec:http>
-
-アクセスポリシーの指定
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-つぎに、アクセスポリシーを指定する。
-アクセスポリシーの指定は、\ ``<sec:intercept-url>``\ タグの\ ``access``\ 属性に指定する。
-
-* \ ``<sec:intercept-url>``\ タグ\ ``access``\ 属性の定義例（\ ``spring-security.xml``\ ）
-
-  .. code-block:: xml
-  
-    <sec:http>
-        <sec:intercept-url pattern="/admin/accounts/**" access="hasRole('ACCOUNT_MANAGER')"/>
-        <sec:intercept-url pattern="/admin/configurations/**" access="hasIpAddress('127.0.0.1') and hasRole('CONFIGURATION_MANAGER')" />
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
-        <!-- omitted -->
-    </sec:http>
-  
-  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 20 80
-  
-     * - 属性名
-       - 説明
-     * - | \ ``pattern``\ 
-       - | アクセス認可を行う対象のURLパターンを記述する。ワイルドカード「*」、「**」が使用できる。
-         | 「*」では、同一階層のみが対象であるのに対し、「**」では、指定階層以下の全URLが、認可設定の対象となる。
-     * - | \ ``access``\ 
-       - | SpELでのアクセス制御式や、アクセス可能なロールを指定する。
-     * - | \ ``method``\ 
-       - | HTTPメソッド（GETやPOST等）を指定する。指定したメソッドのみに関して、URLパターンとマッチングを行う。
-         | 指定しない場合は、任意のHTTPメソッドに適用される。主にRESTを利用したWebサービスの利用時に活用できる。
-     * - | \ ``requires-channel``\ 
-       - | 「http」、もしくは「https」を指定する。指定したプロトコルでのアクセスを強制する。
-         | 指定しない場合、どちらでもアクセスできる。
-
-| ログインユーザーに「ROLE_USER」「ROLE_ADMIN」というロールがある場合を例に、設定例を示す。
-
-* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
-
-  .. code-block:: xml
-  
-    <sec:http>
-        <sec:intercept-url pattern="/reserve/**" access="hasAnyRole('USER','ADMIN')" /> <!-- (1) -->
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')" /> <!-- (2) -->
-        <sec:intercept-url pattern="/**" access="denyAll" /> <!-- (3) -->
-        <!-- omitted -->
-    </sec:http>
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - 項番
-       - 説明
-     * - | (1)
-       - | 「/reserve/\**」にアクセスするためには、「ROLE_USER」もしくは「ROLE_ADMIN」ロールが必要である。
-         | \ ``hasAnyRole``\ については、後述する。
-     * - | (2)
-       - | 「/admin/\**」にアクセスするためには、「ROLE_ADMIN」ロールが必要である。
-         | \ ``hasRole``\ については、後述する。
-     * - | (3)
-       - | \ ``denyAll``\ を全てのパターンに設定し、
-         | 権限設定が記述されていないURLに対してはどのユーザーもアクセス出来ない設定としている。
-         | \ ``denyAll``\ については、後述する。
-
-  .. note::    **URLパターンの記述順序について**
-
-     クライアントからのリクエストに対して、intercept-urlで記述されているパターンに、上から順にマッチさせ、マッチしたパターンに対してアクセス認可を行う。
-     そのため、パターンの記述は、必ず、より限定されたパターンから記述すること。
-
-\ Spring Securiyではデフォルトで、SpELが有効になっている。 
-\ ``access``\ 属性に記述したSpELは真偽値で評価され、式が真の場合に、アクセスが認可される。
-以下に、使用例を示す。
-
-* \ ``spring-security.xml``\ の定義例
-
-  .. code-block:: xml
-  
-    <sec:http>
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>  <!-- (1) -->
-        <!-- omitted -->
-    </sec:http>
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - 項番
-       - 説明
-     * - | (1)
-       - | \ ``hasRole('ロール名')``\ を指定することで、ログインユーザーが指定したロールを保持していれば真を返す。
-  
-  .. _spring-el:
-  
-使用可能な主なExpressionは、:ref:`SpringSecurityAuthorizationPolicy` を参照されたい。
-
-また、演算子を使用した判定も行うことができる。
-以下の例では、ロールと、リクエストされたIPアドレス両方に合致した場合、アクセス可能となる。
-
-* \ ``spring-security.xml``\ の定義例
-
-  .. code-block:: xml
-  
-    <sec:http>
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN') and hasIpAddress('192.168.10.1')"/>
-        <!-- omitted -->
-    </sec:http>
-  
-  **使用可能な演算子一覧**
-  
-  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 20 80
-  
-     * - 演算子
-       - 説明
-     * - | \ ``[式1] and [式2]``\ 
-       - | 式1、式2が、どちらも真の場合に、真を返す。
-     * - | \ ``[式1] or [式2]``\ 
-       - | いずれかの式が、真の場合に、真を返す。
-     * - | \ ``![式]``\ 
-       - | 式が真の場合は偽を、偽の場合は真を返す。
-
-.. _SpringSecurityAuthorizationAccessPolicyDefinitionMethodAnnotation:
-
-メソッド(アノテーション編)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-アノテーションを使用して、メソッドに対してアクセスポリシーを定義する方法について説明する。
-
-メソッド実行前に適用するアクセスポリシーの指定
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-メソッドの実行前に適用するアクセスポリシーを指定する場合は、\ ``@PreAuthorize``\ を使用する。
-
-\ ``@PreAuthorize``\ の\ ``value``\ 属性に指定したExpressionの結果が\ ``true``\ になるとメソッドの実行が許可される。
-下記例では、管理者以外は、他人のアカウント情報にアクセスできないように定義している。
-
-* \ ``@PreAuthorize``\ の定義例
-
-.. code-block:: java
-
-    // (1) (2)
-    @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
-    public Account findOne(String username) {
-        return accountRepository.findOne(username);
-    }
-
-.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1) 
-      - | 認可処理を適用したいメソッドに、\ ``@PreAuthorize``\ を付与する。
-    * - | (2)  
-      - | \ ``value``\ 属性に、メソッド呼び出しに対するアクセスポリシーを定義する。
-        | ここでは、「管理者の場合は全てのアカウントへのアクセスを許可する」、「管理者以外の場合は自身のアカウントへのアクセスのみ許可する」というアクセスポリシーを定義している。
-
-ここでポイントになるのは、Expressionの中からメソッドの引数にアクセスしている部分である。
-具体的には、「\ ``#username``\ 」の部分が引数にアクセスしている部分である。
-Expression内で「# + 引数名」形式のExpressionを指定することで、メソッドの引数にアクセスすることができる。
-
-.. note:: **メモ**
-
-    Spring Securityは、クラスに出力されているデバッグ情報から引数名を解決する仕組み
-    になっているが、アノテーション(\ ``@org.springframework.security.access.method.P``\ )
-    を使用して明示的に引数名を指定することもできる。
-
-    以下のケースにあてはまる場合は、アノテーションを使用して明示的に変数名を指定する。
-
-    * クラスに変数のデバッグ情報を出力しない
-    * Expressionの中から実際の変数名とは別の名前を使ってアクセスしたい (例えば短縮した名前)
-
-      .. code-block:: java
-
-          @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
-          public Account findOne(@P("username") String username) {
-              return accountRepository.findOne(username);
-          }
-
-    JDK 8 から追加されたコンパイルオプション(\ ``-parameters``\ )を使用すると、メソッドパラメータにリフレクション用のメタデータが生成されるため、アノテーションを指定しなくても引数名が解決される。
-
-メソッド実行後に適用するアクセスポリシーの指定
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-メソッドの実行後に適用するアクセスポリシーを指定する場合は、\ ``@PostAuthorize``\ を使用する。
-
-\ ``@PostAuthorize``\ の\ ``value``\ 属性に指定したExpressionの結果が\ ``true``\ になるとメソッドの実行結果が呼び出し元に返却される。
-下記例では、所属する部署が違うユーザーのアカウント情報にアクセスできないように定義している。
-
-* \ ``@PostAuthorize``\ の定義例
-
-.. code-block:: java
-
-    @PreAuthorize("...")
-    @PostAuthorize("(returnObject == null) " +
-            "or (returnObject.departmentCode == principal.account.departmentCode)")
-    public Account findOne(String username) {
-        return accountRepository.findOne(username);
-    }
-
-ここでポイントになるのは、Expressionの中からメソッドの返り値にアクセスしている部分である。
-具体的には、「\ ``returnObject.departmentCode``\ 」の部分が返り値にアクセスしている部分である。
-Expression内で「\ ``returnObject``\ 」を指定すると、メソッドの返り値にアクセスすることができる。
-
-.. _SpringSecurityAuthorizationAccessPolicyDefinitionJsp:
-
-
-JSPの画面項目
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-JSPタグライブラリを使用して、画面項目に対してアクセスポリシーを定義する方法について説明する。
-
-適用する画面項目の指定
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-まず、アクセスポリシーを適用する画面項目を指定する。
-アクセスポリシーを適用する画面項目の指定は、\ ``<sec:authorize>``\ タグで囲む。
-
-* \ ``<sec:authorize>``\ タグの使用例
-
-.. code-block:: jsp
-
-    <sec:authorize access="...">
-        <!-- ここにアクセスポリシーを適用する画面項目を実装する -->
-    </sec:authorize>
-
-アクセスポリシーの指定
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-つぎに、アクセスポリシーを指定する。
-アクセスポリシーの指定は、\ ``<sec:authorize>``\ タグの\ ``access``\ 属性に指定する。
-
-\ ``access``\ 属性に指定したExpressionの結果が\ ``true``\ になると\ ``<sec:authorize>``\ タグの中に実装したJSPの処理が実行される。
-
-* \ ``<sec:authorize>``\ タグの\ ``access``\ 属性の定義例
-
-.. code-block:: jsp
-
-    <sec:authorize access="hasRole('ADMIN')">
-        <!-- omitted -->
-    </sec:authorize>
-
-Webリソースに指定したアクセスポリシーとの連動
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-アクセスポリシーを直接指定するのではなく、Webリソースに指定したアクセスポリシーと連動させることができる。
-Webリソースに指定したアクセスポリシーと連動させる場合は、\ ``<sec:authorize>``\ タグの\ ``url``\ 属性を使用する。
-
-\ ``url``\ 属性に指定したWebリソースにアクセスできる場合に限り\ ``<sec:authorize>``\ タグの中に実装したJSPの処理が実行される。
-
-* \ ``<sec:authorize>``\ タグの\ ``url``\ 属性の定義例
-
-.. code-block:: jsp
-
-    <ul>
-        <sec:authorize url="/admin/accounts">
-            <!-- omitted -->
-        </sec:authorize>
-    </ul>
-
-.. note:: **HTTPメソッドによるポリシーの指定**
-
-    Webリソースのアクセスポリシーの定義をする際に、HTTPメソッドによって異なるアクセスポリシーを指定している場合は、\ ``<sec:authorize>``\ タグの\ ``method``\ 属性を指定して、連動させる定義を特定すること。
 
 |
 
