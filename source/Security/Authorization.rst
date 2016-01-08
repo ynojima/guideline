@@ -220,6 +220,37 @@ Spring Securityが用意しているWebアプリケーション向けExpression�
     * - | \ ``hasIpAddress(String ipAddress)``\
       - | リクエスト元のIPアドレスが、引数に指定したIPアドレス体系に一致する場合に\ ``true``\ を返却する。
 
+演算子の使用
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+演算子を使用した判定も行うことができる。
+以下の例では、ロールと、リクエストされたIPアドレス両方に合致した場合、アクセス可能となる。
+
+* \ ``spring-security.xml``\ の定義例
+
+  .. code-block:: xml
+  
+    <sec:http>
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN') and hasIpAddress('192.168.10.1')"/>
+        <!-- omitted -->
+    </sec:http>
+  
+  **使用可能な演算子一覧**
+  
+  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 20 80
+  
+     * - 演算子
+       - 説明
+     * - | \ ``[式1] and [式2]``\ 
+       - | 式1、式2が、どちらも真の場合に、真を返す。
+     * - | \ ``[式1] or [式2]``\ 
+       - | いずれかの式が、真の場合に、真を返す。
+     * - | \ ``![式]``\ 
+       - | 式が真の場合は偽を、偽の場合は真を返す。
+
 |
 
 Webリソースへの認可
@@ -414,34 +445,6 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
   .. _spring-el:
   
 使用可能な主なExpressionは、:ref:`SpringSecurityAuthorizationPolicy` を参照されたい。
-
-また、演算子を使用した判定も行うことができる。
-以下の例では、ロールと、リクエストされたIPアドレス両方に合致した場合、アクセス可能となる。
-
-* \ ``spring-security.xml``\ の定義例
-
-  .. code-block:: xml
-  
-    <sec:http>
-        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN') and hasIpAddress('192.168.10.1')"/>
-        <!-- omitted -->
-    </sec:http>
-  
-  **使用可能な演算子一覧**
-  
-  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 20 80
-  
-     * - 演算子
-       - 説明
-     * - | \ ``[式1] and [式2]``\ 
-       - | 式1、式2が、どちらも真の場合に、真を返す。
-     * - | \ ``[式1] or [式2]``\ 
-       - | いずれかの式が、真の場合に、真を返す。
-     * - | \ ``![式]``\ 
-       - | 式が真の場合は偽を、偽の場合は真を返す。
 
 |
 
