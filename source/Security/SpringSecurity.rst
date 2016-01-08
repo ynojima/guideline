@@ -1,4 +1,4 @@
-.. _SpringSecurityOverview:
+f.. _SpringSecurityOverview:
 
 Spring Security概要
 ================================================================================
@@ -419,7 +419,7 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
 .. note:: **静的リソースへのアクセス**
 
     JSPでCSS等の静的リソースを使用している場合は、それらを格納するフォルダにアクセス権を付与する必要がある。
-    詳細は、:ref:`SpringSecurityAutorizationNoAutorizationUrl` を参照されたい。 
+    詳細は、:ref:`SpringSecurityNotApply` を参照されたい。 
 
 |
 
@@ -503,6 +503,38 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
    :alt: ログイン画面
 
    **Spring Securityが提供しているデフォルトのログイン画面**
+
+|
+
+.. _SpringSecurityNotApply:
+
+セキュリティ対策を適用しないため設定
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+セキュリティ対策が不要なリソースのパス(cssファイルやimageファイルにアクセスするためのパスなど)に対しては、
+\ ``<sec:http>``\ タグを使用して、Spring Securityのセキュリティ機能(Security Filter)が適用されないように制御することができる。
+
+*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+
+.. code-block:: xml
+  
+    <sec:http pattern="/resources/**" security="none"/>  <!-- (1) (2) -->
+    <sec:http>
+        <!-- omitted -->
+    </sec:http>
+  
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+  
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``pattern``\ 属性にセキュリティ機能を適用しないパスのパターンを指定する。
+    * - | (2)
+      - | \ ``security``\ 属性に\ ``none``\ を指定する。
+        | \ ``none``\ を指定すると、Spring Securityのセキュリティ機能(Security Filter)が適用されない。
 
 .. raw:: latex
 

@@ -825,38 +825,6 @@ Spring Securityのデフォルトの設定だと、認証済みのユーザー�
 
 |
 
-.. _SpringSecurityAutorizationNoAutorizationUrl:
-
-アクセス認可制御を行わないURLの設定
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-セキュリティ対策が不要なリソースのパス(cssファイルやimageファイルにアクセスするためのパスなど)に対しては、
-\ ``<sec:http>``\ タグを使用して、Spring Securityのセキュリティ機能(Security Filter)が適用されないように制御することができる。
-
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
-
-.. code-block:: xml
-  
-    <sec:http pattern="/resources/**" security="none"/>  <!-- (1) (2) -->
-    <sec:http>
-        <!-- omitted -->
-    </sec:http>
-  
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-  
-    * - 項番
-      - 説明
-    * - | (1)
-      - | \ ``pattern``\ 属性にセキュリティ機能を適用しないパスのパターンを指定する。
-    * - | (2)
-      - | \ ``security``\ 属性に\ ``none``\ を指定する。
-        | \ ``none``\ を指定すると、Spring Securityのセキュリティ機能(Security Filter)が適用されない。
-
-|
-
 How to extend
 --------------------------------------------------------------------------------
 
