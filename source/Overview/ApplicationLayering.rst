@@ -256,6 +256,8 @@ O/R Mapperは、Repositoryインタフェースの実装に用いられる。
 
 |
 
+.. _application-layering_Integration-System-Connector:
+
 Integration System Connector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
