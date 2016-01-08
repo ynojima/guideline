@@ -4280,7 +4280,7 @@ The method to add common conditions for JPQL which is executed at the time of ca
 
     @Entity
     @Table(name = "t_order")
-    @Where(clause = "is_logical_delete = false") // (1)
+    @Where(clause = "is_logical_delete = 'false'") // (1)
     public class Order implements Serializable {
         // ...
         @Id
@@ -4337,7 +4337,7 @@ The method for adding common conditions for JPQL is shown below. JPQL is used fo
 
     @Entity
     @Table(name = "t_order")
-    @Where(clause = "is_logical_delete = false")
+    @Where(clause = "is_logical_delete = 'false'")
     public class Order implements Serializable {
         // ...
         @Id
@@ -4345,7 +4345,7 @@ The method for adding common conditions for JPQL is shown below. JPQL is used fo
 
         @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
         @OrderBy
-        @Where(clause="is_logical_delete = false") // (1)
+        @Where(clause="is_logical_delete = 'false'") // (1)
         private Set<OrderItem> orderItems;
         // ...
 
