@@ -4090,7 +4090,7 @@ Spring Data JPAでは、新たに作成されたEntityと更新されたEntity�
       - | ``org.joda.time.DateTime`` 型を使用する場合は、Hibernateで扱えるようにするために、 フィールドに ``@org.hibernate.annotations.Type`` アノテーションを付与する。
         | type属性は、 ``"org.jadira.usertype.dateandtime.joda.PersistentDateTime"`` 固定。最終更新日時のフィールドも同様。
     * - | (4)
-      - | 作成日時を保持するフィールドの型は、 ``org.joda.time.DateTime`` 、``java.util.Date`` 、 ``java.lang.Long`` 、 ``long`` 型をサポートしている。
+      - | 作成日時を保持するフィールドの型は、 ``org.joda.time.DateTime`` 、``java.util.Date`` 、``java.util.Calendar`` 、 ``java.lang.Long`` 、 ``long`` 型 、Java 8から追加されたDate and Time APIなどをサポートしている。
         | 最終更新日時のフィールドも同様。
     * - | (5)
       - | 最終更新者を保持するフィールドの型に ``@org.springframework.data.annotation.LastModifiedBy`` アノテーションを付与する。
@@ -4195,8 +4195,8 @@ Spring Data JPAでは、新たに作成されたEntityと更新されたEntity�
 |
 
 ``@CreatedDate`` および ``@LastModifiedDate`` アノテーションが付与されたフィールドに設定される値は、
-デフォルト実装だと ``org.springframework.data.auditing.CurrentDateTimeProvider`` の ``getDateTime()`` メソッド
-から返却される ``org.joda.time.DateTime`` のインスタンスの値が使用される。
+デフォルト実装だと ``org.springframework.data.auditing.CurrentDateTimeProvider`` の ``getNow()`` メソッド
+から返却される ``java.util.Calendar`` のインスタンスの値が使用される。
 
 以下に、使用する値の生成方法を変更する場合の拡張例を示す。
 
@@ -4210,8 +4210,10 @@ Spring Data JPAでは、新たに作成されたEntityと更新されたEntity�
         JodaTimeDateFactory dateFactory;
 
         // (3)
-        public DateTime getDateTime() {
-            return dateFactory.newDateTime();
+        @Override
+        public Calendar getNow() {
+            DateTime currentDateTime = dateFactory.newDateTime();
+            return currentDateTime.toGregorianCalendar();
         }
 
     }
