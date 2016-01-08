@@ -31,6 +31,8 @@ Spring Securityでは以下のセッションについて、主に以下の機�
     * - | 多重ログイン制御
       - | 同一ユーザーによる多重ログイン時のセッションを制御する機能。
 
+.. _authentication(spring_security)_how_to_use_sessionmanagement:
+
 How to use
 --------------------------------------------------------------------------------
 
