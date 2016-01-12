@@ -105,7 +105,7 @@ XSSを防ぐために、文字列として出力するすべての表示項目�
 
 入力画面のJobフィールドに、<script>タグを入力する。
 
-.. figure:: ./images_Appendix/appendix_xss_screen_input_html_tag.png
+.. figure:: ./images_XSS/xss_screen_input_html_tag.png
    :alt: input_html_tag
    :width: 80%
    :align: center
@@ -114,7 +114,7 @@ XSSを防ぐために、文字列として出力するすべての表示項目�
 
 | <script>タグとして認識され、ダイアログボックスが表示されてしまう。
 
-.. figure:: ./images_Appendix/appendix_xss_screen_no_escape_result.png
+.. figure:: ./images_XSS/xss_screen_no_escape_result.png
    :alt: no_escape_result
    :width: 60%
    :align: center
@@ -150,7 +150,7 @@ XSSを防ぐために、文字列として出力するすべての表示項目�
 
 入力画面のJobフィールドに<script>タグを入力する。
 
-.. figure:: ./images_Appendix/appendix_xss_screen_input_html_tag.png
+.. figure:: ./images_XSS/xss_screen_input_html_tag.png
    :alt: input_html_tag
    :width: 80%
    :align: center
@@ -159,7 +159,7 @@ XSSを防ぐために、文字列として出力するすべての表示項目�
 
 | 特殊文字がエスケープされることにより、 <script>タグとして認識されず、入力値がそのまま出力される。
 
-.. figure:: ./images_Appendix/appendix_xss_screen_escape_result.png
+.. figure:: ./images_XSS/xss_screen_escape_result.png
    :alt: escape_result
    :width: 60%
    :align: center
@@ -264,7 +264,7 @@ XSS問題が発生する例を、以下に示す。
 
 上記例のように、ユーザーの入力を導出元としてコードを出力するなど、JavaScriptの要素を動的に生成する場合、意図せず文字列リテラルが閉じられ、XSSの脆弱性が生じる。
 
-.. figure:: ./images_Appendix/appendix_javascript_xss_screen_no_escape_result.png
+.. figure:: ./images_XSS/javascript_xss_screen_no_escape_result.png
    :alt: javascript_xss_screen_no_escape_result
    :width: 30%
    :align: center
@@ -349,7 +349,7 @@ XSS問題が発生する例を、以下に示す。
 
 マウスオーバ時、XSSのダイアログボックスが表示されてしまう。
 
-.. figure:: ./images_Appendix/appendix_eventhandler_xss_screen_no_escape_result.png
+.. figure:: ./images_XSS/eventhandler_xss_screen_no_escape_result.png
    :alt: eventhandler_xss_screen_no_escape_result
    :width: 50%
    :align: center
@@ -388,7 +388,7 @@ XSS問題が発生する例を、以下に示す。
 
 マウスオーバ時、XSSのダイアログは出力されない。
 
-.. figure:: ./images_Appendix/appendix_eventhandler_xss_screen_escape_result.png
+.. figure:: ./images_XSS/eventhandler_xss_screen_escape_result.png
    :alt: eventhandler_xss_screen_escape_result
    :width: 50%
    :align: center
