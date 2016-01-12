@@ -772,3 +772,54 @@ JSP(calendar.jsp)で、次のように出力する。
 
    \newpage
 
+Appendix
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Java8未満の和暦操作
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| Java8では ``java.time.chrono.JapaneseDate`` という和暦操作クラスが提供されているが、Java8未満の環境では ``java.util.Calendar`` クラスで和暦を扱うことが出来る。
+| 具体的には、 ``java.util.Calendar`` クラス、 ``java.text.DateFormat`` クラスに以下の ``java.util.Locale`` を指定する必要がある。
+
+.. code-block:: java
+
+   Locale locale = new Locale("ja", "JP", "JP");
+
+| 以下に、``Calendar`` クラスを利用した和暦表示の例を示す。
+
+.. code-block:: java
+
+   Locale locale = new Locale("ja", "JP", "JP");
+   Calendar cal = Calendar.getInstance(locale); // Ex, 2015-06-05
+   String format1 = "Gy.MM.dd";
+   String format2 = "GGGGyy/MM/dd";
+
+   DateFormat df1 = new SimpleDateFormat(format1, locale);
+   DateFormat df2 = new SimpleDateFormat(format2, locale);
+
+   df1.format(cal.getTime()); // "H27.06.05"
+   df2.format(cal.getTime()); // "平成27/06/05"
+
+| また、同様に文字列からのパースも行うことが出来る。
+
+.. code-block:: java
+
+   Locale locale = new Locale("ja", "JP", "JP");
+   String format1 = "Gy.MM.dd";
+   String format2 = "GGGGyy/MM/dd";
+   
+   DateFormat df1 = new SimpleDateFormat(format1, locale);
+   DateFormat df2 = new SimpleDateFormat(format2, locale);
+   
+   Calendar cal1 = Calendar.getInstance(locale);
+   Calendar cal2 = Calendar.getInstance(locale);
+
+   cal1.setTime(df1.parse("H27.06.05"));
+   cal2.setTime(df2.parse("平成27/06/05"));
+
+|
+
+    .. note::
+
+        | ``new Locale("ja", "JP", "JP")`` を ``getInstance`` メソッドに指定することで、 和暦に対応した ``java.util.JapaneseImperialCalendar`` オブジェクトが作成される。
+        | その他を指定すると ``java.util.GregorianCalendar`` オブジェクトが作成されるため、留意されたい。
