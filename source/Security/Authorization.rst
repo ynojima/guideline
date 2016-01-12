@@ -367,7 +367,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
     </sec:http>
   
   .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-  .. list-table::
+  .. list-table:: **アクセスポリシーを指定するための属性**
      :header-rows: 1
      :widths: 20 80
   
@@ -414,7 +414,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 
 \ Spring Securiyではデフォルトで、SpELが有効になっている。 
 \ ``access``\ 属性に記述したSpELは真偽値で評価され、式が真の場合に、アクセスが認可される。
-以下に、使用例を示す。
+以下に使用例を示す。
 
 * \ ``spring-security.xml``\ の定義例
 
