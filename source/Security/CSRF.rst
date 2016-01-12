@@ -355,11 +355,111 @@ CSRFのトークンチェック処理では、エラーの内容に応じて以�
     * - | \ ``MissingCsrfTokenException``\
       - | サーバー側にトークン値が保存されていない場合に使用する例外クラス。
 
+CSRFトークンチェックエラー時遷移先を制御する場合は、以下の設定を行う。
+
+* \ ``spring-security.xml``\ の定義例
+
+.. code-block:: xml
+
+    <sec:http>
+        <!-- omitted -->
+        <sec:access-denied-handler ref="accessDeniedHandler"/>  <!-- (1) -->
+        <!-- omitted -->
+    </sec:http>
+
+    <bean id="accessDeniedHandler"
+        class="org.springframework.security.web.access.DelegatingAccessDeniedHandler">  <!-- (2) -->
+        <constructor-arg index="0">  <!-- (3) -->
+            <map>
+                <entry
+                    key="org.springframework.security.web.csrf.InvalidCsrfTokenException">  <!-- (4) -->
+                    <bean
+                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (4) -->
+                        <property name="errorPage"
+                            value="/WEB-INF/views/common/error/invalidCsrfTokenError.jsp" />  <!-- (4) -->
+                    </bean>
+                </entry>
+                <entry
+                    key="org.springframework.security.web.csrf.MissingCsrfTokenException">  <!-- (5) -->
+                    <bean
+                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (5) -->
+                        <property name="errorPage"
+                            value="/WEB-INF/views/common/error/missingCsrfTokenError.jsp" />  <!-- (5) -->
+                    </bean>
+                </entry>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1">  <!-- (6) -->
+            <bean
+                class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (7) -->
+                <property name="errorPage"
+                    value="/WEB-INF/views/common/error/accessDeniedError.jsp" />  <!-- (7) -->
+            </bean>
+        </constructor-arg>
+    </bean>
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+
+   * - 項番
+     - 説明
+   * - | (1)
+     - | \ ``AccessDeniedException``\ を継承したExceptionが発生した場合、Exceptionの種類毎に表示するviewを切り替えるためにHandlerを定義する。
+       | 全て同じ画面で良い場合は ``error-page`` 属性に遷移先のjspを指定することで可能となる。
+       | Spring Securityの機能でハンドリングしない場合は、\ :ref:`こちら<csrf_403-webxml-setting>`\ を参照されたい。
+   * - | (2)
+     - | エラーページを切り替えるためにSpring Securityで用意されているHandlerのclassに \ ``org.springframework.security.web.access.DelegatingAccessDeniedHandler``\ を指定する。
+   * - | (3)
+     - | コンストラクタの第1引数でデフォルト以外のException（\ ``AccessDeniedException``\ を継承したException）の種類毎に表示を変更する画面をMap形式で設定する。
+   * - | (4)
+     - | keyに \ ``AccessDeniedException``\ を継承したException を指定する。
+       | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
+       | propertyのnameにerrorPageを指定し、valueに表示するviewを指定する。
+   * - | (5)
+     - | (4)とExceptionの種類が違う場合に表示の変更を定義する。
+   * - | (6)
+     - | コンストラクタの第2引数でデフォルト（\ ``AccessDeniedException``\ とコンストラクタの第1引数で指定していない\ ``AccessDeniedException``\を継承したException）の場合のviewを指定する。
+   * - | (7)
+     - | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
+       | propertyのnameにerrorPageを指定し、valueに表示するviewを指定する。
+
 .. note:: **無効なセッションを使ったリクエストの検知**
 
     セッション管理機能の「:ref:`SpringSecuritySessionDetectInvalidSession`」処理を有効にしている場合は、\ ``MissingCsrfTokenException``\ に対して「:ref:`SpringSecuritySessionDetectInvalidSession`」処理と連動する\ ``AccessDeniedHandler``\ インタフェースの実装クラスが適用される。
 
     そのため、\ ``MissingCsrfTokenException``\ が発生すると、「:ref:`SpringSecuritySessionDetectInvalidSession`」処理を有効化する際に指定したパス(\ ``invalid-session-url``\ )にリダイレクトする。
+
+.. _csrf_403-webxml-setting:
+
+.. note::
+
+  **<sec:access-denied-handler>の設定を省略した場合のエラーハンドリングについて**
+
+  web.xmlに以下の設定を行うことで、任意のページに遷移させることができる。
+
+  **web.xml**
+
+    .. code-block:: xml
+
+        <error-page>
+            <error-code>403</error-code>  <!-- (1) -->
+            <location>/WEB-INF/views/common/error/accessDeniedError.jsp</location>  <!-- (2) -->
+        </error-page>
+
+    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+    .. list-table::
+       :header-rows: 1
+       :widths: 10 90
+
+       * - 項番
+         - 説明
+       * - | (1)
+         - | error-code要素に、ステータスコード403を設定する。
+       * - | (2)
+         - | location要素に、遷移先のパスを設定する。
 
 .. note::
 
