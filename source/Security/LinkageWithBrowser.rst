@@ -42,6 +42,15 @@ Spring Securityがデフォルトでサポートしているレスポンスヘ�
 * X-XSS-Protection
 * Strict-Transport-Security
 
+.. note:: **ブラウザのサポート状況**
+
+    これらのヘッダに対する処理は、一部のブラウザではサポートされていない。ブラウザの公式サイトまたは以下のページを参照されたい。
+
+    * https://www.owasp.org/index.php/HTTP_Strict_Transport_Security (Strict-Transport-Security)
+    * https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet (X-Frame-Options)
+    * https://www.owasp.org/index.php/List_of_useful_HTTP_headers (X-Content-Type-Options, X-XSS-Protection)
+
+
 Cache-Control
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -211,15 +220,6 @@ How to use
     </sec:headers>
 
 上記の例だと、Cache-Control関連のヘッダだけが出力されなくなる。 
-
-.. note::
-
-    これらのヘッダに対する処理は、一部のブラウザではサポートされていない。ブラウザの公式サイトまたは以下のページを参照されたい。
-
-    * https://www.owasp.org/index.php/HTTP_Strict_Transport_Security (Strict-Transport-Security)
-    * https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet (X-Frame-Options)
-    * https://www.owasp.org/index.php/List_of_useful_HTTP_headers (X-Content-Type-Options, X-XSS-Protection)
-
 
 セキュリティヘッダの詳細については\ `公式リファレンス <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#default-security-headers>`_\ を参照されたい。
 
