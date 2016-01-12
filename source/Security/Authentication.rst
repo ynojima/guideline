@@ -682,7 +682,7 @@ Spring Securityは、\ ``UserDetails``\ の実装クラスとして\ ``User``\ �
         | 上記例では、コンポーネントスキャン機能を使って\ ``AccountSharedServiceImpl``\ をDIコンテナに登録している。
     * - |  (2)
       - | データベースからアカウント情報を検索する。
-        | アカウント情報が見つからない場合は、共通フレームワークの例外である\ ``ResourceNotFoundException``\ を発生させる。
+        | アカウント情報が見つからない場合は、共通ライブラリの例外である\ ``ResourceNotFoundException``\ を発生させる。
         | Repositoryの作成例については、「:doc:`Tutorial`」を参照されたい。
 
 *UserDetailsServiceの実装クラスの作成例*
