@@ -83,6 +83,8 @@ Spring Securityが提供する実装クラスは3種類存在するが、いず�
 \ ``AccessDecisionVoter``\ は「付与」「拒否」「棄権」のいずれかを投票し、\ ``AccessDecisionManager``\ の実装クラスが投票結果を集約して最終的なアクセス権を判断する。
 アクセス権がないと判断した場合は、\ ``AccessDeniedException``\ を発生させアクセスを拒否する。
 
+なお、すべての投票結果が「棄権」であった場合、Spring Securityのでデフォルトでは、「アクセス権なし」と判定される。
+
 .. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
 .. list-table:: **Spring Securityが提供するAccessDecisionManagerの実装クラス**
     :header-rows: 1
@@ -91,13 +93,13 @@ Spring Securityが提供する実装クラスは3種類存在するが、いず�
     * - クラス名
       - 説明
     * - | \ ``AffirmativeBased``\
-      - | 最初の\ ``AccessDecisionVoter``\ が「付与」に投票した場合にアクセス権を与える実装クラス。
+      - | \ ``AccessDecisionVoter``\ に投票させ、「付与」が１件投票された時点でアクセス権を与える実装クラス。
         | **デフォルトで使用される実装クラス。**
     * - | \ ``ConsensusBased``\
       - | 全ての\ ``AccessDecisionVoter``\ に投票させ、「付与」の投票数が多い場合にアクセス権を与える実装クラス。
+        | 「付与」「拒否」が１件以上、且つ同数の場合、Spring Securityのデフォルトでは、「アクセス権あり」と判定される。
     * - | \ ``UnanimousBased``\
-      - | 全ての\ ``AccessDecisionVoter``\ に投票させ、全ての\ ``AccessDecisionVoter``\ が「付与」または「棄権」の場合にアクセス権を与える実装クラス。
-        | 言いかえると、「拒否」を投票した\ ``AccessDecisionVoter``\ がいるとアクセス権の付与は行われない。
+      - | \ ``AccessDecisionVoter``\ に投票させ、「拒否」が１件投票された時点で **アクセス権を与えない** 実装クラス。
 
 .. note::
 
