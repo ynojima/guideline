@@ -11,7 +11,7 @@ TERASOLUNA Server Framework for Java (5.x)によるセキュリティ対策
    SessionManagement
    CSRF
    LinkageWithBrowser
-   Appendix
+   XSS
 
 .. raw:: latex
 
