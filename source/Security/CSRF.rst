@@ -100,10 +100,39 @@ How to use
 
 CSRF対策機能の適用
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-CSRF対策機能は、Spring 3.2から追加された機能でSpring Security 4.0からデフォルトで適用される。 
-そのため、CSRF対策機能を有効にするための特別な定義は必要ない。 
 
-CSRF対策機能を適用したくない場合は、明示的に無効化する必要がある。 
+CSRFトークン用の\ ``RequestDataValueProcessor``\ 実装クラスを利用し、Springのタグライブラリの\ ``<form:form>``\ タグを使うことで、自動的にCSRFトークンを、hiddenに埋め込むことができる。
+
+* \ ``spring-mvc.xml``\ の設定
+
+.. code-block:: xml
+
+    <bean id="requestDataValueProcessor"
+        class="org.terasoluna.gfw.web.mvc.support.CompositeRequestDataValueProcessor"> <!-- (1)  -->
+        <constructor-arg>
+            <util:list>
+                <bean
+                    class="org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor" /> <!-- (2)  -->
+                <bean
+                    class="org.terasoluna.gfw.web.token.transaction.TransactionTokenRequestDataValueProcessor" />
+            </util:list>
+        </constructor-arg>
+    </bean>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+
+   * - 項番
+     - 説明
+   * - | (1)
+     - | \ 共通ライブラリから提供されている、\ ``org.springframework.web.servlet.support.RequestDataValueProcessor``\ を複数定義可能な
+       | \ ``org.terasoluna.gfw.web.mvc.support.CompositeRequestDataValueProcessor``\ をbean定義する。
+   * - | (2)
+     - | コンストラクタの第1引数に、\ ``org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor``\ のbean定義を設定する。
+
+上記設定により、デフォルトでCSRF対策機能が有効となる。このため、CSRF対策機能を適用したくない場合は、明示的に無効化する必要がある。 
 
 CSRF対策機能を使用しない場合は、以下のようなbean定義を行う。
 
@@ -135,14 +164,6 @@ Spring Securityは、Spring MVCと連携するためのコンポーネントを�
 
 hidden項目の自動出力
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-Spring Securityは、CSRFトークン値のhidden項目を自動で出力するためのコンポーネントとして、\ ``CsrfRequestDataValueProcessor``\ というクラスを提供している。
-\ ``CsrfRequestDataValueProcessor``\ をSpring MVCに適用すると、Spring MVCから提供されているJSPタグライブラリを使用した際に、CSRFトークン値のhidden項目を自動かつ安全に出力することが可能である。
-\ :ref:`HTMLフォームを使用してCSRFトークン値のhidden項目を出力する<csrf_htmlformtag-use>` こともできるが、本ガイドラインでは、本方式で実装すること推奨する。
-
-Spring SecurityではデフォルトでCSRF対策機能が有効になっており、自動で\ ``CsrfRequestDataValueProcessor``\ がSpring MVCに適用される仕組みになっている。
-このため、\ ``CsrfRequestDataValueProcessor``\ をSpring MVCに適用するための明示的な設定は不要である。
-
 
 HTMLフォームを作成する際は、以下のようなJSPの実装を行う。
 
@@ -177,16 +198,6 @@ Spring MVCから提供されている\ ``<form:form>``\ 要素を使うと、以
                    name="_csrf" value="63845086-6b57-4261-8440-97a3c6fa6b99" />
         </div>
     </form>
-
-.. note:: **CsrfRequestDataValueProcessorの適用**
-
-    \ ``CsrfRequestDataValueProcessor``\ は、Spring MVCが提供している\ ``RequestDataValueProcessor``\ インタフェースを実装したクラスである。
-    Spring MVCが扱える\ ``RequestDataValueProcessor``\ インタフェースの実装クラスは一つのみなので、
-    \ ``DispatcherServlet``\ が管理する\ ``ApplicationContext``\の中に\ ``RequestDataValueProcessor``\
-    インタフェースを実装しているbeanが登録されていると、\ ``CsrfRequestDataValueProcessor``\
-    はSpring MVCに適用されず、\ ``<form:form>``\ 要素を使った際にCSRFトークン値のhidden項目は出力されない。
-
-    複数の\ ``RequestDataValueProcessor``\ インタフェースの実装クラスをSpring MVCに適用したい場合は、それぞれの\ ``RequestDataValueProcessor``\ インタフェースの実装クラスに処理を委譲するような実装クラスを作成する必要がある。
 
 .. tip:: **出力されるCSRFトークンチェック値**
 
