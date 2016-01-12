@@ -30,8 +30,6 @@ Spring Securityは、セキュリティ関連のレスポンスヘッダを出�
 .. note:: **HTTPヘッダの上書き**
 
     後述の設定を行ったとしても、アプリケーションにより、HTTPヘッダが上書きされる可能性は存在する。
-    また、Spring MVCのControllerクラスが \ ``@SessionAttribute`` \のフォームクラスを定義している、もしくは、
-    リクエストハンドラで \ ``@SessionAttribute`` \属性のModelを使用してる場合は、 Cache-Controlヘッダが上書きされる。
 
 デフォルトでサポートしているセキュリティヘッダ
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -59,6 +57,11 @@ Cache-Controlヘッダは、コンテンツのキャッシュ方法を指示す�
     Cache-Control: no-cache, no-store, max-age=0, must-revalidate
     Pragma: no-cache
     Expires: 0
+
+.. note:: **Cache-Controlヘッダの上書き**
+
+    Spring MVCのControllerクラスが \ ``@SessionAttribute`` \のフォームクラスを定義している、もしくは、
+    リクエストハンドラで \ ``@SessionAttribute`` \属性のModelを使用してる場合は、 Cache-Controlヘッダが上書きされる。
 
 .. note:: **HTTP1.0互換のブラウザ**
 
