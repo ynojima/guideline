@@ -1979,7 +1979,7 @@ Entityの動的条件による検索処理の実装
                 joinConditions.add("o.orderItems oi");
                 joinConditions.add("oi.item i");
                 andConditions.add("i.name LIKE :itemName ESCAPE '~'");
-                bindParameters.put("itemName", SqlUtils
+                bindParameters.put("itemName", QueryEscapeUtils
                         .toLikeCondition(criteria.getItemName()));
             }
 
@@ -2331,7 +2331,7 @@ Entityの動的条件による検索処理の実装
                 joinConditions.add("o.orderItems oi");
                 joinConditions.add("oi.item i");
                 andConditions.add("i.name LIKE :itemName ESCAPE '~'");
-                bindParameters.put("itemName", SqlUtils.toLikeCondition(criteria
+                bindParameters.put("itemName", QueryEscapeUtils.toLikeCondition(criteria
                         .getItemName()));
             }
 
