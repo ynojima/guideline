@@ -1807,11 +1807,11 @@ Amongst the entities matching the conditions, call a query method to fetch the e
 
     @RequestMapping("list")
     public String list(@RequestParam("targetDate") Date targetDate,
-                       @PageableDefaults(
-                           pageNumber = 0,
+                       @PageableDefault(
+                           page = 0,
                            value = 5,
                            sort = { "createdDate" },
-                           sortDir = Direction.DESC)
+                           direction = Direction.DESC)
                            Pageable pageable, // (2)
                        Model model) {
         Page<Order> accountPage = accountService.getAccounts(targetDate, pageable);

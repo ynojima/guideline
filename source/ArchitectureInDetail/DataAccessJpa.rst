@@ -1810,11 +1810,11 @@ Entityの検索方法について、目的別に説明する。
 
     @RequestMapping("list")
     public String list(@RequestParam("targetDate") Date targetDate,
-                       @PageableDefaults(
-                           pageNumber = 0,
+                       @PageableDefault(
+                           page = 0,
                            value = 5,
                            sort = { "createdDate" },
-                           sortDir = Direction.DESC)
+                           direction = Direction.DESC)
                            Pageable pageable, // (2)
                        Model model) {
         Page<Order> accountPage = accountService.getAccounts(targetDate, pageable);
