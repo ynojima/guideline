@@ -101,7 +101,7 @@ Spring Securityが提供する実装クラスは3種類存在するが、いず�
     * - | \ ``UnanimousBased``\
       - | \ ``AccessDecisionVoter``\ に投票させ、「拒否」が１件投票された時点で **アクセス権を与えない** 実装クラス。
 
-.. note::
+.. note:: **AccessDecisionVoterの選択**
 
     使用する\ ``AccessDecisionVoter``\ が1つの場合はどの実装クラスを使っても動作に違いはない。
     複数の\ ``AccessDecisionVoter``\ を使用する場合は、要件に合わせて実装クラスを選択されたい。
@@ -131,7 +131,7 @@ Spring Securityが提供する主な実装クラスは以下の通り。
     * - | \ ``AuthenticatedVoter``\
       - | 認証状態を参照して投票を行う実装クラス。
 
-.. note:: **メモ**
+.. note:: **デフォルトで適用されるAccessDecisionVoter**
 
     デフォルトで適用される\ ``AccessDecisionVoter``\ インタフェースの実装クラスは、Spring Security 4.0から\ ``WebExpressionVoter``\ に統一されている。
     \ ``WebExpressionVoter``\ は、\ ``RoleVoter``\ 、\ ``RoleHierarchyVoter``\ 、\ ``AuthenticatedVoter``\ を使用した時と同じことが実現できるため、
@@ -336,7 +336,7 @@ bean定義ファイルを使用して、Webリソースに対してアクセス�
 Spring Securityは定義した順番でリクエストとのマッチング処理を行い、最初にマッチした定義を適用する。
 そのため、bean定義ファイルを使用してアクセスポリシーを指定する場合も定義順番には注意が必要である。
 
-.. note:: **パスパターンの解釈**
+.. tip:: **パスパターンの解釈**
 
     Spring Securityのデフォルトの動作では、パスパターンはAnt形式で解釈する。
     パスパターンを正規表現で指定したい場合は、\ ``<sec:http>``\ タグの\ ``request-matcher``\ 属性に
@@ -407,7 +407,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
          | 権限設定が記述されていないURLに対してはどのユーザーもアクセス出来ない設定としている。
          | \ ``denyAll``\ については、後述する。
 
-  .. note::    **URLパターンの記述順序について**
+  .. note:: **URLパターンの記述順序について**
 
      クライアントからのリクエストに対して、intercept-urlで記述されているパターンに、上から順にマッチさせ、マッチしたパターンに対してアクセス認可を行う。
      そのため、パターンの記述は、必ず、より限定されたパターンから記述すること。
@@ -529,7 +529,7 @@ Spring Securityは、以下のアノテーションをサポートしている�
 具体的には、「\ ``#username``\ 」の部分が引数にアクセスしている部分である。
 Expression内で「# + 引数名」形式のExpressionを指定することで、メソッドの引数にアクセスすることができる。
 
-.. note:: **メモ**
+.. tip:: **引数名を指定するアノテーション**
 
     Spring Securityは、クラスに出力されているデバッグ情報から引数名を解決する仕組み
     になっているが、アノテーション(\ ``@org.springframework.security.access.method.P``\ )
@@ -806,7 +806,7 @@ Spring Securityのデフォルトの設定だと、認証済みのユーザー�
     * - | (1)
       - | \ ``<sec:access-denied-handler>``\ タグの\ ``error-page``\ 属性に認可エラー用のエラーページを指定する。
 
-.. note:: **サーブレットコンテナのエラーページ機能の利用**
+.. tip:: **サーブレットコンテナのエラーページ機能の利用**
 
     認可エラーのエラーページは、サーブレットコンテナのエラーページ機能を使って指定することもできる。
 

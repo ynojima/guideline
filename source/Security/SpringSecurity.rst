@@ -13,7 +13,7 @@ Spring Securityは、アプリケーションにセキュリティ対策機能�
 Spring Securityはスタンドアロンなアプリケーションでも利用できるが、サーブレットコンテナにデプロイするWebアプリケーションに対してセキュリティ対策を行う際に利用するのが一般的である。
 本章では、Spring Securityが提供する機能のうち、一般的なWebアプリケーションでの利用頻度が高いと思われる機能にしぼって説明する。
 
-.. note::
+.. tip::
 
     Spring Securityは、本ガイドラインで紹介していない機能も多く提供している。
     Spring Securityが提供するすべての機能を知りたい場合は、\ `Spring Security Reference <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#security-filter-chain>`_\ を参照されたい。
