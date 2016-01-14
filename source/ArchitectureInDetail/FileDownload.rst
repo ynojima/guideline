@@ -425,7 +425,7 @@ ViewResolverの定義
      - | \ ``AbstractFileDownloadView``\ を継承する。
    * - | (3)
      - | \ ``getInputStream``\ メソッドを実装する。
-       | ダウンロード対象の、InputStreameを返却すること。
+       | ダウンロード対象の、\ ``InputStream``\ を返却すること。
    * - | (4)
      - | \ ``addResponseHeaderメソッド``\ を実装する。
        | ダウンロードするファイルに合わせた、 Content-Dispositionや、ContentTypeを設定する。
