@@ -1,4 +1,4 @@
-.. _SpringSecutityLinkageWithBrowser:
+.. _SpringSecurityLinkageWithBrowser:
 
 ブラウザのセキュリティ対策機能との連携
 ================================================================================
@@ -7,8 +7,6 @@
 
  .. contents:: 目次
     :local:
-
-.. _SpringSecurityLinkageWithBrowser:
 
 Overview
 --------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ Spring Securityでは認証と認可という基本的な機能に加え、Web�
         セッションのライフサイクル(生成、破棄、タイムアウト)を制御するための機能。
     * - :ref:`CSRF対策機能<SpringSecurityCSRF>`
       - クロスサイトリクエストフォージェリ(CSRF)攻撃からユーザーを守るための機能。
-    * - :ref:`セキュリティヘッダ出力機能<SpringSecutityLinkageWithBrowser>`
+    * - :ref:`セキュリティヘッダ出力機能<SpringSecurityLinkageWithBrowser>`
       - Webブラウザのセキュリティ対策機能と連携し、ブラウザの機能を悪用した攻撃からユーザーを守るための機能。
 
 |

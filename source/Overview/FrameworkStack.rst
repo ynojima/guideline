@@ -84,7 +84,7 @@ Viewのレイアウトを共通化する場合は、
     悪意のある攻撃者からWebアプリケーションを守るための仕組みについては、
 
     * :doc:`../Security/CSRF`
-    * :ref:`SpringSecurityAppendixSecHeaders`
+    * :doc:`../Security/LinkageWithBrowser`
 
     を参照されたい。
 

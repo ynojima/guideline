@@ -478,7 +478,6 @@
         * :doc:`../ArchitectureInDetail/Utilities/Dozer`
         * :doc:`../Security/SpringSecurity`
         * :doc:`../Security/Authentication`
-        * :doc:`../Security/PasswordHashing`
         * :doc:`../Security/Authorization`
         * :doc:`../Security/CSRF`
         * :doc:`../Appendix/CreateProjectFromBlank`
