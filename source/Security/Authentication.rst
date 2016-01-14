@@ -1364,6 +1364,19 @@ JSPからのアクセス
     ここでは、認証情報が保持するユーザー情報を表示する際の実装例を説明したが、\ ``var``\ 属性と\ ``scope``\ 属性を組み合わせて任意のスコープ変数に値を格納することも可能である。
     ログインユーザーの状態によって表示内容を切り替えたい場合は、ユーザー情報を変数に格納しておき、JSTLのタグライブラリなどを使って表示を切り替えることが可能である。
 
+    上記の例は、以下のように記述することでも実現することができる。
+    本例では、\ ``scope``\ 属性を省略しているため、\ ``page``\スコープが適用される。
+
+        .. code-block:: jsp
+
+            <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+            <%-- omitted --%>
+            <sec:authentication var="principal" property="principal"/>
+            <%-- omitted --%>
+            ようこそ、
+            ${f:h(principal.account.lastName)}
+            さん。
+
 |
 
 .. _SpringSecurityAuthenticationIntegrationWithSpringMVC:
