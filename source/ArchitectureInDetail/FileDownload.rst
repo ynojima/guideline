@@ -38,7 +38,7 @@ Overview
 | クラスは、modelの情報を用いてPDFファイルをレンダリングするときに、サブクラスとして利用するクラスである。
 |
 | **Excelファイルの場合**
-| Springから提供されている\ ``org.springframework.web.servlet.view.document.AbstractExcelView``\
+| Springから提供されている\ ``org.springframework.web.servlet.view.document.AbstractXlsxView``\
 | クラスは、modelの情報を用いてExcelファイルをレンダリングするときに、サブクラスとして利用するクラスである。
 |
 | Spring では上記以外にも、いろいろなViewの実装を提供している。
@@ -91,11 +91,11 @@ PDFファイルのダウンロード
      - | 本例では、\ ``@Component``\ アノテーションを使用して、component-scanの対象としている。
        | 後述する、\ ``org.springframework.web.servlet.view.BeanNameViewResolver``\ の対象とすることができる。
    * - | (2)
-     - | AbstractPdfViewを継承する。
+     - | \ ``AbstractPdfView``\ を継承する。
    * - | (3)
-     - | buildPdfDocumentメソッドを実装する。
+     - | \ ``buildPdfDocument``\ メソッドを実装する。
 
-| AbstractPdfViewは、PDFのレンダリングに、\ `iText <http://itextpdf.com/>`_\ を利用している。
+| \ ``AbstractPdfView``\ は、PDFのレンダリングに、\ `iText <http://itextpdf.com/>`_\ を利用している。
 | そのため、Mavenのpom.xmlに itextの定義を追加する必要がある。
 
 .. code-block:: xml
@@ -150,7 +150,7 @@ PDFファイルのダウンロード
 ViewResolverの定義
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 \ ``org.springframework.web.servlet.view.BeanNameViewResolver``\ とは、
-Springのコンテキストで管理されたbean名を用いて実行する\ ``View``\ を選択するクラスである。
+Springのコンテキストで管理されたbean名を用いて実行するViewを選択するクラスである。
 
 \ ``BeanNameViewResolver``\ を使用する際は、通常使用する、
 
@@ -162,7 +162,7 @@ Springのコンテキストで管理されたbean名を用いて実行する\ ``
 .. note::
 
     Spring Frameworkはさまざまな\ ``ViewResolver``\ を提供しており、複数の\ ``ViewResolver``\をチェーンすることができる。
-    そのため、特定の状況では、意図しない\ ``View``\ が選択されてしまうことがある。
+    そのため、特定の状況では、意図しないViewが選択されてしまうことがある。
 
     この動作は、\ ``ViewResolver``\に適切な優先順位を設定する事で防ぐことができる。
     優先順位の設定方法は、\ ``ViewResolver``\ の定義方法によって異なる。
@@ -224,7 +224,7 @@ Springのコンテキストで管理されたbean名を用いて実行する\ ``
 コントローラでのViewの指定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| BeanNameViewResolverにより、コントローラで"samplePdfView"を返却することで、
+| \ ``BeanNameViewResolver``\ により、コントローラで"samplePdfView"を返却することで、
 | Springのコンテキストで管理されたBeanIDにより、"samplePdfView"であるViewが使用される。
 
 **Javaソースコード**
@@ -246,7 +246,7 @@ Springのコンテキストで管理されたbean名を用いて実行する\ ``
      - 説明
    * - | (1)
      - | "samplePdfView" をメソッドの戻り値として返却することで、
-       | Springのコンテキストで管理された、SamplePdfViewクラスが実行される。
+       | Springのコンテキストで管理された、\ ``SamplePdfView``\ クラスが実行される。
 
 | 上記の手順を実行した後、以下に示すようなPDFを開くことができる。
 
@@ -262,26 +262,26 @@ Springのコンテキストで管理されたbean名を用いて実行する\ ``
 Excelファイルのダウンロード
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | EXCELファイルのレンダリングには、Springから提供されている、
-| \ ``org.springframework.web.servlet.view.document.AbstractExcelView``\ を継承したクラスを作成する必要がある。
+| \ ``org.springframework.web.servlet.view.document.AbstractXlsxView``\ を継承したクラスを作成する必要がある。
 | コントローラでEXCELファイルをダウンロードを実装するための手順は、以下で説明する。
 
 カスタムViewの実装
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-**AbstractExcelViewを継承したクラスの実装例**
+**AbstractXlsxViewを継承したクラスの実装例**
 
 .. code-block:: java
 
         @Component  // (1)
-        public class SampleExcelView extends AbstractExcelView {  // (2)
+        public class SampleExcelView extends AbstractXlsxView {  // (2)
 
             @Override
             protected void buildExcelDocument(Map<String, Object> model,
-                    HSSFWorkbook workbook, HttpServletRequest request,
+                    Workbook workbook, HttpServletRequest request,
                     HttpServletResponse response) throws Exception {  // (3)
-                HSSFSheet sheet;
-                HSSFCell cell;
-
+                Sheet sheet;
+                Cell cell;
+ 
                 sheet = workbook.createSheet("Spring");
                 sheet.setDefaultColumnWidth(12);
 
@@ -305,11 +305,11 @@ Excelファイルのダウンロード
      - | 本例では、\ ``@Component``\ アノテーションを使用して、component-scanの対象としている。
        | 前述した、\ ``org.springframework.web.servlet.view.BeanNameViewResolver``\ の対象とすることができる。
    * - | (2)
-     - | AbstractExcelViewを継承する。
+     - | \ ``AbstractXlsxView``\ を継承する。
    * - | (3)
-     - | buildExcelDocumentメソッドを実装する。
+     - | \ ``buildExcelDocument``\ メソッドを実装する。
 
-| AbstractExcelViewは、EXCELのレンダリングに、\ `Apache POI <http://poi.apache.org/>`_\ を利用している。
+| \ ``AbstractXlsxView``\ は、EXCELのレンダリングに、\ `Apache POI <http://poi.apache.org/>`_\ を利用している。
 | そのため、Mavenのpom.xmlに POIの定義を追加する必要がある。
 
 .. code-block:: xml
@@ -318,16 +318,18 @@ Excelファイルのダウンロード
       <!-- omitted -->
       <dependency>
           <groupId>org.apache.poi</groupId>
-          <artifactId>poi</artifactId>
-          <version>${org.apache.poi.poi.version}</version>
+          <artifactId>poi-ooxml</artifactId>
       </dependency>
   </dependencies>
-  
-  <properties>
-      <!-- omitted -->
-      <org.apache.poi.poi.version>3.9</org.apache.poi.poi.version>
-  </properties>
+
         
+\
+    .. note::
+        poi-ooxmlのバージョンはSpring IO Platformにて定義されているものを利用するため、設定例では <version> を省略している。
+
+        また、\ ``AbstractExcelView``\ はSpring Framework 4.2から@Deprecatedとなった。そのため、xlsファイルを使用したい場合も同様に\ ``AbstractXlsxView``\ の使用を推奨する。
+        詳細は、\ `AbstractExcelViewのJavaDoc <https://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/web/servlet/view/document/AbstractExcelView.html>`_\ を参照されたい。
+          
 
 ViewResolverの定義
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -337,7 +339,7 @@ ViewResolverの定義
 コントローラでのViewの指定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| BeanNameViewResolverにより、コントローラで"sampleExcelView"を返却することで、
+| \ ``BeanNameViewResolver``\ により、コントローラで"sampleExcelView"を返却することで、
 | Springのコンテキストで管理されたBeanIDにより、”sampleExcelView”であるViewが使用される。
 
 **Javaソース**
@@ -359,7 +361,7 @@ ViewResolverの定義
      - 説明
    * - | (1)
      - | "sampleExcelView" をメソッドの戻り値として返却することで、
-       | Springのコンテキストで管理された、SampleExcelViewクラスが実行される。
+       | Springのコンテキストで管理された、\ ``SampleExcelView``\ クラスが実行される。
 
 | 上記の手順を実行した後、以下に示すようなEXCELを開くことができる。
 
@@ -374,7 +376,7 @@ ViewResolverの定義
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | 前述した、PDFやEXCELファイル以外のファイルのダウンロードを行う場合、
 | 共通ライブラリが提供している、\ ``org.terasoluna.gfw.web.download.AbstractFileDownloadView``\ を継承したクラスを実装すればよい。
-| 他の形式にファイルレンダリングするために、AbstractFileDownloadViewでは、以下を実装する必要がある。
+| 他の形式にファイルレンダリングするために、\ ``AbstractFileDownloadView``\では、以下を実装する必要がある。
 
 1. レスポンスボディへの書き込むためのInputStreamを取得する。
 2. HTTPヘッダに情報を設定する。
@@ -420,12 +422,12 @@ ViewResolverの定義
      - | 本例では、\ ``@Component``\ アノテーションを使用して、component-scanの対象としている。
        | 前述した、\ ``org.springframework.web.servlet.view.BeanNameViewResolver``\ の対象とすることができる。
    * - | (2)
-     - | AbstractFileDownloadViewを継承する。
+     - | \ ``AbstractFileDownloadView``\ を継承する。
    * - | (3)
-     - | getInputStreamメソッドを実装する。
-       | ダウンロード対象の、InputStreameを返却すること。
+     - | \ ``getInputStream``\ メソッドを実装する。
+       | ダウンロード対象の、\ ``InputStream``\ を返却すること。
    * - | (4)
-     - | addResponseHeaderメソッドを実装する。
+     - | \ ``addResponseHeaderメソッド``\ を実装する。
        | ダウンロードするファイルに合わせた、 Content-Dispositionや、ContentTypeを設定する。
 
 ViewResolverの定義
@@ -435,7 +437,7 @@ ViewResolverの定義
 
 コントローラでのViewの指定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| BeanNameViewResolverにより、コントローラで"textFileDownloadView"を返却することで、
+| \ ``BeanNameViewResolver``\ により、コントローラで"textFileDownloadView"を返却することで、
 | Springのコンテキストで管理されたBeanIDにより、”textFileDownloadView”であるViewが使用される。
 
 **Javaソース**
@@ -456,7 +458,7 @@ ViewResolverの定義
      - 説明
    * - | (1)
      - | "textFileDownloadView" をメソッドの戻り値として返却することで、
-       | Springのコンテキストで管理された、TextFileDownloadViewクラスが実行される。
+       | Springのコンテキストで管理された、\ ``TextFileDownloadView``\ クラスが実行される。
 
 \
 
