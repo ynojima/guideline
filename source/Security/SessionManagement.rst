@@ -520,7 +520,13 @@ Spring Securityは、無効なセッションを使ったリクエストを検�
     \ :doc:`CSRF対策機能<CSRF>`\ を有効にしている場合は、CSRF対策機能によりセッションタイムアウトが検出されるケースがある。
     なお、Spring SecurityではデフォルトでCSRF対策機能が有効になっている。
 
-    CSRF対策機能によってセッションタイムアウトが検出された場合については、:ref:`csrf_token-error-response` を参照されたい。
+    CSRF対策機能によるセッションタイムアウトは、下記の状態で、\ :ref:`CSRFトークンのチェック対象になっているリクエスト<csrf_ckeck-target>` \を受信した場合に発生する。
+
+    * CSRFトークンの保存先をHTTPセッション(デフォルト)にしている
+    * HTTPセッションからCSRFトークンが取得できない
+
+    この場合、\ ``invalid-session-url``\ が定義されていれば、\ ``invalid-session-url``\の指定する遷移先にリダイレクトされ、
+    定義されていない場合は、:ref:`csrf_token-error-response` の定義に従ってリダイレクトされる。
 
 |
 
