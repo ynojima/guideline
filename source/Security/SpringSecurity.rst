@@ -67,6 +67,18 @@ Spring Securityでは認証と認可という基本的な機能に加え、Web�
 
 |
 
+
+.. _SpringSecurityVersion:
+
+Spring Securityのバージョン
+--------------------------------------------------------------------------------
+本ガイドラインでは、Spring Securityのバージョンは4.0を使用している。
+Spring Securityが4.0にバージョンアップするにあたり、様々な変更が適用されており、以降で記述されるサンプルについても、Spring Security 4を使用したサンプルとなっている。
+
+変更内容については\ `Migrating from Spring Security 3.x to 4.x (XML Configuration) <http://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html>`_\ を参照されたい。
+
+|
+
 .. _SpringSecurityArchitecture:
 
 Spring Securityのアーキテクチャ

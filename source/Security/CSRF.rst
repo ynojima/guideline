@@ -135,7 +135,7 @@ CSRFトークン用の\ ``RequestDataValueProcessor``\ 実装クラスを利用�
    * - | (2)
      - | コンストラクタの第1引数に、\ ``org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor``\ のbean定義を設定する。
 
-上記設定により、デフォルトでCSRF対策機能が有効となる。このため、CSRF対策機能を適用したくない場合は、明示的に無効化する必要がある。 
+Spring Security 4.0からは、上記設定により、デフォルトでCSRF対策機能が有効となる。このため、CSRF対策機能を適用したくない場合は、明示的に無効化する必要がある。 
 
 CSRF対策機能を使用しない場合は、以下のようなbean定義を行う。
 

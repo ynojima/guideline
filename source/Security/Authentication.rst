@@ -325,7 +325,16 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
       - | アプリケーションで扱うWebリソースに対してアクセス権を付与する。
         | 上記例では、Webアプリケーションのルートパスの配下に対して、認証済みユーザーのみがアクセスできる権限を付与している。
         | Webリソースに対してアクセスポリシーの指定方法については、「\ :ref:`SpringSecurityAuthorization`\ 」を参照されたい。
- 
+
+.. note:: **Spring Security 4.0における変更**
+
+    Spring Security 4.0から、以下の設定のデフォルト値が変更されている
+
+    * username-parameter
+    * password-parameter
+    * login-processing-url
+    * authentication-failure-url 
+
 |
 
 .. _SpringSecurityAuthenticationScreenFlowOnSuccess:
@@ -1189,6 +1198,11 @@ Spring Securityは、以下のような流れでログアウト処理を行い�
    * - | (1)
      - | \ ``<sec:logout>``\ タグを定義することで、ログアウト処理が有効となる。
 
+.. note:: **Spring Security 4.0における変更**
+
+    Spring Security 4.0から、以下の設定のデフォルト値が変更されている
+
+    * logout-url 
 
 .. tip:: **Cookieの削除**
 
@@ -2752,6 +2766,13 @@ Remember Me認証を利用する場合は、\ ``<sec:remember-me>``\ タグを�
         | 上記例では、有効時間として30日間を設定している。
 
 上記以外の属性については、\ `Spring Security Reference -The Security Namespace (<remember-me>) - <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-remember-me>`_\ を参照されたい。
+
+.. note:: **Spring Security 4.0における変更**
+
+    Spring Security 4.0から、以下の設定のデフォルト値が変更されている
+
+    * remember-me-parameter
+    * remember-me-cookie
 
 |
 
