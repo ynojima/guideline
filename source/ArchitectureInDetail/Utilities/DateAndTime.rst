@@ -456,7 +456,7 @@ org.terasoluna.gfw.common.date パッケージの利用方法
 .. code-block:: java
 
    @Inject
-   DefaultClassicDateFactory dateFactory;
+   ClassicDateFactory dateFactory;
    
    public DateFactorySample getSystemDate() {
 
