@@ -769,15 +769,16 @@ org.terasoluna.gfw.common.date パッケージの利用方法
 文字列へのフォーマット
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-| ``java.time.fomat.DateTimeFormatter`` を用いることで、和暦日付へ変換することが出来る。
+| ``java.time.fomat.DateTimeFormatter`` を用いることで、和暦日付へ変換することが出来る。利用の際には、 ``DateTimeFormatter#withChronology`` メソッドで暦を ``java.time.chrono.JapaneseChronology`` に設定する。
 | 和暦日付でも様々なフォーマットを扱うことが出来るため、0埋めや空白埋めなど要件に応じた出力が行える。
 | 以下に空白埋めで和暦を表示する例を示す。
 
 .. code-block:: java
 
    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("Gppy年ppM月ppd日")
-                                              .withLocale(Locale.JAPANESE)
-                                              .withResolverStyle(ResolverStyle.STRICT);
+                                    .withLocale(Locale.JAPANESE)
+                                    .withResolverStyle(ResolverStyle.STRICT)
+                                    .withChronology(JapaneseChronology.INSTANCE);
                                               
    JapaneseDate japaneseDate = JapaneseDate.of(1992, 1, 1);
    
@@ -794,11 +795,12 @@ org.terasoluna.gfw.common.date パッケージの利用方法
 .. code-block:: java
 
    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("Gy年MM月dd日")
-                                              .withLocale(Locale.JAPANESE)
-                                              .withResolverStyle(ResolverStyle.STRICT);
-
+                                   .withLocale(Locale.JAPANESE)
+                                   .withResolverStyle(ResolverStyle.STRICT)
+                                   .withChronology(JapaneseChronology.INSTANCE);
+                                        
    JapaneseDate japaneseDate1 = JapaneseDate.from(formatter.parse("平成27年12月25日"));
-   JapaneseDate japaneseDate2 = JapaneseDate.from(formatter.parse("明治5年01月01日"));
+   JapaneseDate japaneseDate2 = JapaneseDate.from(formatter.parse("明治6年01月01日"));
 
 
 西暦・和暦の変換
