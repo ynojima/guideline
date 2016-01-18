@@ -13,6 +13,15 @@ Overview
 
 本節では、Spring Securityが提供しているCross site request forgeries(以下、CSRFと略す）対策の機能について説明する。
 
+CSRFとは、Webサイトにスクリプトや自動転送(HTTPリダイレクト)を実装することにより、
+ユーザーが、ログイン済みの別のWebサイト上で、意図しない何らかの操作を行わせる攻撃手法のことである。
+
+サーバ側でCSRFを防ぐには、以下の方法が知られている。
+
+* 秘密情報(トークン)の埋め込み
+* パスワードの再入力
+* Refererのチェック
+
 CSRF対策機能は、攻撃者が用意したWebページから送られてくる偽造リクエストを不正なリクエストとして扱うための機能である。
 CSRF対策が行われていないWebアプリケーションを利用すると、以下のような方法で攻撃を受ける可能性がある。
 
@@ -21,17 +30,10 @@ CSRF対策が行われていないWebアプリケーションを利用すると�
 * 攻撃者が用意したWebページは、フォームの自動送信などのテクニックを使用して、偽造したリクエストをCSRF対策が行われていないWebアプリケーションに対して送信する。
 * CSRF対策が行われていないWebアプリケーションは、攻撃者が偽造したリクエストを正規のリクエストとして処理してしまう。
 
-.. tip:: **CSRFについて**
-    CSRFとは、Webサイトにスクリプトや自動転送(HTTPリダイレクト)を実装することにより、
-    ユーザーが、ログイン済みの別のWebサイト上で、意図しない何らかの操作を行わせる攻撃手法のことである。
 
-    サーバ側でCSRFを防ぐには、以下の方法が知られている。
+.. tip::
 
-    * 秘密情報(トークン)の埋め込み
-    * パスワードの再入力
-    * Refererのチェック
-
-    OWASP\ [#fSpringSecurityCSRF1]_\では、トークンパターンを使用する方法が\ `推奨されている。 <https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern>`_\
+    OWASP\ [#fSpringSecurityCSRF1]_\では、\ `トークンパターンを使用する方法が推奨されている。 <https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern>`_\
     
       .. [#fSpringSecurityCSRF1] Open Web Application Security Projectの略称であり、信頼できるアプリケーションや、セキュリティに関する  効果的なアプローチなどを検証、提唱する、国際的な非営利団体である。
        https://www.owasp.org/index.php/Main_Page
