@@ -12,11 +12,167 @@
 Overview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| 
-|
+| Javaの文字列標準APIでは、日本語に特化した操作が少ない。
+| 全角カタカナ/半角カタカナの変換や、半角カタカナのみで構成される文字列の判定を行う場合などは、
+| 独自に処理を作りこむ必要がある。
+
+| また、Javaでは全ての文字列をUnicodeで表現するが、
+| Unicodeでは 𠮷 のような特殊文字は、サロゲートペアと呼ばれるchar型2つ（32ビット）で表される。
+| このような文字を扱う場合にも予期せぬ挙動が起きぬよう、様々な文字を扱うことを考慮した設計を行う必要がある。
+
+| 本ガイドラインでは、日本語を処理するケースを想定し、
+| 一般的な文字列操作の例と、共通ライブラリによる日本語操作APIの提供を行う。
 
 How to use
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+トリム
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+| 半角空白のトリム操作を行う場合、``String#trim`` メソッドを利用することも出来るが、前・後ろのみのトリム操作や、任意の文字列のトリム操作などの複雑な操作を行う場合は、Springから提供されている ``org.springframework.util.StringUtils`` を利用するとよい。
+|
+| 以下に例を示す。
+|
+
+.. code-block:: java
+
+   String str = " Hello World!";
+
+   StringUtils.trimWhitespace(str); // => "Hello World!"
+
+   StringUtils.trimLeadingCharacter(str, ' '); // => "Hello World!"
+
+   StringUtils.trimTrailingCharacter(str, '!'); // => " Hello World"
+
+.. note::
+  | ``StringUtils#trimLeadingCharacter`` , ``StringUtils#trimTrailingCharacter`` の第1引数にサロゲートペアの文字列は指定しても挙動に変化はない。なお、第2引数はchar型のため、サロゲートペアを指定することは出来ない。
+
+パディング・サプレス
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| パディング（文字列埋め）操作・サプレス（文字列取り）操作を行う場合は、
+| ``String`` クラスから提供されているメソッドで行うことが出来る。
+|
+| 以下に例を示す。
+
+.. code-block:: java
+
+   int num = 1;
+
+   String paddingStr = String.format("%03d", num); // => "001"
+   String suppressStr = paddingStr.replaceFirst("^0+(?!$)", ""); // => "1"
+
+.. warning::
+  | ``String#format`` はサロゲートペアを考慮できないため、見た目上の長さでパディングを行いたい場合、サロゲートペアが含まれると正しい結果が得られない。
+  | サロゲートペアを考慮してパディングを実現するためには、後述するサロゲートペアを考慮した文字数のカウントを行い、パディングすべき正しい文字数を算出して文字列結合を行う必要がある。
+
+サロゲートペアを考慮した文字列処理
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+文字列長の取得
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+| サロゲートペアを考慮した文字列の長さを取得する場合、
+| 単に ``String#length`` メソッドを使用することは出来ない。
+| サロゲートペアは32ビット（char型2つ）で表現されるため、見た目上の文字数よりも多くカウントされてしまう。
+|
+| 下記例では、変数 ``len`` には5が代入される。
+
+.. code-block:: java
+
+   String str = "𠮷田太郎";
+   int len = str.length(); // => 5
+
+|
+| そこで、Java SE 5よりサロゲートペアを考慮した文字列の長さを取得するためのメソッド ``String#codePointCount`` が定義された。
+| ``String#codePointCount`` の引数に、対象文字列の開始インデックスと終了インデックスを指定することで、文字列長を取得することが出来る。
+|
+| 以下に例を示す。
+
+.. code-block:: java
+
+   String str = "𠮷田太郎";
+   int lenOfChar = str.length(); // => 5
+   int lenOfCodePoint = str.codePointCount(0, lenOfChar); // => 4
+
+|
+| また、Unicodeでは結合文字が存在する。
+| 「が」を表す ``\u304c`` と、「か」と「濁点」を表す ``\u304b\u3099`` は、見た目上の違いは存在しないが、「か」＋「濁点」の例は2文字としてカウントされてしまう。
+| こうした結合文字が入力されることも考慮して文字数をカウントする場合、 ``java.text.Normalizer`` を使用してテキストの正規化を行ってからカウントする。
+|
+| 以下に、結合文字とサロゲートペアを考慮をした上で、文字列の長さを返却するメソッドを示す。
+
+.. code-block:: java
+
+   public int getStrLength(String str) {
+     String normalizedStr  = Normalizer.normalize(str, Normalizer.Form.NFC);
+     int length = normalizedStr.codePointCount(0, normalizedStr.length());
+
+     return length;
+   }
+
+
+指定範囲の文字列取得
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+| 指定範囲の文字列を取得する場合、単に ``String#substring`` を利用すると、想定していない結果になる可能性がある。
+
+.. code-block:: java
+
+   String str = "𠮷田 太郎";
+   int startIndex = 0;
+   int endIndex = 2;
+   
+   String subStr = str.substring(startIndex, endIndex);
+
+   System.out.println(subStr); // => "𠮷"
+
+| 上記の例では、0文字目（先頭）から2文字を取り出し、 「𠮷田」 を取得しようと試みているが、サロゲートペアは32ビット（char型2つ）で表現されるため「𠮷」しか取得できない。
+| このような場合には、``String#offsetByCodePoints`` を利用し、サロゲートペアを考慮した開始位置と終了位置を求めてから ``String#substring`` メソッドを使う必要がある。
+|
+| 以下に、先頭から2文字（苗字部分）を取り出す例を示す。
+
+.. code-block:: java
+
+   String str = "𠮷田 太郎";
+   int startIndex = 0;
+   int endIndex = 2;
+
+   int startIndexSurrogate = str.offsetByCodePoints(0, startIndex); // => 0
+   int endIndexSurrogate = str.offsetByCodePoints(0, endIndex); // => 3
+
+   String subStrSurrogate = str.substring(startIndexSurrogate, endIndexSurrogate); // => "𠮷田"
+
+|
+
+文字列分割
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+| ``String#split`` メソッドは、サロゲートペアにデフォルトで対応している。
+| 以下に例を示す。
+
+
+.. code-block:: java
+
+   String str = "𠮷田 太郎";
+   
+   str.split(" "); // => {"𠮷田", "太郎"}
+
+|
+
+    .. note::
+      | サロゲートペアを区切り文字として、 ``String#split`` の引数に指定することも出来る。
+      
+    .. note::
+      | Java SE 7までの環境とJava SE 8で、 ``String#split`` に空文字を渡したときの挙動に変化があるため留意されたい。 参照： `Pattern#splitのJavadoc <http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#split-java.lang.CharSequence-int->`_
+      
+      .. code-block:: java
+      
+        String str = "ABC";
+        String[] elems = str.split("");
+        
+        // Java SE 7 => {, A, B, C}
+        // Java SE 8 => {A, B, C}
+
 
 全角・半角文字列変換
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
