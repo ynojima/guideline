@@ -4914,21 +4914,6 @@ How to extend
 
 |
     
-.. note::
-    上記の例では、\ ``Jackson2ObjectMapperFactoryBean``\ を利用しているが、下記のように\ ``ObjectMapper``\ を直接Bean定義するスタイルでも同様に設定することができる。
-    
-  .. code-block:: xml
- 
-    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
-        <!-- ... -->
-        <property name="featuresToDisable">
-            <array>
-                <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
-            </array>
-        </property>
-    </bean>
-    
-    
     
 .. warning::
  
