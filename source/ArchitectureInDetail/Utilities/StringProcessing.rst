@@ -18,7 +18,7 @@ Overview
 
 | また、Javaでは全ての文字列をUnicodeで表現するが、
 | Unicodeでは 𠮷 のような特殊文字は、サロゲートペアと呼ばれるchar型2つ（32ビット）で表される。
-| このような文字を扱う場合にも予期せぬ挙動が起きぬよう、様々な文字を扱うことを考慮した設計を行う必要がある。
+| このような文字を扱う場合にも予期せぬ挙動が起きぬよう、様々な文字を扱うことを考慮した実装を行う必要がある。
 
 | 本ガイドラインでは、日本語を処理するケースを想定し、
 | 一般的な文字列操作の例と、共通ライブラリによる日本語操作APIの提供を行う。
@@ -35,13 +35,13 @@ How to use
 
 .. code-block:: java
 
-   String str = " Hello World!";
+   String str = "  Hello World!!";
 
-   StringUtils.trimWhitespace(str); // => "Hello World!"
+   StringUtils.trimWhitespace(str); // => "Hello World!!"
 
-   StringUtils.trimLeadingCharacter(str, ' '); // => "Hello World!"
+   StringUtils.trimLeadingCharacter(str, ' '); // => "Hello World!!"
 
-   StringUtils.trimTrailingCharacter(str, '!'); // => " Hello World"
+   StringUtils.trimTrailingCharacter(str, '!'); // => "  Hello World"
 
 .. note::
   | ``StringUtils#trimLeadingCharacter`` , ``StringUtils#trimTrailingCharacter`` の第1引数にサロゲートペアの文字列は指定しても挙動に変化はない。なお、第2引数はchar型のため、サロゲートペアを指定することは出来ない。
