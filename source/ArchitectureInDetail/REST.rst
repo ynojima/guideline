@@ -4741,7 +4741,7 @@ How to extend
         
         // (1)
         @JsonView(Summary.class)
-        @RequestMapping(value = "summary/{memberId}", method = RequestMethod.GET)
+        @RequestMapping(value = "getMember/{memberId}", params = "type=summary", method = RequestMethod.GET)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMemberSummary(@PathVariable("memberId") String memberId) {
 
@@ -4755,7 +4755,7 @@ How to extend
         
         // (2)
         @JsonView(Detail.class)
-        @RequestMapping(value = "detail/{memberId}", method = RequestMethod.GET)
+        @RequestMapping(value = "getMember/{memberId}", params = "type=detail", method = RequestMethod.GET)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMemberDetail(@PathVariable("memberId") String memberId) {
 
