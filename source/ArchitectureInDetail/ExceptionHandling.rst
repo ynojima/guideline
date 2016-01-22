@@ -957,6 +957,12 @@ ResultMessagesを保持する例外(BisinessException,ResourceNotFoundException)
       - | 遷移先となるView名と、HTTPステータスコードのマッピングを指定する。
         | 上記の設定では、View名が"common/error/resourceNotFoundError"の場合に、"404(Not Found)"がHTTPステータスコードとなる。
         | **【プロジェクト毎にカスタマイズする箇所】**
+
+        .. note:: **JBoss利用時の注意点**
+
+            JBossを利用し、かつ任意のステータスコードを\ ``HttpServletResponse``\ クラスの\ ``setStatus``\ を使用して返却する場合、レスポンスボディを明示的に実装すること。
+            レスポンスボディを実装しない場合、JBossの標準画面が出力される。
+
     * - | (6)
       - | 遷移するデフォルトのView名を、指定する。
         | 上記の設定では、例外クラスに"ResourceNotFoundException"、"BusinessException"、"InvalidTransactionTokenException"や例外クラス(または親クラス)のクラス名に、".DataAccessException"が含まれない場合、"common/error/systemError"が、遷移先のView名となる。
