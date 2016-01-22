@@ -4611,7 +4611,8 @@ How to extend
 | Controllerにてグループを指定することで、指定したグループに所属するフィールドのみ出力することができる。
 | 1つのフィールドは、複数のグループに所属することも可能である。
 |
-| 以下は、メンバー情報を概要情報と詳細情報に分けて、概要情報は一部分のみ、詳細情報では、すべての情報を出力する場合の例である。
+| 以下は、Memberリソースを「概要」と「詳細」の２つのフォーマットで扱う際の実装例である。
+| 「概要フォーマット」はMemberリソースの主要項目を、「詳細フォーマット」はMemberリソースの全項目を出力する。
 
 * :file:`MemberResource.java`
 
@@ -4741,7 +4742,7 @@ How to extend
         
         // (1)
         @JsonView(Summary.class)
-        @RequestMapping(value = "{memberId}", params = "type=summary", method = RequestMethod.GET)
+        @RequestMapping(value = "{memberId}", params = "format=summary", method = RequestMethod.GET)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMemberSummary(@PathVariable("memberId") String memberId) {
 
@@ -4755,7 +4756,7 @@ How to extend
         
         // (2)
         @JsonView(Detail.class)
-        @RequestMapping(value = "{memberId}", params = "type=detail", method = RequestMethod.GET)
+        @RequestMapping(value = "{memberId}", params = "format=detail", method = RequestMethod.GET)
         @ResponseStatus(HttpStatus.OK)
         public MemberResource getMemberDetail(@PathVariable("memberId") String memberId) {
 
