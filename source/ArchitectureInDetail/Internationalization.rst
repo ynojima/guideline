@@ -353,7 +353,11 @@ Localeをサーバに保存する場合は、\ ``SessionLocaleResolver``\ を使
         | beanタグのid属性は"localeResolver"と設定すること。
         | この設定により、 ``LocaleChangeInterceptor`` 内の処理で\ ``SessionLocaleResolver``\ が使用される。
     * - | (2)
-      - | リクエストパラメータでLocaleを指定しない場合、\ ``defaultLocale``\ プロパティに指定されたLocaleが有効になる。この場合、\ ``HttpServletRequest#getLocale``\ での取得値が有効になる。
+      - | \ ``defaultLocale``\ プロパティにLocaleを指定する。セッションからLocaleが取得できない場合、\ ``value``\ の設定値が有効になる。
+
+        .. note::
+
+         \ ``defaultLocale``\ プロパティを省略した場合、ユーザ端末（ブラウザ）に設定されたLocaleが有効になる。
 
 |
 
@@ -383,7 +387,12 @@ Localeをクライアントに保存する場合は、\ ``CookieLocaleResolver``
         | beanタグのid属性は"localeResolver"と設定すること。
         | この設定により、 ``LocaleChangeInterceptor`` 内の処理で\ ``CookieLocaleResolver``\ が使用される。
     * - | (2)
-      - | Localeを指定しない場合、\ ``defaultLocale``\ プロパティに指定されたLocaleが有効になる。この場合、\ ``HttpServletRequest#getLocale``\ での取得値が有効になる。
+      - | \ ``defaultLocale``\ プロパティにLocaleを指定する。CookieからLocaleが取得できない場合、\ ``value``\ の設定値が有効になる。
+
+        .. note::
+
+         \ ``defaultLocale``\ プロパティを省略した場合、ユーザ端末（ブラウザ）に設定されたLocaleが有効になる。
+
     * - | (3)
       - | \ ``cookieName``\ プロパティに指定した値が、cookie名となる。指定しない場合、\ ``org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE``\ となる。**Spring Frameworkを使用していることがわかるため、変更することを推奨する。**
 
