@@ -1234,12 +1234,12 @@ HTTPメソッドの割り当て
 | 以降の説明では、リソースを表現するフォーマットとしてJSONを使用する前提で説明を記載する。
 
 
-JSONのプロパティー名
+JSONのフィールド名
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| JSONのプロパティー名は、\ **「lower camel case」にすることを推奨する。**\
+| JSONのフィールド名は、\ **「lower camel case」にすることを推奨する。**\
 | これはクライアントアプリケーションの一つとして想定されるJavaScriptとの相性を考慮した結果である。
 
-| プロパティー名を「lower camel case」にした場合のJSONのサンプルは以下の通り。
+| フィールド名を「lower camel case」にした場合のJSONのサンプルは以下の通り。
 | 「lower camel case」は、先頭文字を小文字にし、単語の先頭文字を大文字にする。
 
  .. code-block:: json
@@ -1269,7 +1269,7 @@ NULLとブランク文字
 
 日時のフォーマット
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| JSONの日時プロパティーの形式は、\ **ISO-8601の拡張形式とする事を推奨する。**\
+| JSONの日時フィールドの形式は、\ **ISO-8601の拡張形式とする事を推奨する。**\
 | ISO-8601の拡張形式以外でもよいが、特に理由がない場合は、ISO-8601の拡張形式にすればよい。
 | ISO-8601には基本形式と拡張形式があるが、拡張形式の方が視認性が高い表記方法である。
 
@@ -1317,10 +1317,10 @@ NULLとブランク文字
         ]
     }
 
- * \ ``"rel"``\と\ ``"href"``\という2つのプロパティーを持ったLinkオブジェクトをコレクション形式で保持する。
+ * \ ``"rel"``\と\ ``"href"``\という2つのフィールドを持ったLinkオブジェクトをコレクション形式で保持する。
  * \ ``"rel"``\には、なんのリンクか識別するためのリンク名を指定する。
  * \ ``"href"``\には、リソースにアクセスするためのURIを指定する。
- * Linkオブジェクトをコレクション形式で保持するプロパティーは、\ ``"links"``\とする。
+ * Linkオブジェクトをコレクション形式で保持するフィールドは、\ ``"links"``\とする。
 
 |
 
@@ -1352,7 +1352,7 @@ NULLとブランク文字
 * エラー詳細リスト(details)
 
 | をエラー応答時のフォーマットとして用意している。
-| エラー詳細リストは、入力チェックエラー発生時に利用する事を想定しており、どのプロパティーで、どのようなエラーが発生したのかを保持できるフォーマットとしている。
+| エラー詳細リストは、入力チェックエラー発生時に利用する事を想定しており、どのフィールドで、どのようなエラーが発生したのかを保持できるフォーマットとしている。
 
 |
 
@@ -1737,8 +1737,8 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
       - | アプリケーション層のコンポーネントでプロパティファイルに定義されている値を参照する必要がある場合は、\ ``<context:property-placeholder>``\要素を使用してプロパティファイルを読み込む必要がある。
         | プロパティファイルから値を取得する方法の詳細ついては、「:doc:`PropertyManagement`」を参照されたい。
     * - | (2)
-      - | JSONの日付プロパティーの形式をISO-8601の拡張形式として扱うための設定を追加する。
-        | なお、リソースを表現するJavaBean(Resourceクラス)のプロパティーとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、「\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ 」を行う必要がある。
+      - | JSONの日付フィールドの形式をISO-8601の拡張形式として扱うための設定を追加する。
+        | なお、リソースを表現するJavaBean(Resourceクラス)のフィールドとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、「\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ 」を行う必要がある。
     * - | (3)
       - | RESTful Web Serviceを提供するために必要となるSpring MVCのフレームワークコンポーネントをbean登録する。
         | 本設定を行うことで、リソースのフォーマットとしてJSONを使用する事ができる。
@@ -1773,7 +1773,7 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
     * `MapperFeature#DEFAULT_VIEW_INCLUSION <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/MapperFeature.html?is-external=true#DEFAULT_VIEW_INCLUSION>`_\
     * `DeserializationFeature#FAIL_ON_UNKNOWN_PROPERTIES <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html?is-external=true#FAIL_ON_UNKNOWN_PROPERTIES>`_\
 
-    \ ``ObjectMapper``\の動作をJacksonのデフォルト動作にあわせたい場合は、\ ``featuresToEnable``\ プロパティーを使用して上記のコンフィギュレーションを有効化する。
+    \ ``ObjectMapper``\の動作をJacksonのデフォルト動作にあわせたい場合は、\ ``featuresToEnable``\ フィールドを使用して上記のコンフィギュレーションを有効化する。
 
      .. code-block:: xml
 
@@ -1908,7 +1908,7 @@ REST APIの実装
 **リソースの形式**
 
  | 会員情報のリソースの形式は、以下のようなJSON形式とする。
- | 下記の例では、全プロパティーを表示しているが、全てのAPIのリクエストとレスポンスで使用するわけではない。
+ | 下記の例では、全フィールドを表示しているが、全てのAPIのリクエストとレスポンスで使用するわけではない。
  | 例えば、\ ``"password"``\はリクエストのみで使用、\ ``"createdAt"``\や\ ``"lastModifiedAt"``\はレスポンスのみ使用などの違いがある。
 
  .. code-block:: json
@@ -2219,13 +2219,13 @@ Resourceクラスの役割は以下の通りである。
 
  .. warning:: **循環参照への対策**
 
-     Resourceクラス(JavaBean)をJSONやXML形式にシリアライズする際に、相互参照関係のオブジェクトをプロパティーに保持していると、
+     Resourceクラス(JavaBean)をJSONやXML形式にシリアライズする際に、相互参照関係のオブジェクトをフィールドに保持していると、
      循環参照となり\ ``StackOverflowError``\ や\ ``OutOfMemoryError``\ などが発生するので、注意が必要である。
 
      循環参照を回避するためには、
 
-     * Jacksonを使用してJSON形式にシリアライズする場合は、シリアライズ対象から除外するプロパティーに\ ``@com.fasterxml.jackson.annotation.JsonIgnore``\ アノテーション
-     * JAXBを使用してXML形式にシリアライズする場合は、シリアライズ対象から除外するプロパティーに\ ``javax.xml.bind.annotation.XmlTransient``\ アノテーション
+     * Jacksonを使用してJSON形式にシリアライズする場合は、シリアライズ対象から除外するフィールドに\ ``@com.fasterxml.jackson.annotation.JsonIgnore``\ アノテーション
+     * JAXBを使用してXML形式にシリアライズする場合は、シリアライズ対象から除外するフィールドに\ ``javax.xml.bind.annotation.XmlTransient``\ アノテーション
 
      を付与すればよい。
 
@@ -2257,7 +2257,7 @@ Resourceクラスの役割は以下の通りである。
           * - 項番
             - 説明
           * - | (1)
-            - シリアライズ対象から除外するプロパティーに対して\ ``@JsonIgnore``\ アノテーションを付与する。
+            - シリアライズ対象から除外するフィールドに対して\ ``@JsonIgnore``\ アノテーションを付与する。
 
 |
 
@@ -2362,7 +2362,7 @@ Resourceクラスの役割は以下の通りである。
         | 実装例では、POSTとPUTで異なる入力チェックを行うため、バリデーションをグループ化して入力チェックを行っている。
         | バリデーションのグループ化については、「:doc:`Validation`」を参照されたい。
     * - | (3)
-      - | 関連リソースをネストしたJavaBeanをプロパティーに定義している。
+      - | 関連リソースをネストしたJavaBeanをフィールドに定義している。
         | 実装例では、会員の資格情報(サインIDとパスワード)を関連リソースとして扱っている。
         | これは、サインIDの変更やパスワードの変更のみ行うという操作を考慮して、関連リソースとして切り出している。
         | ただし、関連リソースに対するREST APIの実装例については割愛している。
@@ -2419,8 +2419,8 @@ Resourceクラスの役割は以下の通りである。
     * - | (4)
       - | Memberリソースの関連リソースとなるCredentialリソースを表現するJavaBean。
     * - | (5)
-      - | 値が\ ``null``\の時に、JSONにプロパティー自体を出力しないようにするためのアノテーションを指定している。
-        | これは、レスポンスするJSONの中にパスワードのプロパティー出力しないようにするために行っている。
+      - | 値が\ ``null``\の時に、JSONにフィールド自体を出力しないようにするためのアノテーションを指定している。
+        | これは、レスポンスするJSONの中にパスワードのフィールド出力しないようにするために行っている。
         | 上記例ではNULLの場合(\ ``Inclusion.NON_NULL``\)に限っているが、値が空の場合(\ ``Inclusion.NON_EMPTY``\)という指定も可能である。
 
 |
@@ -2549,8 +2549,8 @@ URIで指定されたMemberリソースのコレクションをページ検索�
       - | 検索条件を受け取るためのJavaBeanを作成する
         | 検索条件が不要な場合は、JavaBeanの作成は不要である。
     * - | (2)
-      - | プロパティー名は、リクエストパラメータのパラメータ名と一致させる。
-        | 上記例では、\ ``/api/v1/members?name=John``\ というリクエストの場合、JavaBeanのnameプロパティーに \ ``"John"``\ という値が設定される。
+      - | フィールド名は、リクエストパラメータのパラメータ名と一致させる。
+        | 上記例では、\ ``/api/v1/members?name=John``\ というリクエストの場合、JavaBeanのnameフィールドに \ ``"John"``\ という値が設定される。
 
 |
 
@@ -2717,7 +2717,7 @@ URIで指定されたMemberリソースのコレクションをページ検索�
     具体的には、
 
     * \ ``Page``\ インタフェースと\ ``PageImpl``\ クラスでは、\ ``isFirst()``\ と\ ``isLast()``\ メソッドがspring-data-commons 1.8.0.RELEASEで追加、\ ``isFirstPage()``\ と\ ``isLastPage()``\ メソッドがspring-data-commons 1.9.0.RELEASEで削除
-    * \ ``Sort.Order``\ クラスでは、 \ ``nullHandling``\ プロパティーがspring-data-commons 1.8.0.RELEASEで追加
+    * \ ``Sort.Order``\ クラスでは、 \ ``nullHandling``\ フィールドがspring-data-commons 1.8.0.RELEASEで追加
 
     されている。
 
@@ -2728,8 +2728,8 @@ URIで指定されたMemberリソースのコレクションをページ検索�
 
 * | Beanのマッピング定義の追加
   | 上記実装例では、\ ``Member``\オブジェクトと\ ``MemberResource``\オブジェクトのコピーは、「\ :doc:`Utilities/Dozer`\」を使って行っている。
-  | 単純なプロパティー値のコピーのみでよい場合は、Beanのマッピング定義の追加は不要だが、上記実装例では、\ ``Member``\オブジェクトの内容を\ ``MemberResource``\オブジェクトにコピーする際に、\ ``credential.password``\ をコピー対象外にする必要がある。
-  | 特定のプロパティーをコピー対象外にするためには、Beanのマッピング定義の追加が必要となる。
+  | 単純なフィールド値のコピーのみでよい場合は、Beanのマッピング定義の追加は不要だが、上記実装例では、\ ``Member``\オブジェクトの内容を\ ``MemberResource``\オブジェクトにコピーする際に、\ ``credential.password``\ をコピー対象外にする必要がある。
+  | 特定のフィールドをコピー対象外にするためには、Beanのマッピング定義の追加が必要となる。
 
  .. code-block:: xml
     :emphasize-lines: 1, 10-14
@@ -2765,7 +2765,7 @@ URIで指定されたMemberリソースのコレクションをページ検索�
         | 
         | 今回の実装例では、\ :file:`/xxx-web/src/main/resources/META-INF/dozer/memberResource-mapping.xml`\に格納する。
     * - | (12)
-      - | 上記例では、\ ``Member``\の関連エンティティである\ ``MemberCredential``\の内容を、\ ``MemberResource``\の関連リソースである\ ``MemberCredentialResource``\にコピーする際に、\ ``password``\プロパティーをコピー対象外に指定している。
+      - | 上記例では、\ ``Member``\の関連エンティティである\ ``MemberCredential``\の内容を、\ ``MemberResource``\の関連リソースである\ ``MemberCredentialResource``\にコピーする際に、\ ``password``\フィールドをコピー対象外に指定している。
         | Beanマッピングの定義方法の詳細については、「\ :doc:`Utilities/Dozer`\」を参照されたい。
 
 |
@@ -3391,17 +3391,17 @@ RESTful Web Serviceで発生した例外のハンドリング方法について�
       - | エラー情報を保持するためのクラスを作成する。
         | 上記例では、エラーコード、エラーメッセージ、エラー対象、エラーの詳細情報のリストを保持するクラスとなっている。
     * - | (2)
-      - | エラーが発生した対象を識別するための値を保持するプロパティー。
+      - | エラーが発生した対象を識別するための値を保持するフィールド。
         | 入力チェックでエラーが発生した場合、どの項目でエラーが発生したのかを識別できる値をクライアントに返却する事が求められるケースがある。
-        | そのような場合は、エラーが発生した項目名を保持するプロパティーが必要になる。
+        | そのような場合は、エラーが発生した項目名を保持するフィールドが必要になる。
     * - | (3)
-      - | エラーの詳細情報のリストを保持するためのプロパティー。
+      - | エラーの詳細情報のリストを保持するためのフィールド。
         | 入力チェックでエラーが発生した場合、エラー原因が複数存在する場合があるため、すべてのエラー情報をクライアントに返却する事が求められるケースがある。
-        | そのような場合は、エラーの詳細情報をリストで保持するプロパティーが必要になる。
+        | そのような場合は、エラーの詳細情報をリストで保持するフィールドが必要になる。
 
  .. tip::   
  
-    プロパティーに\ ``@JsonInclude(JsonInclude.Include.NON_EMPTY)``\を指定することで、値が\ ``null``\や空の場合にJSONに項目が出力されないようにする事が出来る。
+    フィールドに\ ``@JsonInclude(JsonInclude.Include.NON_EMPTY)``\を指定することで、値が\ ``null``\や空の場合にJSONに項目が出力されないようにする事が出来る。
     項目を出力させないための条件を\ ``null``\に限定したい場合は、\ ``@JsonInclude(JsonInclude.Include.NON_NULL)``\を指定すればよい。
 
 |
@@ -3773,7 +3773,7 @@ RESTful Web Serviceで発生した例外のハンドリング方法について�
         * - | (2)
           - | com.fasterxml.jackson.databind.exc.
             | UnrecognizedPropertyException
-          - | Resourceオブジェクトに存在しないプロパティーがJSONに指定されている場合に発生する。
+          - | Resourceオブジェクトに存在しないフィールドがJSONに指定されている場合に発生する。
         * - | (3)
           - | com.fasterxml.jackson.databind.
             | JsonMappingException
@@ -4604,12 +4604,12 @@ How to extend
 
 @JsonViewを使用したレスポンスの出力制御
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| \ ``@JsonView``\ を使用することによって、Resourceオブジェクト内のプロパティーをグループ分けすることができる。
+| \ ``@JsonView``\ を使用することによって、Resourceオブジェクト内のフィールドをグループ分けすることができる。
 | この機能はSpring FrameworkがJacksonの機能をサポートすることにより実現している。
 | 詳細は、\ `JacksonJsonViews <http://wiki.fasterxml.com/JacksonJsonViews>`_\ を参照されたい。
 
-| Controllerにてグループを指定することで、指定したグループに所属するプロパティーのみ出力することができる。
-| 1つのプロパティーは、複数のグループに所属することも可能である。
+| Controllerにてグループを指定することで、指定したグループに所属するフィールドのみ出力することができる。
+| 1つのフィールドは、複数のグループに所属することも可能である。
 |
 | 以下は、メンバー情報を概要情報と詳細情報に分けて、概要情報は一部分のみ、詳細情報では、すべての情報を出力する場合の例である。
 
@@ -4784,7 +4784,7 @@ How to extend
 
 |
 
-| 出力されるボディは、Controllerで指定したグループに所属するプロパティーのみ出力される。
+| 出力されるボディは、Controllerで指定したグループに所属するフィールドのみ出力される。
 | 出力例は以下の通りとなる。
 
 * Summary
@@ -4823,7 +4823,7 @@ How to extend
 
 |
 
-| \ ``@JsonView``\ を付けなかったプロパティーは、\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ の設定を有効にすれば出力され、無効にすれば出力されない。
+| \ ``@JsonView``\ を付けなかったフィールドは、\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ の設定を有効にすれば出力され、無効にすれば出力されない。
 | 上記の出力例は、\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を有効にした場合の出力例である。
 | \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を有効にする場合は、以下のように設定する。
 
@@ -4994,7 +4994,7 @@ Appendix
 JSR-310 Date and Time API / Joda Timeを使う場合の設定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-リソースを表現するJavaBean(Resourceクラス)のプロパティーとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
+リソースを表現するJavaBean(Resourceクラス)のフィールドとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
 \ ``pom.xml``\ にJacksonから提供されている拡張モジュールを依存ライブラリに追加する。
 
 **JSR-310 Date and Time APIのクラスを使用する場合**
@@ -5232,7 +5232,7 @@ JSONの中に関連リソースへのハイパーメディアリンクを含め�
       - | リンク情報のコレクションを保持するResourceの抽象クラス(JavaBean)を作成する。
         | 本クラスは、パイパーメディアリンクをサポートするResourceクラスによって、継承される事を想定したクラスである。
     * - | (3)
-      - | リンク情報を複数保持するプロパティーを定義する。
+      - | リンク情報を複数保持するフィールドを定義する。
         | 上記例では、リンクの指定がない時にJSONに出力しないようにするために、\ ``@JsonInclude(JsonInclude.Include.NON_EMPTY)``\を指定している。
     * - | (4)
       - | リンク情報を追加するためのメソッドを用意する。
@@ -5270,7 +5270,7 @@ JSONの中に関連リソースへのハイパーメディアリンクを含め�
       - 説明
     * - | (1)
       - | リンク情報のコレクションを保持するResourceの抽象クラスを継承する。
-        | 継承することで、リンク情報のコレクションを保持するプロパティー(\ ``links``\)が取り込まれ、ハイパーメディアリンクをサポートするResourceクラスとなる。
+        | 継承することで、リンク情報のコレクションを保持するフィールド(\ ``links``\)が取り込まれ、ハイパーメディアリンクをサポートするResourceクラスとなる。
 
 
 * REST APIの処理で、ハイパーメディアリンクを追加する。
@@ -5833,15 +5833,15 @@ Spring-oxmから提供されているクラスを使用してXMLとオブジェ�
      - | Spring-oxmから提供されている\ ``Jaxb2Marshaller``\のbean定義を行う。
        | \ ``Jaxb2Marshaller``\はデフォルトの状態で XXE Injection対策が行われている。
    * - | (2)
-     - | ``packagesToScan`` プロパティーに JAXB用のJavaBean( ``javax.xml.bind.annotation.XmlRootElement`` アノテーションなどが付与されているJavaBean)が格納されているパッケージ名を指定する。
+     - | ``packagesToScan`` フィールドに JAXB用のJavaBean( ``javax.xml.bind.annotation.XmlRootElement`` アノテーションなどが付与されているJavaBean)が格納されているパッケージ名を指定する。
        | 指定したパッケージ配下に格納されているJAXB用のJavaBeanがスキャンされ、marshal、unmarshal対象のJavaBeanとして登録される。
        | ``<context:component-scan>`` の base-package属性と同じ仕組みでスキャンされる。
    * - | (3)
      - | ``<mvc:annotation-driven>`` の子要素である ``<mvc:message-converters>`` 要素に、 ``MarshallingHttpMessageConverter`` のbean定義を追加する。
    * - | (4)
-     - | ``marshaller`` プロパティーに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
+     - | ``marshaller`` フィールドに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
    * - | (5)
-     - | ``unmarshaller`` プロパティーに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
+     - | ``unmarshaller`` フィールドに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
 
 |
 
@@ -7042,8 +7042,8 @@ member-mapping.xml
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 | 実装したServiceクラスでは、クライアントから指定された値を\ ``Member``\オブジェクトにコピーする際に、「\ :doc:`Utilities/Dozer`\」を使って行っている。
-| 単純なプロパティー値のコピーのみでよい場合は、Beanのマッピング定義の追加は不要だが、実装例では、更新対象外の項目(\ ``memberId``\、\ ``credential``\、\ ``createdAt``\、\ ``version``\)をコピー対象外にする必要がある。
-| 特定のプロパティーをコピー対象外にするためには、Beanのマッピング定義の追加が必要となる。
+| 単純なフィールド値のコピーのみでよい場合は、Beanのマッピング定義の追加は不要だが、実装例では、更新対象外の項目(\ ``memberId``\、\ ``credential``\、\ ``createdAt``\、\ ``version``\)をコピー対象外にする必要がある。
+| 特定のフィールドをコピー対象外にするためには、Beanのマッピング定義の追加が必要となる。
 
 :file:`resources/META-INF/dozer/member-mapping.xml`
 
@@ -7088,7 +7088,7 @@ member-mapping.xml
 mybatis-config.xml
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | MyBatis3の動作をカスタマイズする場合は、MyBatis設定ファイルに設定値を追加する。MyBatis3では、Joda-Timeのクラス(org.joda.time.DateTime、org.joda.time.LocalDateTime、org.joda.time.LocalDateなど)はサポートされていない。
-| そのため、EntityクラスのプロパティーにJoda-Timeのクラスを使用する場合は、Joda-Time用のTypeHandlerを用意する必要がある。
+| そのため、EntityクラスのフィールドにJoda-Timeのクラスを使用する場合は、Joda-Time用のTypeHandlerを用意する必要がある。
 | org.joda.time.DateTimeとjava.sql.TimestampをマッピングするためのTypeHandlerの実装例、「\ :ref:`DataAccessMyBatis3HowToExtendTypeHandlerJoda`\」を使って行っている。
 
 :file:`resources/META-INF/mybatis/mybatis-config.xml`
