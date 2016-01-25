@@ -7870,7 +7870,7 @@ When "Lazy Load" is used, one of the libraries given below is necessary in order
 
 
 CGLIB had been used as default until MyBatis 3.2 series.
-From  MyBatis 3.3.0, JAVASSIST has been used as default at the MyBatis 3.3.0 or later version, which is supported by terasoluna-gfw-mybatis3 5.1.0.RELEASE.
+From  MyBatis 3.3.0, JAVASSIST has been used as default at the MyBatis 3.3.0 or later version, which is supported by terasoluna-gfw-mybatis3 5.0.2.RELEASE.
 In addition, it is possible to use "Lazy Load" without adding the library because the JAVASSIST is embedded in the MyBatis since MyBatis 3.3.0.
 
  .. note::

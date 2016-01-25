@@ -7871,7 +7871,7 @@ MyBatis3では、マッピング時に別のSQL(ネストしたSQL)を使用し�
 のいずれか一方のライブラリが必要となる。
 
 MyBatis 3.2系まではCGLIBがデフォルトで使用されるライブラリであったが、
-terasoluna-gfw-mybatis3 5.1.0.RELEASEでサポートしたMyBatis 3.3.0以降のバージョンではJAVASSISTがデフォルトで使用される。
+terasoluna-gfw-mybatis3 5.0.2.RELEASEでサポートしたMyBatis 3.3.0以降のバージョンではJAVASSISTがデフォルトで使用される。
 さらに、MyBatis 3.3.0からJAVASSISTがMyBatis本体に内包されているため、ライブラリを追加しなくても"Lazy Load"を使用する事ができる。
 
  .. note::
