@@ -139,6 +139,9 @@ PDFファイルのダウンロード
         </dependency>
   </dependencies>
   
+\
+    .. note::
+        JavaSEより標準で提供されるライブラリについては、 \ ``<exclusions>``\ 要素を追加し、ライブラリの競合が起こらないよう考慮している。
 
 
 \
@@ -320,9 +323,14 @@ Excelファイルのダウンロード
           <groupId>org.apache.poi</groupId>
           <artifactId>poi-ooxml</artifactId>
       </dependency>
+      <exclusions>
+          <exclusion>
+              <groupId>stax</groupId>
+              <artifactId>stax-api</artifactId>
+          </exclusion>
+      </exclusions>
   </dependencies>
 
-        
 \
     .. note::
         poi-ooxmlのバージョンはSpring IO Platformにて定義されているものを利用するため、設定例では <version> を省略している。
