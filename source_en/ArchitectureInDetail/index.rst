@@ -23,6 +23,7 @@ TERASOLUNA Server Framework for Java (5.x)の機能詳細
    Ajax
    REST
    RestClient
+   SOAP
    FileUpload
    FileDownload
    Email
