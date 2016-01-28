@@ -4041,7 +4041,7 @@ The method to add common conditions for JPQL which is executed at the time of ca
 
     @Entity
     @Table(name = "t_order")
-    @Where(clause = "is_logical_delete = 'false'") // (1)
+    @Where(clause = "is_logical_delete = false") // (1)
     public class Order implements Serializable {
         // ...
         @Id
@@ -4076,7 +4076,55 @@ The method to add common conditions for JPQL which is executed at the time of ca
         | The WHERE clause should be specified in SQL instead of JPQL i.e. it is necessary to specify the column name instead of the property name of Java object.
     * - | (2)
       - | The condition specified with ``@Where`` annotation is added.
+      
+- Extending Dialect to register standard keywords such as ``true``, ``false`` and ``unknown``.
 
+ .. code-block:: java
+
+    package xx.yy.zz.dialect;
+    
+    public class ExtendedPostgreSQL9Dialect extends PostgreSQL9Dialect { // (1)
+    public ExtendedPostgreSQL9Dialect() {
+        super();
+        // (2)
+        registerKeyword("true");
+        registerKeyword("false");
+        registerKeyword("unknown");
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :widths: 10 90
+    :header-rows: 1
+    
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | The Hibernate fails to register standard SQL keywords such as ``true``, ``false`` and ``unknown``. These can be registered by extending the database specific Dialect.
+        | The default Dialect for postgresql database is ``org.hibernate.dialect.PostgreSQL9Dialect``.
+    * - | (2)
+      - | Register standard SQL keywords such as ``true``, ``false`` and ``unknown``.
+
+- Settings of extended Dialect
+
+ .. code-block:: xml
+
+    <bean id="jpaVendorAdapter"
+        class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="xx.yy.zz.dialect.ExtendedPostgreSQL9Dialect"/> // (3)
+        // ...
+    </bean>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :widths: 10 90
+    :header-rows: 1
+    
+    * - Sr. No.
+      - Description
+    * - | (3)
+      - | The extended Dialect is set as the value of ``databasePlatform`` property in JPA Vendor Adapter of EntityManager.
+      
  .. note:: **Class that can be specified**
 
     ``@Where`` annotation is valid only in the class with ``@Entity``.
@@ -4098,7 +4146,7 @@ The method for adding common conditions for JPQL is shown below. JPQL is used fo
 
     @Entity
     @Table(name = "t_order")
-    @Where(clause = "is_logical_delete = 'false'")
+    @Where(clause = "is_logical_delete = false")
     public class Order implements Serializable {
         // ...
         @Id
@@ -4106,7 +4154,7 @@ The method for adding common conditions for JPQL is shown below. JPQL is used fo
 
         @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
         @OrderBy
-        @Where(clause="is_logical_delete = 'false'") // (1)
+        @Where(clause="is_logical_delete = false") // (1)
         private Set<OrderItem> orderItems;
         // ...
 

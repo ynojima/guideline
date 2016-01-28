@@ -4044,7 +4044,7 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
 
     @Entity
     @Table(name = "t_order")
-    @Where(clause = "is_logical_delete = 'false'") // (1)
+    @Where(clause = "is_logical_delete = false") // (1)
     public class Order implements Serializable {
         // ...
         @Id
@@ -4080,6 +4080,54 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
     * - | (2)
       - | ``@Where`` アノテーションで指定した条件が追加されている。
 
+- 標準的なキーワード ``true`` 、``false`` 、``unknown`` などを登録するためのDialectを拡張する
+
+ .. code-block:: java
+
+    package xx.yy.zz.dialect;
+    
+    public class ExtendedPostgreSQL9Dialect extends PostgreSQL9Dialect { // (1)
+    public ExtendedPostgreSQL9Dialect() {
+        super();
+        // (2)
+        registerKeyword("true");
+        registerKeyword("false");
+        registerKeyword("unknown");
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :widths: 10 90
+    :header-rows: 1
+    
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Hibernateは標準的なSQLキーワード ``true`` 、``false`` 、``unknown`` などを登録することができません。これらは、データベース特定のDialectを拡張することによって登録することができます。
+        | 例、postgresqlデータベースのデーフォルトDialectは``org.hibernate.dialect.PostgreSQL9Dialect``となります。
+    * - | (2)
+      - | 標準的なSQLキーワード ``true`` 、``false`` 、``unknown`` などを登録する。
+
+- 拡張したDialectを設定する
+
+ .. code-block:: xml
+
+    <bean id="jpaVendorAdapter"
+        class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="xx.yy.zz.dialect.ExtendedPostgreSQL9Dialect"/> // (3)
+        // ...
+    </bean>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :widths: 10 90
+    :header-rows: 1
+    
+    * - Sr. No.
+      - Description
+    * - | (3)
+      - | 拡張したDialectをEntityManagerであるJpaVendorAdapterの``databasePlatform``プロパティの値に設定する。
+
  .. note:: **指定可能なクラスについて**
 
     ``@Where`` アノテーションは、 ``@Entity`` が付与されているクラスでのみ有効である。
@@ -4101,7 +4149,7 @@ Repositoryインタフェースのメソッド呼び出して取得したEntity�
 
     @Entity
     @Table(name = "t_order")
-    @Where(clause = "is_logical_delete = 'false'")
+    @Where(clause = "is_logical_delete = false")
     public class Order implements Serializable {
         // ...
         @Id
@@ -4109,7 +4157,7 @@ Repositoryインタフェースのメソッド呼び出して取得したEntity�
 
         @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
         @OrderBy
-        @Where(clause="is_logical_delete = 'false'") // (1)
+        @Where(clause="is_logical_delete = false") // (1)
         private Set<OrderItem> orderItems;
         // ...
 
