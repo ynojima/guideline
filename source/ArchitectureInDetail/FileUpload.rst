@@ -1701,10 +1701,10 @@ Commons FileUpload を使用したファイルのアップロード
 アプリケーションサーバの問題であると思われるが、アプリケーションサーバ側で修正されない限り、
 ファイルとマルチバイト文字を同時に送信する事ができない。
 
-この問題は、Commons FileUploadを使用することで回避できるため、
+**この問題は、Commons FileUploadを使用することで回避できるため、
 問題が発生する特定環境向けの暫定対処として、
 Commons FileUploadを使用したファイルのアップロードについて説明する。
-問題が発生しない環境でのcommons-fileuploadの使用は推奨しない。
+問題が発生しない環境でのCommons FileUploadの使用は推奨しない。**
 
 Commons FileUploadを使用する場合は以下の設定を行う。
 
