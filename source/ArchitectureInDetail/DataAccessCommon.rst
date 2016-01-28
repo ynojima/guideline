@@ -396,7 +396,7 @@ JDBCのDebug用ログの設定
 
  .. warning::
 
-    **log4jdbc-remixが提供しているLog4jdbcProxyDataSourceを使用していると、ログレベルを"debug"以下に設定してもログ出力のためのオーバーヘッドが発生する。**
+    **log4jdbc-remixが提供しているLog4jdbcProxyDataSourceを使用していると、ログレベルを"debug"以外に設定しても、オーバーヘッドが少なからず発生する。**
     **そのため、本設定はデバッグ用として使用し、性能試験及び商用環境にリリースする場合は使用しないことを推奨する。**
 
 
