@@ -90,22 +90,21 @@ Spring Securityのアーキテクチャ
 
 |
 
-Spring Securityのモジュール構成
+Spring Securityのモジュール
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-まずSpring Securityが提供しているモジュールを紹介する。
-Spring Securityは、コンポーネントの役割などに応じて、以下のようなモジュールに分割されている。
+まず共通フレームワークが使用しているSpring Securityの提供モジュールを紹介する。
 
-標準的なWebアプリケーションで必要となるモジュール群
+共通フレームワークで使用しているモジュール群
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-標準的なWebアプリケーションに対してセキュリティ対策行う際に必要となるモジュールは、以下の通りである。
-本ガイドラインでもこれらのモジュールを利用してセキュリティ対策を行う方法について説明する。
+共通フレームワークで使用しているモジュールは、以下の通りである。
+本ガイドラインでもこれらのモジュールを使用してセキュリティ対策を行う方法について説明する。
 
 \
 
 .. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
-.. list-table:: **標準的なWebアプリケーションで必要となるモジュール群**
+.. list-table:: **共通フレームワークで使用しているモジュールモジュール群**
     :header-rows: 1
     :widths: 25 75
 
@@ -122,29 +121,20 @@ Spring Securityは、コンポーネントの役割などに応じて、以下�
         このモジュールを使用すると、Spring Securityのbean定義を簡単に行うことができる。
     * - \ ``spring-security-taglibs``\
       - 認証情報や認可機能にアクセスするためのJSPタグライブラリが格納されている。
-    * - \ ``spring-security-ldap``\
-      - Lightweight Directory Access Protocol(LDAP)を使用した認証を実現するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-openid``\
-      - OpenID\ [#fSpringSecurityArchitecture1]_\ を使用した認証を実現するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-cas``\
-      - Central Authentication Service(CAS)\ [#fSpringSecurityArchitecture2]_\ と連携するために必要となるコンポーネントが格納されている。
     * - \ ``spring-security-acl``\
       - EntityなどのドメインオブジェクトをAccess Control List(ACL)を使用して認可制御するために必要となるコンポーネントが格納されている。
-    * - \ ``spring-security-crypto``\
-      - 暗号化、キーの生成、ハッシュアルゴリズムを利用したパスワードエンコーディングを行うためのコンポーネントが格納されている。
 
-
-要件に合わせて利用する拡張モジュール群
+要件に合わせて使用するモジュール群
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-本ガイドラインでは使い方を紹介しないが、一般的に利用される認証方法などをサポートするために、
-以下のような拡張モジュールを提供している。
-セキュリティ要件に応じて、これらのモジュールの利用も検討されたい。
+共通フレームワークでは使用していないが、一般的に利用される認証方法などをサポートするために、
+以下のようなモジュールも提供されている。
+セキュリティ要件に応じて、これらのモジュールの使用も検討されたい。
 
 \
 
 .. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
-.. list-table:: **要件に合わせて利用する拡張モジュール群**
+.. list-table:: **要件に合わせて使用するモジュール群**
     :header-rows: 1
     :widths: 25 75
 
@@ -159,6 +149,14 @@ Spring Securityは、コンポーネントの役割などに応じて、以下�
       - SpringのWeb Socket機能に対してセキュリティ対策を追加するためのコンポーネントが格納されている。 
     * - \ ``spring-security-data``\ \ [#fSpringSecurityArchitecture5]_\ 
       - Spring Dataの機能から認証情報にアクセスできるようにするためのコンポーネントが格納されている。 
+    * - \ ``spring-security-ldap``\
+      - Lightweight Directory Access Protocol(LDAP)を使用した認証を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-openid``\
+      - OpenID\ [#fSpringSecurityArchitecture1]_\ を使用した認証を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-cas``\
+      - Central Authentication Service(CAS)\ [#fSpringSecurityArchitecture2]_\ と連携するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-crypto``\
+      - 暗号化、キーの生成、ハッシュアルゴリズムを利用したパスワードエンコーディングを行うためのコンポーネントが格納されている。
 
 テスト用のモジュール
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
