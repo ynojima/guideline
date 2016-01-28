@@ -2303,7 +2303,7 @@ Attributes of ``@NumberFormat`` annotation are given below.
      - Description
    * - 1.
      - style
-     - Specify number format style (NUMBER, CURRENCY, PERCENT). For details refer to `Javadoc of NumberFormat.Style <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/format/annotation/NumberFormat.Style.html>`_\ .
+     - Specify number format style. For details refer to `Javadoc of NumberFormat.Style <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/format/annotation/NumberFormat.Style.html>`_\ .
    * - 2.
      - pattern
      - Specify number format of Java. Refer to 'Javadoc of DecimalFormat <http://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html>'_\ for details.
