@@ -3677,11 +3677,13 @@ Adding the custom methods to all Repository interfaces in batch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  .. note:: **Refer latest version**
 
-     There was an example given for adding the custom methods to all Repository interfaces in past version, 
-     but since there is major changes in new version, removed older content and it is recommended to use latest version.
+     There was a description given for adding custom methods to all Repository interfaces in past TERASOLUNA FW version, 
+     but due to below reasons this feature is abolished in current version.
      
-     In new version implementation of factory class is not required for creating instance of the repositoryImpl as well 
-     the code is not required anymore to specify the lock mode using @Lock annotation for findOne method and findAll methods of SimpleJpaRepository class of Spring Data JPA.
+     #. The method described so far was supported in Spring Data Commons, and not supported in Spring Data JPA.
+     #. The method described so far had an example of adding extension code in order to implement Spring Data JPA, the extension code is no longer required in upgraded version of Spring Data JPA.
+     
+     If project requirement continues to use this feature, it is recommended to consider the version up of TERASOLUNA FW.
 
 
 |
