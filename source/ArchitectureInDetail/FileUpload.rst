@@ -12,11 +12,11 @@ Overview
 
 | 本節では、ファイルをアップロードする方法について、説明する。
 
-| ファイルのアップロードは、Servlet3.0からサポートされたファイルアップロード機能と、Spring Webから提供されているクラスを利用して行う。
+| ファイルのアップロードは、Servlet 3.0からサポートされたファイルアップロード機能と、Spring Webから提供されているクラスを利用して行う。
 
  .. note::
 
-    本節では、Servlet3.0でサポートされたファイルアップロード機能を使用しているため、Servletのバージョンは、3.0以上であることが前提となる。
+    本節では、Servlet 3.0でサポートされたファイルアップロード機能を使用しているため、Servletのバージョンは、3.0以上であることが前提となる。
 
  .. note::
 
@@ -40,7 +40,7 @@ Overview
 
 アップロード処理の基本フロー
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Servlet3.0からサポートされたファイルアップロード機能と、Spring Webのクラスを使って、ファイルをアップロードする際の基本フローを、以下に示す。
+Servlet 3.0からサポートされたファイルアップロード機能と、Spring Webのクラスを使って、ファイルをアップロードする際の基本フローを、以下に示す。
 
  .. figure:: ./images/file-upload-overview_basicflow.png
    :alt: Screen image of single file upload.
@@ -58,28 +58,28 @@ Servlet3.0からサポートされたファイルアップロード機能と、S
    * - | (2)
      - | サーブレットコンテナは、\ ``multipart/form-data``\ リクエストを受け取り、\ ``org.springframework.web.servlet.DispatcherServlet``\ を呼び出す。
    * - | (3)
-     - | \ ``DispatcherServlet``\ は、 ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、Servlet3.0のファイルアップロード機能を、Spring MVCで扱えるようにする。
-       | \ ``StandardServletMultipartResolver``\ は、Servlet3.0から導入されたAPI(\ ``javax.servlet.http.Part``\ )をラップする\ ``org.springframework.web.multipart.MultipartFile``\ のオブジェクトを生成する。
+     - | \ ``DispatcherServlet``\ は、 ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、Servlet 3.0のファイルアップロード機能を、Spring MVCで扱えるようにする。
+       | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入されたAPI(\ ``javax.servlet.http.Part``\ )をラップする\ ``org.springframework.web.multipart.MultipartFile``\ のオブジェクトを生成する。
    * - | (4)
      - | \ ``DispatcherServlet``\ は、Controllerのハンドラメソッドを呼び出す。
        | (3)で生成された\ ``MultipartFile``\ オブジェクトは、 Controllerの引数またはフォームオブジェクトに、バインドされる。
    * - | (5)
      - | Controllerは、\ ``MultipartFile``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得する。
    * - | (6)
-     - | \ ``MultipartFile``\ は、Servlet3.0から導入された\ ``Part``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得し、Controllerに返却する。
+     - | \ ``MultipartFile``\ は、Servlet 3.0から導入された\ ``Part``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得し、Controllerに返却する。
    * - | (7)
      - | Controllerは、Serviceのメソッドを呼び出し、アップロード処理を実行する。
        | \ ``MultipartFile``\ オブジェクトより取得した、ファイルの中身と、メタ情報(ファイル名など)は、Serviceのメソッドの引数として、引き渡す。
    * - | (8)
      - | Serviceは、アップロードされたファイルの中身と、メタ情報(ファイル名など)を、ファイルまたはデータベースに格納する。
    * - | (9)
-     - | \ ``DispatcherServlet``\ は、\ ``StandardServletMultipartResolver``\ を呼び出し、Servlet3.0のファイルアップロード機能で使用される一時ファイルを削除する。
+     - | \ ``DispatcherServlet``\ は、\ ``StandardServletMultipartResolver``\ を呼び出し、Servlet 3.0のファイルアップロード機能で使用される一時ファイルを削除する。
    * - | (10)
-     - | \ ``StandardServletMultipartResolver``\ は、Servlet3.0から導入された\ ``Part``\ オブジェクトのメソッドを呼び出し、ディスクに保存されている一時ファイルを削除する。
+     - | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入された\ ``Part``\ オブジェクトのメソッドを呼び出し、ディスクに保存されている一時ファイルを削除する。
 
  .. note::
 
-    Controllerでは、Spring Webから提供されている\ ``MultipartFile``\ オブジェクトに対して処理を行うため、Servlet3.0から提供されたファイルアップロード用のAPIに依存した実装を、排除することができる。
+    Controllerでは、Spring Webから提供されている\ ``MultipartFile``\ オブジェクトに対して処理を行うため、Servlet 3.0から提供されたファイルアップロード用のAPIに依存した実装を、排除することができる。
 
 
 Spring Webから提供されているクラスについて
@@ -103,8 +103,8 @@ Spring Webから提供されているファイルアップロード用のクラ�
      - | org.springframework.web.multipart.support.
        | StandardMultipartHttpServletRequest$
        | StandardMultipartFile
-     - | Servlet3.0から導入されたファイルアップロード機能用の\ ``MultipartFile``\ クラス。
-       | Servlet3.0から導入された\ ``Part``\ オブジェクトに、処理を委譲している。
+     - | Servlet 3.0から導入されたファイルアップロード機能用の\ ``MultipartFile``\ クラス。
+       | Servlet 3.0から導入された\ ``Part``\ オブジェクトに、処理を委譲している。
    * - 3.
      - | org.springframework.web.multipart.
        | MultipartResolver
@@ -113,7 +113,7 @@ Spring Webから提供されているファイルアップロード用のクラ�
    * - 4.
      - | org.springframework.web.multipart.support.
        | StandardServletMultipartResolver
-     - | Servlet3.0から導入されたファイルアップロード機能用の\ ``MultipartResolver``\ クラス。
+     - | Servlet 3.0から導入されたファイルアップロード機能用の\ ``MultipartResolver``\ クラス。
    * - 5.
      - | org.springframework.web.multipart.support.
        | MultipartFilter
@@ -123,7 +123,7 @@ Spring Webから提供されているファイルアップロード用のクラ�
 
  .. tip::
 
-    本ガイドラインでは、Servlet3.0から導入されたファイルアップロード機能を使うことを前提としているが、Spring Webでは、\ `「Apache Commons FileUpload」用の実装クラスも提供している <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-multipart-resolver-commons>`_\ 。
+    本ガイドラインでは、Servlet 3.0から導入されたファイルアップロード機能を使うことを前提としているが、Spring Webでは、\ `「Apache Commons FileUpload」用の実装クラスも提供している <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-multipart-resolver-commons>`_\ 。
     アップロード処理の実装の違いは、\ ``MultipartResolver``\ と、\ ``MultipartFile``\ オブジェクトによって吸収されるため、Controllerの実装に影響を与えることはない。
 
 |
@@ -136,9 +136,9 @@ How to use
 アプリケーションの設定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Servlet3.0のアップロード機能を有効化するための設定
+Servlet 3.0のアップロード機能を有効化するための設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Servlet3.0のアップロード機能を有効化するために、以下の設定を行う。
+Servlet 3.0のアップロード機能を有効化するために、以下の設定を行う。
 
 - :file:`web.xml`
 
@@ -174,7 +174,7 @@ Servlet3.0のアップロード機能を有効化するために、以下の設�
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``<web-app>``\ 要素の\ ``xsi:schemaLocation``\ 属性に、Servlet3.0以上のXSDファイルを指定する。
+     - | \ ``<web-app>``\ 要素の\ ``xsi:schemaLocation``\ 属性に、Servlet 3.0以上のXSDファイルを指定する。
    * - | (2)
      - | \ ``<web-app>``\ 要素の\ ``version``\ 属性に、\ ``3.0``\ 以上のバージョンを指定する。
    * - | (3)
@@ -319,9 +319,9 @@ multipart/form-dataリクエストの時に、Servlet Filterの処理内でリ�
     
 
 
-Servlet3.0のアップロード機能とSpring MVCを連携するための設定
+Servlet 3.0のアップロード機能とSpring MVCを連携するための設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Servlet3.0のアップロード機能と、Spring MVCを連携するために、以下の設定を行う。
+Servlet 3.0のアップロード機能と、Spring MVCを連携するために、以下の設定を行う。
 
 - :file:`spring-mvc.xml`
 
@@ -339,7 +339,7 @@ Servlet3.0のアップロード機能と、Spring MVCを連携するために、
    * - 項番
      - 説明
    * - | (1)
-     - | Servlet3.0用のMultipartResolverである\ ``StandardServletMultipartResolver``\ を、bean定義する。
+     - | Servlet 3.0用のMultipartResolverである\ ``StandardServletMultipartResolver``\ を、bean定義する。
        | beanIDは、\ ``"multipartResolver"``\ とすること。
        |
        | この設定を行うことで、アップロードされたファイルを\ ``org.springframework.web.multipart.MultipartFile``\ として、Controllerの引数およびフォームオブジェクトのプロパティとして、受け取ることができる。
