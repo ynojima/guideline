@@ -13,11 +13,17 @@ Spring Securityは、アプリケーションにセキュリティ対策機能�
 Spring Securityはスタンドアロンなアプリケーションでも利用できるが、サーブレットコンテナにデプロイするWebアプリケーションに対してセキュリティ対策を行う際に利用するのが一般的である。
 本章では、Spring Securityが提供する機能のうち、一般的なWebアプリケーションでの利用頻度が高いと思われる機能にしぼって説明する。
 
-.. tip::
+.. tip:: **ガイドラインで紹介していない機能**
 
     Spring Securityは、本ガイドラインで紹介していない機能も多く提供している。
     Spring Securityが提供するすべての機能を知りたい場合は、\ `Spring Security Reference <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#security-filter-chain>`_\ を参照されたい。
 
+.. note:: **Spring Securityのバージョン**
+
+    本ガイドラインでは、Spring Securityのバージョンは4.0を使用している。
+    Spring Securityが4.0にバージョンアップするにあたり、様々な変更が適用されており、以降で記述されるサンプルについても、Spring Security 4を使用したサンプルとなっている。
+
+    変更内容については\ `Migrating from Spring Security 3.x to 4.x (XML Configuration) <http://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html>`_\ を参照されたい。
 
 .. _SpringSecurityFunctionalities:
 
@@ -64,18 +70,6 @@ Spring Securityでは認証と認可という基本的な機能に加え、Web�
       - クロスサイトリクエストフォージェリ(CSRF)攻撃からユーザーを守るための機能。
     * - :ref:`セキュリティヘッダ出力機能<SpringSecurityLinkageWithBrowser>`
       - Webブラウザのセキュリティ対策機能と連携し、ブラウザの機能を悪用した攻撃からユーザーを守るための機能。
-
-|
-
-
-.. _SpringSecurityVersion:
-
-Spring Securityのバージョン
---------------------------------------------------------------------------------
-本ガイドラインでは、Spring Securityのバージョンは4.0を使用している。
-Spring Securityが4.0にバージョンアップするにあたり、様々な変更が適用されており、以降で記述されるサンプルについても、Spring Security 4を使用したサンプルとなっている。
-
-変更内容については\ `Migrating from Spring Security 3.x to 4.x (XML Configuration) <http://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html>`_\ を参照されたい。
 
 |
 
