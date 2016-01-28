@@ -546,6 +546,10 @@ Expression内で「# + 引数名」形式のExpressionを指定することで�
           public Account findOne(@P("username") String username) {
               return accountRepository.findOne(username);
           }
+    
+    ``@P`` アノテーションをインターフェースに定義している場合は、**インタフェースの引数名と実装クラスと引数名を揃える必要がある**。
+    これは、Spring Securityが、引数名の解決を、実装クラスの引数名を使用して行っているためである。
+
 
     JDK 8 から追加されたコンパイルオプション(\ ``-parameters``\ )を使用すると、メソッドパラメータにリフレクション用のメタデータが生成されるため、アノテーションを指定しなくても引数名が解決される。
 
