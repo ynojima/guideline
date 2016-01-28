@@ -375,7 +375,7 @@ Spring Securityと共通ライブラリの関連については、:ref:`framewor
 
 bean定義ファイルの作成
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Spring Securityのコンポーネントをbean定義するため、以下のようなXMLファイルを作成する。
+Spring Securityのコンポーネントをbean定義するため、以下のようなXMLファイルを作成する。（`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\より抜粋）
 
 *xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
 
@@ -393,12 +393,22 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
            "> <!-- (1) -->
 
         <sec:http> <!-- (2) -->
-            <!-- (3) -->
-            <sec:intercept-url pattern="/**" access="isAuthenticated()"/>
-            <sec:form-login />
+            <sec:form-login /> <!-- (3) -->
+            <sec:logout /> <!-- (4) -->
+            <sec:access-denied-handler ref="accessDeniedHandler"/> <!-- (5) -->
+            <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/> <!-- (6) -->
+            <sec:session-management /> <!-- (7) -->
         </sec:http>
 
-        <sec:authentication-manager /> <!-- (4) -->
+        <sec:authentication-manager /> <!-- (8) -->
+
+        <bean id="accessDeniedHandler" class="org.springframework.security.web.access.DelegatingAccessDeniedHandler"> <!-- (9) -->
+            <!-- omitted -->
+        </bean>
+
+        <bean id="userIdMDCPutFilter" class="org.terasoluna.gfw.security.web.logging.UserIdMDCPutFilter">  <!-- (10) -->
+            <!-- omitted -->
+        </bean>
 
     </beans>
 
@@ -418,10 +428,23 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
       - \ ``<sec:http>``\ タグを定義する。
         \ ``<sec:http>``\ タグを定義すると、Spring Securityを利用するために必要となるコンポーネントのbean定義が自動的に行われる。
     * - \ (3)
-      - ここではセットアップの疎通確認を行うために、全てのパスに対して認証が必要となる認可設定を行い、フォーム認証機能を有効化している。
+      - ログインに関する設定を **デフォルト設定** で定義する。
     * - \ (4)
+      - ログアウトに関する設定を **デフォルト設定** で定義する。
+    * - \ (5)
+      - アクセスエラー時の制御を行うための設定を定義する。
+    * - \ (6)
+      - ログ出力するユーザ情報をMDCに格納するための共通ライブラリのフィルタを定義する。
+    * - \ (7)
+      - 認証処理に関する設定を **デフォルト設定** で定義する。
+    * - \ (8)
       - \ ``<sec:authentication-manager />``\ タグを定義して、認証機能用のコンポーネントをbean定義する。
         このタグを定義しておかないとサーバ起動時にエラーが発生する。
+    * - \ (9)
+      - \ アクセスエラー時のエラーハンドリングを行うコンポーネントをbean定義する。
+    * - \ (10)
+      - \ ログ出力するユーザ情報をMDCにする共通ライブラリのコンポーネントをbean定義する。
+
 
 .. note:: **静的リソースへのアクセス**
 
@@ -500,16 +523,6 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
    * - \ (2)
      -  Spring Securityを適用するURLのパターンを指定する。
         上記例では、すべてのリクエストに対してSpring Securityを適用する。
-
-|
-
-サーブレットフィルタクラスをサーブレットコンテナに登録し、アプリケーションサーバを起動する。
-セットアップが正しく行われている場合は、トップページにアクセスすると、Spring Securityが提供しているログイン画面が表示される。
-
-.. figure:: ./images_SpringSecurity/DefaultLoginPage.png
-   :alt: ログイン画面
-
-   **Spring Securityが提供しているデフォルトのログイン画面**
 
 |
 
