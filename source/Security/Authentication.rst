@@ -2029,7 +2029,7 @@ Bean Validationに関する詳細は \ :doc:`../ArchitectureInDetail/Validation`
         if (result.hasErrors()) {
             // omitted
         }
-        return "forward:/authenticate"; // (1)
+        return "forward:/authenticate"; // (2)
     }
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2680,8 +2680,8 @@ Spring MVCでリクエストを受けてログインフォームを表示する�
 .. code-block:: java
 
     @Controller
-    @RequestMapping("/login")  // (1)
-    public class LoginController {
+    @RequestMapping("/login")
+    public class LoginController { // (1)
 
         @RequestMapping
         public String index() {
@@ -2697,7 +2697,7 @@ Spring MVCでリクエストを受けてログインフォームを表示する�
     * - 項番
       - 説明
     * - | (1)
-      - | "/login"にアクセスされたら、view名として"login"を返却する。
+      - | view名として"login"を返却するメソッド。\ ``InternalResourceViewResolver``\ によってsrc/main/webapp/WEB-INF/views/login.jspが出力される。
 
 本例のように、単純にview名を返すだけのメソッドが一つだけあるControllerであれば、\ ``<mvc:view-controller>``\ を使用して代用することも可能である。  
 
@@ -2706,16 +2706,6 @@ Spring MVCでリクエストを受けてログインフォームを表示する�
 .. code-block:: xml
 
     <mvc:view-controller path="/login" view-name="login" /><!-- (1) -->
-  
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | "/login"にアクセスされたら、view名として"login"を返却するだけのControllerを定義する。\ ``InternalResourceViewResolver``\ によってsrc/main/webapp/WEB-INF/views/login.jspが出力される。
 
 |
 
