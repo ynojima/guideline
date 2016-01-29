@@ -5109,7 +5109,7 @@ How to implement a process wherein the search results are downloaded as CSV data
     public interface TodoRepository {
 
         // (1) (2)
-        void collectAllByCriteria(TodoCriteria criteria, ResultHandler resultHandler);
+        void collectAllByCriteria(TodoCriteria criteria, ResultHandler<Todo> resultHandler);
 
     }
 
@@ -5196,10 +5196,10 @@ How to implement a process wherein the search results are downloaded as CSV data
             final BufferedWriter downloadWriter) {
 
             // (4)
-            ResultHandler handler = new ResultHandler() {
+            ResultHandler<Todo> handler = new ResultHandler<Todo>() {
                 @Override
-                public void handleResult(ResultContext context) {
-                    Todo todo = (Todo) context.getResultObject();
+                public void handleResult(ResultContext<? extends Todo> context) {
+                    Todo todo = context.getResultObject();
                     StringBuilder sb = new StringBuilder();
                     try {
                         sb.append(todo.getTodoId());
@@ -5269,7 +5269,7 @@ How to implement a process wherein the search results are downloaded as CSV data
            - Description
          * - (1)
            - getResultObject
-           - A method for fetching Java class object specified by \ ``resultType``\  attribute of \ ``select``\  element.
+           - A method for fetching object which mapped search results.
          * - (2)
            - getResultCount
            - A method for fetching the call count of \ ``ResultHandler#handleResult``\  method.
@@ -7865,47 +7865,23 @@ Adding a Bytecode Manipulation Library
 
 When "Lazy Load" is used, one of the libraries given below is necessary in order to generate a Proxy object for implementing "Lazy Load".
 
-* CGLIB
 * JAVASSIST
+* CGLIB
 
 
-The method to add CGLIB specified in MyBatis 3.2 by default to dependent library is given below.
+CGLIB had been used as default until MyBatis 3.2 series.
+From  MyBatis 3.3.0, JAVASSIST has been used as default at the MyBatis 3.3.0 or later version, which is supported by terasoluna-gfw-mybatis3 5.0.2.RELEASE.
+In addition, it is possible to use "Lazy Load" without adding the library because the JAVASSIST is embedded in the MyBatis since MyBatis 3.3.0.
 
-* :file:`projectName-domain/pom.xml`
+ .. note::
 
- .. code-block:: xml
+    When CGLIB is to be used in MyBatis 3.3.0 or later,
 
-    <!-- (1) -->
-    <dependency>
-        <groupId>cglib</groupId>
-        <artifactId>cglib</artifactId>
-        <version>2.2.2</version>
-    </dependency>
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.80\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 80
-
-    * - Sr. No.
-      - Description
-    * - (1)
-      - Add an artifact of CGLIB to \ :file:`pom.xml`\ .
-
- .. tip::
-
-    In MyBatis 3.3.0 or higher versions, since JAVASSIST is included,
-    "Lazy Load" can be used even without adding a library.
-
-    In 3.2 series, although CGLIB is present by default, JAVASSIST in MyBatis is considered as default in 3.3 series onwards.
-
-    When JAVASSIST is to be used in 3.2 series,
-
-    * JAVASSIST artifact should be added to \ :file:`pom.xml`\ 
-    * "\ ``proxyFactory=JAVASSIST``\" should be added to MyBatis configuration file (:file:`projectName-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml`)
+    * CGLIB artifact should be added to \ :file:`pom.xml`\
+    * "\ ``proxyFactory=CGLIB``\" should be added to MyBatis configuration file (:file:`projectName-domain/src/main/resources/META-INF/mybatis/mybatis-config.xml`)
 
 
-    Refer to "`MyBatis3 PROJECT DOCUMENTATION(Project Dependencies-compile-) <http://mybatis.github.io/mybatis-3/dependencies.html#compile>`_\"  for information about JAVASSIST artifact
+    Refer to "`MyBatis3 PROJECT DOCUMENTATION(Project Dependencies-compile-) <http://mybatis.github.io/mybatis-3/dependencies.html#compile>`_\"  for information about CGLIB artifact.
     
 
 |
