@@ -484,7 +484,7 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
             PrivateKey privateKey = keyPair.getPrivate();
 
             byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey);  // (4)
-            System.out.println(Base64.getEncoder().encodeToString(cipherBytes));
+            System.out.println(new String(Base64.encode(cipherBytes)));
             String plainText = decryptByPrivateKey(cipherBytes, privateKey); // (5)
             System.out.println(plainText);
         } catch (NoSuchAlgorithmException e) {
