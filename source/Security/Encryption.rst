@@ -270,7 +270,7 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
 
 - GCMを用いたAESを使用してテキスト（文字列）を暗号化する。
 
-  GCMを用いたAESはSpring Security4.0.2以降、かつ、Java SE8以降で利用可能である。\ :ref:`EncryptionOverviewEncryptionAlgorithmAes`\ で説明したとおり、CBCより処理効率が良い。
+  GCMを用いたAESはSpring Security4.0.2以降で利用可能である。\ :ref:`EncryptionOverviewEncryptionAlgorithmAes`\ で説明したとおり、CBCより処理効率が良い。
 
   .. code-block:: java
 
@@ -293,6 +293,10 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
 
      * - | (2)
        - | 平文を\ ``encrypt``\ メソッドで暗号化する。
+
+  .. note:: **GCMのJava対応**
+
+    GCMを用いたAESはJava SE8以降で使用可能である。詳細については、\ `JDK 8セキュリティの拡張機能 <http://docs.oracle.com/javase/jp/8/docs/technotes/guides/security/enhancements-8.html>`_\を参照されたい。
 
 |
 
@@ -510,7 +514,7 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
 
      * - | (4)
        - | 公開鍵を利用して暗号化処理を行う。処理内容は後述する。
-         | 暗号化された内容を確認したい場合はBase64エンコードする。Java SE8以降の場合は、Java標準のjava.util.Base64を使用する。それ以前の場合は、Spring Securityのorg.springframework.security.crypto.codec.Base64を使用する。
+         | 暗号化された内容を確認したい場合は\ ``Base64``\ エンコードする。Java SE8以降の場合は、Java標準の\ ``java.util.Base64``\ を使用する。それ以前の場合は、Spring Securityの\ ``org.springframework.security.crypto.codec.Base64``\ を使用する。
 
      * - | (5)
        - | 秘密鍵を利用して復号処理を行う。処理内容は後述する。
