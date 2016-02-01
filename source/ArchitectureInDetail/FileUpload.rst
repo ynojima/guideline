@@ -29,7 +29,7 @@ Overview
     version 5.0.1.RELEASE時点で問題の発生が確認されているアプリケーションサーバは以下の通りである。
 
     * WebLogic 12.1.3
-    * JBoss EAP 6.4
+    * JBoss EAP 6.4.0.GA
 
  .. warning::
  
