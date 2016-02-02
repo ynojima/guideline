@@ -4374,21 +4374,24 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
 サーブレットコンテナに通知されたエラーのエラー応答を行うControllerを作成する。
 
  .. code-block:: java
-    :emphasize-lines: 14-17, 19-20, 22-27, 31, 34
+    :emphasize-lines: 17-20, 22-23, 25, 28, 33-35, 36, 40, 42, 45
 
     package org.terasoluna.examples.rest.api.common.error;
+    
+    import java.util.HashMap;
+    import java.util.Map;
     
     import javax.inject.Inject;
     import javax.servlet.RequestDispatcher;
     
     import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.RequestParam;
-    import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.bind.annotation.RestController;
+    import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.context.request.WebRequest;
-
+    
     // (1)
     @RequestMapping("error")
     @RestController
@@ -4398,18 +4401,26 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
         ApiErrorCreator apiErrorCreator; // (2)
     
         // (3)
+        private final Map<HttpStatus, String> errorCodeMap = new HashMap<HttpStatus, String>();
+    
+        // (4)
+        public ApiErrorPageController() {
+            errorCodeMap.put(HttpStatus.NOT_FOUND, "e.ex.fw.5001");
+        }
+    
+        // (5)
         @RequestMapping
-        public ResponseEntity<ApiError> handleErrorPage(
-                @RequestParam("errorCode") String errorCode, // (4)
-                WebRequest request) {
-            // (5)
+        public ResponseEntity<ApiError> handleErrorPage(WebRequest request) {
+            // (6)
             HttpStatus httpStatus = HttpStatus.valueOf((Integer) request
                     .getAttribute(RequestDispatcher.ERROR_STATUS_CODE,
                             RequestAttributes.SCOPE_REQUEST));
-            // (6)
+            // (7)
+            String errorCode = errorCodeMap.get(httpStatus);
+            // (8)
             ApiError apiError = apiErrorCreator.createApiError(request, errorCode,
                     httpStatus.getReasonPhrase());
-            // (7)
+            // (9)
             return ResponseEntity.status(httpStatus).body(apiError);
         }
     
@@ -4428,17 +4439,21 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
     * - | (2)
       - | エラー情報を作成するクラスをInjectする。
     * - | (3)
-      - | エラー応答を行う処理メソッドを作成する。
+      - | HTTPステータスコードとエラーコードをマッピングするためのMapを作成する。
+    * - | (4)
+      - | HTTPステータスコードとエラーコードとのマッピングを登録する。
+    * - | (5)
+      - | エラー応答を行うハンドラメソッドを作成する。
         | 上記例では、レスポンスコード(\ ``<error-code>``\)を使ってエラーページのハンドリングを行うケースのみを考慮した実装になっている。
         | したがって、例外タイプ(\ ``<exception-type>``\)を使ってハンドリングしたエラーページの処理を本メソッドを使って行う場合は、別途考慮が必要である。
-    * - | (4)
-      - | エラーコードをリクエストパラメータとして受け取る。
-    * - | (5)
-      - | リクエストスコープに格納されているステータスコードを取得する。
     * - | (6)
-      - | リクエストパラメータで受け取ったエラーコードに対応するエラー情報を生成する。
+      - | リクエストスコープに格納されているステータスコードを取得する。
     * - | (7)
-      - | (5)(6)で取得したエラー情報を応答する。
+      - | 取得したステータスコードに対応するエラーコードを取得する。
+    * - | (8)
+      - | 取得したエラーコードに対応するエラー情報を生成する。
+    * - | (9)
+      - | (6)(8)で取得したエラー情報を応答する。
 
 | 
 
@@ -4468,7 +4483,7 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
     <!-- (1) -->
     <error-page>
         <error-code>404</error-code>
-        <location>/api/v1/error?errorCode=e.ex.fw.5001</location>
+        <location>/api/v1/error</location>
     </error-page>
 
     <!-- (2) -->
@@ -4494,7 +4509,7 @@ Filterでエラーが発生した場合や\ ``HttpServletResponse#sendError``\�
       - 説明
     * - | (1)
       - | 必要に応じてレスポンスコードによるエラーページの定義を追加する。
-        | 上記例では、\ ``"404 Not Found"``\が発生した際に、「\ ``/api/v1/error?errorCode=e.ex.fw.5001``\」というリクエストにマッピングされているController(\ ``ApiErrorPageController``\)を呼び出してエラー応答を行っている。
+        | 上記例では、\ ``"404 Not Found"``\が発生した際に、「\ ``/api/v1/error``\」というリクエストにマッピングされているController(\ ``ApiErrorPageController``\)を呼び出してエラー応答を行っている。
     * - | (2)
       - | 致命的なエラーをハンドリングするための定義を追加する。
         | 致命的なエラーが発生していた場合、レスポンス情報を作成する処理で二重障害が発生する可能性があるため、予め用意している静的なJSONを応答する事を推奨する。
