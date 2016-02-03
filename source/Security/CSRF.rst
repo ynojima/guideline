@@ -391,20 +391,22 @@ CSRFトークンチェックエラー時遷移先を制御する場合は、以�
         class="org.springframework.security.web.access.DelegatingAccessDeniedHandler">  <!-- (2) -->
         <constructor-arg index="0">  <!-- (3) -->
             <map>
+                <!-- (4) -->
                 <entry
-                    key="org.springframework.security.web.csrf.InvalidCsrfTokenException">  <!-- (4) -->
+                    key="org.springframework.security.web.csrf.InvalidCsrfTokenException">
                     <bean
-                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (4) -->
+                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
                         <property name="errorPage"
-                            value="/WEB-INF/views/common/error/invalidCsrfTokenError.jsp" />  <!-- (4) -->
+                            value="/WEB-INF/views/common/error/invalidCsrfTokenError.jsp" />
                     </bean>
                 </entry>
+                <!-- (5) -->
                 <entry
-                    key="org.springframework.security.web.csrf.MissingCsrfTokenException">  <!-- (5) -->
+                    key="org.springframework.security.web.csrf.MissingCsrfTokenException">
                     <bean
-                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (5) -->
+                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
                         <property name="errorPage"
-                            value="/WEB-INF/views/common/error/missingCsrfTokenError.jsp" />  <!-- (5) -->
+                            value="/WEB-INF/views/common/error/missingCsrfTokenError.jsp" />
                     </bean>
                 </entry>
             </map>
