@@ -781,6 +781,8 @@ Spring Securityは、\ ``AuthenticationEntryPoint``\ インタフェースの実
 Spring Securityのデフォルトの設定では、認証方式に対応する\ ``AuthenticationEntryPoint``\ インタフェースの実装クラスが使用される。
 
 |
+.. _SpringSecurityAuthorizationOnError:
+
 
 認可エラー時の遷移先
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -839,6 +841,8 @@ Spring Securityは、多くのカスタマイズポイントを提供してい�
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ここでは、認証済みユーザーからのアクセスを拒否した際の動作をカスタマイズする方法を説明する。
+
+.. _SpringSecurityAuthorizationAccessDeniedHandler:
 
 \ ``AccessDeniedHandler``\ の適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
