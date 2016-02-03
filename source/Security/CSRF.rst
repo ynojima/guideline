@@ -375,7 +375,7 @@ CSRFのトークンチェック処理では、エラーの内容に応じて以�
     * - | \ ``MissingCsrfTokenException``\
       - | サーバー側にトークン値が保存されていない場合に使用する例外クラス。
 
-CSRFトークンチェックエラー時遷移先を制御する場合は、以下の設定を行う。
+CSRFトークンチェックエラー時に専用のエラー画面に遷移させたい場合は、以下のようなBean定義を行う。(以下の定義例は、`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ からの抜粋である)
 
 * \ ``spring-security.xml``\ の定義例
 
