@@ -1738,7 +1738,7 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
         | プロパティファイルから値を取得する方法の詳細ついては、「:doc:`PropertyManagement`」を参照されたい。
     * - | (2)
       - | JSONの日付フィールドの形式をISO-8601の拡張形式として扱うための設定を追加する。
-        | なお、リソースを表現するJavaBean(Resourceクラス)のフィールドとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、「\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ 」を行う必要がある。
+        | なお、リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、「\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ 」を行う必要がある。
     * - | (3)
       - | RESTful Web Serviceを提供するために必要となるSpring MVCのフレームワークコンポーネントをbean登録する。
         | 本設定を行うことで、リソースのフォーマットとしてJSONを使用する事ができる。
@@ -1773,7 +1773,7 @@ RESTful Web Serviceで必要となるSpring MVCのコンポーネントを有効
     * `MapperFeature#DEFAULT_VIEW_INCLUSION <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/MapperFeature.html?is-external=true#DEFAULT_VIEW_INCLUSION>`_\
     * `DeserializationFeature#FAIL_ON_UNKNOWN_PROPERTIES <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html?is-external=true#FAIL_ON_UNKNOWN_PROPERTIES>`_\
 
-    \ ``ObjectMapper``\の動作をJacksonのデフォルト動作にあわせたい場合は、\ ``featuresToEnable``\ フィールドを使用して上記のコンフィギュレーションを有効化する。
+    \ ``ObjectMapper``\の動作をJacksonのデフォルト動作にあわせたい場合は、\ ``featuresToEnable``\ プロパティを使用して上記のコンフィギュレーションを有効化する。
 
      .. code-block:: xml
 
@@ -2219,13 +2219,13 @@ Resourceクラスの役割は以下の通りである。
 
  .. warning:: **循環参照への対策**
 
-     Resourceクラス(JavaBean)をJSONやXML形式にシリアライズする際に、相互参照関係のオブジェクトをフィールドに保持していると、
+     Resourceクラス(JavaBean)をJSONやXML形式にシリアライズする際に、相互参照関係のオブジェクトをプロパティに保持していると、
      循環参照となり\ ``StackOverflowError``\ や\ ``OutOfMemoryError``\ などが発生するので、注意が必要である。
 
      循環参照を回避するためには、
 
-     * Jacksonを使用してJSON形式にシリアライズする場合は、シリアライズ対象から除外するフィールドに\ ``@com.fasterxml.jackson.annotation.JsonIgnore``\ アノテーション
-     * JAXBを使用してXML形式にシリアライズする場合は、シリアライズ対象から除外するフィールドに\ ``javax.xml.bind.annotation.XmlTransient``\ アノテーション
+     * Jacksonを使用してJSON形式にシリアライズする場合は、シリアライズ対象から除外するプロパティに\ ``@com.fasterxml.jackson.annotation.JsonIgnore``\ アノテーション
+     * JAXBを使用してXML形式にシリアライズする場合は、シリアライズ対象から除外するプロパティに\ ``javax.xml.bind.annotation.XmlTransient``\ アノテーション
 
      を付与すればよい。
 
@@ -2257,7 +2257,7 @@ Resourceクラスの役割は以下の通りである。
           * - 項番
             - 説明
           * - | (1)
-            - シリアライズ対象から除外するフィールドに対して\ ``@JsonIgnore``\ アノテーションを付与する。
+            - シリアライズ対象から除外するプロパティに対して\ ``@JsonIgnore``\ アノテーションを付与する。
 
 |
 
@@ -2549,8 +2549,8 @@ URIで指定されたMemberリソースのコレクションをページ検索�
       - | 検索条件を受け取るためのJavaBeanを作成する
         | 検索条件が不要な場合は、JavaBeanの作成は不要である。
     * - | (2)
-      - | フィールド名は、リクエストパラメータのパラメータ名と一致させる。
-        | 上記例では、\ ``/api/v1/members?name=John``\ というリクエストの場合、JavaBeanのnameフィールドに \ ``"John"``\ という値が設定される。
+      - | プロパティ名は、リクエストパラメータのパラメータ名と一致させる。
+        | 上記例では、\ ``/api/v1/members?name=John``\ というリクエストの場合、JavaBeanのnameプロパティに \ ``"John"``\ という値が設定される。
 
 |
 
@@ -2717,7 +2717,7 @@ URIで指定されたMemberリソースのコレクションをページ検索�
     具体的には、
 
     * \ ``Page``\ インタフェースと\ ``PageImpl``\ クラスでは、\ ``isFirst()``\ と\ ``isLast()``\ メソッドがspring-data-commons 1.8.0.RELEASEで追加、\ ``isFirstPage()``\ と\ ``isLastPage()``\ メソッドがspring-data-commons 1.9.0.RELEASEで削除
-    * \ ``Sort.Order``\ クラスでは、 \ ``nullHandling``\ フィールドがspring-data-commons 1.8.0.RELEASEで追加
+    * \ ``Sort.Order``\ クラスでは、 \ ``nullHandling``\ プロパティがspring-data-commons 1.8.0.RELEASEで追加
 
     されている。
 
@@ -5015,7 +5015,7 @@ Appendix
 JSR-310 Date and Time API / Joda Timeを使う場合の設定
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-リソースを表現するJavaBean(Resourceクラス)のフィールドとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
+リソースを表現するJavaBean(Resourceクラス)のプロパティとしてJSR-310 Date and Time APIやJoda Timeのクラスを使用する場合は、
 \ ``pom.xml``\ にJacksonから提供されている拡張モジュールを依存ライブラリに追加する。
 
 **JSR-310 Date and Time APIのクラスを使用する場合**
@@ -5845,15 +5845,15 @@ Spring-oxmから提供されているクラスを使用してXMLとオブジェ�
      - | Spring-oxmから提供されている\ ``Jaxb2Marshaller``\のbean定義を行う。
        | \ ``Jaxb2Marshaller``\はデフォルトの状態で XXE Injection対策が行われている。
    * - | (2)
-     - | ``packagesToScan`` フィールドに JAXB用のJavaBean( ``javax.xml.bind.annotation.XmlRootElement`` アノテーションなどが付与されているJavaBean)が格納されているパッケージ名を指定する。
+     - | ``packagesToScan`` プロパティに JAXB用のJavaBean( ``javax.xml.bind.annotation.XmlRootElement`` アノテーションなどが付与されているJavaBean)が格納されているパッケージ名を指定する。
        | 指定したパッケージ配下に格納されているJAXB用のJavaBeanがスキャンされ、marshal、unmarshal対象のJavaBeanとして登録される。
        | ``<context:component-scan>`` の base-package属性と同じ仕組みでスキャンされる。
    * - | (3)
      - | ``<mvc:annotation-driven>`` の子要素である ``<mvc:message-converters>`` 要素に、 ``MarshallingHttpMessageConverter`` のbean定義を追加する。
    * - | (4)
-     - | ``marshaller`` フィールドに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
+     - | ``marshaller`` プロパティに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
    * - | (5)
-     - | ``unmarshaller`` フィールドに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
+     - | ``unmarshaller`` プロパティに (1)で定義した ``Jaxb2Marshaller`` のbeanを指定する。
 
 |
 
