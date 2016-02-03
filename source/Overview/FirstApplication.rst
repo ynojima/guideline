@@ -146,7 +146,7 @@ Spring MVCの設定方法を理解するために、生成されたSpring MVCの
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
 

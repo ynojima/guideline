@@ -549,7 +549,7 @@ spring-mvc-rest.xmlの作成
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
             <mvc:message-converters register-defaults="false">
                 <!-- (1) -->
@@ -660,20 +660,11 @@ REST API用のSpring Securityの定義追加
         <sec:http
             pattern="/api/v1/**"
             auto-config="true"
-            use-expressions="true"
             create-session="stateless">
-            <sec:headers />
+            <sec:csrf disabled="true"/>
         </sec:http>
 
-        <sec:http auto-config="true" use-expressions="true">
-            <sec:headers>
-                <sec:cache-control />
-                <sec:content-type-options />
-                <sec:hsts />
-                <sec:frame-options />
-                <sec:xss-protection />
-            </sec:headers>
-            <sec:csrf />
+        <sec:http auto-config="true">
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />
@@ -731,6 +722,8 @@ REST API用のSpring Securityの定義追加
        | \ ``<sec:http>``\ 要素の\ ``pattern``\ 属性に、REST API用のリクエストパスのURLパターンを指定している。
        | 本チュートリアルでは\ ``/api/v1/``\ で始まるリクエストパスをREST API用のリクエストパスとして扱う。
        | また、\ ``create-session``\ 属性を\ ``stateless``\ とする事で、Spring Securityの処理でセッションが使用されなくなる。
+       | 
+       | CSRF対策を無効化するために、\ ``<sec:csrf>``\ 要素に \ ``disabled="true"``\ を指定している。
 
 |
 

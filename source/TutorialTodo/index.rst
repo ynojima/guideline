@@ -4011,7 +4011,7 @@ spring-mvc.xml
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
 
@@ -4201,15 +4201,7 @@ spring-security.xml
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true" use-expressions="true">
-            <sec:headers>
-                <sec:cache-control />
-                <sec:content-type-options />
-                <sec:hsts />
-                <sec:frame-options />
-                <sec:xss-protection />
-            </sec:headers>
-            <sec:csrf />
+        <sec:http auto-config="true">
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />
