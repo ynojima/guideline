@@ -433,7 +433,7 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
        | エラー時遷移先が全て同じ画面である場合は ``error-page`` 属性に遷移先のjspを指定すればよい。
        | Spring Securityの機能でハンドリングしない場合は、\ :ref:`こちら<csrf_403-webxml-setting>`\ を参照されたい。
    * - | (2)
-     - | エラーページを切り替えるためにSpring Securityで用意されているHandlerのclassに \ ``org.springframework.security.web.access.DelegatingAccessDeniedHandler``\ を指定する。
+     - | Spring Securityから提供されている ``DelegatingAccessDeniedHandler`` を使用して、Exceptionと ``AccessDeniedHandler`` のマッピングを行う。
    * - | (3)
      - | コンストラクタの第1引数でデフォルト以外のException（\ ``AccessDeniedException``\ を継承したException）の種類毎に表示を変更する画面をMap形式で設定する。
    * - | (4)
