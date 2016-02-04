@@ -415,7 +415,7 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
             <bean
                 class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (7) -->
                 <property name="errorPage"
-                    value="/WEB-INF/views/common/error/accessDeniedError.jsp" />  <!-- (7) -->
+                    value="/WEB-INF/views/common/error/accessDeniedError.jsp" />
             </bean>
         </constructor-arg>
     </bean>
@@ -429,8 +429,8 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``AccessDeniedException``\ を継承したExceptionが発生した場合、Exceptionの種類毎に表示するviewを切り替えるためにHandlerを定義する。
-       | 全て同じ画面で良い場合は ``error-page`` 属性に遷移先のjspを指定することで可能となる。
+     - | \ ``<sec:access-denied-handler>``\ タグのref属性に、Exception毎に遷移先を切り替えるAccessDeniedHandlerのBean名を指定する。
+       | エラー時遷移先が全て同じ画面である場合は ``error-page`` 属性に遷移先のjspを指定すればよい。
        | Spring Securityの機能でハンドリングしない場合は、\ :ref:`こちら<csrf_403-webxml-setting>`\ を参照されたい。
    * - | (2)
      - | エラーページを切り替えるためにSpring Securityで用意されているHandlerのclassに \ ``org.springframework.security.web.access.DelegatingAccessDeniedHandler``\ を指定する。
@@ -446,7 +446,7 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
      - | コンストラクタの第2引数でデフォルト（\ ``AccessDeniedException``\ とコンストラクタの第1引数で指定していない\ ``AccessDeniedException``\を継承したException）の場合のviewを指定する。
    * - | (7)
      - | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
-       | propertyのnameにerrorPageを指定し、valueに表示するviewを指定する。
+
 
 .. note:: **無効なセッションを使ったリクエストの検知**
 
