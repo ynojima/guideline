@@ -961,7 +961,7 @@ ResultMessagesを保持する例外(BisinessException,ResourceNotFoundException)
         .. note:: **JBoss利用時の注意点**
 
             JBossを利用し、かつ任意のステータスコードを\ ``HttpServletResponse``\ クラスの\ ``setStatus``\ を使用して返却する場合、レスポンスボディを明示的に実装すること。
-            レスポンスボディを実装しない場合、JBossの標準画面が出力される。
+            レスポンスボディを実装しない場合、JBossの標準画面が出力される場合がある。
 
     * - | (6)
       - | 遷移するデフォルトのView名を、指定する。
