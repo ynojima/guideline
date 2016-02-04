@@ -640,33 +640,37 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
       - 有
     * - \ (6)
       - terasoluna-gfw-web
-      - Webアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。
+      - Webアプリケーションを作成する場合に使用する機能と依存関係定義(jsp/jstl以外)を提供する。
       - 有
     * - \ (7)
+      - terasoluna-gfw-web-jsp
+      - Webアプリケーションを作成する場合に使用する機能と依存関係定義(jsp/jstl関連)を提供する。
+      - 有
+    * - \ (8)
       - terasoluna-gfw-mybatis3
       - MyBatis3を使用する場合の依存関係定義を提供する。
       - 無
-    * - \ (8)
+    * - \ (9)
       - terasoluna-gfw-jpa
       - JPAを使用する場合の依存関係定義を提供する。
       - 無
-    * - \ (9)
+    * - \ (10)
       - terasoluna-gfw-security-core
       - Spring Securityを使用する場合の依存関係定義(Web以外)を提供する。
       - 無
-    * - \ (10)
+    * - \ (11)
       - terasoluna-gfw-security-web
       - Spring Securityを使用する場合の依存関係定義(Web関連)とSpring Securityの拡張部品を提供する。
       - 有
-    * - \ (11)
+    * - \ (12)
       - terasoluna-gfw-recommended-dependencies
       - Webに依存しない推奨ライブラリへの依存関係定義を提供する。
       - 無
-    * - \ (12)
+    * - \ (13)
       - terasoluna-gfw-recommended-web-dependencies
       - Webに依存する推奨ライブラリへの依存関係定義を提供する。
       - 無
-    * - \ (13)
+    * - \ (14)
       - terasoluna-gfw-parent
       - 依存ライブラリの管理とビルド用プラグインの推奨設定を提供する。
       - 無
@@ -833,6 +837,23 @@ terasoluna-gfw-webは以下の部品を提供している。
     * -
       - MDCクリア用サーブレットフィルタ
       - ロガーのMDCに格納されている情報をクリアするためのサーブレットフィルタクラスを提供する。
+
+terasoluna-gfw-web-jsp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-web-jspは以下の部品を提供している。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - 分類
+      - 部品名
+      - 説明
+    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+      - トランザクショントークン出力用のJSPタグ
+      - トランザクショントークンをhidden項目として出力するためのJSPタグライブラリを提供する。。
     * - :doc:`../ArchitectureInDetail/Pagination`
       - ページネーションリンク表示用のJSPタグ
       - Spring Data Commons提供のクラスと連携してページネーションリンクを表示するためのJSPタグライブラリを提供する。
