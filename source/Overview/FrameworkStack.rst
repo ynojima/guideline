@@ -853,7 +853,7 @@ terasoluna-gfw-web-jspは以下の部品を提供している。
       - 説明
     * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
       - トランザクショントークン出力用のJSPタグ
-      - トランザクショントークンをhidden項目として出力するためのJSPタグライブラリを提供する。。
+      - トランザクショントークンをhidden項目として出力するためのJSPタグライブラリを提供する。
     * - :doc:`../ArchitectureInDetail/Pagination`
       - ページネーションリンク表示用のJSPタグ
       - Spring Data Commons提供のクラスと連携してページネーションリンクを表示するためのJSPタグライブラリを提供する。
