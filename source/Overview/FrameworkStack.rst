@@ -644,7 +644,7 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
       - 有
     * - \ (7)
       - terasoluna-gfw-web-jsp
-      - Webアプリケーションを作成する場合に使用する機能と依存関係定義(jsp/jstl関連)を提供する。
+      - ViewにJSPを採用するWebアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。
       - 有
     * - \ (8)
       - terasoluna-gfw-mybatis3
