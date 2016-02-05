@@ -36,6 +36,7 @@ help:
 	@echo "  latex      to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
 	@echo "  latexpdf   to make LaTeX files and run them through pdflatex"
 	@echo "  latexpdfja to make LaTeX files and run them through platex/dvipdfmx"
+	@echo "  latexpdfen to make LaTeX files and run them through platex/dvipdfmx"
 	@echo "  text       to make text files"
 	@echo "  man        to make manual pages"
 	@echo "  texinfo    to make Texinfo files"
@@ -120,14 +121,26 @@ latexpdf:
 latexpdfja:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through platex and dvipdfmx..."
-	$(MAKE) -C $(BUILDDIR)/latex all-pdf-ja
+	@echo "add uplatex to documentclass for Unicode proc"
+	@echo "building pdf index needs twice uplatex command"
+	cd build/latex; \
+	sed -i -e 's/\\documentclass\[/\\documentclass\[uplatex,/g' TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
+	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
+	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
+	dvipdfmx TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.dvi;
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 latexpdfen:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through platex and dvipdfmx..."
+	@echo "add uplatex to documentclass for Unicode proc"
+	@echo "building pdf index needs twice uplatex command"
 	sh $(REPLACE_SHELL) $(BUILDDIR)/latex/*.tex
-	$(MAKE) -C $(BUILDDIR)/latex all-pdf-ja
+	cd build/latex; \
+	sed -i -e 's/\\documentclass\[/\\documentclass\[uplatex,/g' TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
+	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
+	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
+	dvipdfmx TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.dvi;
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 text:
