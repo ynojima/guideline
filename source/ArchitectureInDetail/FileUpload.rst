@@ -59,7 +59,8 @@ Servlet 3.0からサポートされたファイルアップロード機能と、
    * - | (2)
      - | サーブレットコンテナは、\ ``multipart/form-data``\ リクエストを受け取り、\ ``org.springframework.web.multipart.support.MultipartFilter``\ を呼び出す。
    * - | (3)
-     - | \ ``MultipartFilter``\ は、 \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、アップロードの許容サイズを超えた場合、 \ ``org.springframework.web.multipart.MultipartException``\ を生成し、スローする。
+     - | \ ``MultipartFilter``\ は、 \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、Servlet 3.0のファイルアップロード機能を、Spring MVCで扱えるようにする。
+       | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入されたAPI( \ ``javax.servlet.http.Part``\ )をラップする \ ``org.springframework.web.multipart.MultipartFile``\ のオブジェクトを生成する。
    * - | (4)
      - | \ ``MultipartFilter``\ から \ ``DispatcherServlet``\ にフィルタチェーンする。
    * - | (5)
