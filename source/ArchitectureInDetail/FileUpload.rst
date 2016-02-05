@@ -76,7 +76,7 @@ Servlet 3.0からサポートされたファイルアップロード機能と、
    * - | (9)
      - | Serviceは、アップロードされたファイルの中身と、メタ情報(ファイル名など)を、ファイルまたはデータベースに格納する。
    * - | (10)
-     - | \ ``DispatcherServlet``\ は、 \ ``StandardServletMultipartResolver``\ を呼び出し、Servlet 3.0のファイルアップロード機能で使用される一時ファイルを削除する。
+     - | \ ``MultipartFilter``\ は、 \ ``StandardServletMultipartResolver``\ を呼び出し、Servlet 3.0のファイルアップロード機能で使用される一時ファイルを削除する。
    * - | (11)
      - | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入された \ ``Part``\ オブジェクトのメソッドを呼び出し、ディスクに保存されている一時ファイルを削除する。
 
