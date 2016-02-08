@@ -124,10 +124,10 @@ ECサイトにおいて、ユーザは以下が行える。
 
 アプリケーションの概要で示した図にあるもののうち、本チュートリアルで作成する画面は以下のとおりである。
 
-* Update Account Pages
-* View Cart Pages
+* Account Update Pages
+* Cart View Pages
 * Order Pages
-* View Item Pages(カートの中身を表示する部分のみ)
+* Item View Pages(カートの中身を表示する部分のみ)
 
 
 非機能要件
@@ -216,7 +216,7 @@ ECサイトにおいて、ユーザは以下が行える。
 最終的に定義した画面のイメージは以下のとおりである。
 
 .. figure:: images/materialSessionTutorialSpecificationOfUpdateAccountPages.png
-   :alt: specification of Update Account Pages
+   :alt: specification of Account Update Pages
    :width: 95%
 
 
@@ -829,7 +829,7 @@ STSにインポートしたプロジェクトを対象として、アプリケ�
 ログイン画面上にある"here"のリンクを選択すると、アカウント作成を行うことができる。
 
 .. figure:: images/materialSessionTutorialCreateAccountPages.png
-   :alt: Create Account Pages
+   :alt: Account Create Pages
    :width: 95%
 
 ログイン画面にて、(E-mail="a@b.com"、Password="demo")をフォーム入力するとログインすることができる。
@@ -837,7 +837,7 @@ STSにインポートしたプロジェクトを対象として、アプリケ�
 商品名を選択すると商品詳細を表示できる。
 
 .. figure:: images/materialSessionTutorialViewItemPages.png
-   :alt: View Item Pages
+   :alt: Item View Pages
    :width: 65%
    
    
