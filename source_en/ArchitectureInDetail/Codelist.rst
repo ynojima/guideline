@@ -1236,8 +1236,8 @@ As a result of above settings, when characters other than M, F are stored in ``g
 
 .. tip::
 
-    ``@ExistInCodeList`` input validation supports only ``String`` or ``Character`` data types.
-    Therefore, even if the fields with ``@ExistInCodeList`` may contain integer values, they should be defined as String data type. (such as Year/Month/Day)
+    ``@ExistInCodeList`` input validation supports only the implementation class (\ ``String``\  etc) of \ ``CharSequence``\  interface or \ ``Character``\  type.
+    Therefore, even if the fields with \ ``@ExistInCodeList``\ may contain integer values, they should be defined as \ ``String``\ data type. (such as Year/Month/Day)
 
 |
 
