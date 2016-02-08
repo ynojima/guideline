@@ -331,130 +331,6 @@ Spring Securityは、以下のタイミングでセッションを破棄する�
 * ログアウト処理が実行されたタイミング
 * 認証処理が成功したタイミング (セッション固定攻撃対策として\ ``migrateSession``\ 又は\ ``newSession``\ が適用されるとセッションが破棄される)
 
-.. _SpringSecuritySessionManagementConcurrency:
-
-多重ログインの制御
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Spring Securityは、同じユーザー名(ログインID)を使った多重ログインを制御する機能を提供している。
-デフォルトではこの機能は無効になってるが、:ref:`SpringSecurityHowToUseSessionManagementConcurrency` を行うことで有効化することができる。
-
-.. warning:: **多重ログイン制御における制約**
-
-    Spring Securityが提供しているデフォルト実装では、ユーザー毎のセッション情報をアプリケーションサーバーのメモリ内で管理しているため、以下の2つの制約がある。
-
-    ひとつめの制約として、複数のアプリケーションサーバーを同時に起動するシステムでは、デフォルト実装を利用することができないことが挙げられる。
-    複数のアプリケーションサーバーを同時に使用する場合は、ユーザー毎のセッション情報をデータベースやキーバリューストア(キャッシュサーバー)などの共有領域で管理する実装クラスの作成が必要になる。
-
-    ふたつめの制約は、アプリケーションサーバーを停止または再起動時した際に、セッション情報が復元されると、正常動作しない可能性があるという点である。
-    使用するアプリケーションサーバーによっては、停止または再起動時のセッション状態を復元する機能をもっているため、実際のセッション状態とSpring Securityが管理しているセッション情報に不整合が生じることになる。
-    このような不整合が生まれる可能性がある場合は、以下のいずれかの対応が必要になる。
-
-    * アプリケーションサーバ側のセッション状態が復元されないようにする。
-    * Spring Security側のセッション情報を復元する仕組みを実装する。
-    * HTTPセッション以外(データベースやキーバリューストアなど)にオブジェクトを格納する。
-
-本節では、Spring Securityのデフォルト実装を使用する方法を紹介する。
-Spring Securityが用意しているデフォルト実装ではHTTPセッションを使用するが、HTTPセッション以外(データベースやキーバリューストアなど)にオブジェクトを格納することも可能なアーキテクチャになっている。
-ただし、ここで紹介する方法は **上記Warningの制約が残っている実装方法であるため** 、適用する際は注意されたい。
-
-.. Todo::
-   インメモリを使用しない実装方法に関しては、今後追加予定である。
-
-.. _SpringSecurityHowToUseSessionManagementConcurrency:
-
-セッションのライフサイクル検知の有効化
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-多重ログインを制御する機能は、セッションのライフサイクル(セッションの生成と破棄)を検知する仕組みを利用してユーザー毎のセッション状態を管理している。
-このため、多重ログインの制御機能を使用する際は、Spring Securityから提供されている\ ``HttpSessionEventPublisher``\ クラスをサーブレットコンテナに登録する必要がある。
-
-* \ ``web.xml``\ の定義例
-
-.. code-block:: xml
-
-    <listener>
-        <!-- (1) -->
-        <listener-class>
-            org.springframework.security.web.session.HttpSessionEventPublisher
-        </listener-class>
-    </listener>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | サーブレットリスナとして\ ``HttpSessionEventPublisher``\ を登録する。
-
-多重ログインの禁止(先勝ち)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-同じユーザー名(ログインID)を使って既にログインしているユーザーがいる場合に、認証エラーを発生させて多重ログインを防ぐ場合は、以下のようなbean定義を行う。
-
-* bean定義ファイルの定義例
-
-.. code-block:: xml
-
-    <sec:session-management>
-        <sec:concurrency-control
-                max-sessions="1"
-                error-if-maximum-exceeded="true"/> <!-- (1) (2) -->
-    </sec:session-management>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - \ (1)
-      - \ ``<sec:concurrency-control>``\ 要素の\ ``max-sessions``\ 属性に、同時にログイン
-        を許可するセッション数を指定する。
-        多重ログインを防ぎたい場合は、通常\ ``1``\ を指定する。
-    * - \ (2)
-      - \ ``<sec:concurrency-control>``\ 要素の\ ``error-if-maximum-exceeded``\ 属性に、
-        同時にログインできるセッション数を超えた時の動作を指定する。
-        既にログインしているユーザーを有効なユーザーとして扱う場合は、\ ``true``\
-        を指定する。
-
-多重ログインの禁止(後勝ち)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-同じユーザー名(ログインID)を使って既にログインしているユーザーがいる場合に、
-既にログインしているユーザーを無効化することで多重ログインを防ぐ場合は、
-以下のようなbean定義を行う。
-
-* \ ``spring-security.xml``\ の定義例
-
-.. code-block:: xml
-
-    <sec:session-management>
-        <sec:concurrency-control
-                max-sessions="1"
-                error-if-maximum-exceeded="false"
-                expired-url="/error/expire"/> <!-- (1) (2) -->
-    </sec:session-management>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | \ ``<sec:concurrency-control>``\ 要素の\ ``error-if-maximum-exceeded``\ 属性に、同時にログインできるセッション数を超えた時の動作を指定する。
-        | 新たにログインしたユーザーを有効なユーザーとして扱う場合は、\ ``false``\ を指定する。
-    * - | (2)
-      - | \ ``<sec:concurrency-control>``\ 要素の\ ``expired-url``\ 属性に、無効化されたユーザーからのリクエストを検知した際のリダイレクト先のパスを指定する。
-
-
-
 .. _SpringSecuritySessionManagementTimeout:
 
 セッションタイムアウトの制御
@@ -489,10 +365,6 @@ Spring Securityが用意しているデフォルト実装ではHTTPセッショ�
         |  タイムアウト値を指定しない場合は、サーブレットコンテナが用意しているデフォルト値が適用される。
         | また、0以下の値を指定するとサーブレットコンテナのセッションタイム機能が無効化される。
 
-.. note:: **多重ログインについて**
-
-    :ref:`多重ログインの制御機能<SpringSecuritySessionManagementConcurrency>` で解説したが、多重ログインの制御機能はセッションのライフサイクル (セッションの生成と破棄)を検知して機能を実現している。
-
 .. _SpringSecuritySessionDetectInvalidSession:
 
 無効なセッションを使ったリクエストの検知
@@ -518,22 +390,6 @@ Spring Securityは、無効なセッションを使ったリクエストを検�
       - 説明
     * - | (1)
       - | \ ``<sec:session-management>``\ 要素の\ ``invalid-session-url``\ 属性に、無効なセッションを使ったリクエストを検知した際のリダイレクト先のパスを指定する。
-
-.. note::
-
-    \ :doc:`CSRF対策機能<CSRF>`\ を有効にしている場合は、CSRF対策機能によりセッションタイムアウトが検出されるケースがある。
-    なお、Spring SecurityではデフォルトでCSRF対策機能が有効になっている。
-
-    CSRF対策機能によるセッションタイムアウトは、下記の状態で、\ :ref:`CSRFトークンのチェック対象になっているリクエスト<csrf_ckeck-target>` \を受信した場合に発生する。
-
-    * CSRFトークンの保存先をHTTPセッション(デフォルト)にしている
-    * HTTPセッションからCSRFトークンが取得できない
-
-    この場合、\ ``invalid-session-url``\ が定義されていれば、\ ``invalid-session-url``\の指定する遷移先にリダイレクトされ、
-    定義されていない場合は、:ref:`csrf_token-error-response` の定義に従ってリダイレクトされる。
-
-|
-
 
 除外パスの指定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -577,6 +433,131 @@ Spring Securityは、無効なセッションを使ったリクエストを検�
     * - | (3)
       - | 個別定義していないパスに適用する\ ``SecurityFilterChain``\ を作成するための\ ``<sec:http>``\ 要素を定義する。
         | この定義は、個別定義用の\ ``<sec:http>``\ 要素より下に定義すること。
+        | これは\ ``<sec:http>``\ 要素の定義順番が\ ``SecurityFilterChain``\ の優先順位となるためである。
+
+|
+
+.. _SpringSecuritySessionManagementConcurrency:
+
+多重ログインの制御
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Securityは、同じユーザー名(ログインID)を使った多重ログインを制御する機能を提供している。
+デフォルトではこの機能は無効になってるが、:ref:`SpringSecurityHowToUseSessionManagementConcurrency` を行うことで有効化することができる。
+
+.. warning:: **多重ログイン制御における制約**
+
+    Spring Securityが提供しているデフォルト実装では、ユーザー毎のセッション情報をアプリケーションサーバーのメモリ内で管理しているため、以下の2つの制約がある。
+
+    ひとつめの制約として、複数のアプリケーションサーバーを同時に起動するシステムでは、デフォルト実装を利用することができないことが挙げられる。
+    複数のアプリケーションサーバーを同時に使用する場合は、ユーザー毎のセッション情報をデータベースやキーバリューストア(キャッシュサーバー)などの共有領域で管理する実装クラスの作成が必要になる。
+
+    ふたつめの制約は、アプリケーションサーバーを停止または再起動時した際に、セッション情報が復元されると、正常動作しない可能性があるという点である。
+    使用するアプリケーションサーバーによっては、停止または再起動時のセッション状態を復元する機能をもっているため、実際のセッション状態とSpring Securityが管理しているセッション情報に不整合が生じることになる。
+    このような不整合が生まれる可能性がある場合は、以下のいずれかの対応が必要になる。
+
+    * アプリケーションサーバ側のセッション状態が復元されないようにする。
+    * Spring Security側のセッション情報を復元する仕組みを実装する。
+    * HTTPセッション以外(データベースやキーバリューストアなど)にオブジェクトを格納する。
+
+本節では、Spring Securityのデフォルト実装を使用する方法を紹介する。
+Spring Securityが用意しているデフォルト実装ではHTTPセッションを使用するが、HTTPセッション以外(データベースやキーバリューストアなど)にオブジェクトを格納することも可能なアーキテクチャになっている。
+ただし、ここで紹介する方法は **上記Warningの制約が残っている実装方法であるため** 、適用する際は注意されたい。
+
+.. Todo::
+   インメモリを使用しない実装方法に関しては、今後追加予定である。
+
+.. _SpringSecurityHowToUseSessionManagementConcurrency:
+
+セッションのライフサイクル検知の有効化
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+多重ログインを制御する機能は、:ref:`セッションのライフサイクル(セッションの生成と破棄)を検知する仕組み<SpringSecuritySessionManagementLifecycle>` を利用してユーザー毎のセッション状態を管理している。
+このため、多重ログインの制御機能を使用する際は、Spring Securityから提供されている\ ``HttpSessionEventPublisher``\ クラスをサーブレットコンテナに登録する必要がある。
+
+* \ ``web.xml``\ の定義例
+
+.. code-block:: xml
+
+    <listener>
+        <!-- (1) -->
+        <listener-class>
+            org.springframework.security.web.session.HttpSessionEventPublisher
+        </listener-class>
+    </listener>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | サーブレットリスナとして\ ``HttpSessionEventPublisher``\ を登録する。
+
+多重ログインの禁止(先勝ち)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+同じユーザー名(ログインID)を使って既にログインしているユーザーがいる場合に、認証エラーを発生させて多重ログインを防ぐ場合は、以下のようなbean定義を行う。
+
+* bean定義ファイルの定義例
+
+.. code-block:: xml
+
+    <sec:session-management>
+        <sec:concurrency-control
+                max-sessions="1"
+                error-if-maximum-exceeded="true"/> <!-- (1) (2) -->
+    </sec:session-management>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - \ (1)
+      - \ ``<sec:concurrency-control>``\ 要素の\ ``max-sessions``\ 属性に、同時にログイン
+        を許可するセッション数を指定する。
+        多重ログインを防ぎたい場合は、通常\ ``1``\ を指定する。
+    * - \ (2)
+      - \ ``<sec:concurrency-control>``\ 要素の\ ``error-if-maximum-exceeded``\ 属性に、
+        同時にログインできるセッション数を超えた時の動作を指定する。
+        既にログインしているユーザーを有効なユーザーとして扱う場合は、\ ``true``\
+        を指定する。
+
+多重ログインの禁止(後勝ち)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+同じユーザー名(ログインID)を使って既にログインしているユーザーがいる場合に、
+既にログインしているユーザーを無効化することで多重ログインを防ぐ場合は、
+以下のようなbean定義を行う。
+
+* \ ``spring-security.xml``\ の定義例
+
+.. code-block:: xml
+
+    <sec:session-management>
+        <sec:concurrency-control
+                max-sessions="1"
+                error-if-maximum-exceeded="false"
+                expired-url="/error/expire"/> <!-- (1) (2) -->
+    </sec:session-management>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``<sec:concurrency-control>``\ 要素の\ ``error-if-maximum-exceeded``\ 属性に、同時にログインできるセッション数を超えた時の動作を指定する。
+        | 新たにログインしたユーザーを有効なユーザーとして扱う場合は、\ ``false``\ を指定する。
+    * - | (2)
+      - | \ ``<sec:concurrency-control>``\ 要素の\ ``expired-url``\ 属性に、無効化されたユーザーからのリクエストを検知した際のリダイレクト先のパスを指定する。
         | これは\ ``<sec:http>``\ 要素の定義順番が\ ``SecurityFilterChain``\ の優先順位となるためである。
 
 .. raw:: latex
