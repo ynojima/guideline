@@ -88,7 +88,6 @@ ECサイトにおいて、ユーザは以下が行える。
 * カート内の商品を注文する
 
 アプリケーションの概要を以下の図に示す。図中のXxxPagesは画面群を表しており、1つのユースケースに対応する。
-本チュートリアルでは、作成する簡易ECサイトの一部の機能・画面を作成する。
 
 .. figure:: images/materialSessionTutorialOverview.png
    :alt: overview
