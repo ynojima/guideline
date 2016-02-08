@@ -120,12 +120,9 @@ Spring Webから提供されているファイルアップロード用のクラ�
    * - 5.
      - | org.springframework.web.multipart.support.
        | MultipartFilter
-     - | multipart/form-dataリクエストの時に、Servlet Filterの処理内でリクエストパラメータを取得できるようにするためのクラス。
-       | このクラスを使用しないと、Servlet Filterでリクエストパラメータの取得ができないため、Spring Securityから提供されているCSRFトークンチェック機能が正しく動作しない。
-       | 具体的には、CSRFトークンが取得できないため、常にCSRFトークンエラーとなりファイルのアップロードが出来ない。
-       | servlet 3.0から導入されたファイルアップロード機能により、MultipartFilterなしでもリクエストパラメータを取得できるようになったが、
-       | MultipartFilterを使用しない場合、アップロード許容サイズを超えた時の動作がアプリケーションサーバによって異なる。
-       | そのため、Servlet Filterの処理内でリクエストパラメータを取得する場合はMultipartFilterを使用することを推奨する。
+     - | multipart/form-dataリクエストの時に、DIコンテナからMultipartResolverを実装するクラスを呼び出し、MultipartFileを生成するクラス。
+       | このクラスを使用しないと、ファイルアップロードで許容する最大サイズを超えた場合に、Servlet Filterの処理内でリクエストパラメータを取得できない。
+       | そのため、本ガイドラインではMultipartFilterを使用することを推奨している。
 
  .. tip::
 
