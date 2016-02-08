@@ -481,30 +481,30 @@ Spring Securityは、以下のような流れでDB認証を行う。
       - 説明
     * - | (1)
       - | \ ``getUsername``\
-      - | ユーザー名を返却するメソッド。
+      - | ユーザー名を返却する。
     * - | (2)
       - | \ ``getPassword``\
-      - | 登録されているパスワードを返却するメソッド。
+      - | 登録されているパスワードを返却する。
         | このメソッドで返却したパスワードとクライアントから指定されたパスワードが一致しない場合は、\ ``DaoAuthenticationProvider``\ は\ ``BadCredentialsException``\ を発生させる。
     * - | (3)
       - | \ ``isEnabled``\
-      - | 有効なユーザーかを判定するメソッドで、有効な場合は\ ``true``\ を返却する。
+      - | 有効なユーザーかを判定する。有効な場合は\ ``true``\ を返却する。
         | 無効なユーザーの場合は、\ ``DaoAuthenticationProvider``\ は\ ``DisabledException``\ を発生させる。
     * - | (4)
       - | \ ``isAccountNonLocked``\
-      - | アカウントのロック状態を判定するメソッドで、ロックされていない場合は\ ``true``\ を返却する。
+      - | アカウントのロック状態を判定する。ロックされていない場合は\ ``true``\ を返却する。
         | アカウントがロックされている場合は、\ ``DaoAuthenticationProvider``\ は\ ``LockedException``\ を発生させる。
     * - | (5)
       - | \ ``isAccountNonExpired``\
-      - | アカウントの有効期限の状態を判定するメソッドで、有効期限内の場合は\ ``true``\ を返却する。
+      - | アカウントの有効期限の状態を判定する。有効期限内の場合は\ ``true``\ を返却する。
         | 有効期限切れの場合は、\ ``DaoAuthenticationProvider``\ は\ ``AccountExpiredException``\ を発生させる。
     * - | (6)
       - | \ ``isCredentialsNonExpired``\
-      - | 資格情報の有効期限の状態を判定するメソッドで、有効期限内の場合は\ ``true``\ を返却する。
+      - | 資格情報の有効期限の状態を判定する。有効期限内の場合は\ ``true``\ を返却する。
         | 有効期限切れの場合は、\ ``DaoAuthenticationProvider``\ は\ ``CredentialsExpiredException``\ を発生させる。
     * - | (7)
       - | \ ``getAuthorities``\
-      - | ユーザーに与えられている権限リストを返却するメソッド。
+      - | ユーザーに与えられている権限リストを返却する。
         | このメソッドは認可処理で使用される。
 
 .. note:: **認証例外による遷移先の切り替え**
@@ -2697,7 +2697,7 @@ Spring MVCでリクエストを受けてログインフォームを表示する�
     * - 項番
       - 説明
     * - | (1)
-      - | view名として"login"を返却するメソッド。\ ``InternalResourceViewResolver``\ によってsrc/main/webapp/WEB-INF/views/login.jspが出力される。
+      - | view名として"login"を返却する。\ ``InternalResourceViewResolver``\ によってsrc/main/webapp/WEB-INF/views/login.jspが出力される。
 
 本例のように、単純にview名を返すだけのメソッドが一つだけあるControllerであれば、\ ``<mvc:view-controller>``\ を使用して代用することも可能である。  
 
