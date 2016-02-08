@@ -17,7 +17,7 @@
 --------------------------------------------------------------------------------
 
 このチュートリアルでは、簡易webアプリケーションの作成を通じてセッション管理対象となるデータの設計方法やセッションを利用するための具体的な実装方法を学習する。
-本チュートリアルは以下の流れで実施する
+本チュートリアルは以下の流れで実施する。
 
 #. 作成するwebアプリケーションの要件を確認する
 #. 要件を満たすようなContollerの設計とデータの設計を行う手順を確認する
@@ -66,8 +66,6 @@
       - `Pivotal tc Server <https://network.pivotal.io/products/pivotal-tcserver>`_ Developer Edition v3.1 (STSに同封)
     * - Web Browser
       - `Google Chrome <https://www.google.co.jp/chrome/browser/desktop/index.html>`_ 42.0.2311.90 m
-    * - Version control
-      - `git <https://git-scm.com/>`_ 1.9.5
 
 アプリケーションの概要と要件
 ================================================================================
@@ -582,19 +580,15 @@ URLの抽出
 
 すでに述べているように、本チュートリアルは一部機能が作成された状態からスタートする。
 そのため、すでに作成済みのプロジェクトを用いて開発を進める。
-プロジェクトの取得にはGitを利用する。
 
- .. code-block:: bash
- 
-    $ git clone https://github.com/xxx
+作成済みのプロジェクトは次の手順で取得することができる。
 
-
-.. todo::
-
-    gitのURLを正しいものにする
+#. `tutorial-apps <https://github.com/terasolunaorg/tutorial-apps>`_ にアクセスする。
+#. 「Branch」ボタン押下して必要なバージョンのBranchを選択し、「Download ZIP」ボタンを押下してzipファイルをダウンロードする
+#. zipファイルを展開し、中のプロジェクトをインポートする。
 
 
-なお、インポート方法は、 :doc:`../TutorialTodo/index`
+なお、プロジェクトのインポート方法は、 :doc:`../TutorialTodo/index`
 で説明済みのため、本チュートリアルでは説明を割愛する。
 
 
