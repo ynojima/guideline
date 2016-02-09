@@ -1568,22 +1568,125 @@ JSPの作成
 そのため、このオブジェクトをセッションスコープのBeanとして扱えるように設定を加える。
 
 セッションスコープのBeanを使用する方法として、 :doc:`../ArchitectureInDetail/SessionManagement` に2種類の設定方法が記載されている。
-本チュートリアルでは、Bean定義ファイル(XML)に定義する方法を使用する。
+本チュートリアルでは、component-scanを使用してbeanを定義する。
 
 
 .. warning::
     
     セッションスコープのBeanとして登録するためには対象のオブジェクトが `Serializable` である必要がある
 
-Bean定義ファイルを用いてセッションスコープのBeanを定義するには、Bean定義ファイルに以下を追加すればよい。
+component-scanを用いてセッションスコープのBeanを定義するには、
+Beanとして登録したいクラスに以下のアノテーションを追加すればよい。
 
-``/session-tutorial-base-domain/src/main/resources/META-INF/spring/session-tutorial-base-domain.xml``
 
-.. code-block:: xml
+``/session-tutorial-complete-domain/src/main/java/com/example/session/domain/model/Cart.java``
 
-    <bean id="cart" class="com.example.session.domain.model.Cart" scope="session">
-        <aop:scoped-proxy />
-    </bean>
+.. code-block:: java
+    :emphasize-lines: 17-18
+
+    package com.example.session.domain.model;
+
+    import java.io.Serializable;
+    import java.security.MessageDigest;
+    import java.security.NoSuchAlgorithmException;
+    import java.util.Collection;
+    import java.util.LinkedHashMap;
+    import java.util.Map;
+    import java.util.Set;
+
+    import org.springframework.context.annotation.Scope;
+    import org.springframework.context.annotation.ScopedProxyMode;
+    import org.springframework.security.crypto.codec.Base64;
+    import org.springframework.stereotype.Component;
+    import org.springframework.util.SerializationUtils;
+
+    @Component
+    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS) // (1)
+    public class Cart implements Serializable {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        private final Map<String, CartItem> cartItems = new LinkedHashMap<>();
+
+        public Collection<CartItem> getCartItems() {
+            return cartItems.values();
+        }
+
+        public Cart add(CartItem cartItem) {
+
+            String goodsId = cartItem.getGoods().getId();
+
+            // すでに対象の商品がカートにある場合、数量を取得する
+            int nowQuantity = 0;
+            CartItem cartItemInCart = cartItems.get(goodsId);
+            if (cartItemInCart != null) {
+                nowQuantity = cartItemInCart.getQuantity();
+            }
+
+            // すでに対象の商品がカートにある場合、その数量を加算して再登録する
+            int totalQuantity = cartItem.getQuantity() + nowQuantity;
+            cartItem.setQuantity(totalQuantity);
+            cartItems.put(goodsId, cartItem);
+
+            return this;
+        }
+
+        public Cart clear() {
+            cartItems.clear();
+            return this;
+        }
+
+        public Cart remove(Set<String> removedItemsIds) {
+            for (String key : removedItemsIds) {
+                cartItems.remove(key);
+            }
+            return this;
+        }
+
+        public boolean isEmpty() {
+            return cartItems.isEmpty();
+        }
+
+        public int getTotalAmount() {
+            int amount = 0;
+            for (CartItem cartItem : cartItems.values()) {
+                amount += cartItem.getGoods().getPrice() * cartItem.getQuantity();
+            }
+
+            return amount;
+        }
+
+        /**
+         * カートの状態を表すハッシュ値を作成する
+         * 
+         * @param cart
+         * @return
+         */
+        public String calcSignature() {
+            byte[] serialized = SerializationUtils.serialize(this);
+            byte[] signature = null;
+            try {
+                MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+                signature = messageDigest.digest(serialized);
+            } catch (NoSuchAlgorithmException ignored) {
+            }
+            return new String(Base64.encode(signature));
+        }
+    }
+
+
+
+また、component-scanの対象となるbase-packageをBean定義ファイルに指定する必要がある。
+しかし、本チュートリアルでは作成済みのBean定義ファイルにすでに以下の記述があるため、新たに記述を追加する必要はない。
+
+``/session-tutorial-complete-domain/src/main/resources/META-INF/spring/session-tutorial-complete-domain.xml``
+
+.. code-block:: jsp
+
+    <!-- (2) -->
+    <context:component-scan base-package="com.example.session.domain" />
 
 
 フォームオブジェクトの作成
