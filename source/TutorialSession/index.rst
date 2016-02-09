@@ -122,12 +122,25 @@ ECサイトにおいて、ユーザは以下が行える。
 したがって、本チュートリアルでは、未完成機能の画面とアプリケーション層の作成を行う。
 
 
-アプリケーションの概要で示した図にあるもののうち、本チュートリアルで作成する画面は以下のとおりである。
+アプリケーションの概要で示した図にある画面(ユースケース)と、機能の対応表は以下の通りである。
+本チュートリアルでは、以下に挙げられている画面を作成する。
 
-* Account Update Pages
-* Cart View Pages
-* Order Pages
-* Item View Pages(カートの中身を表示する部分のみ)
+
+ .. tabularcolumns::  |p{0.5\linewidth}|p{0.5\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 50 50
+    
+    * - 機能
+      - 画面(ユースケース)
+    * - | アカウント情報変更機能
+      - | Account Update Pages
+    * - | カートアイテム登録機能
+      - | Item View Pages(カートの中身を表示する部分のみ)
+    * - | カートアイテム削除機能
+      - | Cart View Pages
+    * - | 商品注文機能
+      - | Order Pages
 
 
 非機能要件
