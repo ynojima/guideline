@@ -4076,20 +4076,26 @@ The method to add common conditions for JPQL which is executed at the time of ca
         | The WHERE clause should be specified in SQL instead of JPQL i.e. it is necessary to specify the column name instead of the property name of Java object.
     * - | (2)
       - | The condition specified with ``@Where`` annotation is added.
-      
+
+ .. note:: **About Dialect extension**
+
+    If SQL specific keywords are specified at ``@Where`` annotation, Hibernate may recognize SQL specific keywords as a common string value and as a result incorrect SQL may get generated.
+    It is necessary to extend the ``Dialect`` in case of SQL specific keywords are used at ``@Where`` annotation.
+
 - Extending Dialect to register standard keywords such as ``true``, ``false`` and ``unknown``.
 
  .. code-block:: java
 
-    package xx.yy.zz.dialect;
+    package com.example.infra.hibernate;
     
     public class ExtendedPostgreSQL9Dialect extends PostgreSQL9Dialect { // (1)
-    public ExtendedPostgreSQL9Dialect() {
-        super();
-        // (2)
-        registerKeyword("true");
-        registerKeyword("false");
-        registerKeyword("unknown");
+        public ExtendedPostgreSQL9Dialect() {
+            super();
+            // (2)
+            registerKeyword("true");
+            registerKeyword("false");
+            registerKeyword("unknown");
+        }
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4100,10 +4106,10 @@ The method to add common conditions for JPQL which is executed at the time of ca
     * - Sr. No.
       - Description
     * - | (1)
-      - | The Hibernate fails to register standard SQL keywords such as ``true``, ``false`` and ``unknown``. These can be registered by extending the database specific Dialect.
-        | The default Dialect for postgresql database is ``org.hibernate.dialect.PostgreSQL9Dialect``.
+      - | By default Hiberanate-4.3 may not correctly process some of the SQL keywords. The BOOLEAN type keywords such as ``true`` ÅA``false`` ÅA``unknown`` are not registered in PostgreSQL dialect ``org.hibernate.dialect.PostgreSQL9Dialect``, Therefore such keywords are recognized as a common string value and as a result incorrect SQL may get generated.
+        | It is necessary to extend ``org.hibernate.dialect.Dialect`` dialect in order to register such keywords.
     * - | (2)
-      - | Register standard SQL keywords such as ``true``, ``false`` and ``unknown``.
+      - | Register the SQL keywords that are likely to be used in ``@Where`` annotation.
 
 - Settings of extended Dialect
 
@@ -4111,7 +4117,7 @@ The method to add common conditions for JPQL which is executed at the time of ca
 
     <bean id="jpaVendorAdapter"
         class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="databasePlatform" value="xx.yy.zz.dialect.ExtendedPostgreSQL9Dialect"/> // (3)
+        <property name="databasePlatform" value="com.example.infra.hibernate.ExtendedPostgreSQL9Dialect"/> // (3)
         // ...
     </bean>
 
@@ -4123,7 +4129,7 @@ The method to add common conditions for JPQL which is executed at the time of ca
     * - Sr. No.
       - Description
     * - | (3)
-      - | The extended Dialect is set as the value of ``databasePlatform`` property in JPA Vendor Adapter of EntityManager.
+      - | The extended ``Dialect`` is set as the value of ``databasePlatform`` property in ``JpaVendorAdapter`` of ``EntityManager``.
       
  .. note:: **Class that can be specified**
 

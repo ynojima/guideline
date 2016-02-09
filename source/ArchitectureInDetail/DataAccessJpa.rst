@@ -4080,19 +4080,25 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
     * - | (2)
       - | ``@Where`` アノテーションで指定した条件が追加されている。
 
+ .. note:: **Dialect 拡張について**
+
+    ``@Where`` アノテーションではSQL固有のキーワードを指摘する場合に、HibernateはSQLのキーワードを一般的な文字列として認識されてしまい、正しいSQLへ変換されない場合があります。
+    SQL固有のキーワードを利用する場合に、 ``Dialect`` を拡張して使用する必要がある。
+
 - 標準的なキーワード ``true`` 、``false`` 、``unknown`` などを登録するためのDialectを拡張する
 
  .. code-block:: java
 
-    package xx.yy.zz.dialect;
+    package com.example.infra.hibernate;
     
     public class ExtendedPostgreSQL9Dialect extends PostgreSQL9Dialect { // (1)
-    public ExtendedPostgreSQL9Dialect() {
-        super();
-        // (2)
-        registerKeyword("true");
-        registerKeyword("false");
-        registerKeyword("unknown");
+        public ExtendedPostgreSQL9Dialect() {
+            super();
+            // (2)
+            registerKeyword("true");
+            registerKeyword("false");
+            registerKeyword("unknown");
+        }
     }
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4100,13 +4106,13 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
     :widths: 10 90
     :header-rows: 1
     
-    * - Sr. No.
-      - Description
+    * - 項番
+      - 説明
     * - | (1)
-      - | Hibernateは標準的なSQLキーワード ``true`` 、``false`` 、``unknown`` などを登録することができません。これらは、データベース特定のDialectを拡張することによって登録することができます。
-        | 例、postgresqlデータベースのデーフォルトDialectは``org.hibernate.dialect.PostgreSQL9Dialect``となります。
+      - | Hibernate 4.3のデフォルトの状態では、SQLのキーワードを正しく認識できない場合があります。例えば、PostgreSQL向けのキーワードを管理する ``org.hibernate.dialect.PostgreSQL9Dialect`` にはキーワードとしてBOOLEAN型の ``true`` 、``false`` 、``unknown`` などが登録されていないため、一般的な文字列として認識されてしまい、正しいSQLへ変換されません。
+        | そのため、必要に応じて ``org.hibernate.dialect.Dialect`` を拡張し、キーワードを登録する必要があります。
     * - | (2)
-      - | 標準的なSQLキーワード ``true`` 、``false`` 、``unknown`` などを登録する。
+      - | ``@Where`` で利用する可能性のあるSQLキーワードを登録する。
 
 - 拡張したDialectを設定する
 
@@ -4114,7 +4120,7 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
 
     <bean id="jpaVendorAdapter"
         class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="databasePlatform" value="xx.yy.zz.dialect.ExtendedPostgreSQL9Dialect"/> // (3)
+        <property name="databasePlatform" value="com.example.infra.hibernate.ExtendedPostgreSQL9Dialect"/> // (3)
         // ...
     </bean>
 
@@ -4123,10 +4129,10 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
     :widths: 10 90
     :header-rows: 1
     
-    * - Sr. No.
-      - Description
+    * - 項番
+      - 説明
     * - | (3)
-      - | 拡張したDialectをEntityManagerであるJpaVendorAdapterの``databasePlatform``プロパティの値に設定する。
+      - | 拡張した ``Dialect`` を ``EntityManager`` である ``JpaVendorAdapter`` の ``databasePlatform`` プロパティの値に設定する。
 
  .. note:: **指定可能なクラスについて**
 
