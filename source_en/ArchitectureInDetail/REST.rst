@@ -5318,18 +5318,10 @@ prevented for RESTful Web Service requests.
         auto-config="true"
         use-expressions="true"
         create-session="stateless">
-        <sec:headers />
+        <sec:csrf disabled="true"/>
     </sec:http>
 
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:headers>
-            <sec:cache-control />
-            <sec:content-type-options />
-            <sec:hsts />
-            <sec:frame-options />
-            <sec:xss-protection />
-        </sec:headers>
-        <sec:csrf />
+    <sec:http auto-config="true">
         <sec:access-denied-handler ref="accessDeniedHandler"/>
         <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
         <sec:session-management />
@@ -5350,7 +5342,7 @@ prevented for RESTful Web Service requests.
        | In the above example, request path starting with \ ``/api/v1/``\  is handled as the REST API request path.
        | Further, session is no longer used in Spring Security process by setting \ ``create-session``\  attribute to \ ``stateless``\ .
        |
-       | \ ``<sec: csrf>``\  element is not specified to disable the CSRF measures.
+       | Specify \ ``disabled="true"``\  in \ ``<sec:csrf>``\  element for invalidating CSRF countermeasures.
 
 |
 
