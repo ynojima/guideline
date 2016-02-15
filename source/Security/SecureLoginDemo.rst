@@ -1293,10 +1293,11 @@ ER図
                String newPassword = (String) beanWrapper
                        .getPropertyValue(newPasswordPropertyName);
 
-               context.disableDefaultConstraintViolation();
-
                RuleResult result = characteristicPasswordValidator
                        .validate(PasswordData.newInstance(newPassword, username, null)); // (2)
+
+               context.disableDefaultConstraintViolation();
+
                if (result.isValid()) { // (3)
                    return true;
                } else {
@@ -1342,11 +1343,11 @@ ER図
        package org.terasoluna.securelogin.app.common.validation;
 
        @Documented
-       @Constraint(validatedBy = { NotReusedValidator.class }) // (1)
+       @Constraint(validatedBy = { NotReusedPasswordValidator.class }) // (1)
        @Target({ TYPE, ANNOTATION_TYPE })
        @Retention(RUNTIME)
-       public @interface NotReused {
-           String message() default "{org.terasoluna.securelogin.app.common.validation.NotReused.message}";
+       public @interface NotReusedPassword {
+           String message() default "{org.terasoluna.securelogin.app.common.validation.NotReusedPassword.message}";
 
            Class<?>[] groups() default {};
 
@@ -1358,7 +1359,7 @@ ER図
            @Retention(RUNTIME)
            @Documented
            public @interface List {
-               NotReused[] value();
+               NotReusedPassword[] value();
            }
 
            Class<? extends Payload>[] payload() default {};
@@ -1384,8 +1385,8 @@ ER図
 
        // omitted
 
-       public class NotReusedValidator implements
-               ConstraintValidator<NotReused, Object> {
+       public class NotReusedPasswordValidator implements
+               ConstraintValidator<NotReusedPassword, Object> {
 
            @Inject
            ClassicDateFactory dateFactory;
@@ -1416,7 +1417,7 @@ ER図
            private String message;
 
            @Override
-           public void initialize(NotReused constraintAnnotation) {
+           public void initialize(NotReusedPassword constraintAnnotation) {
                usernamePropertyName = constraintAnnotation.usernamePropertyName();
                newPasswordPropertyName = constraintAnnotation.newPasswordPropertyName();
                message = constraintAnnotation.message();
@@ -1432,12 +1433,13 @@ ER図
                Account account = accountSharedService.findOne(username);
                String currentPassword = account.getPassword();
 
-               context.disableDefaultConstraintViolation();
                boolean result = checkNewPasswordDifferentFromCurrentPassword(
                        newPassword, currentPassword, context); // (4)
                if (result && account.getRoles().contains(Role.ADMN)) { // (5)
                    result = checkHistoricalPassword(username, newPassword, context);
                }
+
+               context.disableDefaultConstraintViolation();
 
                return result;
            }
@@ -1533,7 +1535,7 @@ ER図
      @Data
      @Compare(source = "newPasssword", destination = "confirmNewPassword", operator = Compare.Operator.EQUAL) // (1)
      @StrongPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
-     @NotReused(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (3)
+     @NotReusedPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (3)
      @ConfirmOldPassword(usernamePropertyName = "username", oldPasswordPropertyName = "oldPassword") // (4)
      public class PasswordChangeForm implements Serializable{
 
@@ -3434,7 +3436,7 @@ ER図
        @Data
        @Compare(source = "newPasssword", destination = "confirmNewPassword", operator = Compare.Operator.EQUAL)
        @StrongPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (1)
-       @NotReused(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
+       @NotReusedPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
        public class PasswordResetForm implements Serializable{
 
            private static final long serialVersionUID = 1L;
