@@ -168,7 +168,7 @@ Spring Securityは、以下のような流れでフォーム認証を行う。
 
 フォーム認証を使用する場合は、以下のようなbean定義を行う。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -230,7 +230,7 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
 まず、ログインフォームを表示するためのJSPを作成する。
 ここでは、Spring MVCでリクエストをうけてログインフォームを表示する際の実装例になっている。
 
-*ログインフォームを表示するためのJSPの作成例(xxx-web/src/main/webapp/WEB-INF/views/login/loginForm.jsp)*
+* ログインフォームを表示するためのJSPの作成例(xxx-web/src/main/webapp/WEB-INF/views/login/loginForm.jsp)
 
 .. code-block:: jsp
 
@@ -288,7 +288,7 @@ Spring Securityはフォーム認証用のログインフォームをデフォ�
 
 つぎに、作成したログインフォームをSpring Securityに適用する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -528,7 +528,7 @@ UserDetailsの作成
 ここでは、アカウントの情報を保持する\ ``UserDetails``\ の実装クラスを作成する。 
 本例は\ ``User``\ を継承することでも実現することができるが、\ ``UserDetails``\  を実装する方法の例として紹介している。
 
-*UserDetailsの実装クラスの作成例*
+* UserDetailsの実装クラスの作成例
 
 
 .. code-block:: java
@@ -600,7 +600,7 @@ UserDetailsの作成
 Spring Securityは、\ ``UserDetails``\ の実装クラスとして\ ``User``\ クラスを提供している。
 \ ``User``\ クラスを継承すると資格情報とユーザーの状態を簡単に保持することができる。
 
-*Userクラスを継承したUserDetails実装クラスの作成例*
+* Userクラスを継承したUserDetails実装クラスの作成例
 
 .. code-block:: java
 
@@ -633,7 +633,7 @@ UserDetailsServiceの作成
 \ ``AuthenticationProvider``\ として\ ``DaoAuthenticationProvider``\ を使用する場合は、
 アプリケーションの要件に合わせて\ ``UserDetailsService``\ の実装クラスを作成する。
 
-*UserDetailsServiceインタフェース*
+* UserDetailsServiceインタフェース
 
 .. code-block:: java
 
@@ -648,7 +648,7 @@ UserDetailsServiceの作成
 本サンプルでは、\ ``SharedService``\ を使用して、アカウント情報を取得している。
 \ ``SharedService``\ については、:ref:`service-label`\ を参照されたい。
 
-*AccountSharedServiceインタフェースの作成例*
+* AccountSharedServiceインタフェースの作成例
 
 .. code-block:: java
 
@@ -656,7 +656,7 @@ UserDetailsServiceの作成
         Account findOne(String username);
     }
 
-*AccountSharedServiceの実装クラスの作成例*
+* AccountSharedServiceの実装クラスの作成例
 
 .. code-block:: java
 
@@ -694,7 +694,7 @@ UserDetailsServiceの作成
         | アカウント情報が見つからない場合は、共通ライブラリの例外である\ ``ResourceNotFoundException``\ を発生させる。
         | Repositoryの作成例については、「:doc:`Tutorial`」を参照されたい。
 
-*UserDetailsServiceの実装クラスの作成例*
+* UserDetailsServiceの実装クラスの作成例
 
 .. code-block:: java
 
@@ -767,7 +767,7 @@ DB認証の適用
 作成した\ ``UserDetailsService``\ を使用して認証処理を行うためには、
 \ ``DaoAuthenticationProvider``\ を有効化して、作成した\ ``UserDetailsService``\ を適用する必要がある。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -887,7 +887,7 @@ BCryptPasswordEncoder
 :ref:`ソルト<SpringSecurityAuthenticationPasswordHashSalt>` には16バイトの乱数(\ ``java.security.SecureRandom``\ )が使用され、
 デフォルトでは1,024(2の10乗)回 :ref:`ストレッチング<SpringSecurityAuthenticationPasswordHashStength>` を行う。
 
-*xxx-web/src/main/resources/META-INF/spring/applicationContext.xmlの定義例*
+* applicationContext.xmlの定義例
 
 .. code-block:: xml
 
@@ -1097,7 +1097,7 @@ Spring Security使用しているイベントは、認証が成功したこと�
 
 認証イベントの通知を受け取って処理を行いたい場合は、\ ``@EventListener``\ を付与したメソッドを実装したクラスを作成し、DIコンテナに登録する。
 
-*イベントリスナクラスの実装例*
+* イベントリスナクラスの実装例
 
 .. code-block:: java
 
@@ -1187,7 +1187,7 @@ Spring Securityは、以下のような流れでログアウト処理を行い�
 
 ログアウト処理を適用するためには、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1237,7 +1237,7 @@ Spring Securityのデフォルトの動作では、\ ``"/logout"``\ というパ
 
 .. _SpringSecurityAuthenticationLogoutForm:
 
-*ログアウト処理を呼び出すためのJSPの実装例*
+* ログアウト処理を呼び出すためのJSPの実装例
 
 .. code-block:: jsp
 
@@ -1310,7 +1310,7 @@ Javaからのアクセス
 一般的な業務アプリケーションでは、「いつ」「誰が」「どのデータに」「どのようなアクセスをしたか」を記録する監査ログを取得することがある。
 このような要件を実現する際の「誰が」は、認証情報から取得することができる。
 
-*Javaから認証情報へアクセスする実装例*
+* Javaから認証情報へアクセスする実装例
 
 .. code-block:: java
 
@@ -1360,7 +1360,7 @@ JSPからのアクセス
 一般的なWebアプリケーションでは、ログインユーザーのユーザー情報などを画面に表示することがある。
 このような要件を実現する際のログインユーザーのユーザー情報は、認証情報から取得することができる。
 
-*JSPから認証情報へアクセスする実装例*
+* JSPから認証情報へアクセスする実装例
 
 .. code-block:: jsp
 
@@ -1420,7 +1420,7 @@ Spring Securityは、認証情報(\ ``UserDetails``\ )をSpring MVCのコント�
 \ ``AuthenticationPrincipalArgumentResolver``\ を適用するためのbean定義は以下の通りである。
 \ なお、`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ には\ ``AuthenticationPrincipalArgumentResolver``\ が設定済みである。
 
-*xxx-web/src/main/resource/META-INF/spring/spring-mvc.xmlの定義例*
+* spring-mvc.xmlの定義例
 
 .. code-block:: xml
 
@@ -1447,7 +1447,7 @@ Spring Securityは、認証情報(\ ``UserDetails``\ )をSpring MVCのコント�
 
 認証情報(\ ``UserDetails``\ )をコントローラーのメソッドで受け取る際は、以下のようなメソッドを作成する。
 
-*認証情報(UserDetails)を受け取るメソッドの作成例*
+* 認証情報(UserDetails)を受け取るメソッドの作成例
 
 .. code-block:: java
 
@@ -1501,7 +1501,7 @@ Spring Securityは、多くのカスタマイズポイントを提供してい�
 Spring Securityのデフォルトでは、認証処理を実行するためのパスは「\ ``"/login"``\」であるが、
 以下のようなbean定義を行うことで変更することが可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1532,7 +1532,7 @@ Spring Securityのデフォルトでは、認証処理を実行するための�
 Spring Securityのデフォルトでは、資格情報(ユーザー名とパスワード)を送るためのリクエストパラメータは「\ ``username``\」と「\ ``password``\ 」であるが、
 以下のようなbean定義を行うことで変更することが可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1572,7 +1572,7 @@ Spring Securityのデフォルトでは、資格情報(ユーザー名とパス�
 ログインフォームを自分で表示して認証処理を行った後の遷移先(デフォルトURL)は、
 Webアプリケーションのルートパス(\ ``"/"``\ )だが、以下のようなbean定義を行うことで変更することが可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1597,7 +1597,7 @@ Webアプリケーションのルートパス(\ ``"/"``\ )だが、以下のよ�
 Spring Securityのデフォルトの動作では、未認証時に認証が必要なページへのリクエストを受信した場合は、受信したリクエストを一旦HTTPセッションに保存し、認証ページに遷移する。
 認証成功時にリクエストを復元してリダイレクトするが、以下のようなbean定義を行うことで常に同じ画面に遷移させることが可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1625,7 +1625,7 @@ AuthenticationSuccessHandlerの適用
 Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、
 以下のようなbean定義を行うことで\ ``AuthenticationSuccessHandler``\ インタフェースの実装クラスを直接適用することができる。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1669,7 +1669,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 Spring Securityのデフォルトの動作では、ログインフォームを表示するためのパスに\ ``"error"``\ というクエリパラメータが付与されたURLにリダイレクトするが、
 以下のようなbean定義を行うことで変更することが可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1695,7 +1695,7 @@ AuthenticationFailureHandlerの適用
 Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、
 以下のようなbean定義を行うことで\ ``AuthenticationFailureHandler``\ インタフェースの実装クラスを直接適用することができる。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1778,7 +1778,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 Spring Securityのデフォルトでは、ログアウト処理を実行するためのパスは「\ ``"/logout"``\」であるが、
 以下のようなbean定義を行うことで変更することが可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1860,7 +1860,7 @@ Spring Securityのデフォルトでは、ログアウト処理を実行する�
 遷移先の変更
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1885,7 +1885,7 @@ Spring Securityのデフォルトでは、ログアウト処理を実行する�
 LogoutSuccessHandlerの適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
   
@@ -1932,7 +1932,7 @@ LogoutSuccessHandlerの適用
 システムエラーの例外メッセージを画面に表示させないためには、\ ``ExceptionMappingAuthenticationFailureHandler``\ を使用して\ ``InternalAuthenticationServiceException``\ をハンドリングし、
 システムエラーが発生したことを通知するためのパスに遷移させるなどの対応が必要となる。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1959,7 +1959,7 @@ LogoutSuccessHandlerの適用
 遷移先に指定したログインフォームでは、クエリパラメータに\ ``systemError``\ が指定されている場合は、認証例外のメッセージを表示するのではなく、
 固定のエラーメッセージを表示するようにしている。
 
-*ログインフォームの実装例*
+* ログインフォームの実装例
 
 .. code-block:: jsp
 
@@ -2056,7 +2056,7 @@ Bean Validationに関する詳細は \ :doc:`../ArchitectureInDetail/Validation`
 
 加えて、Forwardによる遷移でもSpring Securityの処理が行われるよう、認証パスをSpring Securityサーブレットフィルタに追加する。
 
-* \ ``web.xml``\ の設定例
+* web.xmlの設定例
 
 .. code-block:: xml
 
@@ -2375,7 +2375,7 @@ Authentication Filterの作成
 
 ユーザー名、パスワード、会社識別子(独自の認証パラメータ)を使用したDB認証機能をSpring Securityに適用する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -2567,7 +2567,7 @@ ShaPasswordEncoderの利用
 
 まず、\ ``ShaPasswordEncoder``\ のbeanを定義する。
 
-*xxx-web/src/main/resources/META-INF/spring/applicationContext.xmlの定義例*
+* applicationContext.xmlの定義例
 
 .. code-block:: xml
   
@@ -2598,7 +2598,7 @@ ShaPasswordEncoderの利用
 
 次に、\ ``ShaPasswordEncoder``\ をSpring Securityの認証処理(\ ``DaoAuthenticationProvider``\ )に適用する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
   
@@ -2639,7 +2639,7 @@ ShaPasswordEncoderの利用
 
 アプリケーションの処理で非推奨の\ ``PasswordEncoder``\ を使用する場合は、\ ``PasswordEncoder``\ をインジェクションして使用する。
 
-*Javaクラスの実装例*
+* Javaクラスの実装例
 
 .. code-block:: java
   
@@ -2682,7 +2682,7 @@ Spring MVCでリクエストを受けてログインフォームを表示する
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Spring MVCでリクエストを受けてログインフォームを表示する方法を説明する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-mvc.xmlの定義例*
+* spring-mvc.xmlの定義例
 
 ログインフォームを表示するControllerの定義例。
 
@@ -2710,7 +2710,7 @@ Spring MVCでリクエストを受けてログインフォームを表示する�
 
 本例のように、単純にview名を返すだけのメソッドが一つだけあるControllerであれば、\ ``<mvc:view-controller>``\ を使用して代用することも可能である。  
 
-\ ``<mvc:view-controller>``\ を使用したControllerの定義例。
+* \ ``<mvc:view-controller>``\ を使用したControllerの定義例。
 
 .. code-block:: xml
 
@@ -2736,7 +2736,7 @@ Spring Securityは、「`Hash-Based Token <http://docs.spring.io/spring-security
 
 Remember Me認証を利用する場合は、\ ``<sec:remember-me>``\ タグを追加する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -2777,7 +2777,7 @@ Remember Me認証を利用する場合は、\ ``<sec:remember-me>``\ タグを�
 
 ログインフォームには、「Remember Me認証」機能の利用有無を指定するためのフラグ(チェックボックス項目)を用意する。
 
-*ログインフォームのJSPの実装例*
+* ログインフォームのJSPの実装例
 
 .. code-block:: jsp
 

@@ -139,7 +139,7 @@ Spring SecurityによるURL Rewriting機能の無効化
 Spring SecurityはURL Rewritingを無効化するための仕組みを提供しており、この機能はデフォルトで適用されている。
 Cookieを使えないクライアントをサポートする必要がある場合は、URL Rewritingを許可するようにBean定義する。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -161,37 +161,37 @@ Cookieを使えないクライアントをサポートする必要がある場�
 
 Servletの標準仕様の仕組みを使ってセッションをセキュアに扱うことが可能である。
 
-* \ ``web.xml``\ の定義例
+* web.xmlの定義例
 
-    .. code-block:: xml
+.. code-block:: xml
 
-        <session-config>
-            <cookie-config>
-                <http-only>true</http-only> <!-- (1)  -->
-            </cookie-config>
-            <tracking-mode>COOKIE</tracking-mode> <!-- (2) -->
-        </session-config>
+    <session-config>
+        <cookie-config>
+            <http-only>true</http-only> <!-- (1)  -->
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode> <!-- (2) -->
+    </session-config>
 
 
-    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-    .. list-table::
-        :header-rows: 1
-        :widths: 10 90
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
 
-        * - 項番
-          - 説明
-        * - | (1)
-          - | Cookieに\ ``HttpOnly``\ 属性を付与する場合は、\ ``<http-only>``\ 要素に\ ``true``\ を指定する。
-            | 使用するアプリケーションサーバによっては、デフォルト値が\ ``true``\ になっている。
-        * - | (3)
-          - | URL Rewriting機能を無効化する場合は、\ ``<tracking-mode>``\ 要素に\ ``COOKIE``\ を指定する。
+    * - 項番
+      - 説明
+    * - | (1)
+      - | Cookieに\ ``HttpOnly``\ 属性を付与する場合は、\ ``<http-only>``\ 要素に\ ``true``\ を指定する。
+        | 使用するアプリケーションサーバによっては、デフォルト値が\ ``true``\ になっている。
+    * - | (3)
+      - | URL Rewriting機能を無効化する場合は、\ ``<tracking-mode>``\ 要素に\ ``COOKIE``\ を指定する。
 
-    上記の定義例からは省略しているが、\ ``<cookie-config>``\ に \ ``<secure>true</secure>``\を追加することで、 Cookieに\ ``Secure``\ 属性を付与することができる。
-    ただし、cookieのsecure化は、\ ``web.xml``\ で指定するのではなく、クライアントとHTTPS通信を行うミドルウェア(SSLアクセラレータやWebサーバーなど)で付与する方法を検討されたい。
+上記の定義例からは省略しているが、\ ``<cookie-config>``\ に \ ``<secure>true</secure>``\を追加することで、 Cookieに\ ``Secure``\ 属性を付与することができる。
+ただし、cookieのsecure化は、\ ``web.xml``\ で指定するのではなく、クライアントとHTTPS通信を行うミドルウェア(SSLアクセラレータやWebサーバーなど)で付与する方法を検討されたい。
 
-    実際のシステム開発の現場において、ローカルの開発環境でHTTPSを使うケースはほとんどない。
-    また、本番環境においても、HTTPSを使うのはSSLアクセラレータやWebサーバーとの通信までで、アプリケーションサーバへの通信はHTTPで行うケースも少なくない。
-    このような環境下で\ ``Secure``\ 属性の指定を\ ``web.xml``\ で行ってしまうと、実行環境毎に\ ``web.xml``\ や\ ``web-fragment.xml``\ を用意することになり、ファイルの管理が煩雑になるため推奨されない。
+実際のシステム開発の現場において、ローカルの開発環境でHTTPSを使うケースはほとんどない。
+また、本番環境においても、HTTPSを使うのはSSLアクセラレータやWebサーバーとの通信までで、アプリケーションサーバへの通信はHTTPで行うケースも少なくない。
+このような環境下で\ ``Secure``\ 属性の指定を\ ``web.xml``\ で行ってしまうと、実行環境毎に\ ``web.xml``\ や\ ``web-fragment.xml``\ を用意することになり、ファイルの管理が煩雑になるため推奨されない。
 
 
 .. _SpringSecuritySessionManagementSetup:
@@ -202,7 +202,7 @@ Servletの標準仕様の仕組みを使ってセッションをセキュアに�
 Spring Securityのセッション管理機能を適用する方法を説明する。
 Spring Securityのセッション管理機能の処理を使用する場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -251,7 +251,7 @@ Spring Securityは、セッション固定攻撃対策として、ログイン�
 
 デフォルトの動作を変更したい場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -304,7 +304,7 @@ Spring Securityの処理の中でどのような方針でセッションを作�
 
 デフォルトの振る舞いを変更したい場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -344,7 +344,7 @@ Spring Securityは、以下のタイミングでセッションを破棄する�
 セッションタイムアウトは、サーブレットコンテナに対して指定する。
 アプリケーションサーバーによっては、サーバー独自の指定方法を用意しているケースもあるが、ここでは、Servlet標準仕様で定められた指定方法を説明する。
 
-* \ ``web.xml``\ の定義例
+* web.xmlの定義例
 
 .. code-block:: xml
 
@@ -374,7 +374,7 @@ Spring Securityは、無効なセッションを使ったリクエストを検�
 無効なセッションとして扱われるリクエストの大部分は、セッションタイムアウト後のリクエストである。
 デフォルトではこの機能は無効になっているが、以下のようなbean定義を行うことで有効化することができる。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -400,7 +400,7 @@ Spring Securityは、無効なセッションを使ったリクエストを検�
 この動作を変更したい場合は、チェック対象から除外したいパスに対して個別にbean定義を行うことで実現することが可能である。
 例として、トップページを開くためのパス(\ ``"/"``\ )を除外パスに指定したい場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -475,7 +475,7 @@ Spring Securityが用意しているデフォルト実装ではHTTPセッショ�
 多重ログインを制御する機能は、:ref:`セッションのライフサイクル(セッションの生成と破棄)を検知する仕組み<SpringSecuritySessionManagementLifecycle>` を利用してユーザー毎のセッション状態を管理している。
 このため、多重ログインの制御機能を使用する際は、Spring Securityから提供されている\ ``HttpSessionEventPublisher``\ クラスをサーブレットコンテナに登録する必要がある。
 
-* \ ``web.xml``\ の定義例
+* web.xmlの定義例
 
 .. code-block:: xml
 
@@ -535,7 +535,7 @@ Spring Securityが用意しているデフォルト実装ではHTTPセッショ�
 既にログインしているユーザーを無効化することで多重ログインを防ぐ場合は、
 以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 

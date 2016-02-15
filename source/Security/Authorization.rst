@@ -228,7 +228,7 @@ Spring Securityが用意しているWebアプリケーション向けExpression�
 演算子を使用した判定も行うことができる。
 以下の例では、ロールと、リクエストされたIPアドレス両方に合致した場合、アクセス可能となる。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
   .. code-block:: xml
   
@@ -265,7 +265,7 @@ Spring Securityは、サーブレットフィルタの仕組みを利用してWe
 
 Webリソースに対して認可処理を適用する場合は、以下のようなbean定義を行う。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -319,7 +319,7 @@ bean定義ファイルを使用して、Webリソースに対してアクセス�
 
 上記以外の属性については、\ `<intercept-url> <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-intercept-url>`_\ を参照されたい。
 
-* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
+* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（spring-security.xml）
 
 .. code-block:: xml
 
@@ -376,7 +376,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 
 | ログインユーザーに「ROLE_USER」「ROLE_ADMIN」というロールがある場合を例に、設定例を示す。
 
-* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（\ ``spring-security.xml``\ ）
+* \ ``<sec:intercept-url>``\ タグ\ ``pattern``\ 属性の定義例（spring-security.xml）
 
   .. code-block:: xml
   
@@ -414,7 +414,7 @@ Spring Securityは定義した順番でリクエストとのマッチング処�
 \ ``access``\ 属性に記述したSpELは真偽値で評価され、式が真の場合に、アクセスが認可される。
 以下に使用例を示す。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
   .. code-block:: xml
   
@@ -463,7 +463,7 @@ Spring Securityは、以下のアノテーションをサポートしている�
 
 本ガイドラインでは、アクセスポリシーをExpressionで使用することができる\ ``@PreAuthorize``\、\ ``@PostAuthorize``\ を使用する方法を説明する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -590,7 +590,7 @@ Spring Securityは、JSPタグライブラリを使用してJSPの画面項目�
 
 JSPタグライブラリを使用してJSPの画面項目に対してアクセスポリシーを定義する際は、表示を許可する条件(アクセスポリシー)をJSPに定義する。
 
-*アクセスポリシー定義例*
+* アクセスポリシー定義例
 
 .. code-block:: jsp
 
@@ -624,7 +624,7 @@ Webリソースに指定したアクセスポリシーと連動させる場合�
 
 \ ``url``\ 属性に指定したWebリソースにアクセスできる場合に限り\ ``<sec:authorize>``\ タグの中に実装したJSPの処理が実行される。
 
-*Webリソースに定義されているアクセスポリシーとの連携例*
+* Webリソースに定義されているアクセスポリシーとの連携例
 
 .. code-block:: jsp
 
@@ -668,7 +668,7 @@ Webリソースに指定したアクセスポリシーと連動させる場合�
 
 \ ``<sec:authorize>``\ タグを使って呼び出した認可処理の判定結果は、変数に格納して使いまわすことができる。
 
-*JSPの実装例*
+* JSPの実装例
 
 .. code-block:: jsp
 
@@ -790,7 +790,7 @@ Spring Securityのデフォルトの設定だと、認証済みのユーザー�
 アプリケーションサーバーのエラーページを表示してしまうと、システムのセキュリティを低下させる要因になるのため、適切なエラー画面を表示することを推奨する。
 エラーページの指定は、以下のようなbean定義を行うことで可能である。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -834,7 +834,7 @@ CSRF対策機能との連動
 
 CSRFトークンチェックエラー時に専用のエラー画面に遷移させたい場合は、以下のようなBean定義を行う。(以下の定義例は、`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ からの抜粋である)
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -940,7 +940,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 例えば、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合は、エラーページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがある。
 そのような場合は、\ ``AccessDeniedHandler``\ インタフェースの実装クラスを作成してSpring Securityに適用することで実現することができる。
 
-*AccessDeniedHandlerインタフェースの実装クラスの作成例*
+* AccessDeniedHandlerインタフェースの実装クラスの作成例
 
 .. code-block:: java
 
@@ -971,7 +971,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 
     }
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1022,7 +1022,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 認証済みユーザーと同様に、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合は、ログインページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがある。
 そのような場合は、リクエストのパターン毎に\ ``AuthenticationEntryPoint``\ インタフェースの実装クラスをSpring Securityに適用することで実現することができる。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1083,7 +1083,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 下記のようアクセスポリシーを設定すると、「ROLE_ADMIN」権限を持つユーザーは、
 \ ``"/user"``\ 配下のパス(「ROLE_USER」権限を持つユーザーがアクセスできるパス)にアクセスすることができる。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1099,7 +1099,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 
 ロールの階層関係は、\ ``org.springframework.security.access.hierarchicalroles.RoleHierarchy``\ インタフェースの実装クラスで解決する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -1139,7 +1139,7 @@ Webリソースの認可処理への適用
 
 ロールの階層化を、WebリソースとJSPの画面項目に対する認可処理に適用する方法を説明する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
   
@@ -1175,7 +1175,7 @@ Webリソースの認可処理への適用
 
 ロールの階層化を、Javaメソッドに対する認可処理に適用する方法を説明する。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* spring-security.xmlの定義例
 
 .. code-block:: xml
   

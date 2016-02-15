@@ -157,7 +157,7 @@ How to use
 
 セキュリティヘッダ出力機能を無効化する場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -174,7 +174,7 @@ How to use
 出力するセキュリティヘッダを選択したい場合は、以下のようなbean定義を行う。
 ここではSpring Securityが提供しているすべてのセキュリティヘッダを出力する例になっているが、実際には必要なものだけ指定すること。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -209,7 +209,7 @@ How to use
 
 また、不要なものだけ無効化する方法も存在する。 
 
-* Bean定義ファイル定義例 
+* spring-security.xmlの定義例
     
 .. code-block:: xml 
 
@@ -233,7 +233,7 @@ How to use
 
 Spring Securityのbean定義を変更することで、各要素の属性にオプション\ [#fSpringSecurityLinkageWithBrowser2]_\ を指定することができる。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -254,7 +254,7 @@ Spring Securityがデフォルトで用意していないヘッダを出力す�
 
 上記のヘッダを出力する場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -279,7 +279,7 @@ Spring Securityは、\ ``RequestMatcher``\ インタフェースの仕組みを�
 
 例えば、保護対象のコンテンツが\ ``/secure/``\ というパスの配下に格納されていて、保護対象のコンテンツへアクセスした時だけCache-Controlヘッダを出力する場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 

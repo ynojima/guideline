@@ -108,7 +108,7 @@ CSRF対策機能の適用
 
 CSRFトークン用の\ ``RequestDataValueProcessor``\ 実装クラスを利用し、Springのタグライブラリの\ ``<form:form>``\ タグを使うことで、自動的にCSRFトークンを、hiddenに埋め込むことができる。
 
-* \ ``spring-mvc.xml``\ の設定
+* spring-mvc.xmlの設定例
 
 .. code-block:: xml
 
@@ -141,7 +141,7 @@ Spring Security 4.0からは、上記設定により、デフォルトでCSRF対
 
 CSRF対策機能を使用しない場合は、以下のようなbean定義を行う。
 
-* \ ``spring-security.xml``\ の定義例
+* spring-security.xmlの定義例
 
 .. code-block:: xml
 

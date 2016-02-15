@@ -261,7 +261,7 @@ SecurityFilterChain
 
 たとえば、以下のようなbean定義を行うと、URLに応じて異なる内容のセキュリティ対策を適用することができる。
 
-*spring-security.xmlの定義例*
+* xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -336,7 +336,7 @@ Spring Securityと共通ライブラリの関連については、:ref:`framewor
 
 本ガイドラインでは、Mavenを使って開発プロジェクトを作成していることを前提とする。
 
-*xxx-domain/pom.xmlの設定例*
+* xxx-domain/pom.xmlの設定例
 
 .. code-block:: xml
 
@@ -345,7 +345,7 @@ Spring Securityと共通ライブラリの関連については、:ref:`framewor
         <artifactId>terasoluna-gfw-security-core</artifactId>  <!-- (1) -->
     </dependency>
 
-*xxx-web/pom.xmlの設定例*
+* xxx-web/pom.xmlの設定例
 
 .. code-block:: xml
 
@@ -377,7 +377,7 @@ bean定義ファイルの作成
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Spring Securityのコンポーネントをbean定義するため、以下のようなXMLファイルを作成する。（`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\より抜粋）
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例
 
 .. code-block:: xml
 
@@ -459,7 +459,7 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
 
 作成したbean定義ファイルを使用してSpringのDIコンテナを生成するように定義する。
 
-*xxx-web/src/main/webapp/WEB-INF/web.xmlの設定例*
+* xxx-web/src/main/webapp/WEB-INF/web.xmlの設定例
 
 .. code-block:: xml
 
@@ -496,7 +496,7 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 最後に、Spring Securityが提供しているサーブレットフィルタクラス(\ ``FilterChainProxy``\) をサーブレットコンテナに登録する。
 
-*xxx-web/src/main/webapp/WEB-INF/web.xmlの設定例*
+* xxx-web/src/main/webapp/WEB-INF/web.xmlの設定例
 
 .. code-block:: xml
 
@@ -538,7 +538,7 @@ Spring Securityのコンポーネントをbean定義するため、以下のよ�
 セキュリティ対策が不要なリソースのパス(cssファイルやimageファイルにアクセスするためのパスなど)に対しては、
 \ ``<sec:http>``\ タグを使用して、Spring Securityのセキュリティ機能(Security Filter)が適用されないように制御することができる。
 
-*xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
+* xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例
 
 .. code-block:: xml
   
