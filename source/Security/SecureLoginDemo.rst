@@ -3013,7 +3013,7 @@ ER図
        // omitted
 
        @Service
-       @Transactionalp
+       @Transactional
        public class PasswordReissueServiceImpl implements PasswordReissueService {
 
            @Inject
