@@ -172,6 +172,8 @@ hidden項目の自動出力
 
 HTMLフォームを作成する際は、以下のようなJSPの実装を行う。
 
+* JSPの実装例
+
 .. code-block:: jsp
 
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -192,6 +194,8 @@ HTMLフォームを作成する際は、以下のようなJSPの実装を行う�
       - | HTMLフォームを作成する際は、Spring MVCから提供されている\ ``<form:form>``\ 要素を使用する。
 
 Spring MVCから提供されている\ ``<form:form>``\ 要素を使うと、以下のようなHTMLフォームが作成される。
+
+* HTMLの出力例
 
 .. code-block:: html
 
@@ -383,7 +387,7 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
 
   web.xmlに以下の設定を行うことで、任意のページに遷移させることができる。
 
-  **web.xml**
+    * web.xmlの設定例
 
     .. code-block:: xml
 
@@ -416,10 +420,9 @@ Appendix
 マルチパートリクエスト(ファイルアップロード)時の留意点
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-一般的に、ファイルアップロードなどマルチパートリクエストを送る場合、formから送信される値を\ ``Filter``\ では取得できない。
-そのため、これまでの説明だけでは、マルチパートリクエスト時に\ ``CsrfFileter``\ がCSRFトークンを取得できず、不正なリクエストと見なされてしまう。
+ファイルアップロードなど、マルチパートリクエストを送信する場合、formから送信されるCSRFトークンを\ ``springSecurityFilterChain``\ 内では取得できないため、CSRFトークンエラーが発生する。
 
-そのため、以下のどちらかの方法によって、対策する必要がある。
+そのため、マルチパートリクエストを送信する場合は、以下の方法によって、CSRFトークンを取得できるようにする必要がある。
 
 * \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用する
 * クエリのパラメータでCSRFトークンを送信する
@@ -435,31 +438,33 @@ Appendix
 
 MultipartFilterを使用する方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-通常、マルチパートリクエストの場合、formから送信された値は\ ``Filter``\ 内で取得できない。
-\ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用することで、マルチパートリクエストでも、\ ``Filter``\ 内で、formから送信された値を取得することができる。
+\ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用することで、マルチパートリクエストでも、\ ``springSecurityFilterChain``\ 内で、formから送信されたCSRFトークンを取得することができる。
 
-.. warning::
+.. warning:: **MultipartFilterを使用する際の留意点**
 
-    \ ``MultipartFilter``\ を使用した場合、\ ``springSecurityFilterChain``\による認証・認可処理が行われる前にアップロード処理が行われるため、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容してしまう。
+    \ ``MultipartFilter``\ を使用した場合、\ ``springSecurityFilterChain``\による認証・認可処理が行われる前にアップロード処理が行われるため、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容してしまうことになる。
 
-\ ``MultipartFilter``\ を使用するには、以下のように設定すればよい。
+\ ``MultipartFilter``\ を使用するには、以下のように設定する。
 
-**web.xmlの設定例**
+* web.xmlの設定例
 
 .. code-block:: xml
 
+    <!-- (1) -->
     <filter>
         <filter-name>MultipartFilter</filter-name>
-        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class> <!-- (1) -->
-    </filter>
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name> <!-- (2) -->
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>MultipartFilter</filter-name>
         <servlet-name>/*</servlet-name>
     </filter-mapping>
+
+    <!-- (2) -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
@@ -477,12 +482,13 @@ MultipartFilterを使用する方法
    * - | (2)
      - | \ ``springSecurityFilterChain``\ より前に、\ ``MultipartFilter``\ を定義すること。
 
-**JSPの実装例**
+* JSPの実装例
 
 .. code-block:: jsp
 
+    <!-- (1) -->
     <form:form action="${pageContext.request.contextPath}/fileupload"
-        method="post" modelAttribute="fileUploadForm" enctype="multipart/form-data">  <!-- (1) -->
+        method="post" modelAttribute="fileUploadForm" enctype="multipart/form-data">  
         <table>
             <tr>
                 <td width="65%"><form:input type="file" path="uploadFile" /></td>
@@ -501,11 +507,10 @@ MultipartFilterを使用する方法
    * - 項番
      - 説明
    * - | (1)
-     - | spring-mvc.xmlの設定の通り、\ ``CsrfRequestDataValueProcessor``\ が定義されている場合、\ ``<form:form>``\ タグを使うことで、CSRFトークンが埋め込まれた\ ``<input type="hidden">``\ タグが自動的に追加される。
-       | このため、JSPの実装で、CSRFトークンを意識する必要はない。
+     - | \ ``<form:form>``\ タグを使用することで、CSRFトークンが埋め込まれた\ ``<input type="hidden">``\ タグが自動的に追加されるため、JSPの実装でCSRFトークンを意識する必要はない。
        |
-       | **<form> タグを使用する場合**
-       | :ref:`csrf_formtag-use`\ でCSRFトークンを設定すること。
+       | **<html> タグを使用する場合**
+       | :ref:`csrf_htmlformtag-use`\ を参照して、CSRFトークンを設定すること。
 
 
 クエリパラメータでCSRFトークンを送る方法
@@ -513,21 +518,19 @@ MultipartFilterを使用する方法
 
 認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を防ぎたい場合は、\ ``MultipartFilter``\ は使用せず、クエリパラメータでCSRFトークンを送る必要がある。
 
-.. warning::
+.. warning:: **クエリパラメータでCSRFトークンを送る際の留意点**
 
-    この方法でCSRFトークンを送った場合、
+    この方法でCSRFトークンを送信した場合、以下の危険性があるため、\ ``MultipartFilter``\ を使用する方法と比べると、攻撃者にCSRFトークンを悪用されるリスクが高くなる。
+    なお、Spring Securityのデフォルト実装では、CSRFトークンの値としてランダムなUUIDを生成しているため、仮にCSRFトークンが漏洩してもセッションハイジャックされる事はないという点を補足しておく。
 
     * ブラウザのアドレスバーにCSRFトークンが表示される
     * ブックマークした場合、ブックマークにCSRFトークンが記録される
     * WebサーバのアクセスログにCSRFトークンが記録される
 
-    ため、\ ``MultipartFilter``\ を使用する方法と比べると、攻撃者にCSRFトークンを悪用されるリスクが高くなる。
-
-    Spring Securityのデフォルト実装では、CSRFトークンの値としてランダムなUUIDを生成しているため、仮にCSRFトークンが漏洩してもセッションハイジャックされる事はないという点を補足しておく。
 
 以下に、CSRFトークンをクエリパラメータとして送る実装例を示す。
 
-**JSPの実装例**
+* JSPの実装例
 
 .. code-block:: jsp
 
@@ -551,9 +554,7 @@ MultipartFilterを使用する方法
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``<form:form>``\ タグのaction属性に、以下のクエリを付与する必要がある。
-       | \ ``?${f:h(_csrf.parameterName)}=${f:h(_csrf.token)}``\
-       | \ ``<form>``\ タグを使用する場合も、同様の設定が必要である。
+     - | \ ``<form:form>``\ タグのaction属性に、CSRFトークンのパラメータ名と、CSRFトークン値をクエリパラメタとして付加する。
 
 .. raw:: latex
 
