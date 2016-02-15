@@ -3677,14 +3677,13 @@ Adding the custom methods to all Repository interfaces in batch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  .. note:: **Refer latest version**
 
-     There was a description given for adding custom methods to all Repository interfaces in past TERASOLUNA FW version, 
-     but due to below reasons this feature is abolished in current version.
+     There was a description given for [Adding the custom methods to all Repository interfaces in batch] using ``JpaRepositoryFactoryBean`` until TERASOLUNA Server Framework 5.0.1.RELEASE
+     however due to below reasons this feature is abolished.
      
-     #. The method described so far was supported in Spring Data Commons, and not supported in Spring Data JPA.
-     #. The method described so far had an example of adding extension code in order to implement Spring Data JPA, the extension code is no longer required in upgraded version of Spring Data JPA.
+     #. The way of adding custom method described using ``JpaRepositoryFactoryBean`` was supported in "`Spring Data JPA 1.7.4.RELEASE <http://docs.spring.io/spring-data/jpa/docs/1.7.4.RELEASE/reference/html/>`_\", however not supported in "`Spring Data Commons 1.9.4.RELEASE <http://docs.spring.io/spring-data/commons/docs/1.9.4.RELEASE/reference/html/#repositories.custom-behaviour-for-all-repositories>`_\".
+     #. The method described so far had extended code for accessing the Spring Data JPA internal resources. However the adverse effects such as the extension cord is no longer required was found in upgraded version of Spring Data JPA hence it is determined not to recommend for further implementation.
      
-     If project requirement continues to use this feature, it is recommended to consider the version up of TERASOLUNA FW.
-
+     If project requirement continues to use this feature, it is recommended to consider the version up to TERASOLUNA Server Framework 5.1.x.
 
 |
 

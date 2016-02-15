@@ -3680,13 +3680,13 @@ Entity毎のRepositoryインタフェースに個別にカスタムメソッド�
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  .. note:: **最新バージョンを利用する**
 
-     TERASOLUNA FW過去のバージョンでは、すべてのRepositoryインタフェースに一括でカスタムメソッドを追加する方法の説明ありましたが、 
-     下記理由に伴い本バージョンでの本機能を廃止した。
+     TERASOLUNA Server Framework 5.0.1.RELEASEまでは、「すべてのRepositoryインタフェースに一括でカスタムメソッドを追加する方法」として、 
+     ``JpaRepositoryFactoryBean`` を利用する方法を紹介していましたが、以下の理由により当該機能を紹介しないこととしました。
      
-     #. 従来記載の追加方法はSpring Data Commonsではサポートされていたが、Spring Data JPAではサポートされていない方法であったため。
-     #. 従来記載の追加方法はSpring Data JPAで実現するために拡張コードを追加する例を示していたが、Spring Data JPAのバージョンアップによりその拡張コードが利用できなくなった。
+     #. 記載していた、``JpaRepositoryFactoryBean`` を利用したカスタムメソッドの追加方法は "`Spring Data Commons 1.9.4.RELEASE <http://docs.spring.io/spring-data/commons/docs/1.9.4.RELEASE/reference/html/#repositories.custom-behaviour-for-all-repositories>`_\" ではサポートされているが、"`Spring Data JPA 1.7.4.RELEASE <http://docs.spring.io/spring-data/jpa/docs/1.7.4.RELEASE/reference/html/>`_\" ではサポートされていない方法であるため。
+     #. 開発ガイドラインでは上記をSpring Data JPAで実現するために、Spring Data JPA内部リソースへアクセスする拡張例を紹介していた。その影響で、Spring Data JPAのバージョンアップによりその拡張コードが利用できなくなるなどの弊害が発生しており、推奨できない実装方法であると判断したため。
      
-     もし本要件を引き続き利用したい場合は、TERASOLUNA FW のバージョンアップを検討することを推奨。
+     もし本要件を引き続き利用したい場合は、TERASOLUNA Server Framework 5.1.xへのバージョンアップを検討することを推奨。
 
 |
 
