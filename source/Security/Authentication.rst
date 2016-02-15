@@ -1017,12 +1017,21 @@ Spring Securityは、Spring Frameworkが提供しているイベント通知の�
       - 説明
     * - | (1)
       - | Spring Securityの認証機能は、認証結果(認証情報や認証例外)を
-        | \ ``AuthenticationEventPublisher``\ に渡して認証イベントの発火依頼を行う。
+        | \ ``AuthenticationEventPublisher``\ に渡して認証イベントの通知依頼を行う。
     * - | (2)
-      - | \ ``AuthenticationEventPublisher``\ インタフェースのデフォルトの実装クラス
-        | \ ``DefaultAuthenticationEventPublisher``\ は、認証結果に対応する認証イベントクラスのインスタンスを生成し、\ ``ApplicationEventPublisher``\ に渡してイベントを発火する。
+      - | \ ``AuthenticationEventPublisher``\ インタフェースのデフォルトの実装クラスは
+        | \ 認証結果に対応する認証イベントクラスのインスタンスを生成し、\ ``ApplicationEventPublisher``\ に渡してイベントの通知依頼を行う。
     * - | (3)
-      - | \ ``ApplicationEventPublisher``\ インタフェースの実装クラスは、イベントリスナのメソッドを呼び出してイベントを通知する。
+      - | \ ``ApplicationEventPublisher``\ インタフェースの実装クラスは、\ ``ApplicationListener``\ インタフェースの実装クラスにイベントを通知する。
+    * - | (4)
+      - | ``ApplicationListener``\ の実装クラスの一つである\ ``ApplicationListenerMethodAdaptor``\ は、
+        | \ ``@org.springframework.context.event.EventListener``\ が付与されているメソッドを呼び出してイベントを通知する。
+
+.. note:: **メモ**
+
+    Spring 4.1までは\ ``ApplicationListener``\ インタフェースの実装クラスを作成してイベントを受け取る必要があったが、
+    Spring 4.2からはPOJOに\ ``@EventListener``\ を付与したメソッドを実装するだけでイベントを受け取ることが可能である。
+    なお、Spring 4.2以降でも、従来通り\ ``ApplicationListener``\ インタフェースの実装クラスを作成してイベントを受け取ることもで可能である。
 
 Spring Security使用しているイベントは、認証が成功したことを通知するイベントと認証が失敗したことを通知するイベントの2種類に分類される。
 以下にSpring Securityが用意しているイベントクラスを説明する。
@@ -1032,8 +1041,8 @@ Spring Security使用しているイベントは、認証が成功したこと�
 認証成功イベント
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-認証が成功した時にSpring Securityが発火する主なイベントは以下の3つである。
-この3つのイベントは途中でエラーが発生しなければ、以下の順番ですべて発火される。
+認証が成功した時にSpring Securityが通知する主なイベントは以下の3つである。
+この3つのイベントは途中でエラーが発生しなければ、以下の順番ですべて通知される。
 
 .. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
 .. list-table:: **認証が成功したことを通知するイベントクラス**
@@ -1058,8 +1067,8 @@ Spring Security使用しているイベントは、認証が成功したこと�
 認証失敗イベント
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-認証が失敗した時にSpring Securityが発火する主なイベントは以下の通り。
-認証に失敗した場合は、いずれか一つのイベントが発火される。
+認証が失敗した時にSpring Securityが通知する主なイベントは以下の通り。
+認証に失敗した場合は、いずれか一つのイベントが通知される。
 
 .. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
 .. list-table:: **認証が失敗したことを通知するイベントクラス**
@@ -1086,7 +1095,7 @@ Spring Security使用しているイベントは、認証が成功したこと�
 イベントリスナの作成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-認証イベントの通知を受け取って処理を行いたい場合は、Spring Frameworkから提供されている\ ``@org.springframework.context.event.EventListener``\ を付与したメソッドを実装したクラスを作成し、DIコンテナに登録する。
+認証イベントの通知を受け取って処理を行いたい場合は、\ ``@EventListener``\ を付与したメソッドを実装したクラスを作成し、DIコンテナに登録する。
 
 *イベントリスナクラスの実装例*
 
@@ -1118,7 +1127,7 @@ Spring Security使用しているイベントは、認証が成功したこと�
     * - | (2)
       - | メソッドの引数にハンドリングしたい認証イベントクラスを指定する。
 
-上記例では、クライアントが指定した認証情報に誤りがあった場合に発火される\ ``AuthenticationFailureBadCredentialsEvent``\ をハンドリングするクラスを作成する例としているが、
+上記例では、クライアントが指定した認証情報に誤りがあった場合に通知される\ ``AuthenticationFailureBadCredentialsEvent``\ をハンドリングするクラスを作成する例としているが、
 他のイベントも同じ要領でハンドリングすることが可能である。
 
 |
