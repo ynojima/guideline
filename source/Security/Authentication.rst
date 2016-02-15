@@ -89,7 +89,7 @@ Spring Securityがサポートしている主な認証方式は以下の通り�
 
 |
 
-\ ``AuthenticationManager``\
+AuthenticationManager
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``AuthenticationManager``\ は、認証処理を実行するためのインタフェースである。
@@ -98,7 +98,7 @@ Spring Securityが提供するデフォルト実装(\ ``ProviderManager``\ )で�
 
 |
 
-\ ``AuthenticationProvider``\
+AuthenticationProvider
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``AuthenticationProvider``\ は、認証処理の実装を提供するためのインタフェースである。
@@ -451,7 +451,7 @@ Spring Securityは、以下のような流れでDB認証を行う。
 
 |
 
-\ ``UserDetails``\ の作成
+UserDetailsの作成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``UserDetails``\ は、認証処理で必要となる資格情報(ユーザー名とパスワード)とユーザーの状態を提供するためのインタフェースで、以下のメソッドが定義されている。
@@ -625,7 +625,7 @@ Spring Securityは、\ ``UserDetails``\ の実装クラスとして\ ``User``\ �
 
 .. _SpringSecurityAuthenticationUserDetailsService:
 
-\ ``UserDetailsService``\ の作成
+UserDetailsServiceの作成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``UserDetailsService``\ は、認証処理で必要となる資格情報とユーザーの状態をデータストア
@@ -880,7 +880,7 @@ Spring Securityは、\ ``PasswordEncoder``\ インタフェースの実装クラ
 
 |
 
-\ ``BCryptPasswordEncoder``\
+BCryptPasswordEncoder
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``BCryptPasswordEncoder``\ は、BCryptアルゴリズムを使用してパスワードのハッシュ化及びパスワードの照合を行う実装クラスである。
@@ -1619,7 +1619,7 @@ Spring Securityのデフォルトの動作では、未認証時に認証が必�
 
 |
 
-\ ``AuthenticationSuccessHandler``\ の適用
+AuthenticationSuccessHandlerの適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、
@@ -1689,7 +1689,7 @@ Spring Securityのデフォルトの動作では、ログインフォームを�
 
 |
 
-\ ``AuthenticationFailureHandler``\ の適用
+AuthenticationFailureHandlerの適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、
@@ -1882,7 +1882,7 @@ Spring Securityのデフォルトでは、ログアウト処理を実行する�
 
 |
 
-\ ``LogoutSuccessHandler``\ の適用
+LogoutSuccessHandlerの適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 *xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例*
@@ -2131,7 +2131,7 @@ Spring Securityから提供されている\ `認証プロバイダ <http://docs.
 
 |
 
-\ ``Authentication``\ インターフェースの実装クラスの作成
+Authenticationインターフェースの実装クラスの作成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``UsernamePasswordAuthenticationToken``\ クラスを継承し、ユーザー名とパスワードに加えて、会社識別子(独自の認証パラメータ)を保持するクラスを作成する。
@@ -2185,7 +2185,7 @@ Spring Securityから提供されている\ `認証プロバイダ <http://docs.
 
 |
 
-\ ``AuthenticationProvider``\ インターフェースの実装クラスの作成
+AuthenticationProviderインターフェースの実装クラスの作成
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``DaoAuthenticationProvider``\ クラスを継承し、ユーザー名、パスワード、会社識別子を使用してDB認証を行うクラスを作成する。
@@ -2531,7 +2531,7 @@ Authentication Filterの作成
 
 .. _AuthenticationHowToExtendUsingDeprecatedPasswordEncoder:
 
-非推奨パッケージの\ ``PasswordEncoder``\ の利用
+非推奨パッケージのPasswordEncoderの利用
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 セキュリティ要件によっては、前述した\ ``PasswordEncoder``\ を実装したクラスでは実現できない場合がある。
@@ -2553,7 +2553,7 @@ Authentication Filterの作成
 
 |
 
-\ ``ShaPasswordEncoder``\ の利用
+ShaPasswordEncoderの利用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 本ガイドラインでは、\ ``ShaPasswordEncoder``\ を例に、非推奨パッケージの\ ``PasswordEncoder``\ の利用について説明する。

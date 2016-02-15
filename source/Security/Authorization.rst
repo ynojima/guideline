@@ -58,7 +58,7 @@ Spring Securityは、以下のような流れで認可処理を行う。
 
 |
 
-\ ``ExceptionTranslationFilter``\
+ExceptionTranslationFilter
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``ExceptionTranslationFilter``\ は、認可処理(\ ``AccessDecisionManager``\ )で発生した例外をハンドリングし、クライアントへ適切なレスポンスを行うためのSecurity Filterである。
@@ -66,7 +66,7 @@ Spring Securityは、以下のような流れで認可処理を行う。
 
 |
 
-\ ``FilterSecurityInterceptor``\
+FilterSecurityInterceptor
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``FilterSecurityInterceptor``\ は、HTTPリクエストに対して認可処理を適用するためのSecurity Filterで、実際の認可処理は\ ``AccessDecisionManager``\ に委譲する。
@@ -74,7 +74,7 @@ Spring Securityは、以下のような流れで認可処理を行う。
 
 |
 
-\ ``AccessDecisionManager``\
+AccessDecisionManager
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``AccessDecisionManager``\ は、アクセスしようとしたリソースに対してアクセス権があるかチェックを行うためのインタフェースである。
@@ -108,7 +108,7 @@ Spring Securityが提供する実装クラスは3種類存在するが、いず�
 
 |
 
-\ ``AccessDecisionVoter``\
+AccessDecisionVoter
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``AccessDecisionVoter``\ は、アクセスしようとしたリソースに指定されているアクセスポリシーを参照してアクセス権を付与するかを投票するためのインタフェースである。
@@ -722,7 +722,7 @@ Spring Securityは、リソースへのアクセスを拒否した場合、以�
 
 |
 
-\ ``AccessDeniedHandler``\
+AccessDeniedHandler
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``AccessDeniedHandler``\ インタフェースは、認証済みのユーザーからのアクセスを拒否した際のエラー応答を行うためのインタフェースである。
@@ -750,7 +750,7 @@ Spring Securityのデフォルトの設定では、エラーページの指定�
 
 |
 
-\ ``AuthenticationEntryPoint``\
+AuthenticationEntryPoint
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 \ ``AuthenticationEntryPoint``\ インタフェースは、未認証のユーザーからのアクセスを拒否した際のエラー応答を行うためのインタフェースである。
@@ -932,7 +932,7 @@ Spring Securityは、多くのカスタマイズポイントを提供してい�
 
 .. _SpringSecurityAuthorizationAccessDeniedHandler:
 
-\ ``AccessDeniedHandler``\ の適用
+AccessDeniedHandlerの適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Spring Securityが提供しているデフォルトの動作をカスタマイズする仕組みだけでは要件をみたせない場合は、\ ``AccessDeniedHandler``\ インタフェースの実装クラスを直接適用することができる。
@@ -1016,7 +1016,7 @@ Spring Securityが提供しているデフォルトの動作をカスタマイ�
 
 ここでは、未認証ユーザーからのアクセスを拒否した際の動作をカスタマイズする方法を説明する。
 
-リクエスト毎に\ ``AuthenticationEntryPoint``\ を適用
+リクエスト毎にAuthenticationEntryPointを適用
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 認証済みユーザーと同様に、Ajaxのリクエスト(REST APIなど)で認可エラーが発生した場合は、ログインページ(HTML)ではなくJSON形式でエラー情報を応答することが求められるケースがある。
