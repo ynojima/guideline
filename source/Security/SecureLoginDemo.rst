@@ -654,6 +654,9 @@ ER図
        public class AccountSharedServiceImpl implements AccountSharedService {
 
            @Inject
+           ClassicDateFactory dateFactory;
+
+           @Inject
            PasswordHistorySharedService passwordHistorySharedService;
 
            @Inject
@@ -668,7 +671,7 @@ ER図
                String password = passwordEncoder.encode(rawPassword);
                boolean result = accountRepository.updatePassword(username, password); // (2)
 
-               LocalDateTime passwordChangeDate = LocalDateTime.now();
+               LocalDateTime passwordChangeDate = dateFactory.newTimestamp().toLocalDateTime();
 
                PasswordHistory passwordHistory = new PasswordHistory(); // (3)
                passwordHistory.setUsername(username);
@@ -714,6 +717,9 @@ ER図
      public class AccountSharedServiceImpl implements AccountSharedService {
 
          @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
          PasswordHistorySharedService passwordHistorySharedService;
 
          @Value("${security.passwordLifeTime}") // (1)
@@ -745,7 +751,7 @@ ER図
                     .get(0)
                     .getUseFrom()
                     .isBefore(
-                            LocalDateTime.now()
+                            dateFactory.newTimestamp().toLocalDateTime()
                                     .minusSeconds(passwordLifeTime))) { // (8)
                 return true;
             }
@@ -1360,6 +1366,9 @@ ER図
                ConstraintValidator<NotReused, Object> {
 
            @Inject
+           ClassicDateFactory dateFactory;
+
+           @Inject
            AccountSharedService accountSharedService;
 
            @Inject
@@ -1424,8 +1433,8 @@ ER図
 
            private boolean checkHistoricalPassword(String username,
                    String newPassword, ConstraintValidatorContext context) {
-               LocalDateTime useFrom = LocalDateTime.now().minusMinutes(
-                       passwordHistoricalCheckingPeriod);
+               LocalDateTime useFrom = dateFactory.newTimestamp().toLocalDateTime()
+                       .minusMinutes(passwordHistoricalCheckingPeriod);
                List<PasswordHistory> historyByTime = passwordHistorySharedService
                        .findHistoriesByUseFrom(username, useFrom);
                List<PasswordHistory> historyByCount = passwordHistorySharedService
@@ -1848,6 +1857,9 @@ ER図
      public class AccountAuthenticationFailureBadCredentialsEventListener{ 
 
          @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
          AuthenticationEventSharedService authenticationEventSharedService;
 
          @EventListener // (1)
@@ -1858,7 +1870,7 @@ ER図
 
              FailedAuthentication failureEvents = new FailedAuthentication(); // (3)
              failureEvents.setUsername(username);
-             failureEvents.setAuthenticationTimestamp(LocalDateTime.now());
+             failureEvents.setAuthenticationTimestamp(dateFactory.newTimestamp().toLocalDateTime());
 
              authenticationEventSharedService.insertFailureEvent(failureEvents); // (4)
          }
@@ -1898,6 +1910,9 @@ ER図
          // omitted
 
          @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
          AuthenticationEventSharedService authenticationEventSharedService;
 
          @Value("${security.lockingDuration}") // (1)
@@ -1920,7 +1935,8 @@ ER図
                      .get(lockingThreshold - 1) // (5)
                      .getAuthenticationTimestamp()
                      .isBefore(
-                             LocalDateTime.now().minusSeconds(lockingDuration))) {
+                             dateFactory.newTimestamp().toLocalDateTime()
+                             .minusSeconds(lockingDuration))) {
                  return false;
              }
 
@@ -2487,6 +2503,9 @@ ER図
      public class AccountAuthenticationSuccessEventListener{
 
          @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
          AuthenticationEventSharedService authenticationEventSharedService;
 
          @EventListener // (1)
@@ -2496,7 +2515,7 @@ ER図
 
              SuccessfulAuthentication successEvent = new SuccessfulAuthentication(); // (3)
              successEvent.setUsername(details.getUsername());
-             successEvent.setAuthenticationTimestamp(LocalDateTime.now());
+             successEvent.setAuthenticationTimestamp(dateFactory.newTimestamp().toLocalDateTime());
 
              authenticationEventSharedService.insertSuccessEvent(successEvent); // (4)
          }
@@ -2979,6 +2998,9 @@ ER図
        public class PasswordReissueServiceImpl implements PasswordReissueService {
 
            @Inject
+           ClassicDateFactory dateFactory;
+
+           @Inject
            PasswordReissueInfoRepository passwordReissueInfoRepository;
 
            @Inject
@@ -3009,8 +3031,8 @@ ER図
                
                String token = UUID.randomUUID().toString(); // (6)
 
-               LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(
-                       tokenLifeTime); // (7)
+               LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
+                       .plusSeconds(tokenLifeTime); // (7)
 
                PasswordReissueInfo info = new PasswordReissueInfo(); // (8)
                info.setUsername(username);
@@ -3187,6 +3209,9 @@ ER図
        public class PasswordReissueServiceImpl implements PasswordReissueService {
 
            @Inject
+           ClassicDateFactory dateFactory;
+
+           @Inject
            PasswordReissueInfoRepository passwordReissueInfoRepository;
 
            // omitted
@@ -3205,7 +3230,7 @@ ER図
                            MessageKeys.E_SL_PR_5001));
                }
 
-               if (info.getExpiryDate().isBefore(LocalDateTime.now())) { // (2)
+               if (info.getExpiryDate().isBefore(dateFactory.newTimestamp().toLocalDateTime())) { // (2)
                    throw new BusinessException(ResultMessages.error().add(
                            MessageKeys.E_SL_PR_2001));
                }
@@ -3723,6 +3748,9 @@ ER図
      public class PasswordReissueServiceImpl implements PasswordReissueService {
 
          @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
          MailSharedService mailSharedService;
 
          @Inject
@@ -3751,8 +3779,8 @@ ER図
              
              String token = UUID.randomUUID().toString();
 
-             LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(
-                     tokenLifeTime);
+             LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
+                     .plusSeconds(tokenLifeTime);
 
              PasswordReissueInfo info = new PasswordReissueInfo();
              info.setUsername(username);
@@ -3994,6 +4022,9 @@ ER図
              PasswordReissueFailureSharedService {
 
          @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
          FailedPasswordReissueRepository failedPasswordReissueRepository;
 
          // omitted
@@ -4003,7 +4034,7 @@ ER図
          public void resetFailure(String username, String token) {
              FailedPasswordReissue event = new FailedPasswordReissue(); // (2)
              event.setToken(token);
-             event.setAttemptDate(LocalDateTime.now());
+             event.setAttemptDate(dateFactory.newTimestamp().toLocalDateTime());
              failedPasswordReissueRepository.create(event); // (3)
 
              // omitted
