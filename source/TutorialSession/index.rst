@@ -134,10 +134,18 @@ ECサイトにおいて、ユーザは以下が行える。
     
     * - 機能
       - 画面(ユースケース)
+    * - | ログイン機能 **(作成済み)**
+      - | Login Pages
+    * - | アカウント作成機能 **(作成済み)**
+      - | Account Create Pages
     * - | アカウント情報変更機能
       - | Account Update Pages
+    * - | 商品一覧表示機能 **(作成済み)**
+      - | Item View Pages
+    * - | 商品詳細表示機能 **(作成済み)**
+      - | Item View Pages
     * - | カートアイテム登録機能
-      - | Item View Pages(カートの中身を表示する部分のみ)
+      - | Item View Pages
     * - | カートアイテム削除機能
       - | Cart View Pages
     * - | 商品注文機能
