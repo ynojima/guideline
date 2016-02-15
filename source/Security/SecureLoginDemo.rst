@@ -1235,7 +1235,7 @@ ER図
 
            Class<?>[] groups() default {};
 
-           String idPropertyName(); // (2)
+           String usernamePropertyName(); // (2)
 
            String newPasswordPropertyName(); // (3)
 
@@ -1282,7 +1282,7 @@ ER図
 
            @Override
            public void initialize(StrongPassword constraintAnnotation) {
-               usernamePropertyName = constraintAnnotation.idPropertyName();
+               usernamePropertyName = constraintAnnotation.usernamePropertyName();
                newPasswordPropertyName = constraintAnnotation.newPasswordPropertyName();
            }
 
@@ -1350,7 +1350,7 @@ ER図
 
            Class<?>[] groups() default {};
 
-           String idPropertyName(); // (2)
+           String usernamePropertyName(); // (2)
 
            String newPasswordPropertyName(); // (3)
 
@@ -1417,7 +1417,7 @@ ER図
 
            @Override
            public void initialize(NotReused constraintAnnotation) {
-               usernamePropertyName = constraintAnnotation.idPropertyName();
+               usernamePropertyName = constraintAnnotation.usernamePropertyName();
                newPasswordPropertyName = constraintAnnotation.newPasswordPropertyName();
                message = constraintAnnotation.message();
            }
@@ -1532,9 +1532,9 @@ ER図
 
      @Data
      @Compare(source = "newPasssword", destination = "confirmNewPassword", operator = Compare.Operator.EQUAL) // (1)
-     @StrongPassword(idPropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
-     @NotReused(idPropertyName = "username", newPasswordPropertyName = "newPassword") // (3)
-     @ConfirmOldPassword(idPropertyName = "username", oldPasswordPropertyName = "oldPassword") // (4)
+     @StrongPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
+     @NotReused(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (3)
+     @ConfirmOldPassword(usernamePropertyName = "username", oldPasswordPropertyName = "oldPassword") // (4)
      public class PasswordChangeForm {
 
          private String username;
@@ -3425,8 +3425,8 @@ ER図
 
        @Data
        @Compare(source = "newPasssword", destination = "confirmNewPassword", operator = Compare.Operator.EQUAL)
-       @StrongPassword(idPropertyName = "username", newPasswordPropertyName = "newPassword") // (1)
-       @NotReused(idPropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
+       @StrongPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (1)
+       @NotReused(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
        public class PasswordResetForm {
 
            private String username;
