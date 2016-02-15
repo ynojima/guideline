@@ -124,7 +124,7 @@ Configuration example of BCryptPasswordEncoder
   
     This issue can be avoided by setting the following as JVM boot arguments.
   
-    -Djava.security.egd=file:///dev/urandom
+    -Djava.security.egd=file:/dev/./urandom
 
 * Java class
 
