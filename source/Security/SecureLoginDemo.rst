@@ -1535,8 +1535,10 @@ ER図
      @StrongPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
      @NotReused(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (3)
      @ConfirmOldPassword(usernamePropertyName = "username", oldPasswordPropertyName = "oldPassword") // (4)
-     public class PasswordChangeForm {
+     public class PasswordChangeForm implements Serializable{
 
+         private static final long serialVersionUID = 1L;
+         
          private String username;
 
          private String oldPassword;
@@ -2185,7 +2187,10 @@ ER図
       package org.terasoluna.securelogin.app.unlock;    
 
       @Data
-      public class UnlockForm {
+      public class UnlockForm implements Serializable {
+
+          private static final long serialVersionUID = 1L;
+
           @NotEmpty
           private String username;
       }
@@ -3112,7 +3117,10 @@ ER図
        // omitted
 
        @Data
-       public class CreateReissueInfoForm {
+       public class CreateReissueInfoForm implements Serializable {
+
+           private static final long serialVersionUID = 1L;
+       
            @NotEmpty
            String username;
        }
@@ -3427,7 +3435,9 @@ ER図
        @Compare(source = "newPasssword", destination = "confirmNewPassword", operator = Compare.Operator.EQUAL)
        @StrongPassword(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (1)
        @NotReused(usernamePropertyName = "username", newPasswordPropertyName = "newPassword") // (2)
-       public class PasswordResetForm {
+       public class PasswordResetForm implements Serializable{
+
+           private static final long serialVersionUID = 1L;
 
            private String username;
 
