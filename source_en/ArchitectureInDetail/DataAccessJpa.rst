@@ -4318,10 +4318,10 @@ The method to add common conditions for JPQL which is executed at the time of ca
 
  .. note:: **About Dialect extension**
 
-    If SQL specific keywords are specified at ``@Where`` annotation, Hibernate may recognize SQL specific keywords as a common string value and as a result incorrect SQL may get generated.
-    It is necessary to extend the ``Dialect`` in case of SQL specific keywords are used at ``@Where`` annotation.
+    If SQL specific keywords are specified in ``@Where`` annotation, Hibernate may recognize SQL specific keywords as a common string value and as a result expected SQL may not get generated.
+    It is necessary to extend the ``Dialect`` in case of SQL specific keywords are used in ``@Where`` annotation.
 
-- Extending Dialect to register standard keywords such as ``true``, ``false`` and ``unknown``.
+- Extending ``Dialect`` to register standard keywords such as ``true``, ``false`` and ``unknown``.
 
  .. code-block:: java
 
