@@ -722,8 +722,8 @@ ER図
          @Inject
          PasswordHistorySharedService passwordHistorySharedService;
 
-         @Value("${security.passwordLifeTime}") // (1)
-         int passwordLifeTime;
+         @Value("${security.passwordLifeTimeSeconds}") // (1)
+         int passwordLifeTimeSeconds;
 
          // omitted
 
@@ -752,7 +752,7 @@ ER図
                     .getUseFrom()
                     .isBefore(
                             dateFactory.newTimestamp().toLocalDateTime()
-                                    .minusSeconds(passwordLifeTime))) { // (8)
+                                    .minusSeconds(passwordLifeTimeSeconds))) { // (8)
                 return true;
             }
 
@@ -3015,8 +3015,8 @@ ER図
            @Resource(name = "passwordGenerationRules")
            List<CharacterRule> passwordGenerationRules; //(2)
 
-           @Value("${security.tokenLifeTime}")
-           int tokenLifeTime; // (3)
+           @Value("${security.tokenLifeTimeSeconds}")
+           int tokenLifeTimeSeconds; // (3)
 
            // omitted
 
@@ -3032,7 +3032,7 @@ ER図
                String token = UUID.randomUUID().toString(); // (6)
 
                LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
-                       .plusSeconds(tokenLifeTime); // (7)
+                       .plusSeconds(tokenLifeTimeSeconds); // (7)
 
                PasswordReissueInfo info = new PasswordReissueInfo(); // (8)
                info.setUsername(username);
@@ -3759,8 +3759,8 @@ ER図
          @Inject
          PasswordEncoder passwordEncoder;
 
-         @Value("${security.tokenLifeTime}")
-         int tokenLifeTime;
+         @Value("${security.tokenLifeTimeSeconds}")
+         int tokenLifeTimeSeconds;
 
          @Value("${app.hostAndPort}") // (1)
          String hostAndPort;
@@ -3780,7 +3780,7 @@ ER図
              String token = UUID.randomUUID().toString();
 
              LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
-                     .plusSeconds(tokenLifeTime);
+                     .plusSeconds(tokenLifeTimeSeconds);
 
              PasswordReissueInfo info = new PasswordReissueInfo();
              info.setUsername(username);
