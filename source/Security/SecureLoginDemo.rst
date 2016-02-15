@@ -1272,7 +1272,8 @@ ER図
        public class StrongPasswordValidator implements
                ConstraintValidator<StrongPassword, Object> {
 
-           @Resource(name = "characteristicPasswordValidator") // (1)
+           @Inject
+           @Named("characteristicPasswordValidator") // (1)
            PasswordValidator characteristicPasswordValidator;
 
            private String usernamePropertyName;
@@ -1398,7 +1399,8 @@ ER図
            @Inject
            PasswordEncoder passwordEncoder;
 
-           @Resource(name = "encodedPasswordHistoryValidator") // (1)
+           @Inject
+           @Named("encodedPasswordHistoryValidator") // (1)
            PasswordValidator encodedPasswordHistoryValidator;
 
            @Value("${security.passwordHistoricalCheckingCount}") // (2)
@@ -3029,7 +3031,7 @@ ER図
            @Inject
            PasswordGenerator passwordGenerator; // (1)
 
-           @Resource(name = "passwordGenerationRules")
+           @Resource(name="passwordGenerationRules")
            List<CharacterRule> passwordGenerationRules; //(2)
 
            @Value("${security.tokenLifeTimeSeconds}")
@@ -4423,16 +4425,11 @@ How to use
 
     <!-- Password Generator. -->
     <bean id="passwordGenerator" class="org.passay.PasswordGenerator" /> <!-- (6) -->
-    <bean id="passwordGenerationRules"
-        class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">
-            <list value-type="org.passay.CharacterRule"> <!-- (7) -->
-                <ref bean="upperCaseRule" />
-                <ref bean="lowerCaseRule" />
-                <ref bean="digitRule" />
-            </list>
-        </property>
-    </bean>
+    <util:list id="passwordGenerationRules" value-type="org.passay.CharacterRule"> <!-- (7) -->
+        <ref bean="upperCaseRule" />
+        <ref bean="lowerCaseRule" />
+        <ref bean="digitRule" />
+    </util:list>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -4463,7 +4460,8 @@ How to use
    @Inject
    PasswordGenerator passwordGenerator;
 
-   @Resource(name = "passwordGenerationRules")
+   @Inject
+   @Named("passwordGenerationRules")
    List<CharacterRule> passwordGenerationRules;
 
    // omitted
