@@ -124,7 +124,7 @@ BCryptPasswordEncoderの設定例
   
     本問題が発生する場合、JVMの起動引数に以下を設定することで、回避することができる。
   
-    -Djava.security.egd=file:///dev/urandom
+    -Djava.security.egd=file:/dev/./urandom
 
 * Javaクラス
 
