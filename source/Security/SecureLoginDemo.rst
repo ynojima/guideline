@@ -522,7 +522,7 @@ ER図
            List<PasswordHistory> findByUseFrom(@Param("username") String username,  
                    @Param("useFrom") LocalDateTime useFrom); // (2)
 
-           List<PasswordHistory> findLatestHistories(
+           List<PasswordHistory> findLatest(
                    @Param("username") String username, @Param("limit") int limit); // (3)
 
        }
@@ -573,7 +573,7 @@ ER図
            ]]>
            </select>
 
-           <select id="findLatestHistories" resultMap="PasswordHistoryResultMap">
+           <select id="findLatest" resultMap="PasswordHistoryResultMap">
            <![CDATA[
                SELECT
                    username,
@@ -635,8 +635,8 @@ ER図
 
            @Override
            @Transactional(readOnly = true)
-           public List<PasswordHistory> findLatestHistories(String username, int limit) {
-               return passwordHistoryRepository.findLatestHistories(username, limit);
+           public List<PasswordHistory> findLatest(String username, int limit) {
+               return passwordHistoryRepository.findLatest(username, limit);
            }
 
        }
@@ -726,7 +726,7 @@ ER図
         @Cacheable("isInitialPassword")
         public boolean isInitialPassword(String username) { // (2)
             List<PasswordHistory> passwordHistories = passwordHistorySharedService
-                    .findLatestHistories(username, 1); // (3)
+                    .findLatest(username, 1); // (3)
             return passwordHistories.isEmpty(); // (4)
         }
 
@@ -735,7 +735,7 @@ ER図
         @Cacheable("isCurrentPasswordExpired")
         public boolean isCurrentPasswordExpired(String username) { // (5)
             List<PasswordHistory> passwordHistories = passwordHistorySharedService
-                    .findLatestHistories(username, 1); // (6)
+                    .findLatest(username, 1); // (6)
 
             if (passwordHistories.isEmpty()) { // (7)
                 return true;
@@ -1429,7 +1429,7 @@ ER図
                List<PasswordHistory> historyByTime = passwordHistorySharedService
                        .findHistoriesByUseFrom(username, useFrom);
                List<PasswordHistory> historyByCount = passwordHistorySharedService
-                       .findLatestHistories(username, passwordHistoricalCheckingCount);
+                       .findLatest(username, passwordHistoricalCheckingCount);
                List<PasswordHistory> history = historyByCount.size() > historyByTime
                        .size() ? historyByCount : historyByTime; // (6)
 
@@ -1718,7 +1718,7 @@ ER図
       
         int create(FailedAuthentication event); // (1)
       
-        List<FailedAuthentication> findLatestEvents(
+        List<FailedAuthentication> findLatest(
                         @Param("username") String username, @Param("count") long count); // (2)
       
         int deleteByUsername(@Param("username") String username); // (3)
@@ -1767,7 +1767,7 @@ ER図
           ]]>
         </insert>
       
-        <select id="findLatestEvents" resultMap="failedAuthenticationResultMap">
+        <select id="findLatest" resultMap="failedAuthenticationResultMap">
              <![CDATA[
                   SELECT
                       username,
