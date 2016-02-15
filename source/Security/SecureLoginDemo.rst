@@ -520,7 +520,7 @@ ER図
 
        public interface PasswordHistoryRepository {
 
-           int insert(PasswordHistory history); // (1)
+           int create(PasswordHistory history); // (1)
 
            List<PasswordHistory> findByUseFrom(@Param("username") String username,  
                    @Param("useFrom") LocalDateTime useFrom); // (2)
@@ -591,7 +591,7 @@ ER図
            ]]>
            </select>
 
-           <insert id="insert" parameterType="PasswordHistory">
+           <insert id="create" parameterType="PasswordHistory">
            <![CDATA[
                INSERT INTO password_history (
                    username,
@@ -627,7 +627,7 @@ ER図
            PasswordHistoryRepository passwordHistoryRepository;
 
            public int insert(PasswordHistory history) {
-               return passwordHistoryRepository.insert(history);
+               return passwordHistoryRepository.create(history);
            }
 
            @Transactional(readOnly = true)
@@ -1716,7 +1716,7 @@ ER図
       
       public interface FailedAuthenticationRepository {
       
-        int insert(FailedAuthentication accountAuthenticationLog); // (1)
+        int create(FailedAuthentication accountAuthenticationLog); // (1)
       
         List<FailedAuthentication> findLatestEvents(
                         @Param("username") String username, @Param("count") long count); // (2)
@@ -1755,7 +1755,7 @@ ER図
                 <id property="authenticationTimestamp" column="authentication_timestamp" />
         </resultMap>
       
-        <insert id="insert" parameterType="FailedAuthentication">
+        <insert id="create" parameterType="FailedAuthentication">
           <![CDATA[
               INSERT INTO failed_authentication (
                   username,
@@ -1820,7 +1820,7 @@ ER図
 
            @Override
            public int insertFailureEvent(FailedAuthentication event) {
-                   return failedAuthenticationRepository.insert(event);
+                   return failedAuthenticationRepository.create(event);
            }
 
            @Override
@@ -2376,7 +2376,7 @@ ER図
 
        public interface SuccessfulAuthenticationRepository {
 
-           int insert(SuccessfulAuthentication accountAuthenticationLog); // (1)
+           int create(SuccessfulAuthentication event); // (1)
 
            List<SuccessfulAuthentication> findLatestEvents(
                   @Param("username") String username, @Param("count") long count); // (2)
@@ -2411,13 +2411,13 @@ ER図
                <id property="authenticationTimestamp" column="authentication_timestamp" />
            </resultMap>
 
-           <insert id="insert" parameterType="SuccessfulAuthentication">
+           <insert id="create" parameterType="SuccessfulAuthentication">
            <![CDATA[
                INSERT INTO successful_authentication (
                    username,
                    authentication_timestamp
                ) VALUES (
-                       #{username},
+                   #{username},
                    #{authenticationTimestamp}
                )
            ]]>
@@ -2466,7 +2466,7 @@ ER図
 
            @Override
            public int insertSuccessEvent(SuccessfulAuthentication event) {
-               return successAuthenticationRepository.insert(event);
+               return successAuthenticationRepository.create(event);
            }
 
        }
@@ -2898,7 +2898,7 @@ ER図
           ]]>
           </select>
 
-          <insert id="insert" parameterType="PasswordReissueInfo">
+          <insert id="create" parameterType="PasswordReissueInfo">
           <![CDATA[
               INSERT INTO password_reissue_info (
                   username,
@@ -3018,7 +3018,7 @@ ER図
                info.setSecret(passwordEncoder.encode(rawSecret)); // (9)
                info.setExpiryDate(expiryDate);
                
-               int count = passwordReissueInfoRepository.insert(info); // (10)
+               int count = passwordReissueInfoRepository.create(info); // (10)
 
                if (count > 0) {
 
@@ -3760,7 +3760,7 @@ ER図
              info.setSecret(passwordEncoder.encode(rowSecret));
              info.setExpiryDate(expiryDate);
              
-             int count = passwordReissueInfoRepository.insert(info);
+             int count = passwordReissueInfoRepository.create(info);
 
              if (count > 0) {
                  String passwordResetUrl = protocol + "://" + hostAndPort
@@ -3882,7 +3882,7 @@ ER図
 
            int countByToken(@Param("token") String token); // (1)
 
-           int insert(FailedPasswordReissue event); // (2)
+           int create(FailedPasswordReissue event); // (2)
 
            int deleteByToken(@Param("token") String token); // (3)
 
@@ -3926,7 +3926,7 @@ ER図
            ]]>
        	</select>
 
-       	<insert id="insert" parameterType="FailedPasswordReissue">
+       	<insert id="create" parameterType="FailedPasswordReissue">
            <![CDATA[
                INSERT INTO failed_password_reissue (
                    token,
@@ -4004,7 +4004,7 @@ ER図
              FailedPasswordReissue event = new FailedPasswordReissue(); // (2)
              event.setToken(token);
              event.setAttemptDate(LocalDateTime.now());
-             failedPasswordReissueRepository.insert(event); // (3)
+             failedPasswordReissueRepository.create(event); // (3)
 
              // omitted
 
