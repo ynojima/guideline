@@ -632,7 +632,7 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
       - 有
     * - \ (4)
       - terasoluna-gfw-validator
-      - 汎用的なBean Validationの制約アノテーションを追加して提供する。Bean Validation API以外の依存ライブラリがないため単独でも利用可能。(5.1.0から追加)
+      - 汎用的なBean Validationの制約アノテーションを追加して提供する。(5.1.0から追加)
       - 有
     * - \ (5)
       - terasoluna-gfw-jodatime
