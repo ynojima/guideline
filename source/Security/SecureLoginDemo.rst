@@ -3604,7 +3604,7 @@ ER図
                        <tr>
                            <th><form:label path="username">Username</form:label></th>
                            <td>${f:h(passwordResetForm.username)} <form:hidden
-                                   path="username" value="${f:h(passwordResetorm.username)}" />  <!-- (1) -->
+                                   path="username" value="${f:h(passwordResetForm.username)}" />  <!-- (1) -->
                            </td>
                            <td></td>
                        </tr>
