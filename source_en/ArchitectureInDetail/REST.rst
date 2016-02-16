@@ -5237,24 +5237,15 @@ prevented for RESTful Web Service requests.
     <!-- (1) -->
     <sec:http
         pattern="/api/v1/**"
-        use-expressions="true"
         create-session="stateless">
         <sec:form-login />
         <sec:logout />
-        <sec:headers />
+        <sec:csrf disabled="true" />
     </sec:http>
 
-    <sec:http use-expressions="true">
+    <sec:http>
         <sec:form-login />
         <sec:logout />
-        <sec:headers>
-            <sec:cache-control />
-            <sec:content-type-options />
-            <sec:hsts />
-            <sec:frame-options />
-            <sec:xss-protection />
-        </sec:headers>
-        <sec:csrf />
         <sec:access-denied-handler ref="accessDeniedHandler"/>
         <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
         <sec:session-management />

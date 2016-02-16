@@ -1458,11 +1458,11 @@ ResultMessagesを使用しない結果メッセージの表示
                 <legend>Login Form</legend>
                 <div>
                     <label for="username">Username: </label><input
-                        type="text" id="username" name="j_username">
+                        type="text" id="username" name="username">
                 </div>
                 <div>
                     <label for="username">Password:</label><input
-                        type="password" id="password" name="j_password">
+                        type="password" id="password" name="password">
                 </div>
                 <div>
                     <input type="submit" value="Login" />

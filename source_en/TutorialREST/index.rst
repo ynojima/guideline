@@ -550,7 +550,7 @@ Creation of spring-mvc-rest.xml
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
             <mvc:message-converters register-defaults="false">
                 <!-- (1) -->
@@ -660,24 +660,15 @@ Definition of Spring Security for REST API
         <!-- (1) -->
         <sec:http
             pattern="/api/v1/**"
-            use-expressions="true"
             create-session="stateless">
             <sec:form-login />
             <sec:logout />
-            <sec:headers />
+            <sec:csrf disabled="true"/>
         </sec:http>
 
-        <sec:http use-expressions="true">
+        <sec:http>
             <sec:form-login />
             <sec:logout />
-            <sec:headers>
-                <sec:cache-control />
-                <sec:content-type-options />
-                <sec:hsts />
-                <sec:frame-options />
-                <sec:xss-protection />
-            </sec:headers>
-            <sec:csrf />
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />

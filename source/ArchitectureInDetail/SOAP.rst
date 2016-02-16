@@ -748,9 +748,7 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
 .. code-block:: xml
 
     <sec:http pattern="/ws/**"
-              use-expressions="true"
               create-session="stateless">
-       <sec:headers />
        <sec:csrf disabled="true">
        <sec:http-basic />  <!-- (1) -->
        <sec:logout />
@@ -851,11 +849,9 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
 
     <!-- (1) -->
     <sec:http pattern="/ws/**"
-        use-expressions="true"
         create-session="stateless">
         <sec:form-login />
         <sec:logout />
-        <sec:headers />
         <sec:csrf disabled="true">
     </sec:http>
 
