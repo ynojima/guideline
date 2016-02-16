@@ -1587,16 +1587,20 @@ ER図
                  @Validated PasswordChangeForm form, BindingResult bindingResult, // (1)
                  Model model) {
 
+             Account account = userDetails.getAccount();
              if (bindingResult.hasErrors()) {
-                 Account account = userDetails.getAccount();
                  model.addAttribute(account);
                  return "passwordchange/changeForm";
              }
 
-             passwordService.updatePassword(form.getUsername(),
-                     form.getNewPassword());
+             if (account.getUsername().equals(form.getUsername())) { // (2)
+                 passwordService.updatePassword(form.getUsername(),
+                         form.getNewPassword());
 
-             return "redirect:/password?complete";
+                 return "redirect:/password?complete";
+             } else {
+                 return "passwordchange/changeForm";
+             }
          }
 
          // omitted
@@ -1612,6 +1616,13 @@ ER図
        - 説明
      * - | (1)
        - | パスワード変更時に呼び出されるハンドラメソッド。パラメータ中のFormに\ ``@Validated`` \ アノテーションを付与して、入力チェックを行う。
+     * - | (2)
+       - | パスワード変更対象のユーザ名がログイン中のアカウントのユーザ名と一致していることを確認する。
+
+  .. note::
+
+     本アプリケーションではBean Valiidationでユーザ名を用いたパスワード入力チェックを行うために、ユーザ名をFormから取得している。
+     Viewでは\ ``Model`` \に設定したユーザ名をhiddenで保持することを想定しているが、改ざんされる恐れがあるため、パスワード変更前にFormから取得したユーザ名の確認を行っている。
 
 .. _account-lock:
 
