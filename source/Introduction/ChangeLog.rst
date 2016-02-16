@@ -118,9 +118,10 @@
       - :doc:`../ArchitectureInDetail/Logging`
       - 記述内容の改善
 
-        *  Logbackの設定に\ ``ServiceLoader``\の仕組みを利用した記述の追加(\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
-        *  Spring Security 4 対応に伴うサンプルソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
-         *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
+        * Logbackの設定に\ ``ServiceLoader``\の仕組みを利用した記述の追加(\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
+        * Spring Security 4 対応に伴うサンプルソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+         * デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
 
     * -
       - :doc:`../ArchitectureInDetail/REST`
@@ -158,6 +159,7 @@
       - 記述内容の改善
 
         *  Spring Security 4 対応に伴うサンプルソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
          * \ ``AuthenticationPrincipalArgumentResolver``\のパッケージ変更
 
     * -
@@ -180,6 +182,7 @@
       - Spring Security 4 対応に伴う修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
 
         * 全記述の再編 
+
          *  デフォルトでプレフィックスが付与されるため、サンプルソースから\ ``ROLE_``\プレフィックスの削除
          *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
          *  \ ``@PreAuthorize``\の定義例追加
@@ -188,7 +191,8 @@
       - :doc:`../Security/CSRF`
       - Spring Security 4 対応に伴う修正
 
-        * 全記述の再編 
+        * 全記述の再編
+
          * CSRF無効化の設定を修正\ ``<sec:csrf disabled="true"/>``\
 
     * -
@@ -196,6 +200,7 @@
       - Spring Security 4 対応に伴う修正
 
         * 全記述の再編
+
          *  \ ``spring-security-testの紹介``\
          *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
     * -
@@ -203,9 +208,10 @@
       - Spring Security 4 対応に伴う修正
 
         * チュートリアルのソースをSpring Security 4 に対応した形に修正 (\ `guideline#1325 <https://github.com/terasolunaorg/guideline/issues/1325>`_\ )
-         *  ログインユーザ \ ``j_username``\を\ ``username``に変更
-         *  ログインパスワード \ ``j_password``\を\ ``password``に変更
-         *  認証処理を行うためのURL\ ``/authenticate``\を\ ``/login``に変更
+
+         *  ログインユーザ \ ``j_username``\を\ ``username``\に変更
+         *  ログインパスワード \ ``j_password``\を\ ``password``\に変更
+         *  認証処理を行うためのURL\ ``/authenticate``\を\ ``/login``\に変更
          *  \ ``AuthenticationPrincipal``\のパッケージを修正
          *  \ ``auto-config="true"``\の削除
          *  \ ``AuthenticationPrincipalArgumentResolver``\のパッケージを修正
@@ -215,14 +221,16 @@
       - Spring Security 4 対応に伴う修正
 
         *  Spring Security 4 対応に伴うソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
          * CSRF無効化の設定を修正\ ``<sec:csrf disabled="true"/>``\
          *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
 
     * -
-      - :doc:`../Tutorial/index`
+      - :doc:`../TutorialTodo/index`
       - Spring Security 4 対応に伴う修正
 
         *  Spring Security 4 対応に伴うソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
          * \ ``AuthenticationPrincipalArgumentResolver``\のパッケージ変更
          *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
 
