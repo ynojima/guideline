@@ -9,6 +9,223 @@
     * - 更新日付
       - 更新箇所
       - 更新内容
+    * - 2016-02-24
+      - \-
+      - 5.1.0 RELEASE版公開
+
+        * 更新内容の詳細は、\ `5.1.0のIssue一覧 <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A5.1.0+is%3Aclosed>`_\ を参照されたい。
+    * -
+      - 全般
+      - ガイドラインの誤記(タイプミスや単純な記述ミスなど)の修正
+
+        記載内容の改善
+
+        * 改善内容の詳細は、\ `5.1.0のIssue一覧(improvement) <https://github.com/terasolunaorg/guideline/issues?q=milestone%3A5.1.0+label%3Aimprovement+is%3Aclosed>`_\ を参照されたい。
+
+    * -
+      - :doc:`index`
+      - 記載内容の追加
+
+        * ガイドラインに記載している内容の動作検証環境に関する記載を追加
+
+    * -
+      - :doc:`../ArchitectureInDetail/Utilities/DateAndTime`
+      - 新規追加
+
+        *  日付操作(JSR-310 Date and Time API)を追加(\ `guideline#1450 <https://github.com/terasolunaorg/guideline/issues/1450>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - 新規追加
+
+        *  文字列処理を追加(\ `guideline#1451 <https://github.com/terasolunaorg/guideline/issues/1451>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Utilities/JodaTime`
+      - 記載内容の改善・追加
+
+        *  タイムゾーンを利用しない年月日を扱うサンプルコードのオブジェクトを\ ``LocalDate``\に修正(\ `guideline#1283 <https://github.com/terasolunaorg/guideline/issues/1283>`_\ )
+        *  Java8未満のバージョンで和暦を扱う方法を追加(\ `guideline#1450 <https://github.com/terasolunaorg/guideline/issues/1450>`_\ )
+    * -
+      - :doc:`../ArchitectureInDetail/Codelist`
+      - 記載内容の追加
+
+        *  JdbcCodeListに\ ``JdbcTemplate``\を指定するパターンを推奨とする記述を追加(\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - 記載内容の追加
+
+        *  \ ``Log4jdbcProxyDataSource``\のオーバヘッドに対する注意点を追加(\ `guideline#1471 <https://github.com/terasolunaorg/guideline/issues/1471>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessJpa`
+      - ガイドラインのバグ修正
+
+        *  Like条件を使用するユーティリティを適切に修正(\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
+        *  JPQLにおける真偽値の不適切な実装を修正(\ `guideline#1525 <https://github.com/terasolunaorg/guideline/issues/1525>`_\ )
+        *  ページネーションの不適切な実装を修正(\ `guideline#1463 <https://github.com/terasolunaorg/guideline/issues/1463>`_\ )
+        *  \ ``DateTimeProvider``\を実装したサンプルコードの不適切な実装を修正(\ `guideline#1327 <https://github.com/terasolunaorg/guideline/issues/1327>`_\ )
+        *  \ ``共通Repositoryインタフェースの実装クラスのインスタンスを生成するためのFactoryクラス``\において不適切な実装を修正(\ `guideline#1327 <https://github.com/terasolunaorg/guideline/issues/1327>`_\ )
+
+        記載内容の改善
+
+        *  \ ``hibernate.hbm2ddl.auto``\のデフォルト値を修正(\ `guideline#1282 <https://github.com/terasolunaorg/guideline/issues/1282>`_\ )
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - MyBatis 3.3 対応に伴う記載内容の追加
+
+        *  \ ``defaultFetchSize``\の設定方法を追加(\ `guideline#965 <https://github.com/terasolunaorg/guideline/issues/965>`_\ )
+        * 遅延読み込み時のデフォルトが \ ``JAVASSIST``\に変更されている点を追加(\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
+        * \ ``ResultHandler``\にGenricsを付与したサンプルコードに修正(\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
+        * 新規追加された\ ``@Flush``\アノテーションを利用したソース例、及び注意点を追加(\ `guideline#915 <https://github.com/terasolunaorg/guideline/issues/915>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileDownload`
+      - Spring Framework4.2 対応に伴う記載内容の追加
+
+        *  xlsx形式を操作する\ ``AbstractXlsxView``\の追加\(\ `guideline#996 <https://github.com/terasolunaorg/guideline/issues/996>`_\ )
+
+        ガイドラインのバグ修正
+
+        * \ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
+
+    * -
+      - :doc:`../ArchitectureInDetail/Email`
+      - 新規追加
+
+        *  E-mail送信(SMTP)を追加(\ `guideline#1165 <https://github.com/terasolunaorg/guideline/issues/1165>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/RestClient`
+      - 新規追加
+
+        *  RESTクライアント（HTTPクライアント）を追加(\ `guideline#1307 <https://github.com/terasolunaorg/guideline/issues/1307>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/SOAP`
+      - 新規追加
+
+        *  SOAP Web Service（サーバ/クライアント）を追加(\ `guideline#1340 <https://github.com/terasolunaorg/guideline/issues/1340>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Internationalization`
+      - 記述内容の改善
+
+        *  JSPに適切にロケールを反映させるための記述を追加(\ `guideline#1439 <https://github.com/terasolunaorg/guideline/issues/1439>`_\ )
+        *  \ ``SessionLocalResolver``\の\ ``defaultLocale``\の説明を修正(\ `guideline#686 <https://github.com/terasolunaorg/guideline/issues/686>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Logging`
+      - 記述内容の改善
+
+        *  Logbackの設定に\ ``ServiceLoader``\の仕組みを利用した記述の追加(\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
+        *  Spring Security 4 対応に伴うサンプルソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+         *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
+
+    * -
+      - :doc:`../ArchitectureInDetail/REST`
+      - 記述内容の改善
+
+        *  \ ``Jackson2ObjectMapperFactoryBean``\を利用したOnjectMappper作成を追加(\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )
+        *  REST APIアプリケーションのドメイン層の実装にMyBatis3を前提とした形に修正 (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/SessionManagement`
+      - 記述内容の改善
+
+        *  SpEL式を用いたセッションスコープ参照の記述を追加(\ `guideline#1306 <https://github.com/terasolunaorg/guideline/issues/1306>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Validation`
+      - 記述内容の改善
+
+        *  MethodValidationに対する記述を追加(\ `guideline#708 <https://github.com/terasolunaorg/guideline/issues/708>`_\ )
+
+    * -
+      - :doc:`../ImplementationAtEachLayer/ApplicationLayer`
+      - 記述内容の改善
+
+        *  EL関数を用いたリクエストURL作成方法について追加(\ `guideline#632 <https://github.com/terasolunaorg/guideline/issues/632>`_\ )
+
+    * -
+      - :doc:`../ImplementationAtEachLayer/ApplicationLayer`
+      - 記述内容の改善
+
+        *  オフライン環境上でmvnコマンドを利用する方法を追加(\ `guideline#1197 <https://github.com/terasolunaorg/guideline/issues/1197>`_\ )
+
+    * -
+      - :doc:`../Overview/FirstApplication`
+      - 記述内容の改善
+
+        *  Spring Security 4 対応に伴うサンプルソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+         * \ ``AuthenticationPrincipalArgumentResolver``\のパッケージ変更
+
+    * -
+      - :doc:`../Security/Encryption`
+      - 新規追加
+
+        * 暗号化ガイドラインの追加 (\ `guideline#1106 <https://github.com/terasolunaorg/guideline/issues/1106>`_\ )
+
+    * -
+      - :doc:`../Security/Authentication`
+      - Spring Security 4 対応に伴う修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+        * 全記述の再編
+         *  \ ``auto-config="true"``\の削除
+         * 認証イベントリスナを\ ``@org.springframework.context.event.EventListener``\に修正
+         *  \ ``AuthenticationPrincipal``\のパッケージを修正
+         *  デフォルトでプレフィックスが付与されるため、サンプルソースから\ ``ROLE_``\プレフィックスの削除
+    * -
+      - :doc:`../Security/Authorization`
+      - Spring Security 4 対応に伴う修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+        * 全記述の再編 
+         *  デフォルトでプレフィックスが付与されるため、サンプルソースから\ ``ROLE_``\プレフィックスの削除
+         *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
+         *  \ ``@PreAuthorize``\の定義例追加
+         
+    * -
+      - :doc:`../Security/CSRF`
+      - Spring Security 4 対応に伴う修正
+
+        * 全記述の再編 
+         * CSRF無効化の設定を修正\ ``<sec:csrf disabled="true"/>``\
+
+    * -
+      - :doc:`../Security/SpringSecurity`
+      - Spring Security 4 対応に伴う修正
+
+        * 全記述の再編
+         *  \ ``spring-security-testの紹介``\
+         *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
+    * -
+      - :doc:`../Security/Tutorial`
+      - Spring Security 4 対応に伴う修正
+
+        * チュートリアルのソースをSpring Security 4 に対応した形に修正 (\ `guideline#1325 <https://github.com/terasolunaorg/guideline/issues/1325>`_\ )
+         *  ログインユーザ \ ``j_username``\を\ ``username``に変更
+         *  ログインパスワード \ ``j_password``\を\ ``password``に変更
+         *  認証処理を行うためのURL\ ``/authenticate``\を\ ``/login``に変更
+         *  \ ``AuthenticationPrincipal``\のパッケージを修正
+         *  \ ``auto-config="true"``\の削除
+         *  \ ``AuthenticationPrincipalArgumentResolver``\のパッケージを修正
+
+    * -
+      - :doc:`../TutorialREST/index`
+      - Spring Security 4 対応に伴う修正
+
+        *  Spring Security 4 対応に伴うソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+         * CSRF無効化の設定を修正\ ``<sec:csrf disabled="true"/>``\
+         *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
+
+    * -
+      - :doc:`../Tutorial/index`
+      - Spring Security 4 対応に伴う修正
+
+        *  Spring Security 4 対応に伴うソースの修正 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+         * \ ``AuthenticationPrincipalArgumentResolver``\のパッケージ変更
+         *  デフォルトでtrueになる仕様のため、サンプルソースから\ ``<use-expressions="true">``\を削除
+
     * - 2015-08-05
       - \-
       - 5.0.1 RELEASE版公開
@@ -578,4 +795,3 @@
 .. raw:: latex
 
    \newpage
-
