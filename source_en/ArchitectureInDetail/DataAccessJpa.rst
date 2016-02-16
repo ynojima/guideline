@@ -3395,10 +3395,11 @@ When type of matching (Forward match, Backward Match, Partial Match) is to be sp
 
  .. note :: **About wildcard character "_"**
 
-    The wildcard character ``"_"`` canot use directly in LIKE search of JPQL. It can be used in the following two ways.
+    Refer [:ref:`how_to_specify_query_annotation-label`] for wildcard character ``"%"``. 
+    The wildcard character ``"_"`` cannot use directly in LIKE search of JPQL. It can be used in the following two ways.
     
-    #. The wildcard character ``"_"`` can be set in bind parameter instead of directly used in JPQL.
-    #. The wildcard character ``"_"`` can be used with ``CONCAT`` method such as ``CONCAT('_', :word, '%')``.
+    #. Include wildcard character ``"_"`` in the bind variable.
+    #. Concatenate the wildcard character ``"_"`` with bind variable using database string concatenation function such as ``CONCAT`` . 
 
 |
 
