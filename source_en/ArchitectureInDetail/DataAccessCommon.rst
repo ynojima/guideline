@@ -392,7 +392,8 @@ JDBC debug log settings
 
  .. warning::
 
-    **This is a debug setting; hence it should not be performed in case of applications that are to be released in performance test environment or production environment.**
+    **When Log4jdbcProxyDataSource offered by log4jdbc-remix is used, substantial overheads are likely to occur even if the log level is set in the configuration other than debug.**
+    **Therefore, it is recommended to use this setting for debugging, and connect to database without passing through Log4jdbcProxyDataSource while its release during performance test enviroment and commercial environment.**
 
 
 Settings related to datasource provided by log4jdbc
