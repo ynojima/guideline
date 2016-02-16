@@ -123,7 +123,7 @@ Chromeのアプリケーション一覧を開く(ブラウザのアドレスバ�
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis2-archetype^
-     -DarchetypeVersion=1.0.3.RELEASE^
+     -DarchetypeVersion=1.0.4.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo-api^
      -Dversion=1.0-SNAPSHOT
@@ -136,7 +136,7 @@ Chromeのアプリケーション一覧を開く(ブラウザのアドレスバ�
     More?  -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
     More?  -DarchetypeGroupId=org.terasoluna.gfw.blank^
     More?  -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis2-archetype^
-    More?  -DarchetypeVersion=1.0.3.RELEASE^
+    More?  -DarchetypeVersion=1.0.4.RELEASE^
     More?  -DgroupId=todo^
     More?  -DartifactId=todo-api^
     More?  -Dversion=1.0-SNAPSHOT
@@ -154,7 +154,7 @@ Chromeのアプリケーション一覧を開く(ブラウザのアドレスバ�
     [INFO] Generating project in Batch mode
     [INFO] Archetype repository missing. Using the one from [org.terasoluna.gfw.blank:terasoluna-gfw-web-blank-mybatis2-archetype:1.0.0.RELEASE -> http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases] found in catalog http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-web-blank-mybatis2-archetype:1.0.3.RELEASE
+    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-web-blank-mybatis2-archetype:1.0.4.RELEASE
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: todo
     [INFO] Parameter: artifactId, Value: todo-api
