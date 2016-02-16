@@ -5237,13 +5237,16 @@ prevented for RESTful Web Service requests.
     <!-- (1) -->
     <sec:http
         pattern="/api/v1/**"
-        auto-config="true"
         use-expressions="true"
         create-session="stateless">
+        <sec:form-login />
+        <sec:logout />
         <sec:headers />
     </sec:http>
 
-    <sec:http auto-config="true" use-expressions="true">
+    <sec:http use-expressions="true">
+        <sec:form-login />
+        <sec:logout />
         <sec:headers>
             <sec:cache-control />
             <sec:content-type-options />

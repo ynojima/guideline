@@ -4202,7 +4202,9 @@ The Spring Security related definitions are done in \ :file:`spring-security.xml
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true" use-expressions="true">
+        <sec:httpuse-expressions="true">
+            <sec:form-login />
+            <sec:logout />
             <sec:headers>
                 <sec:cache-control />
                 <sec:content-type-options />

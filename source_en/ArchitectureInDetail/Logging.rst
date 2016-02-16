@@ -813,7 +813,7 @@ Example of log output
 
          .. code-block:: xml
 
-             <sec:http auto-config="true" use-expressions="true">
+             <sec:http use-expressions="true">
                  <!-- omitted -->
                  <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/> <!-- (1) -->
                  <!-- omitted -->
