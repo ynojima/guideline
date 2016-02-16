@@ -827,7 +827,7 @@ ER図
                  Object principal = authentication.getPrincipal();
                  if (principal instanceof UserDetails) { // (3)
                      LoggedInUser userDetails = (LoggedInUser) principal; // (4)
-                     if ((userDetails.getAccount().getRoles().contains(Role.ADMN) && accountSharedService
+                     if ((userDetails.getAccount().getRoles().contains(Role.ADMIN) && accountSharedService
                              .isCurrentPasswordExpired(userDetails.getUsername())) // (5)
                              || accountSharedService.isInitialPassword(userDetails
                                      .getUsername())) { // (6)
@@ -1435,7 +1435,7 @@ ER図
 
                boolean result = checkNewPasswordDifferentFromCurrentPassword(
                        newPassword, currentPassword, context); // (4)
-               if (result && account.getRoles().contains(Role.ADMN)) { // (5)
+               if (result && account.getRoles().contains(Role.ADMIN)) { // (5)
                    result = checkHistoricalPassword(username, newPassword, context);
                }
 
@@ -1633,12 +1633,19 @@ ER図
    :width: 80%
    :align: center
 
+| ログインフォームにて、あるユーザ名に対して短時間に一定回数連続して誤ったパスワードで認証を試行すると、そのユーザのアカウントはロックアウト状態となる。
+  ロックアウト状態のアカウントは、正しいユーザ名とパスワードの組を入力した場合であっても認証されない。
+| ロックアウト状態は一定期間経過するか、ロックアウト解除を行うことで解消される。
+
 * ロックアウト解除
 
 .. figure:: ./images/SecureLogin_unlock_ss.png
    :alt: Page Transition
    :width: 80%
    :align: center
+
+管理権限を持つユーザでログインした場合にのみ、ロックアウト解除機能を使用することができる。
+ロックアウト状態を解消したいユーザ名を入力してロックアウト解除を実行すると、そのユーザのアカウントは再び認証可能な状態に戻る。
 
 実装方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1651,22 +1658,23 @@ ER図
 
 * 認証失敗イベントエンティティの保存
 
-  不正な認証情報の入力によって認証に失敗した際に、Springが発生させるイベントをハンドリングし、認証に使用したユーザ名と認証を試みた日時を認証失敗イベントエンティティとしてデータベースに登録する。
+  不正な認証情報の入力によって認証に失敗した際に、Spring Securityが発生させるイベントをハンドリングし、認証に使用したユーザ名と認証を試みた日時を認証失敗イベントエンティティとしてデータベースに登録する。
 
 * ロックアウト状態の判定
 
   あるアカウントについて、現在時刻から一定以上新しい認証失敗イベントエンティティが一定個数以上存在する場合、該当アカウントはロックアウト状態であると判定する。
   認証時にこの判定処理を呼び出し、判定結果を\ ``UserDetails`` \の実装クラスに設定する。
 
-* 管理ユーザによる認証失敗イベントエンティティの削除
+* 認証失敗イベントエンティティの削除
 
-  あるアカウントについて、認証失敗イベントエンティティをすべて削除する。
-  認証失敗イベントエンティティが消去されると該当アカウントはロックアウト状態と判定されなくなるため、これはロックアウト解除処理に相当する。
-  認証失敗イベントエンティティの消去は認可機能を用いて、管理ユーザ以外実行できないようにする。
+  | あるアカウントについて、認証失敗イベントエンティティをすべて削除する。
+  | ロックアウトの対象となるのは連続して認証に失敗した場合のみであるため、認証に成功した際には認証失敗イベントエンティティを削除する。
+  | また、アカウントのロックアウト状態は認証失敗イベントエンティティを用いて判定されるため、認証失敗イベントエンティティを消去することでロックアウト解除機能が実現できる。
+    アカウントのロックアウトは認可機能を用いて、管理ユーザ以外実行できないようにする。
 
 .. warning::
 
-   認証失敗イベントエンティティはロックアウトの判定のみを目的としているため、不要になったタイミングで消去される。
+   認証失敗イベントエンティティはロックアウトの判定のみを目的としているため、不要になったタイミングで消去する。
    認証ログが必要な場合は必ず別途ログを保存しておくこと。
 
 認証失敗イベントエンティティを用いたロックアウト機能の動作例を以下の図を用いて説明する。
@@ -1677,10 +1685,19 @@ ER図
    :width: 60%
    :align: center
   
-*  | 過去10分以内に、誤ったパスワードでの認証が3回試行されており、データベースには3回分の認証失敗イベントエンティティが保存されている。
-   | そのため、アカウントはロックアウト状態であると判定される。
-*  | データベースには3回分の認証失敗イベントエンティティが保存されている。
-   | しかしながら、過去10分以内の認証失敗イベントエンティティは2回分のみであるため、ロックアウト状態ではないと判定される。
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+  
+   * - 項番
+     - 説明
+   * - | (1)
+     - | 過去10分以内に、誤ったパスワードでの認証が3回試行されており、データベースには3回分の認証失敗イベントエンティティが保存されている。
+       | そのため、アカウントはロックアウト状態であると判定される。
+   * - | (2)
+     - | データベースには3回分の認証失敗イベントエンティティが保存されている。
+       | しかしながら、過去10分以内の認証失敗イベントエンティティは2回分のみであるため、ロックアウト状態ではないと判定される。
 
 同様に、ロックアウトを解除する場合の動作例を以下の図で説明する。
 
@@ -1689,13 +1706,16 @@ ER図
    :width: 60%
    :align: center
 
-*  | 過去10分以内に、誤ったパスワードでの認証が3回試行されている。
-   | その後、認証失敗イベントエンティティが消去されているため、データベースには認証失敗イベントエンティティが保存されておらず、ロックアウト状態ではないと判定される。
-
-.. note::
-   本アプリケーションにおいては、認証失敗が連続していない場合でもロックアウトされることに留意する。
-   すなわち、途中で認証成功した場合であっても、一定期間内に一定回数以上認証に失敗された場合にはロックアウトされる。
-   また、ロックアウト継続時間の起点にも注意すること。
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+  
+   * - 項番
+     - 説明
+   * - | (1)
+     - | 過去10分以内に、誤ったパスワードでの認証が3回試行されている。
+       | その後、認証失敗イベントエンティティが消去されているため、データベースには認証失敗イベントエンティティが保存されておらず、ロックアウト状態ではないと判定される。
    
 コード解説
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1841,7 +1861,13 @@ ER図
            // omitted
 
            @Inject
+           ClassicDateFactory dateFactory;
+           
+           @Inject
            FailedAuthenticationRepository failedAuthenticationRepository;
+
+           @Inject
+           AccountSharedService accountSharedService;
 
            @Transactional(readOnly = true)
            @Override
@@ -1850,10 +1876,18 @@ ER図
                    return failedAuthenticationRepository.findLatestEvents(username, count);
            }
 
+
            @Override
-           public int insertFailureEvent(FailedAuthentication event) {
-                   return failedAuthenticationRepository.create(event);
-           }
+            public void authenticationFailure(String username) { // (1)
+                FailedAuthentication failureEvents = new FailedAuthentication();
+                failureEvents.setUsername(username);
+                failureEvents.setAuthenticationTimestamp(dateFactory.newTimestamp()
+                        .toLocalDateTime());
+                
+                if (accountSharedService.exists(username)){
+                    failedAuthenticationRepository.create(failureEvents);
+                }
+            }
 
            @Override
            public int deleteFailureEventByUsername(String username) {
@@ -1863,12 +1897,24 @@ ER図
            // omitted
 
        }
+
+    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+    .. list-table::
+       :header-rows: 1
+       :widths: 10 90
+    
+       * - 項番
+         - 説明
+       * - | (1)
+         - | 認証失敗イベントエンティティを作成してデータベースに登録するメソッド。
+           | 引数として受け取ったユーザ名のアカウントが存在しない場合、データベースの外部キー制約に違反するため、データベースへの登録処理をスキップする。
            
 以下、実装方法に従って実装されたコードについて順に解説する。
 
 * 認証失敗イベントエンティティの保存
 
   認証失敗時に発生するイベントをハンドリングして処理を行うために、\ ``@EventListener`` \アノテーションを使用する。
+  \ ``@EventListener`` \アノテーションによるイベントのハンドリングについては :doc:`./Authentication` の「イベントリスナの作成」を参照すること。
 
   .. code-block:: java
 
@@ -1880,9 +1926,6 @@ ER図
      public class AccountAuthenticationFailureBadCredentialsEventListener{ 
 
          @Inject
-         ClassicDateFactory dateFactory;
-
-         @Inject
          AuthenticationEventSharedService authenticationEventSharedService;
 
          @EventListener // (1)
@@ -1891,11 +1934,7 @@ ER図
 
              String username = (String) event.getAuthentication().getPrincipal(); // (2)
 
-             FailedAuthentication failureEvents = new FailedAuthentication(); // (3)
-             failureEvents.setUsername(username);
-             failureEvents.setAuthenticationTimestamp(dateFactory.newTimestamp().toLocalDateTime());
-
-             authenticationEventSharedService.insertFailureEvent(failureEvents); // (4)
+             authenticationEventSharedService.authenticationFailure(username); // (3)
          }
 
      }
@@ -1912,9 +1951,7 @@ ER図
      * - | (2)
        - | \ ``AuthenticationFailureBadCredentialsEvent`` \オブジェクトから、認証に使用したユーザ名を取得する。
      * - | (3)
-       - | 認証失敗イベントエンティティを作成し、ユーザ名と現在時刻を設定する。
-     * - | (4)
-       - | 認証失敗イベントエンティティをデータベースに登録する処理を呼び出す。
+       - | 認証失敗イベントエンティティを作成してデータベースに登録する処理を呼び出す。
 
 * ロックアウト状態の判定
 
@@ -1938,8 +1975,8 @@ ER図
          @Inject
          AuthenticationEventSharedService authenticationEventSharedService;
 
-         @Value("${security.lockingDuration}") // (1)
-         int lockingDuration;
+         @Value("${security.lockingDurationSeconds}") // (1)
+         int lockingDurationSeconds;
 
          @Value("${security.lockingThreshold}") // (2)
          int lockingThreshold;
@@ -1959,7 +1996,7 @@ ER図
                      .getAuthenticationTimestamp()
                      .isBefore(
                              dateFactory.newTimestamp().toLocalDateTime()
-                             .minusSeconds(lockingDuration))) {
+                             .minusSeconds(lockingDurationSeconds))) {
                  return false;
              }
 
@@ -2099,241 +2136,316 @@ ER図
      * - | (1)
        - | \ ``UserDetailsService`` \のBeanのidを指定する。
 
-* 管理ユーザによる認証失敗イベントエンティティの削除
+* 認証失敗イベントエンティティの削除
 
-  | ロックアウト状態の判定に認証失敗イベントエンティティを使用しているため、認証失敗イベントエンティティの削除はロックアウトの解除に相当する。
-  | 認証失敗イベントエンティティの削除に関するインフラストラクチャ層・ドメイン層の実装は既に済ませているため、ここでは認可の設定と、ロックアウト解除機能としてのドメイン層・アプリケーション層の実装を行う。
+  * 認証成功時の認証失敗イベントエンティティの削除
 
-  * 認可の設定
+    連続した認証失敗のみをロックアウトの判定に使用するため、認証に成功した際にはアカウントの認証失敗イベントエンティティを削除する。
+    共通部分として作成したServiceに、認証成功時に実行するメソッドを作成する。
 
-    ロックアウトの解除を行うことができるユーザの権限を以下の通りに設定する。
+    .. code-block:: java
 
-    **spring-security.xml**
+       package org.terasoluna.securelogin.domain.service.authenticationevent;
 
-    .. code-block:: xml
+       // omitted
 
-      <!-- omitted -->
+       @Service
+       @Transactional
+       public class AuthenticationEventSharedServiceImpl implements
+                       AuthenticationEventSharedService {
 
-        <sec:http pattern="/resources/**" security="none" />
-        <sec:http>
-        
-            <!-- omitted -->
-            
-            <sec:intercept-url pattern="/unlock/**" access="hasRole('ADMN')" /> <!-- (1) -->
-            
-            <!-- omitted -->
-            
-        </sec:http>
+           // omitted
 
-      <!-- omitted -->
+           @Override
+           public void authenticationSuccess(String username) {
+
+               // omitted
+
+               deleteFailureEventByUsername(username); // (1)
+           }
+
+           // omitted
+
+       }
 
     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
     .. list-table::
        :header-rows: 1
        :widths: 10 90
-  
+    
        * - 項番
          - 説明
        * - | (1)
-         - | /unlock 以下のURLへのアクセス権限を管理ユーザに限定する。
+         - | 引数として渡されたユーザ名のアカウントに関する認証失敗イベントエンティティを削除する。
 
-  * Serviceの実装
+
+    認証成功時に発生するイベントをハンドリングして処理を行うために、 \ ``@EventListener`` \アノテーションを使用する。
 
     .. code-block:: java
 
-       package org.terasoluna.securelogin.domain.service.unlock;
+       package org.terasoluna.securelogin.domain.service.account;
 
        // omitted
 
-       @Transactional
-       @Service
-       public class UnlockServiceImpl implements UnlockService {
-
-           @Inject
-           AccountSharedService accountSharedService;
+       @Component
+       public class AccountAuthenticationSuccessEventListener{ 
 
            @Inject
            AuthenticationEventSharedService authenticationEventSharedService;
 
-           @Override
-           public boolean unlock(String username) {
-               if (!accountSharedService.isLocked(username)) { // (1)
-                   throw new BusinessException(ResultMessages.error().add(
-                           MessageKeys.E_SL_UL_5001));
-               }
+           @EventListener // (1)
+           public void onApplicationEvent(
+                           AuthenticationSuccessEvent event) {
 
-               authenticationEventSharedService
-                      .deleteFailureEventByUsername(username); // (2)
+               LoggedInUser details = (LoggedInUser) event.getAuthentication()
+                       .getPrincipal();
 
-               return true;
+               authenticationEventSharedService.authenticationSuccess(details.getUsername()); // (2)
+
            }
 
        }
-      
+           
     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
     .. list-table::
        :header-rows: 1
        :widths: 10 90
-  
-       * - 項番
-         - 説明
-       * - | (1)
-         - | ロック解除対象のアカウントのロックアウト状態を判定し、ロックアウト状態でなければ例外を発生させる。
-       * - | (2)
-         - | 認証失敗イベントエンティティを消去することによりロックアウト状態を解除する。
-
-  * Formの実装
-
-    .. code-block:: java
-
-      package org.terasoluna.securelogin.app.unlock;    
-
-      @Data
-      public class UnlockForm implements Serializable {
-
-          private static final long serialVersionUID = 1L;
-
-          @NotEmpty
-          private String username;
-      }
-      
-  * Viewの実装
-
-    **トップ画面(home.jsp)**
-
-    .. code-block:: jsp
-
-      <!-- omitted -->
-
-      <body>
-          <div id="wrapper">
-
-              <!-- omitted -->        
-
-              <sec:authorize url="/unlock"> <!-- (1) -->
-                  <form:form
-                      action="${f:h(pageContext.request.contextPath)}/unlock?form">
-                      <button id="unlock">Unlock Account</button>
-                  </form:form>
-              </sec:authorize>
-
-              <!-- omitted -->
-
-          </div>
-      </body>
-
-      <!-- omitted -->
-
-    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-    .. list-table::
-       :header-rows: 1
-       :widths: 10 90
-  
-       * - 項番
-         - 説明
-       * - | (1)
-         - | /unlock 以下のアクセス権限を持つユーザに対してのみ表示する。
-
-    **ロックアウト解除フォーム(unlokcForm.jsp)**
-
-    .. code-block:: jsp
     
-      <!-- omitted -->
-
-      <body>
-          <div id="wrapper">
-              <h1>Unlock Account</h1>
-              <t:messagesPanel />
-              <form:form action="${f:h(pageContext.request.contextPath)}/unlock"
-                  method="POST" modelAttribute="unlockForm">
-                  <table>
-                      <tr>
-                          <th><form:label path="username" cssErrorClass="error-label">Username</form:label>
-                          </th>
-                          <td><form:input path="username" cssErrorClass="error-input" /></td>
-                          <td><form:errors path="username" cssClass="error-messages" /></td>
-                      </tr>
-                  </table>
-
-                  <input id="submit" type="submit" value="Unlock" />
-              </form:form>
-              <a href="${f:h(pageContext.request.contextPath)}/">go to Top</a>
-          </div>
-      </body>
-
-      <!-- omitted -->
-
-    **ロックアウト解除完了画面(unlockComplete.jsp)**
-
-    .. code-block:: jsp
-
-      <!-- omitted -->
-
-      <body>
-          <div id="wrapper">
-                <h1>${f:h(username)}'s account was successfully unlocked.</h1>
-                <a href="${f:h(pageContext.request.contextPath)}/">go to Top</a>
-          </div>
-      </body>
-      
-      <!-- omitted -->
-
-  * Controllerの実装
-
-    .. code-block:: java
-
-       package org.terasoluna.securelogin.app.unlock;
-
-       // omitted
-
-       @Controller
-       @RequestMapping("/unlock") // (1)
-       public class UnlockController {
-
-           @Inject
-           UnlockService unlockService;
-
-           @RequestMapping(params = "form")
-           public String showForm(UnlockForm form) {
-               return "unlock/unlockForm";
-           }
-
-           @RequestMapping(method = RequestMethod.POST)
-           public String unlock(@Validated UnlockForm form,
-                   BindingResult bindingResult, Model model,
-                   RedirectAttributes attributes) {
-               if (bindingResult.hasErrors()) {
-                       return showForm(form);
-               }
-
-               try {
-                   unlockService.unlock(form.getUsername()); // (2)
-                   attributes.addFlashAttribute("username", form.getUsername());
-                   return "redirect:/unlock?complete";
-               } catch (BusinessException e) {
-                   model.addAttribute(e.getResultMessages());
-                   return showForm(form);
-               }
-           }
-
-           @RequestMapping(method = RequestMethod.GET, params = "complete")
-           public String unlockComplete() {
-               return "unlock/unlockComplete";
-           }
-
-       }
-
-    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-    .. list-table::
-       :header-rows: 1
-       :widths: 10 90
-  
        * - 項番
          - 説明
        * - | (1)
-         - | /unlock 以下のURLにマッピングする。認可の設定によって、管理ユーザのみがアクセス可能となる。
+         - | \ ``@EventListener`` \アノテーションを付与することで、認証が成功した際に\ ``onApplicationEvent`` \メソッドが実行される。
        * - | (2)
-         - | Formから取得したユーザ名を引数として、アカウントのロックアウトを解除する処理を呼び出す。
+         - | \ ``AuthenticationSuccessEvent`` \からユーザ名を取得し、認証失敗イベントエンティティを削除する処理を呼び出す。
+    
+    
+  * ロックアウト状態の解除
+
+    ロックアウト状態の判定に認証失敗イベントエンティティを使用しているため、認証失敗イベントエンティティを削除することでロックアウト状態を解除することができる。
+    ロックアウト解除機能の使用を管理権限を持つユーザに限定するための認可の設定と、ドメイン層・アプリケーション層の実装を行う。
+
+    * 認可の設定
+
+      ロックアウトの解除を行うことができるユーザの権限を以下の通りに設定する。
+
+      **spring-security.xml**
+
+      .. code-block:: xml
+
+        <!-- omitted -->
+
+          <sec:http pattern="/resources/**" security="none" />
+          <sec:http>
+          
+              <!-- omitted -->
+              
+              <sec:intercept-url pattern="/unlock/**" access="hasRole('ADMIN')" /> <!-- (1) -->
+              
+              <!-- omitted -->
+              
+          </sec:http>
+
+        <!-- omitted -->
+
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+         :header-rows: 1
+         :widths: 10 90
+    
+         * - 項番
+           - 説明
+         * - | (1)
+           - | /unlock 以下のURLへのアクセス権限を管理ユーザに限定する。
+
+    * Serviceの実装
+
+      .. code-block:: java
+
+         package org.terasoluna.securelogin.domain.service.unlock;
+
+         // omitted
+
+         @Transactional
+         @Service
+         public class UnlockServiceImpl implements UnlockService {
+
+             @Inject
+             AccountSharedService accountSharedService;
+
+             @Inject
+             AuthenticationEventSharedService authenticationEventSharedService;
+
+             @Override
+             public void unlock(String username) {
+                 authenticationEventSharedService
+                        .deleteFailureEventByUsername(username); // (1)
+             }
+
+         }
+        
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+         :header-rows: 1
+         :widths: 10 90
+    
+         * - 項番
+           - 説明
+         * - | (1)
+           - | 認証失敗イベントエンティティを消去することによりロックアウト状態を解除する。
+
+    * Formの実装
+
+      .. code-block:: java
+
+        package org.terasoluna.securelogin.app.unlock;    
+
+        @Data
+        public class UnlockForm implements Serializable {
+
+            private static final long serialVersionUID = 1L;
+
+            @NotEmpty
+            private String username;
+        }
+        
+    * Viewの実装
+
+      **トップ画面(home.jsp)**
+
+      .. code-block:: jsp
+
+        <!-- omitted -->
+
+        <body>
+            <div id="wrapper">
+
+                <!-- omitted -->        
+
+                <sec:authorize url="/unlock"> <!-- (1) -->
+                <div>
+                    <button id="unlock"
+                        onClick="location.href='${f:h(pageContext.request.contextPath)}/unlock?form'">Unlock
+                        Account</button>
+                </div>
+                </sec:authorize>
+
+                <!-- omitted -->
+
+            </div>
+        </body>
+
+        <!-- omitted -->
+
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+         :header-rows: 1
+         :widths: 10 90
+    
+         * - 項番
+           - 説明
+         * - | (1)
+           - | /unlock 以下のアクセス権限を持つユーザに対してのみ表示する。
+
+      **ロックアウト解除フォーム(unlokcForm.jsp)**
+
+      .. code-block:: jsp
+      
+        <!-- omitted -->
+
+        <body>
+            <div id="wrapper">
+                <h1>Unlock Account</h1>
+                <t:messagesPanel />
+                <form:form action="${f:h(pageContext.request.contextPath)}/unlock"
+                    method="POST" modelAttribute="unlockForm">
+                    <table>
+                        <tr>
+                            <th><form:label path="username" cssErrorClass="error-label">Username</form:label>
+                            </th>
+                            <td><form:input path="username" cssErrorClass="error-input" /></td>
+                            <td><form:errors path="username" cssClass="error-messages" /></td>
+                        </tr>
+                    </table>
+
+                    <input id="submit" type="submit" value="Unlock" />
+                </form:form>
+                <a href="${f:h(pageContext.request.contextPath)}/">go to Top</a>
+            </div>
+        </body>
+
+        <!-- omitted -->
+
+      **ロックアウト解除完了画面(unlockComplete.jsp)**
+
+      .. code-block:: jsp
+
+        <!-- omitted -->
+
+        <body>
+            <div id="wrapper">
+                  <h1>${f:h(username)}'s account was successfully unlocked.</h1>
+                  <a href="${f:h(pageContext.request.contextPath)}/">go to Top</a>
+            </div>
+        </body>
+        
+        <!-- omitted -->
+
+    * Controllerの実装
+
+      .. code-block:: java
+
+         package org.terasoluna.securelogin.app.unlock;
+
+         // omitted
+
+         @Controller
+         @RequestMapping("/unlock") // (1)
+         public class UnlockController {
+
+             @Inject
+             UnlockService unlockService;
+
+             @RequestMapping(params = "form")
+             public String showForm(UnlockForm form) {
+                 return "unlock/unlockForm";
+             }
+
+             @RequestMapping(method = RequestMethod.POST)
+             public String unlock(@Validated UnlockForm form,
+                     BindingResult bindingResult, Model model,
+                     RedirectAttributes attributes) {
+                 if (bindingResult.hasErrors()) {
+                         return showForm(form);
+                 }
+
+                 try {
+                     unlockService.unlock(form.getUsername()); // (2)
+                     attributes.addFlashAttribute("username", form.getUsername());
+                     return "redirect:/unlock?complete";
+                 } catch (BusinessException e) {
+                     model.addAttribute(e.getResultMessages());
+                     return showForm(form);
+                 }
+             }
+
+             @RequestMapping(method = RequestMethod.GET, params = "complete")
+             public String unlockComplete() {
+                 return "unlock/unlockComplete";
+             }
+
+         }
+
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+         :header-rows: 1
+         :widths: 10 90
+    
+         * - 項番
+           - 説明
+         * - | (1)
+           - | /unlock 以下のURLにマッピングする。認可の設定によって、管理ユーザのみがアクセス可能となる。
+         * - | (2)
+           - | Formから取得したユーザ名を引数として、アカウントのロックアウトを解除する処理を呼び出す。
 
 .. _last-login:
 
@@ -2496,6 +2608,10 @@ ER図
        		AuthenticationEventSharedService {
 
            // omitted
+           
+           @Inject
+           ClassicDateFactory dateFactory;
+
            @Inject
            SuccessfulAuthenticationRepository successAuthenticationRepository;
 
@@ -2507,9 +2623,14 @@ ER図
            }
 
            @Override
-           public int insertSuccessEvent(SuccessfulAuthentication event) {
-               return successAuthenticationRepository.create(event);
-           }
+             public void authenticationSuccess(String username) {
+                 SuccessfulAuthentication successEvent = new SuccessfulAuthentication();
+                 successEvent.setUsername(username);
+                 successEvent.setAuthenticationTimestamp(dateFactory.newTimestamp().toLocalDateTime());
+
+                 successAuthenticationRepository.create(successEvent);
+                 deleteFailureEventByUsername(username);
+             }
 
        }
   
@@ -2529,9 +2650,6 @@ ER図
      public class AccountAuthenticationSuccessEventListener{
 
          @Inject
-         ClassicDateFactory dateFactory;
-
-         @Inject
          AuthenticationEventSharedService authenticationEventSharedService;
 
          @EventListener // (1)
@@ -2539,11 +2657,7 @@ ER図
              LoggedInUser details = (LoggedInUser) event.getAuthentication()
                              .getPrincipal(); // (2)
 
-             SuccessfulAuthentication successEvent = new SuccessfulAuthentication(); // (3)
-             successEvent.setUsername(details.getUsername());
-             successEvent.setAuthenticationTimestamp(dateFactory.newTimestamp().toLocalDateTime());
-
-             authenticationEventSharedService.insertSuccessEvent(successEvent); // (4)
+             authenticationEventSharedService.authenticationSuccess(details.getUsername()); // (3)
          }
 
      }
@@ -2560,9 +2674,7 @@ ER図
      * - | (2)
        - | \ ``AuthenticationSuccessEvent`` \オブジェクトから、\ ``UserDetails`` \の実装クラスを取得する。このクラスについては以降で説明する。
      * - | (3)
-       - | 認証成功イベントエンティティを作成し、ユーザ名と現在時刻を設定する。
-     * - | (4)
-       - | 認証成功イベントエンティティをデータベースに登録する処理を呼び出す。
+       - | 認証成功イベントエンティティを作成し、データベースに登録する処理を呼び出す。
 
 * 前回ログイン日時の取得と表示
 
