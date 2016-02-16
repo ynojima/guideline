@@ -3515,8 +3515,8 @@ ER図
                    throw new BusinessException(ResultMessages.error().add(
                        MessageKeys.E_SL_PR_5003));
                }
-               passwordReissueInfoRepository.delete(token); // (3)
                failedPasswordReissueRepository.deleteByToken(token);
+               passwordReissueInfoRepository.delete(token); // (3)
 
                return accountSharedService.updatePassword(username, rawPassword); // (4)
 
