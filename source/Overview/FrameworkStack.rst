@@ -623,38 +623,54 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
       - Webに依存しない汎用的に使用できる機能と依存関係定義を提供する。
       - 有
     * - \ (2)
-      - terasoluna-gfw-jodatime
-      - Joda Timeに依存する機能と依存関係定義を提供する。
+      - terasoluna-gfw-string
+      - 文字列処理に関連する機能を提供する。(5.1.0から追加)
       - 有
     * - \ (3)
-      - terasoluna-gfw-web
-      - Webアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。
+      - terasoluna-gfw-codepoints
+      - 対象の文字列を構成するコードポイントがコードポイント集合に含まれることをチェックする機能を提供する。(5.1.0から追加)
       - 有
     * - \ (4)
+      - terasoluna-gfw-validator
+      - 汎用的なBean Validationの制約アノテーションを追加して提供する。(5.1.0から追加)
+      - 有
+    * - \ (5)
+      - terasoluna-gfw-jodatime
+      - Joda Timeに依存する機能と依存関係定義を提供する。(5.0.0から追加)
+      - 有
+    * - \ (6)
+      - terasoluna-gfw-web
+      - Webアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。Viewに依存しない機能や依存関係定義を集約している。
+      - 有
+    * - \ (7)
+      - terasoluna-gfw-web-jsp
+      - ViewにJSPを採用するWebアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。
+      - 有
+    * - \ (8)
       - terasoluna-gfw-mybatis3
       - MyBatis3を使用する場合の依存関係定義を提供する。
       - 無
-    * - \ (5)
+    * - \ (9)
       - terasoluna-gfw-jpa
       - JPAを使用する場合の依存関係定義を提供する。
       - 無
-    * - \ (6)
+    * - \ (10)
       - terasoluna-gfw-security-core
       - Spring Securityを使用する場合の依存関係定義(Web以外)を提供する。
       - 無
-    * - \ (7)
+    * - \ (11)
       - terasoluna-gfw-security-web
       - Spring Securityを使用する場合の依存関係定義(Web関連)とSpring Securityの拡張部品を提供する。
       - 有
-    * - \ (8)
+    * - \ (12)
       - terasoluna-gfw-recommended-dependencies
       - Webに依存しない推奨ライブラリへの依存関係定義を提供する。
       - 無
-    * - \ (9)
+    * - \ (13)
       - terasoluna-gfw-recommended-web-dependencies
       - Webに依存する推奨ライブラリへの依存関係定義を提供する。
       - 無
-    * - \ (10)
+    * - \ (14)
       - terasoluna-gfw-parent
       - 依存ライブラリの管理とビルド用プラグインの推奨設定を提供する。
       - 無
@@ -704,6 +720,65 @@ terasoluna-gfw-commonは以下の部品を提供している。
     * -
       - シーケンサ
       - シーケンス値を取得するためのクラスを提供する。
+
+terasoluna-gfw-string
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-stringは以下の部品を提供している。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - 分類
+      - 部品名
+      - 説明
+    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - 半角全角変換
+      - 半角文字列と全角文字列のマッピングテーブルに基づき、入力文字列の半角文字を全角に変換する処理と全角文字を半角に変換する処理を行うクラスを提供する。
+
+
+terasoluna-gfw-codepoints
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-codepointsは以下の部品を提供している。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - 分類
+      - 部品名
+      - 説明
+    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - コードポイントチェック
+      - 対象の文字列を構成するコードポイントが、定義されたコードポイント集合に含まれることをチェックするクラスを提供する。
+    * - :doc:`../ArchitectureInDetail/Validation`
+      - コードポイントチェック用Bean Validation制約アノテーション
+      - コードポイントチェックをBean Validationで行うための制約アノテーションを提供する。
+
+
+terasoluna-gfw-validator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-validatorは以下の部品を提供している。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - 分類
+      - 部品名
+      - 説明
+    * - :doc:`../ArchitectureInDetail/Validation`
+      - バイト長チェック用Bean Validation制約アノテーション
+      - 入力文字列の文字コードにおけるバイト長が、指定した最大値以下であること、最小値以上であることのチェックをBean Validationで行うための制約アノテーションを提供する。
+    * -
+      - フィールド値比較相関チェック用Bean Validation制約アノテーション
+      - 2つのフィールド値の大小関係チェックをBean Validationで行うための制約アノテーションを提供する。
 
 terasoluna-gfw-jodatime
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -762,6 +837,23 @@ terasoluna-gfw-webは以下の部品を提供している。
     * -
       - MDCクリア用サーブレットフィルタ
       - ロガーのMDCに格納されている情報をクリアするためのサーブレットフィルタクラスを提供する。
+
+terasoluna-gfw-web-jsp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-web-jspは以下の部品を提供している。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - 分類
+      - 部品名
+      - 説明
+    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+      - トランザクショントークン出力用のJSPタグ
+      - トランザクショントークンをhidden項目として出力するためのJSPタグライブラリを提供する。
     * - :doc:`../ArchitectureInDetail/Pagination`
       - ページネーションリンク表示用のJSPタグ
       - Spring Data Commons提供のクラスと連携してページネーションリンクを表示するためのJSPタグライブラリを提供する。
