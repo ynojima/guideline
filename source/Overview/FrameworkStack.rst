@@ -776,7 +776,7 @@ terasoluna-gfw-validatorは以下の部品を提供している。
     * - :doc:`../ArchitectureInDetail/Validation`
       - バイト長チェック用Bean Validation制約アノテーション
       - 入力文字列の文字コードにおけるバイト長が、指定した最大値以下であること、最小値以上であることのチェックをBean Validationで行うための制約アノテーションを提供する。
-    * - :doc:`../ArchitectureInDetail/Validation`
+    * -
       - フィールド値比較相関チェック用Bean Validation制約アノテーション
       - 2つのフィールド値の大小関係チェックをBean Validationで行うための制約アノテーションを提供する。
 
