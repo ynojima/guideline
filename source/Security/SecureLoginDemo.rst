@@ -2481,12 +2481,12 @@ ER図
 
 * 認証成功イベントエンティティの保存
 
-  認証に成功した際にSpringが発生させるイベントをハンドリングし、認証に使用したユーザ名と認証に成功した日時を認証成功イベントエンティティとしてデータベースに登録する。
+  認証に成功した際にSpring Securityが発生させるイベントをハンドリングし、認証に使用したユーザ名と認証に成功した日時を認証成功イベントエンティティとしてデータベースに登録する。
 
 * 前回ログイン日時の取得と表示
 
   認証時に、アカウントにおける最新の認証成功イベントエンティティをデータベースから取得し、イベントエンティティから認証成功日時を取得して\ ``org.springframework.security.core.userdetails.UserDetails`` \に設定する。
-  jspから\ ``UserDetails`` \が保持している認証成功日時にアクセスし、フォーマットして表示する。
+  jspに\ ``UserDetails`` \が保持している認証成功日時をフォーマットして渡し、表示する。
 
 コード解説
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2708,7 +2708,7 @@ ER図
 
           @Transactional(readOnly = true)
           @Override
-          public DateTime getLastLoginDate(String username) {
+          public LocalDateTime getLastLoginDate(String username) {
               List<SuccessfulAuthentication> events = authenticationEventSharedService
                           .findLatestSuccessEvents(username, 1); // (1)
 
@@ -2882,7 +2882,7 @@ ER図
 
           <!-- omitted -->
 
-          <c:if test="${lastLoginDate != null}"> <!-- (1) -->
+          <c:if test="${!empty lastLoginDate}"> <!-- (1) -->
               <p id="lastLogin">
                   Last login date is ${f:h(lastLoginDate)}. <!-- (2) -->
               </p>
