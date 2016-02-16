@@ -307,7 +307,7 @@ URL一覧を以下に示す。
     * - 15
       - パスワード再発行画面表示
       - GET
-      - /reissue/resetpassword?form&username={username}&token={token}
+      - /reissue/resetpassword?form&token={token}
       - 二つのリクエストパラメータを使用して、ユーザ専用のパスワード再発行画面表示を表示する
     * - 16
       - パスワード再発行
@@ -1136,7 +1136,7 @@ ER図
      </bean>
      <bean id="characterCharacteristicsRule" class="org.passay.CharacterCharacteristicsRule"> <!-- (6) -->
          <property name="rules">
-             <list value-type="org.passay.CharacterRule">
+             <list>
                  <ref bean="upperCaseRule" />
                  <ref bean="lowerCaseRule" />
                  <ref bean="digitRule" />
@@ -1185,7 +1185,7 @@ ER図
 
      <bean id="characteristicPasswordValidator" class="org.passay.PasswordValidator"> <!-- (1) -->
          <constructor-arg name="rules">
-             <list value-type="org.passay.Rule">
+             <list>
                  <ref bean="lengthRule" />
                  <ref bean="characterCharacteristicsRule" />
                  <ref bean="usernameRule" />
@@ -1194,7 +1194,7 @@ ER図
      </bean>
      <bean id="encodedPasswordHistoryValidator" class="org.passay.PasswordValidator"> <!-- (2) -->
          <constructor-arg name="rules">
-             <list value-type="org.passay.Rule">
+             <list>
                  <ref bean="encodedPasswordHistoryRule" />
              </list>
          </constructor-arg>
@@ -2923,10 +2923,21 @@ ER図
    :width: 80%
    :align: center
 
+パスワード再発行のための認証情報生成画面で、パスワードを再発行するユーザ名を入力する。このとき、パスワード再発行時の認証に使用する秘密情報と、トークンが生成される。
+秘密情報は画面に表示され、トークンを含んだパスワード再発行画面のURLはユーザの登録済みメールアドレスに送付される。
+
+メール送付されたURLには有効期限があり、有効期限内にアクセスして秘密情報と新しいパスワードを入力することで、パスワードを変更することができる。
+有効期限が切れた後にメール送付されたURLにアクセスした場合、エラー画面に遷移する。
+
+ここでは、秘密情報とトークンの生成について説明を行う
+
 実装方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| パスワードの再発行を行う際には、再発行を行うユーザがアカウントの所有者であることを確認する必要がある。そのため、本アプリケーションでは、パスワードの再発行を行う前にパスワード再発行用の認証情報を生成する。
-| 認証情報の生成の際には、パスワード再発行画面のURLに含めるためのランダムな文字列とユーザの確認を目的としたランダムな文字列を、それぞれ異なる方法で生成する。また、認証情報生成時点の日時を用いて有効期限を計算し、設定する。
+| パスワードの再発行を行う際には、ユーザがアカウントの所有者であることを確認するためのパスワードに代わる手段が必要である。
+| 本アプリケーションでは、ユーザを確認するための情報として、パスワード再発行画面のURLと秘密情報の二つを用いる。
+| パスワード再発行画面のURLを一意かつ推測困難にするために、ランダムな文字列を生成しURLに付加する。万が一URLが漏えいした場合に備え、ランダムな文字列である秘密情報を生成し、これを用いて認証を行う。
+| 二つのランダムな文字列は、片方からもう一方を推測することが不可能となるように、それぞれ異なる方法で生成する。
+| また、一般的にはパスワードの再発行は認証情報の生成から間をおかずに行われるため、不必要に長期間有効となることが無いようにに、有効期限を設定する。
 | 具体的には以下の三つの処理を実装することで要件を実現する。
 
 * パスワード再発行のための認証情報の生成と保存
@@ -2938,12 +2949,12 @@ ER図
   * 秘密情報：パスワード再発行時にユーザに入力させるために生成するランダムな文字列
   * 有効期限：パスワード再発行のための認証情報の有効期限
 
-  トークンと秘密情報はそれぞれ異なる方法を使用して生成する。
+  秘密情報については、パスワードと同様にハッシュ化してデータベースへ保存する。
   パスワード再発行のための認証情報をユーザに配布する方法については、:ref:`パスワード再発行のための認証情報の配布 <reissue-info-delivery>` を参照。
 
 * パスワード再発行のための認証情報の有効期限の検査
 
-  パスワード再発行画面にアクセスされた際に、リクエストパラメータに含まれるユーザ名とトークンを取得し、トークンをキーとしてデータベースに保存されているパスワード再発行のための認証情報を検索する。
+  パスワード再発行画面にアクセスされた際に、リクエストパラメータに含まれるトークンを取得し、トークンをキーとしてデータベースに保存されているパスワード再発行のための認証情報を検索する。
   認証情報に含まれる有効期限と現在時刻を比較し、有効期限が切れていればエラー画面に遷移させる。
 
 * パスワード再発行のための認証情報を用いたユーザの確認
@@ -3010,7 +3021,7 @@ ER図
 
        public interface PasswordReissueInfoRepository {
 
-           int insert(PasswordReissueInfo info); // (1)
+           void create(PasswordReissueInfo info); // (1)
 
            PasswordReissueInfo findOne(@Param("token") String token); // (2)
 
@@ -3124,7 +3135,7 @@ ER図
        <bean id="passwordGenerationRules"
            class="org.springframework.beans.factory.config.ListFactoryBean">
            <property name="sourceList">
-               <list value-type="org.passay.CharacterRule"> <!-- (2) -->
+               <list> <!-- (2) -->
                    <ref bean="upperCaseRule" />
                    <ref bean="lowerCaseRule" />
                    <ref bean="digitRule" />
@@ -3134,7 +3145,7 @@ ER図
 
   * Serviceの実装
 
-    パスワード再発行のための認証情報を作成し、データベースへ保存するための処理の実装を以下に示す。
+    パスワード再発行のための認証情報を作成し、データベースへ保存するための処理の実装を以下に示す。この処理中で生成した認証情報をメール送信する。メール送信については後述するため、ここでは省略する。
 
     .. code-block:: java
 
@@ -3170,35 +3181,33 @@ ER図
            // omitted
 
            @Override
-           public String createRawSecret() {
-               return passwordGenerator.generatePassword(10, passwordGenerationRules); // (4)
-           }
-
-           @Override
-           public boolean saveAndSendReissueInfo(String username, String rawSecret) {
-               Account account = accountSharedService.findOne(username); // (5)
+           public String createAndSendReissueInfo(String username) {
                
-               String token = UUID.randomUUID().toString(); // (6)
+               String rowSecret = passwordGenerator.generatePassword(10, passwordGenerationRules); // (4)
+
+               if(!accountSharedService.exists(username)){ // (5)
+                   return rowSecret;           
+               }
+               
+               Account account= accountSharedService.findOne(username); // (6)
+               
+               String token = UUID.randomUUID().toString(); // (7)
 
                LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
-                       .plusSeconds(tokenLifeTimeSeconds); // (7)
+                       .plusSeconds(tokenLifeTimeSeconds); // (8)
 
-               PasswordReissueInfo info = new PasswordReissueInfo(); // (8)
+               PasswordReissueInfo info = new PasswordReissueInfo(); // (9)
                info.setUsername(username);
                info.setToken(token);
-               info.setSecret(passwordEncoder.encode(rawSecret)); // (9)
+               info.setSecret(passwordEncoder.encode(rowSecret)); // (10)
                info.setExpiryDate(expiryDate);
-               
-               int count = passwordReissueInfoRepository.create(info); // (10)
 
-               if (count > 0) {
+               passwordReissueInfoRepository.create(info); // (11)
 
-                   // omitted
+               // omitted (Send E-Mail)
 
-                   return true;
-               } else {
-                   return false;
-               }
+               return rowSecret; // (12)
+
            }
 
            // omitted
@@ -3221,17 +3230,21 @@ ER図
        * - | (4)
          - | 秘密情報として用いるために、Passayのパスワード生成機能を用いて、パスワード生成規則に従った、長さ10のランダムな文字列を生成する。
        * - | (5)
-         - | パスワード再発行用の認証情報に含まれるユーザ名のアカウント情報を取得する。該当するアカウントが存在しない場合、\ ``org.terasoluna.gfw.common.exception.ResourceNotFoundException`` \がthrowされる。
+         - | 引数として渡されてきたユーザ名のアカウントが存在するかどうか確認する。存在しなかった場合、ユーザが存在しないことを知られないためにダミーの秘密情報を返す。
        * - | (6)
-         - | トークンとして用いるために、\ ``java.util.UUID`` \クラスの\ ``randomUUID`` \メソッドを用いてランダムな文字列を生成する。
+         - | パスワード再発行用の認証情報に含まれるユーザ名のアカウント情報を取得する。
        * - | (7)
-         - | 現在時刻に(3)の値を加えることにより、パスワード再発行用の認証情報の有効期限を計算する。
+         - | トークンとして用いるために、\ ``java.util.UUID`` \クラスの\ ``randomUUID`` \メソッドを用いてランダムな文字列を生成する。
        * - | (8)
-         - | パスワード再発行用の認証情報を作成し、ユーザ名、トークン、秘密情報、有効期限を設定する。
+         - | 現在時刻に(3)の値を加えることにより、パスワード再発行用の認証情報の有効期限を計算する。
        * - | (9)
-         - | 秘密情報はハッシュ化を行ってから\ ``PasswordReissueInfo`` \に設定する。
+         - | パスワード再発行用の認証情報を作成し、ユーザ名、トークン、秘密情報、有効期限を設定する。
        * - | (10)
+         - | 秘密情報はハッシュ化を行ってから\ ``PasswordReissueInfo`` \に設定する。
+       * - | (11)
          - | パスワード再発行用の認証情報をデータベースに登録する。
+       * - | (12)
+         - | 生成した秘密情報を返す。
 
   * Formの実装
 
@@ -3247,7 +3260,7 @@ ER図
            private static final long serialVersionUID = 1L;
        
            @NotEmpty
-           String username;
+           private String username;
        }
 
   * Viewの実装
@@ -3264,7 +3277,7 @@ ER図
                <t:messagesPanel />
                <form:form
                    action="${f:h(pageContext.request.contextPath)}/reissue/create"
-                   method="Post" modelAttribute="createReissueInfoForm">
+                   method="post" modelAttribute="createReissueInfoForm">
                    <table>
                        <tr>
                            <th><form:label path="username" cssErrorClass="error-label">Username</form:label>
@@ -3293,39 +3306,31 @@ ER図
        @RequestMapping("/reissue")
        public class PasswordReissueController {
 
-       	@Inject
-       	PasswordReissueService passwordReissueService;
+           @Inject
+           PasswordReissueService passwordReissueService;
 
-       	@RequestMapping(value = "create", params = "form")
-       	public String showCreateReissueInfoForm(CreateReissueInfoForm form) {
-       		return "passwordreissue/createReissueInfoForm";
-       	}
+           @RequestMapping(value = "create", params = "form")
+           public String showCreateReissueInfoForm(CreateReissueInfoForm form) {
+               return "passwordreissue/createReissueInfoForm";
+           }
 
-       	@RequestMapping(value = "create", method = RequestMethod.POST)
-       	public String createReissueInfo(@Validated CreateReissueInfoForm form,
-       			BindingResult bindingResult, Model model,
-       			RedirectAttributes attributes) {
-       		if (bindingResult.hasErrors()) {
-       			return showCreateReissueInfoForm(form);
-       		}
+           @RequestMapping(value = "create", method = RequestMethod.POST)
+           public String createReissueInfo(@Validated CreateReissueInfoForm form,
+                   BindingResult bindingResult, Model model,
+                   RedirectAttributes attributes) {
+               if (bindingResult.hasErrors()) {
+                   return showCreateReissueInfoForm(form);
+               }
 
-       		String rawSecret = passwordReissueService.createRawSecret(); // (1)
+               String rawSecret = passwordReissueService.createAndSendReissueInfo(form.getUsername()); // (1)
+               attributes.addFlashAttribute("secret", rawSecret);
+               return "redirect:/reissue/create?complete";
+           }
 
-       		try {
-       			passwordReissueService.saveAndSendReissueInfo(form.getUsername(),
-       					rawSecret); // (2)
-       			attributes.addFlashAttribute("secret", rawSecret);
-       			return "redirect:/reissue/create?complete";
-       		} catch (ResourceNotFoundException e) {
-       			model.addAttribute(e.getResultMessages());
-       			return showCreateReissueInfoForm(form);
-       		}
-       	}
-
-       	@RequestMapping(value = "create", params = "complete", method = RequestMethod.GET)
-       	public String createReissueInfoComplete() {
-       		return "passwordreissue/createReissueInfoComplete";
-       	}
+           @RequestMapping(value = "create", params = "complete", method = RequestMethod.GET)
+           public String createReissueInfoComplete() {
+               return "passwordreissue/createReissueInfoComplete";
+           }
 
            // omitted
 
@@ -3340,13 +3345,12 @@ ER図
        * - 項番
          - 説明
        * - | (1)
-         - | 秘密情報を生成する処理を呼び出す。
-       * - | (2)
-         - | Formから取得したユーザ名と生成した秘密情報をServiceのメソッドに渡す。パスワード再発行のための認証情報が生成され、データベースに登録される。
+         - | Formから取得したユーザ名から、パスワード再発行のための認証情報を生成し、データベースに登録する処理を呼び出す。
 
 * パスワード再発行のための認証情報の有効期限の検査
 
   パスワード再発行画面にアクセスされた際に、リクエストパラメータとしてURLに含まれるトークンからパスワード再発行のための認証情報を取得し、有効期限内であるかどうかを検査する処理の実装を以下に示す。
+  この処理中ではパスワード再発行の失敗上限を超過しているかどうかの検査も行うが、後述するため、ここでは省略する。
 
   * Serviceの実装
 
@@ -3370,22 +3374,20 @@ ER図
 
            @Override
            @Transactional(readOnly = true)
-           public PasswordReissueInfo findOne(String username, String token) {
+           public PasswordReissueInfo findOne(String token) {
                PasswordReissueInfo info = passwordReissueInfoRepository.findOne(token); // (1)
 
                if (info == null) {
                    throw new ResourceNotFoundException(ResultMessages.error().add(
                            MessageKeys.E_SL_PR_5002, token));
                }
-               if (!info.getUsername().equals(username)) {
-                   throw new BusinessException(ResultMessages.error().add(
-                           MessageKeys.E_SL_PR_5001));
-               }
 
-               if (info.getExpiryDate().isBefore(dateFactory.newTimestamp().toLocalDateTime())) { // (2)
+               if (dateFactory.newTimestamp().toLocalDateTime().isAfter(info.getExpiryDate())) { // (2)
                    throw new BusinessException(ResultMessages.error().add(
                            MessageKeys.E_SL_PR_2001));
                }
+
+               // omitted (attempts exceeded upper bounds)
 
                return info;
            }
@@ -3404,7 +3406,7 @@ ER図
        * - | (1)
          - | 引数として与えられたトークンをキーとして、パスワード再発行のための認証情報をデータベースから取得する。
        * - | (2)
-         - | データベースから取得した認証情報に含まれる有効期限が現在時刻よりも前である場合は、\ ``org.terasoluna.gfw.common.exception.BusinessException`` \をthrowする。
+         - | 有効期限が切れている場合は、\ ``org.terasoluna.gfw.common.exception.BusinessException`` \をthrowする。
 
   * Controllerの実装
 
@@ -3423,14 +3425,12 @@ ER図
 
            // omitted
 
-           @RequestMapping(value = "resetpassword", params = "form")
            public String showPasswordResetForm(PasswordResetForm form, Model model,
-                   @RequestParam("username") String username, // (1)
-                   @RequestParam("token") String token) {  // (2)
+                   @RequestParam("token") String token) { // (1)
 
-               passwordReissueService.findOne(username, token); // (3)
+               PasswordReissueInfo info = passwordReissueService.findOne(token); // (3)
 
-               form.setUsername(username);
+               form.setUsername(info.getUsername());
                form.setToken(token);
                model.addAttribute("passwordResetForm", form);
                return "passwordreissue/passwordResetForm";
@@ -3448,15 +3448,14 @@ ER図
        * - 項番
          - 説明
        * - | (1)
-         - | パスワード再発行画面のURLにリクエストパラメータとして含まれるユーザ名を取得する。
-       * - | (2)
          - | パスワード再発行画面のURLにリクエストパラメータとして含まれるトークンを取得する。
-       * - | (3)
-         - | Serviceのメソッドにユーザ名とトークンを渡して呼び出す。データベースから認証情報が取得され、有効期限が検査される。
+       * - | (2)
+         - | Serviceのメソッドにトークンを渡して呼び出す。データベースから認証情報が取得され、有効期限が検査される。
 
 * パスワード再発行のための認証情報を用いたユーザの確認
 
   パスワード再発行画面においてユーザが入力した秘密情報と、パスワード再発行画面のURLに含まれるユーザ名、トークンの組が正しいかどうかを確認する処理の実装を以下に示す。
+  この確認処理はパスワード再発行固有のロジックであり、かつ文脈に依存したチェックであることから、Bean ValidationやSpring Validatorを用いず、Serviceに実装している。
 
   * Serviceの実装
 
@@ -3499,6 +3498,9 @@ ER図
        public class PasswordReissueServiceImpl implements PasswordReissueService {
 
            @Inject
+           PasswordReissueFailureSharedService passwordReissueFailureSharedService;
+
+           @Inject
            PasswordReissueInfoRepository passwordReissueInfoRepository;
 
            @Inject
@@ -3512,17 +3514,14 @@ ER図
            @Override
            public boolean resetPassword(String username, String token, String secret,
                    String rawPassword) {
-               PasswordReissueInfo info = this.findOne(username, token); // (1)
+               PasswordReissueInfo info = this.findOne(token); // (1)
                if (!passwordEncoder.matches(secret, info.getSecret())) { // (2)
-
-                   // omitted
-
+                   passwordReissueFailureSharedService.resetFailure(username, token);
                    throw new BusinessException(ResultMessages.error().add(
                        MessageKeys.E_SL_PR_5003));
                }
                passwordReissueInfoRepository.delete(token); // (3)
-
-               //omitted
+               failedPasswordReissueRepository.deleteByToken(token);
 
                return accountSharedService.updatePassword(username, rawPassword); // (4)
 
@@ -3540,7 +3539,7 @@ ER図
        * - 項番
          - 説明
        * - | (1)
-         - | 引数として与えられたユーザ名とトークンを用いて、データベースからパスワード再発行用の認証情報を取得する。このとき、有効期限が改めて検査される。
+         - | 引数として与えられたトークンを用いて、データベースからパスワード再発行用の認証情報を取得する。このとき、有効期限が改めて検査される。
        * - | (2)
          - | パスワード再発行用の認証情報に含まれるハッシュ化された秘密情報と、引数として与えられた秘密情報を比較する。異なる場合には\ ``BusinessException`` \をthrowする。この場合、パスワードの再発行は失敗となる。
        * - | (3)
@@ -3781,17 +3780,9 @@ ER図
                  return showCreateReissueInfoForm(form);
              }
 
-             String rawSecret = passwordReissueService.createRawSecret(); // (1)
-
-             try {
-                 passwordReissueService.saveAndSendReissueInfo(form.getUsername(),
-                         rawSecret);
-                 attributes.addFlashAttribute("secret", rawSecret); // (2)
-                 return "redirect:/reissue/create?complete"; // (3)
-             } catch (ResourceNotFoundException e) {
-                 model.addAttribute(e.getResultMessages());
-                 return showCreateReissueInfoForm(form);
-             }
+             String rawSecret = passwordReissueService.createAndSendReissueInfo(form.getUsername()); // (1)
+             attributes.addFlashAttribute("secret", rawSecret); // (2)
+             return "redirect:/reissue/create?complete"; // (3)
          }
 
          @RequestMapping(value = "create", params = "complete", method = RequestMethod.GET)
@@ -3848,7 +3839,7 @@ ER図
 * パスワード再発行画面のURLのメール送付
 
   パスワード再発行用の認証情報からパスワード再発行画面のURLを作成し、メール送付する処理の実装を以下に示す。
-  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/Email`を参照。
+  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/Email` を参照。
 
   .. code-block:: java
 
@@ -3857,7 +3848,7 @@ ER図
      // omitted
 
      @Service
-     public class MailSharedServiceImpl implements MailSharedService {
+     public class PasswordReissueMailSharedServiceImpl implements PasswordReissueMailSharedService {
 
          @Inject
          JavaMailSender mailSender; // (1)
@@ -3905,7 +3896,7 @@ ER図
          ClassicDateFactory dateFactory;
 
          @Inject
-         MailSharedService mailSharedService;
+         PasswordReissueMailSharedService mailSharedService;
 
          @Inject
          AccountSharedService accountSharedService;
@@ -3928,9 +3919,16 @@ ER図
          // omitted
 
          @Override
-         public boolean saveAndSendReissueInfo(String username, String rowSecret) {
-             Account account = accountSharedService.findOne(username);
-             
+         public String createAndSendReissueInfo(String username) {
+            
+             String rowSecret = passwordGenerator.generatePassword(10, passwordGenerationRules);
+
+             if(!accountSharedService.exists(username)){
+                 return rowSecret;           
+             }
+            
+             Account account= accountSharedService.findOne(username);
+            
              String token = UUID.randomUUID().toString();
 
              LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
@@ -3941,20 +3939,17 @@ ER図
              info.setToken(token);
              info.setSecret(passwordEncoder.encode(rowSecret));
              info.setExpiryDate(expiryDate);
-             
-             int count = passwordReissueInfoRepository.create(info);
 
-             if (count > 0) {
-                 String passwordResetUrl = protocol + "://" + hostAndPort
-                         + contextPath + "/reissue/resetpassword/?form&username="
-                         + info.getUsername() + "&token=" + info.getToken(); // (2)
+             passwordReissueInfoRepository.create(info);
 
-                 mailSharedService.send(account.getEmail(), passwordResetUrl); // (3)
+             String passwordResetUrl = protocol + "://" + hostAndPort
+                     + contextPath + "/reissue/resetpassword/?form&token="
+                     + info.getToken(); // (2)
 
-                 return true;
-             } else {
-                 return false;
-             }
+             mailSharedService.send(account.getEmail(), passwordResetUrl); // (3)
+
+             return rowSecret;
+
          }
 
          // omitted
@@ -3971,7 +3966,7 @@ ER図
      * - | (1)
        - | パスワード再発行画面のURLに使用するプロトコル、ホスト名、ポート番号、コンテキストパスをプロパティファイルから取得する。
      * - | (2)
-       - | (1)で取得した値と、生成したパスワード再発行用の認証情報に含まれるユーザ名、トークンを使用して、ユーザに配布するパスワード再発行画面のURLを作成する。
+       - | (1)で取得した値と、生成したパスワード再発行用の認証情報に含まれるトークンを使用して、ユーザに配布するパスワード再発行画面のURLを作成する。
      * - | (3)
        - | ユーザの登録メールアドレス宛てに、パスワード再発行画面のURLを本文に記したメールを送付する。
 
@@ -3994,22 +3989,21 @@ ER図
 実装方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | 本アプリケーションでは、パスワード再発行に失敗した履歴を「パスワード再発行失敗イベント」エンティティとしてデータベースに保存し、このパスワード再発行失敗イベントエンティティを用いて、パスワード再発行の失敗回数をカウントする。
-| 失敗回数があらかじめ設定した上限に達した時点で、パスワード再発行用の認証情報をデータベースから削除し、無効化する。
+| 失敗回数があらかじめ設定した上限値以上であれば、パスワード再発行時に例外をスローする。
 | 具体的には、以下の二つの処理を実装して用いることにより、要件を実現する。
 
 * パスワード再発行失敗イベントエンティティの保存
 
   :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` における、「パスワード再発行のための認証情報を用いたユーザの確認」処理の中で、ユーザの確認に失敗した場合に、使用したトークンと失敗日時の組をパスワード再発行失敗イベントエンティティとしてデータベースに登録する。
 
-* パスワード再発行用の認証情報の削除
+* パスワード再発行時の例外のスロー
 
-  上記「パスワード再発行失敗イベントエンティティの保存」処理の直後に、同じトークンを持つパスワード再発行失敗イベントエンティティをデータベースから検索して取得する。
-  取得した個数があらかじめ設定しておいた失敗回数の上限以上であれば、同じトークンを持つパスワード再発行用の認証情報をデータベースから削除する。
+  パスワード再発行のために認証情報をデータベースから取得した際に、パスワード再発行失敗イベントエンティティの数をカウントし、上限値以上であれば例外をスローする。
 
 .. warning ::
 
-   | パスワード再発行失敗イベントエンティティはパスワード再発行の失敗回数のカウントのみを目的としているため、不要になったタイミングで消去される。
-   | パスワード再発行の失敗時のログが必要な場合は必ず別途ログを保存しておくこと。
+   パスワード再発行失敗イベントエンティティはパスワード再発行の失敗回数のカウントのみを目的としているため、不要になったタイミングで消去する。
+   パスワード再発行の失敗時のログが必要な場合は必ず別途ログを保存しておくこと。
 
 コード解説
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -4129,23 +4123,6 @@ ER図
            ]]>
        	</delete>
 
-       	<delete id="deleteExpired">
-           <![CDATA[
-           	DELETE FROM
-           		failed_password_reissue
-           	WHERE
-           		token = 
-           		(SELECT
-           			token
-           		 FROM
-           		 	password_reissue_info
-           		 WHERE
-           		 	token = failed_password_reissue.token 
-           		 AND
-           			expiry_date < #{date}
-           		)
-           ]]>
-       	</delete>
        </mapper>
 
 以下、実装方法に従って実装されたコードについて順に解説する。
@@ -4190,9 +4167,6 @@ ER図
              event.setToken(token);
              event.setAttemptDate(dateFactory.newTimestamp().toLocalDateTime());
              failedPasswordReissueRepository.create(event); // (3)
-
-             // omitted
-
          }
 
      }
@@ -4205,7 +4179,8 @@ ER図
      * - 項番
        - 説明
      * - | (1)
-       - | 呼び出し元のServiceとは別にトランザクション管理を行うために、伝搬方法を「REQUIRES_NEW」に指定する。
+       - | パスワード再発行に失敗した際に呼び出されるメソッドであり、呼び出し元で実行時例外がスローされる。
+         | そのため、呼び出し元のServiceとは別にトランザクション管理を行うために、伝搬方法を「REQUIRES_NEW」に指定する。
      * - | (2)
        - | パスワード再発行失敗イベントエンティティを作成し、トークンと失敗日時を設定する。
      * - | (3)
@@ -4240,7 +4215,7 @@ ER図
          @Override
          public boolean resetPassword(String username, String token, String secret,
                  String rawPassword) {
-             PasswordReissueInfo info = this.findOne(username, token); // (1)
+             PasswordReissueInfo info = this.findOne(token); // (1)
              if (!passwordEncoder.matches(secret, info.getSecret())) { // (2)
                  passwordReissueFailureSharedService.resetFailure(username, token); // (3)
                  throw new BusinessException(ResultMessages.error().add(  // (4)
@@ -4263,7 +4238,7 @@ ER図
      * - 項番
        - 説明
      * - | (1)
-       - | 引数として与えられたユーザ名とトークンを用いて、データベースからパスワード再発行用の認証情報を取得する。
+       - | 引数として与えられたトークンを用いて、データベースからパスワード再発行用の認証情報を取得する。
      * - | (2)
        - | パスワード再発行用の認証情報に含まれるハッシュ化された秘密情報と、引数として与えられた秘密情報を比較する。
      * - | (3)
@@ -4271,7 +4246,7 @@ ER図
      * - | (4)
        - | 実行時例外をthrowするが、パスワード再発行失敗時の処理は別のトランザクションで実行されるため、影響を与えることはない。
 
-* パスワード再発行用の認証情報の削除
+* パスワード再発行時の例外のスロー
 
   パスワード再発行の失敗回数の取得と、失敗回数が上限に達した際の処理の実装を以下に示す。
 
@@ -4283,8 +4258,7 @@ ER図
 
      @Service
      @Transactional
-     public class PasswordReissueFailureSharedServiceImpl implements
-             PasswordReissueFailureSharedService {
+     public class PasswordReissueServiceImpl implements PasswordReissueService {
 
          @Inject
          FailedPasswordReissueRepository failedPasswordReissueRepository;
@@ -4295,19 +4269,25 @@ ER図
          @Value("${security.tokenValidityThreshold}")
          int tokenValidityThreshold; // (1)
 
-         @Transactional(propagation = Propagation.REQUIRES_NEW)
+         // omitted
+
          @Override
-         public void resetFailure(String username, String token) {
+         @Transactional(readOnly = true)
+         public PasswordReissueInfo findOne(String token) {
 
              // omitted
-
+              
              int count = failedPasswordReissueRepository // (2)
                      .countByToken(token);
              if (count >= tokenValidityThreshold) { // (3)
-                 passwordReissueInfoRepository.delete(token); // (4)
-                 failedPasswordReissueRepository.deleteByToken(token); // (5)
+                 throw new BusinessException(ResultMessages.error().add(
+                         MessageKeys.E_SL_PR_5001));
              }
+
+             return info;
          }
+
+         // omitted
 
      }
 
@@ -4323,11 +4303,7 @@ ER図
      * - | (2)
        - | 引数として与えられたトークンをキーとして、データベースからパスワード再発行失敗イベントエンティティの数を取得。
      * - | (3)
-       - | 取得したパスワード再発行の失敗イベントエンティティの数と失敗回数の上限値を比較する。
-     * - | (4)
-       - | 引数として与えられたトークンをキーとして、パスワード再発行のための認証情報を削除する。
-     * - | (5)
-       - | パスワード再発行のための認証情報が削除されることで、削除された認証情報と同じトークンを持つパスワード再発行失敗イベントエンティティは不要となるため、削除する。
+       - | 取得したパスワード再発行の失敗イベントエンティティの数と失敗回数の上限値を比較し、上限値以上ならば例外をスローする。
 
 おわりに
 ================================================================================
@@ -4455,7 +4431,7 @@ How to use
    <!-- Password Validator. -->
    <bean id="characterPasswordValidator" class="org.passay.PasswordValidator"> <!-- (6) -->
        <constructor-arg name="rules">
-           <list value-type="org.passay.Rule">
+           <list>
                <ref bean="upperCaseRule" />
                <ref bean="lowerCaseRule" />
                <ref bean="digitRule" />
@@ -4560,7 +4536,7 @@ How to use
 
     <!-- Password Generator. -->
     <bean id="passwordGenerator" class="org.passay.PasswordGenerator" /> <!-- (6) -->
-    <util:list id="passwordGenerationRules" value-type="org.passay.CharacterRule"> <!-- (7) -->
+    <util:list id="passwordGenerationRules"> <!-- (7) -->
         <ref bean="upperCaseRule" />
         <ref bean="lowerCaseRule" />
         <ref bean="digitRule" />
