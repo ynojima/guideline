@@ -3132,16 +3132,11 @@ ER図
     .. code-block:: xml
 
        <bean id="passwordGenerator" class="org.passay.PasswordGenerator" /> <!-- (1) -->
-       <bean id="passwordGenerationRules"
-           class="org.springframework.beans.factory.config.ListFactoryBean">
-           <property name="sourceList">
-               <list> <!-- (2) -->
-                   <ref bean="upperCaseRule" />
-                   <ref bean="lowerCaseRule" />
-                   <ref bean="digitRule" />
-               </list>
-           </property>
-       </bean>
+       <util:list id="passwordGenerationRules">
+           <ref bean="upperCaseRule" />
+           <ref bean="lowerCaseRule" />
+           <ref bean="digitRule" />
+       </util:list>
 
   * Serviceの実装
 
