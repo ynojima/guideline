@@ -29,20 +29,20 @@ DIコンテナ
 DIコンテナとしてSpring Frameworkを利用する。
 
 
-* `Spring Framework 4.1 <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/beans.html>`_
+* `Spring Framework 4.1 <http://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/beans.html>`_
 
 MVCフレームワーク
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Web MVCフレームワークとしてSpring MVCを利用する。
 
-* `Spring MVC 4.1 <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html>`_
+* `Spring MVC 4.1 <http://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/mvc.html>`_
 
 O/R Mapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 本ガイドラインでは、以下の\ **いずれか**\ を想定している。
 
-* `MyBatis 3.2 <http://mybatis.github.io/mybatis-3/>`_
+* `MyBatis 3.3 <http://mybatis.github.io/mybatis-3/>`_
 
   * Spring Frameworkとの連携ライブラリとして、\ `MyBatis-Spring <http://mybatis.github.io/spring/>`_\ を使用する。
 
@@ -95,7 +95,7 @@ Viewのレイアウトを共通化する場合は、
 
   * 実装は、\ `Hibernate Validator 5.1 <http://docs.jboss.org/hibernate/validator/5.1/reference/en-US/html/>`_\ を利用する。
 
-* 相関チェックには\ `Bean Validation <http://download.oracle.com/otn-pub/jcp/bean_validation-1_1-fr-eval-spec/bean-validation-specification.pdf>`_\ 、もしくは\ `Spring Validation <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/validation.html#validator>`_\ を利用する。
+* 相関チェックには\ `Bean Validation <http://download.oracle.com/otn-pub/jcp/bean_validation-1_1-fr-eval-spec/bean-validation-specification.pdf>`_\ 、もしくは\ `Spring Validation <http://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/validation.html#validator>`_\ を利用する。
 
   * 使い分けについては\ :doc:`../ArchitectureInDetail/Validation`\ を参照されたい。
 
@@ -117,7 +117,7 @@ Viewのレイアウトを共通化する場合は、
 利用するOSSのバージョン
 --------------------------------------------------------------------------------
 
-version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
+version 5.0.2.RELEASEで利用するOSSの一覧を以下に示す。
 
 .. tip::
 
@@ -133,7 +133,7 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     への依存関係を解決しており、
     TERASOLUNA Server Framework for Java (5.x)で使用するOSSのバージョンは、原則として、Spring IO platformの定義に準じている。
 
-    なお、version 5.0.1.RELEASEで指定しているSpring IO platformのバージョンは、`1.1.3.RELEASE <http://docs.spring.io/platform/docs/1.1.3.RELEASE/reference/htmlsingle/>`_\ である。
+    なお、version 5.0.2.RELEASEで指定しているSpring IO platformのバージョンは、`1.1.5.RELEASE <http://docs.spring.io/platform/docs/1.1.5.RELEASE/reference/htmlsingle/>`_\ である。
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.27\linewidth}|p{0.25\linewidth}|p{0.15\linewidth}|p{0.05\linewidth}|p{0.08\linewidth}|
 .. list-table::
@@ -150,121 +150,121 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - Spring
       - org.springframework
       - spring-aop
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-aspects
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-beans
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-context
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-context-support
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-core
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-expression
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-jdbc
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-orm
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-tx
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-web
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework
       - spring-webmvc
-      - 4.1.7.RELEASE
+      - 4.1.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework.data
       - spring-data-commons
-      - 1.9.3.RELEASE
+      - 1.9.4.RELEASE
       - \*
       -
     * - Spring
       - org.springframework.security
       - spring-security-acl
-      - 3.2.7.RELEASE
+      - 3.2.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework.security
       - spring-security-config
-      - 3.2.7.RELEASE
+      - 3.2.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework.security
       - spring-security-core
-      - 3.2.7.RELEASE
+      - 3.2.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework.security
       - spring-security-taglibs
-      - 3.2.7.RELEASE
+      - 3.2.9.RELEASE
       - \*
       -
     * - Spring
       - org.springframework.security
       - spring-security-web
-      - 3.2.7.RELEASE
+      - 3.2.9.RELEASE
       - \*
       -
     * - MyBatis3
       - org.mybatis
       - mybatis
-      - 3.2.8
+      - 3.3.0
       -
       - \*1
     * - MyBatis3
       - org.mybatis
       - mybatis-spring
-      - 1.2.2
+      - 1.2.3
       -
       - \*1
     * - JPA(Hibernate)
@@ -282,13 +282,13 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - JPA(Hibernate)
       - org.hibernate
       - hibernate-core
-      - 4.3.10.Final
+      - 4.3.11.Final
       - \*
       - \*2
     * - JPA(Hibernate)
       - org.hibernate
       - hibernate-entitymanager
-      - 4.3.10.Final
+      - 4.3.11.Final
       - \*
       - \*2
     * - JPA(Hibernate)
@@ -330,7 +330,7 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - JPA(Hibernate)
       - org.springframework.data
       - spring-data-jpa
-      - 1.7.3.RELEASE
+      - 1.7.4.RELEASE
       - \*
       - \*2
     * - DI
@@ -348,13 +348,13 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - AOP
       - org.aspectj
       - aspectjrt
-      - 1.8.6
+      - 1.8.7
       - \*
       -
     * - AOP
       - org.aspectj
       - aspectjweaver
-      - 1.8.6
+      - 1.8.7
       - \*
       -
     * - ログ出力
@@ -378,13 +378,13 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - ログ出力
       - org.slf4j
       - jcl-over-slf4j
-      - 1.7.12
+      - 1.7.13
       - \*
       -
     * - ログ出力
       - org.slf4j
       - slf4j-api
-      - 1.7.12
+      - 1.7.13
       - \*
       -
     * - JSON
@@ -564,7 +564,7 @@ version 5.0.1.RELEASEで利用するOSSの一覧を以下に示す。
     * - ユーティリティ
       - commons-collections
       - commons-collections
-      - 3.2.1
+      - 3.2.2
       - \*
       - \*3
     * - ユーティリティ
