@@ -454,7 +454,7 @@ ER図
      \ ``HandlerInterceptor`` \を使用する方法ではハンドラメソッド実行前に処理を行うため、URLを直打ちするなどの方法で回避することはできない。
 
   .. tip ::
-     \ ``HandlerInterceptor`` \の代わりにServlet Filterを用いることもできる。両者の説明については :doc:`../ImplementationAtEachLayer/ApplicationLayer` の「Controllerの呼び出し前後で行う共通処理の実装」を参照すること。
+     \ ``HandlerInterceptor`` \の代わりにServlet Filterを用いることもできる。両者の説明については :ref:`controller-common-process` を参照すること。
      ここでは、アプリケーションが許可したリクエストのみに対して処理を行うために、\ ``HandlerInterceptor`` \を用いている。
 
 * パスワード変更を促すメッセージの表示
@@ -1924,7 +1924,7 @@ ER図
 * 認証失敗イベントエンティティの保存
 
   認証失敗時に発生するイベントをハンドリングして処理を行うために、\ ``@EventListener`` \アノテーションを使用する。
-  \ ``@EventListener`` \アノテーションによるイベントのハンドリングについては :doc:`./Authentication` の「イベントリスナの作成」を参照すること。
+  \ ``@EventListener`` \アノテーションによるイベントのハンドリングについては :ref:`SpringSecurityAuthenticationEvent` を参照すること。
 
   .. code-block:: java
 
