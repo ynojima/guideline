@@ -417,7 +417,7 @@ ER図
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 .. figure:: ./images/SecureLogin_change_password.png
-   :alt: Page Transition
+   :alt: Change Password
    :width: 80%
    :align: center
 
@@ -1007,7 +1007,7 @@ ER図
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 .. figure:: ./images/SecureLogin_password_validation.png
-   :alt: Page Transition
+   :alt: Password Validation
    :width: 80%
    :align: center
 
@@ -1638,7 +1638,7 @@ ER図
 * アカウントロックアウト
 
 .. figure:: ./images/SecureLogin_lockout_ss.png
-   :alt: Page Transition
+   :alt: Lockout
    :width: 80%
    :align: center
 
@@ -1649,7 +1649,7 @@ ER図
 * ロックアウト解除
 
 .. figure:: ./images/SecureLogin_unlock_ss.png
-   :alt: Page Transition
+   :alt: Unlock
    :width: 80%
    :align: center
 
@@ -2468,7 +2468,7 @@ ER図
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 .. figure:: ./images/SecureLogin_last_login.png
-   :alt: Page Transition
+   :alt: Last Login Date
    :width: 80%
    :align: center
 
@@ -2916,8 +2916,8 @@ ER図
 動作イメージ
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-.. figure:: ./images/SecureLogin_password_reissue.png
-   :alt: Page Transition
+.. figure:: ./images/SecureLogin_password_reissue_generate.png
+   :alt: Generate Password Reissue Information 
    :width: 80%
    :align: center
 
@@ -3722,8 +3722,8 @@ ER図
 動作イメージ
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-.. figure:: ./images/SecureLogin_password_reissue.png
-   :alt: Page Transition
+.. figure:: ./images/SecureLogin_password_reissue_give.png
+   :alt: Givee Password Reissue Information 
    :width: 80%
    :align: center
 
@@ -4274,7 +4274,7 @@ ER図
                      .countByToken(token);
              if (count >= tokenValidityThreshold) { // (3)
                  throw new BusinessException(ResultMessages.error().add(
-                         MessageKeys.E_SL_PR_5001));
+                         MessageKeys.E_SL_PR_5004));
              }
 
              return info;
