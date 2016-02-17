@@ -3166,7 +3166,7 @@ ER図
            @Inject
            PasswordGenerator passwordGenerator; // (1)
 
-           @Resource(name="passwordGenerationRules")
+           @Resource(name = "passwordGenerationRules")
            List<CharacterRule> passwordGenerationRules; //(2)
 
            @Value("${security.tokenLifeTimeSeconds}")
@@ -4566,7 +4566,7 @@ How to use
    PasswordGenerator passwordGenerator;
 
    @Inject
-   @Named("passwordGenerationRules")
+   @Resource(name = "passwordGenerationRules")
    List<CharacterRule> passwordGenerationRules;
 
    // omitted
