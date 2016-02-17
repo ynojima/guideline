@@ -139,10 +139,6 @@ PDFファイルのダウンロード
         </dependency>
   </dependencies>
   
-\
-    .. note::
-        JavaSEより標準で提供されるライブラリについては、 \ ``<exclusions>``\ 要素を追加し、ライブラリの競合が起こらないよう考慮している。
-
 
 \
     .. note::
@@ -330,6 +326,10 @@ Excelファイルのダウンロード
           </exclusion>
       </exclusions>
   </dependencies>
+  
+\
+    .. note::
+        poi-ooxmlが依存しているstax-apiはJava SEより標準で提供されるようになったため、不要なライブラリである。また、ライブラリの競合が発生する可能性があることから、 \ ``<exclusions>``\ 要素を追加し、当該ライブラリがアプリケーションに含まれないよう考慮する必要がある。
 
 \
     .. note::
