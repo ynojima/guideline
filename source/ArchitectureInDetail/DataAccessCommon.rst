@@ -79,10 +79,10 @@ JDBC DataSourceについて
         | \ `Apache Tomcat 7 User Guide(JNDI Datasource HOW-TO) <http://tomcat.apache.org/tomcat-7.0-doc/jndi-datasource-examples-howto.html>`_\ (Apache Commons DBCP)を参照されたい。
     * - 3.
       - Oracle WebLogic Server 12c
-      - \ `Oracle WebLogic Server Product Documentation <http://docs.oracle.com/middleware/1213/wls/INTRO/jdbc.htm>`_\ を参照されたい。
+      - \ `Oracle WebLogic Server Product Documentation <http://docs.oracle.com/middleware/1221/wls/INTRO/jdbc.htm>`_\ を参照されたい。
     * - 4.
       - IBM WebSphere Application Server Version 8.5
-      - \ `WebSphere Application Server Online information center <http://pic.dhe.ibm.com/infocenter/wasinfo/v8r5/index.jsp?topic=%2Fcom.ibm.websphere.nd.doc%2Fae%2Ftdat_ccrtpds.html>`_\ を参照されたい。
+      - \ `WebSphere Application Server Online information center <http://www-01.ibm.com/support/knowledgecenter/SSEQTP_8.5.5/com.ibm.websphere.wlp.doc/ae/twlp_dep_configuring_ds.html?lang=ja>`_\ を参照されたい。
     * - 5.
       - JBoss Enterprise Application Platform 6.4
       - \ `JBoss Enterprise Application Platform Product Documentation <https://access.redhat.com/documentation/en-US/JBoss_Enterprise_Application_Platform/6.4/html/Administration_and_Configuration_Guide/chap-Datasource_Management.html>`_\ を参照されたい。
