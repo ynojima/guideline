@@ -1111,25 +1111,25 @@ ER図
      </bean>
      <bean id="upperCaseRule" class="org.passay.CharacterRule"> <!-- (2) -->
          <constructor-arg name="data">
-             <value type="org.passay.EnglishCharacterData">UpperCase</value>
+             <util:constant static-field="org.passay.EnglishCharacterData.UpperCase" />
          </constructor-arg>
          <constructor-arg name="num" value="1" />
      </bean>
      <bean id="lowerCaseRule" class="org.passay.CharacterRule"> <!-- (3) -->
          <constructor-arg name="data">
-             <value type="org.passay.EnglishCharacterData">LowerCase</value>
+             <util:constant static-field="org.passay.EnglishCharacterData.LowerCase" />
          </constructor-arg>
          <constructor-arg name="num" value="1" />
      </bean>
      <bean id="digitRule" class="org.passay.CharacterRule"> <!-- (4) -->
          <constructor-arg name="data">
-             <value type="org.passay.EnglishCharacterData">Digit</value>
+             <util:constant static-field="org.passay.EnglishCharacterData.Digit" />
          </constructor-arg>
          <constructor-arg name="num" value="1" />
      </bean>
      <bean id="specialCharacterRule" class="org.passay.CharacterRule"> <!-- (5) -->
          <constructor-arg name="data">
-             <value type="org.passay.EnglishCharacterData">Special</value>
+             <util:constant static-field="org.passay.EnglishCharacterData.Special" />
          </constructor-arg>
          <constructor-arg name="num" value="1" />
      </bean>
@@ -4495,23 +4495,23 @@ Passayが提供している検証規則のクラスの一部を以下の表に�
      - 主なプロパティ
    * - | \ ``LengthRule`` \
      - | パスワード長の最小値、最大値を規定するための検証規則のクラス
-     - | minimuxLength : パスワード長の最小値(int)。コンストラクタまたはsetterで設定。
-       | maximumLength : パスワード長の最大値(int)。コンストラクタまたはsetterで設定。
+     - | \ ``minimuxLength`` \ : パスワード長の最小値(int)。コンストラクタまたはsetterで設定。
+       | \ ``maximumLength`` \ : パスワード長の最大値(int)。コンストラクタまたはsetterで設定。
    * - | \ ``CharacterRule`` \
      - | パスワードに含まれるべき文字種別と、その文字種別の最低文字数を規定するための検証規則のクラス
-     - | characterData : 文字種別(\ ``org.passay.CharacterData`` \)。コンストラクタで設定。
-       | numberOfCharacters : 最低文字数(int)。コンストラクタまたはsetterで設定。
+     - | \ ``characterData``\ : 文字種別(\ ``org.passay.CharacterData`` \)。コンストラクタで設定。
+       | \ ``numberOfCharacters`` \ : 最低文字数(int)。コンストラクタまたはsetterで設定。
    * - | \ ``CharacterCharacteristicsRule`` \
      - | 複数の\ ``CharacterRule`` \のうち、いくつ以上の規則を満たす必要があるかを規定するための検証規則のクラス
-     - | rules : 文字種別に関する検証規則のリスト(\ ``List<CharacterRule>`` \)。setterで設定。
-       | numberOfCharacteristics : 満たすべき検証規則の数の最小値(int)。setterで設定。
+     - | \ ``rules``\ : 文字種別に関する検証規則のリスト(\ ``List<CharacterRule>`` \)。setterで設定。
+       | \ ``numberOfCharacteristics`` \ : 満たすべき検証規則の数の最小値(int)。setterで設定。
    * - | \ ``HistoryRule`` \
      - | パスワードが以前に使用したパスワードと一致していないことをチェックするための検証規則のクラス
      - | なし
    * - | \ ``UsernameRule`` \
      - | パスワードがユーザ名を含まないことをチェックするための検証規則のクラス
-     - | matchBackwards : ユーザ名を逆にした文字列もチェックする(boolean)。コンストラクタまたはsetterで設定。
-       | ignoreCase : 大文字、小文字を区別しない(boolean)。コンストラクタまたはsetterで設定。
+     - | \ ``matchBackwards`` \ : ユーザ名を逆にした文字列もチェックする(boolean)。コンストラクタまたはsetterで設定。
+       | \ ``ignoreCase`` \ : 大文字、小文字を区別しない(boolean)。コンストラクタまたはsetterで設定。
 
 この他にも、特定の文字を含む/含まないことのチェックや、正規表現によるチェックを行うための検証規則のクラス等が提供されている。
 詳細は `<http://www.passay.org/>`_ を参照。
@@ -4521,25 +4521,26 @@ How to use
 
 \ ``PasswordValidator`` \のコンストラクタに\ ``org.passay.Rule`` \のインスタンスのリストを渡すことによって、検証器を作成することができる。
 検証規則を設定した検証器を以下のようにBeanとして定義しておくことでDIが可能となる。
+尚、複数の検証規則をBean定義する場合、\ ``@Inject`` \と\ ``@Named`` \を併用することでBean名によるDIを行うこと。
 
 .. code-block:: xml
 
    <!-- Password Rules. -->
    <bean id="upperCaseRule" class="org.passay.CharacterRule"> <!-- (1) -->
        <constructor-arg name="data">
-           <value type="org.passay.EnglishCharacterData">UpperCase</value> <!-- (2) -->
+           <util:constant static-field="org.passay.EnglishCharacterData.UpperCase" /> <!-- (2) -->
        </constructor-arg>
        <constructor-arg name="num" value="1" /> <!-- (3) -->
    </bean>
    <bean id="lowerCaseRule" class="org.passay.CharacterRule"> <!-- (4) -->
        <constructor-arg name="data">
-           <value type="org.passay.EnglishCharacterData">LowerCase</value>
+           <util:constant static-field="org.passay.EnglishCharacterData.LowerCase" />
        </constructor-arg>
        <constructor-arg name="num" value="1" />
    </bean>
    <bean id="digitRule" class="org.passay.CharacterRule"> <!-- (5) -->
        <constructor-arg name="data">
-           <value type="org.passay.EnglishCharacterData">Digit</value>
+           <util:constant static-field="org.passay.EnglishCharacterData.Digit" />
        </constructor-arg>
        <constructor-arg name="num" value="1" />
    </bean>
@@ -4584,15 +4585,19 @@ How to use
 
    // omitted
 
-   PasswordData pd = new PasswordData(password); // (1)
-   RuleResult result = characterPasswordValidator.validate(pd); // (2)
-   if (result.isValid()) { // (3)
-      logger.info("Password is valid");
-   } else {
-      logger.error("Invalid password:");
-      for (String msg : characterPasswordValidator.getMessages(result)) { // (4)
-          logger.error(msg);
-      }
+   public void validatePassword(String password){
+
+       PasswordData pd = new PasswordData(password); // (1)
+       RuleResult result = characterPasswordValidator.validate(pd); // (2)
+       if (result.isValid()) { // (3)
+          logger.info("Password is valid");
+       } else {
+          logger.error("Invalid password:");
+          for (String msg : characterPasswordValidator.getMessages(result)) { // (4)
+              logger.error(msg);
+          }
+       }
+
    }
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -4633,19 +4638,19 @@ How to use
    <!-- Password Rules. -->
    <bean id="upperCaseRule" class="org.passay.CharacterRule"> <!-- (1) -->
        <constructor-arg name="data">
-           <value type="org.passay.EnglishCharacterData">UpperCase</value> <!-- (2) -->
+           <util:constant static-field="org.passay.EnglishCharacterData.UpperCase" /> <!-- (2) -->
        </constructor-arg>
        <constructor-arg name="num" value="1" /> <!-- (3) -->
    </bean>
    <bean id="lowerCaseRule" class="org.passay.CharacterRule"> <!-- (4) -->
        <constructor-arg name="data">
-           <value type="org.passay.EnglishCharacterData">LowerCase</value>
+           <util:constant static-field="org.passay.EnglishCharacterData.LowerCase" />
        </constructor-arg>
        <constructor-arg name="num" value="1" />
    </bean>
    <bean id="digitRule" class="org.passay.CharacterRule"> <!-- (5) -->
        <constructor-arg name="data">
-           <value type="org.passay.EnglishCharacterData">Digit</value>
+           <util:constant static-field="org.passay.EnglishCharacterData.Digit" />
        </constructor-arg>
        <constructor-arg name="num" value="1" />
    </bean>
@@ -4687,13 +4692,16 @@ How to use
    @Inject
    PasswordGenerator passwordGenerator;
 
-   @Inject
    @Resource(name = "passwordGenerationRules")
    List<CharacterRule> passwordGenerationRules;
 
    // omitted
 
-   String password = passwordGenerator.generatePassword(10, passwordGenerationRules); // (1)
+   public void generatePassword(){
+
+       String password = passwordGenerator.generatePassword(10, passwordGenerationRules); // (1)
+
+   }
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -4704,6 +4712,11 @@ How to use
      - 説明
    * - | (1)
      - | \ ``PasswordGenerator`` \の\ ``generatePassword`` \メソッドに、生成するパスワードの長さと生成規則を引数として渡すと、生成規則を満たしたパスワードが生成される。
+
+  .. tip::
+     
+     Bean定義したコレクションをDIする際には、\ ``@Inject`` \ + \ ``@Named`` \では期待した動作をしない。
+     そのため、代わりに\ ``@Resource`` \を使用してBean名でDIする。
 
 .. raw:: latex
 
