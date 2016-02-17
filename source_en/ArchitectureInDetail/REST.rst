@@ -4376,19 +4376,22 @@ Implementing the Controller that sends error response
 Create a controller that sends the error response for the error notified to Servlet Container.
 
  .. code-block:: java
-    :emphasize-lines: 14-17, 19-20, 22-27, 31, 34
+    :emphasize-lines: 17-20, 22-23, 25, 28, 33-35, 36, 40, 42, 45
 
     package org.terasoluna.examples.rest.api.common.error;
+    
+    import java.util.HashMap;
+    import java.util.Map;
     
     import javax.inject.Inject;
     import javax.servlet.RequestDispatcher;
     
     import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.RequestParam;
-    import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.bind.annotation.RestController;
+    import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.context.request.WebRequest;
 
     // (1)
@@ -4400,18 +4403,26 @@ Create a controller that sends the error response for the error notified to Serv
         ApiErrorCreator apiErrorCreator; // (2)
     
         // (3)
+        private final Map<HttpStatus, String> errorCodeMap = new HashMap<HttpStatus, String>();
+    
+        // (4)
+        public ApiErrorPageController() {
+            errorCodeMap.put(HttpStatus.NOT_FOUND, "e.ex.fw.5001");
+        }
+    
+        // (5)
         @RequestMapping
-        public ResponseEntity<ApiError> handleErrorPage(
-                @RequestParam("errorCode") String errorCode, // (4)
-                WebRequest request) {
-            // (5)
+        public ResponseEntity<ApiError> handleErrorPage(WebRequest request) {
+            // (6)
             HttpStatus httpStatus = HttpStatus.valueOf((Integer) request
                     .getAttribute(RequestDispatcher.ERROR_STATUS_CODE,
                             RequestAttributes.SCOPE_REQUEST));
-            // (6)
+            // (7)
+            String errorCode = errorCodeMap.get(httpStatus);
+            // (8)
             ApiError apiError = apiErrorCreator.createApiError(request, errorCode,
                     httpStatus.getReasonPhrase());
-            // (7)
+            // (9)
             return ResponseEntity.status(httpStatus).body(apiError);
         }
     
@@ -4430,17 +4441,21 @@ Create a controller that sends the error response for the error notified to Serv
     * - | (2)
       - | Inject a class that creates error information.
     * - | (3)
-      - | Create a processing method that sends error response.
+      - | Create \ ``Map``\  for mapping HTTP status code and error code.
+    * - | (4)
+      - | Register mapping of HTTP status code and error code.
+    * - | (5)
+      - | Create a handler method that sends error response.
         | Above example is implemented on considering only the case wherein, error page is handled by using a response code (\ ``<error-code>``\ ).
         | Therefore, separate consideration is required for the case where an error page that is handled by using exception type (\ ``<exception-type>``\ ) is to be processed using this method.
-    * - | (4)
-      - | Receive the error code as request parameter.
-    * - | (5)
-      - | Fetch the status code stored in request scope.
     * - | (6)
-      - | Generate error information corresponding to the error code received in request parameter.
+      - | Fetch status code stored in request scope.
     * - | (7)
-      - | Send the error information fetched in (5) and (6) as a response.
+      - | Fetch error code corresponding to status code thus fetched.
+    * - | (8)
+      - | Generate error information corresponding to error codes thus fetched.
+    * - | (9)
+      - | Return the error information generated in (8).
 
 | 
 
@@ -4470,7 +4485,7 @@ Settings for handling an error that is notified to Servlet Container are explain
     <!-- (1) -->
     <error-page>
         <error-code>404</error-code>
-        <location>/api/v1/error?errorCode=e.ex.fw.5001</location>
+        <location>/api/v1/error</location>
     </error-page>
 
     <!-- (2) -->
@@ -4496,7 +4511,7 @@ Settings for handling an error that is notified to Servlet Container are explain
       - Description
     * - | (1)
       - | Add error page definition for response code if required.
-        | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\`` ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error?errorCode=e.ex.fw.5001``\ " is called and error response is sent.
+        | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\`` ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error``\ " is called and error response is sent.
     * - | (2)
       - | Add definition for handling a fatal error.
         | When a fatal error occurs, it is recommended to respond with the static JSON provided in advance, as double failure may occur during the process that creates response information.
@@ -4505,6 +4520,11 @@ Settings for handling an error that is notified to Servlet Container are explain
       - | Specify MIME type of json.
         | When multi byte characters are included in the JSON file created in (2), junk characters may be displayed at client side if \ ``charset=UTF-8``\  is not specified.
         | When there are no multi byte characters in the JSON file, this setting is not mandatory. However, it is always safe to incorporate this setting.
+
+ .. note::
+    
+    In `Servlet specification, <http://download.oracle.com/otn-pub/jcp/servlet-3_1-fr-spec/servlet-3_1-final.pdf#page=128>`_\ , the behaviour wherein a path is specified which assigns query parameters in \ ``<location>``\  of \ ``<error-page>``\  is not defined. Hence, behaviour is likely to change according to AP server.
+    Accordingly, it is not recommended to transfer information to transition destination at the time of error using a query parameter.
 
 |
 
