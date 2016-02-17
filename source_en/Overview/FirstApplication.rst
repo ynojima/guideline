@@ -144,7 +144,7 @@ To understand the configuration of Spring MVC, the generated Spring MVC configur
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
 
