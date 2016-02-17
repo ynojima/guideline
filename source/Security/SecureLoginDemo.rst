@@ -1295,11 +1295,10 @@ ER図
                RuleResult result = characteristicPasswordValidator
                        .validate(PasswordData.newInstance(newPassword, username, null)); // (2)
 
-               context.disableDefaultConstraintViolation();
-
                if (result.isValid()) { // (3)
                    return true;
                } else {
+                   context.disableDefaultConstraintViolation();
                    for (String message : characteristicPasswordValidator
                            .getMessages(result)) { // (4)
                        context.buildConstraintViolationWithTemplate(message)
@@ -1438,8 +1437,6 @@ ER図
                    result = checkHistoricalPassword(username, newPassword, context);
                }
 
-               context.disableDefaultConstraintViolation();
-
                return result;
            }
 
@@ -1449,6 +1446,7 @@ ER図
                if (!passwordEncoder.matches(newPassword, currentPassword)) {
                    return true;
                } else {
+       	           context.disableDefaultConstraintViolation();
                    context.buildConstraintViolationWithTemplate(message)
                            .addPropertyNode(newPasswordPropertyName).addConstraintViolation();
                    return false;
@@ -1480,6 +1478,7 @@ ER図
                if (result.isValid()) { // (10)
                    return true;
                } else {
+       	           context.disableDefaultConstraintViolation();
                    context.buildConstraintViolationWithTemplate(
                            encodedPasswordHistoryValidator.getMessages(result).get(0)) // (11)
                            .addPropertyNode(newPasswordPropertyName).addConstraintViolation();
@@ -2333,9 +2332,9 @@ ER図
 
                 <sec:authorize url="/unlock"> <!-- (1) -->
                 <div>
-                    <button id="unlock"
-                        onClick="location.href='${f:h(pageContext.request.contextPath)}/unlock?form'">Unlock
-                        Account</button>
+                    <a id="unlock" href="${f:h(pageContext.request.contextPath)}/unlock?form">
+                        Unlock Account
+                    </a>
                 </div>
                 </sec:authorize>
 
