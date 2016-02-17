@@ -109,7 +109,7 @@ Viewのレイアウトを共通化する場合は、
 利用するOSSのバージョン
 --------------------------------------------------------------------------------
 
-version 1.0.3.RELEASEで利用するOSSの一覧を以下に示す。
+version 1.0.4.RELEASEで利用するOSSの一覧を以下に示す。
 
 .. tabularcolumns:: |p{0.20\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|p{0.5\linewidth}|
 .. list-table::
@@ -125,62 +125,62 @@ version 1.0.3.RELEASEで利用するOSSの一覧を以下に示す。
     * - Spring
       - org.springframework
       - spring-aop
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-aspects
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-beans
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-context
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-context-support
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-core
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-expression
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-jdbc
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-orm
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-tx
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-web
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework
       - spring-webmvc
-      - 3.2.14.RELEASE
+      - 3.2.16.RELEASE
       -
     * - Spring
       - org.springframework.data
@@ -425,7 +425,7 @@ version 1.0.3.RELEASEで利用するOSSの一覧を以下に示す。
     * - ユーティリティ
       - commons-collections
       - commons-collections
-      - 3.2.1
+      - 3.2.2
       - \*3
     * - ユーティリティ
       - commons-io
