@@ -1719,14 +1719,26 @@ Beanとして登録したいクラスに以下のアノテーションを追加�
     import org.springframework.stereotype.Component;
     import org.springframework.util.SerializationUtils;
 
-    @Component
-    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS) // (1)
+    @Component // (1)
+    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS) // (2)
     public class Cart implements Serializable {
 
         //省略
 
     }
 
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :widths: 10 90
+    :header-rows: 1
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | component-scanの対象となるように\ ``@Component``\ アノテーションを指定する
+    * - | (2)
+      - | Beanのスコープを\ ``"session"``\ にする。また、proxyMode 属性で\ ``"ScopedProxyMode.TARGET_CLASS"``\ を指定し、scoped-proxyを有効にする。
 
 また、component-scanの対象となるbase-packageをBean定義ファイルに指定する必要がある。
 しかし、本チュートリアルでは作成済みのBean定義ファイルにすでに以下の記述があるため、新たに記述を追加する必要はない。
@@ -1735,8 +1747,19 @@ Beanとして登録したいクラスに以下のアノテーションを追加�
 
 .. code-block:: jsp
 
-    <!-- (2) -->
+    <!-- (1) -->
     <context:component-scan base-package="com.example.session.domain" />
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :widths: 10 90
+    :header-rows: 1
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | component-scanの対象となるパッケージを指定する。
 
 
 フォームオブジェクトの作成
