@@ -211,7 +211,7 @@ Spring Securityは、以下のような流れでフォーム認証を行う。
              | ログアウト処理の詳細については、「\ :ref:`SpringSecurityAuthenticationLogout`\ 」を参照されたい。
 
     なお、 ``auto-config``\を定義しない場合は、認証機能が不要であっても、フォーム認証(\ ``<sec:form-login>``\ タグ)、もしくはBasic認証(\ ``<sec:http-basic>``\ タグ)を定義する必要がある。
-    これは、ひとつの\ ``SecurityFilterChain``\(\ ``<sec:http>``\)内には、ひとつ以上のAuthentication FilterのBean定義が必要であるという、Spring Securityの仕様をみたすためである
+    これは、ひとつの\ ``SecurityFilterChain``\(\ ``<sec:http>``\)内には、ひとつ以上のAuthentication FilterのBean定義が必要であるという、Spring Securityの仕様をみたすためである。
 
 
 .. _form-login-default-operation:
