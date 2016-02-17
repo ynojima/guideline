@@ -1723,7 +1723,7 @@ Beanとして登録したいクラスに以下のアノテーションを追加�
     @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS) // (2)
     public class Cart implements Serializable {
 
-        //省略
+        // omitted
 
     }
 
