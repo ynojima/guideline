@@ -1698,7 +1698,7 @@ component-scanを用いてセッションスコープのBeanを定義するに�
 Beanとして登録したいクラスに以下のアノテーションを追加すればよい。
 
 
-``/session-tutorial-complete-domain/src/main/java/com/example/session/domain/model/Cart.java``
+``/session-tutorial-init-domain/src/main/java/com/example/session/domain/model/Cart.java``
 
 .. code-block:: java
     :emphasize-lines: 17-18
@@ -1743,7 +1743,7 @@ Beanとして登録したいクラスに以下のアノテーションを追加�
 また、component-scanの対象となるbase-packageをBean定義ファイルに指定する必要がある。
 しかし、本チュートリアルでは作成済みのBean定義ファイルにすでに以下の記述があるため、新たに記述を追加する必要はない。
 
-``/session-tutorial-complete-domain/src/main/resources/META-INF/spring/session-tutorial-complete-domain.xml``
+``/session-tutorial-init-domain/src/main/resources/META-INF/spring/session-tutorial-init-domain.xml``
 
 .. code-block:: jsp
 
