@@ -275,7 +275,8 @@ URLの抽出
 基本的に１つのユースケースを1つのControllerで処理させる。
 
 最終的に、抽出されたURLは以下のように整理できる。
-
+作成済みと書かれているControllerは、初期資材として提供されるプロジェクトに存在している。
+また、作成済みと書かれているパスは、そのパスにアクセスした際の処理が前述の作成済みController内に既に書かれている。
 
 
  .. tabularcolumns::  |p{0.05\linewidth}|p{0.20\linewidth}|p{0.10\linewidth}|p{0.20\linewidth}|p{0.25\linewidth}|p{0.20\linewidth}|
@@ -336,38 +337,62 @@ URLの抽出
       - | GET
       - | /account/update?home
       - | AccountUpdateController
-      - | ホーム画面表示処理にリダイレクト
+      - | 商品一覧画面表示処理にリダイレクト
     * - | (9)
+      - | 商品一覧画面表示処理(デフォルト)
+      - | GET
+      - | /goods **(作成済み)**
+      - | GoodsController **(作成済み)**
+      - | /goods/showGoods
+    * - | (10)
+      - | 商品一覧画面表示処理(カテゴリ選択時)
+      - | GET
+      - | /goods?categoryId **(作成済み)**
+      - | GoodsController **(作成済み)**
+      - | /goods/showGoods
+    * - | (11)
+      - | 商品一覧画面表示処理(ページ選択時)
+      - | GET
+      - | /goods?page **(作成済み)**
+      - | GoodsController **(作成済み)**
+      - | /goods/showGoods
+    * - | (12)
+      - | 商品詳細画面表示処理
+      - | GET
+      - | /goods?{goodsId} **(作成済み)**
+      - | GoodsController **(作成済み)**
+      - | /goods/showGoodsDetail
+    * - | (13)
       - | 商品をカートへ追加処理
-      - | POST
+      - | GET
       - | /addToCart
       - | GoodsController **(作成済み)**
-      - | 商品一覧画面表示処理へ
-    * - | (10)
+      - | 商品一覧画面表示処理へリダイレクト
+    * - | (14)
       - | カート画面表示処理
       - | GET
       - | /cart
       - | CartController
       - | cart/viewCart
-    * - | (11)
+    * - | (15)
       - | 商品をカートから削除処理
       - | POST
       - | /cart
       - | CartController
       - | カート画面表示処理へリダイレクト
-    * - | (12)
+    * - | (16)
       - | 注文確認画面表示処理
       - | GET
       - | /order?confirm
       - | OrderController
       - | order/confirm
-    * - | (13)
+    * - | (17)
       - | 注文処理
       - | POST
       - | /order
       - | OrderController
       - | 注文完了画面表示処理へリダイレクト
-    * - | (14)
+    * - | (18)
       - | 注文完了画面表示処理
       - | GET
       - | /order?finish
@@ -401,27 +426,24 @@ URLの抽出
       - | アカウント更新情報
       - | アカウント名、メールアドレス、誕生日、郵便番号、住所、カード番号、有効期限、セキュリティコード
     * - | (2)
-      - | アカウント情報 **(作成済み)**
+      - | アカウント情報
       - | アカウント名、メールアドレス、パスワード、誕生日、郵便番号、住所、カード番号、有効期限、セキュリティコード
     * - | (3)
-      - | 選択カテゴリ **(作成済み)**
-      - | 選択カテゴリ
+      - | 商品検索情報
+      - | 選択カテゴリ、ページ番号
     * - | (4)
-      - | ページ番号 **(作成済み)**
-      - | ページ番号
-    * - | (5)
-      - | 商品情報 **(作成済み)**
+      - | 商品情報
       - | 商品名、単価、説明、(商品ID)
-    * - | (6)
+    * - | (5)
       - | カート登録情報
       - | 数量、(商品ID)
-    * - | (7)
+    * - | (6)
       - | カート情報
       - | 商品名、単価、数量、(商品ID)
-    * - | (8)
+    * - | (7)
       - | カート削除情報
       - | 商品IDリスト
-    * - | (9)
+    * - | (8)
       - | 注文情報
       - | 注文ID、注文日時、(アカウントID)、商品名、単価、数量
 
@@ -454,27 +476,24 @@ URLの抽出
       - | アカウント更新情報
       - | 画面①からの入力によって生成し、①～③を遷移する間は保持する。画面①～③以外に遷移した場合に破棄する。
     * - | (2)
-      - | アカウント情報 **(作成済み)**
+      - | アカウント情報
       - | ログイン時に生成し、ログアウト時に破棄する。
     * - | (3)
-      - | 選択カテゴリ **(作成済み)**
+      - | 商品検索情報
       - | 画面⑤に遷移した際に生成し、①～⑧を遷移する間は保持する。画面⑨に遷移した場合に破棄する。
     * - | (4)
-      - | ページ番号 **(作成済み)**
-      - | 画面⑤に遷移した際に生成し、①～⑧を遷移する間は保持する。画面⑨に遷移した場合に破棄する。
-    * - | (5)
-      - | 商品情報 **(作成済み)**
+      - | 商品情報
       - | 画面⑤または⑥に遷移する際に生成し、そのリクエスト間のみ保持する。
-    * - | (6)
+    * - | (5)
       - | カート登録情報
       - | 画面⑤または⑥からの入力によって生成し、そのリクエスト間のみ保持する。
-    * - | (7)
+    * - | (6)
       - | カート情報
       - | 画面⑤に遷移する際に空のオブジェクトを生成し、①～⑧を遷移する間は保持する。画面⑨に遷移した場合に破棄する。
-    * - | (8)
+    * - | (7)
       - | カート削除情報
       - | 画面⑦からの入力によって生成し、そのリクエスト間のみ保持する。
-    * - | (9)
+    * - | (8)
       - | 注文情報
       - | 画面⑨に遷移する際に生成し、そのリクエスト間のみ保持する。
 
@@ -488,7 +507,6 @@ URLの抽出
 
 ガイドラインには、まずセッションを使わない方針で検討して本当に必要なデータのみセッションに格納することを推奨するとの記述がある。
 本チュートリアルでもセッションを使わない方針で検討を行う。
-すでに作成済みのデータを除くと検討する必要があるデータは次に挙げる4点である。それぞれ個別に検討する。
 
 
 
@@ -501,6 +519,14 @@ URLの抽出
       - 検討内容
     * - | アカウント更新情報
       - | アカウント更新情報は3画面にまたがって保持されるため、hiddenを用いたデータの持ち回りが必要となる。しかし、アカウント更新情報にはカード番号等の重要情報が含まれる。hiddenを用いた持ち回りでは、重要情報がマスクされずHTMLのソースに書かれてしまうため、セキュリティ上問題となる。そのため、本チュートリアルではセッションを利用することを検討する。
+    * - | アカウント情報
+      - | ログイン後のすべての画面で保持されるため、hiddenを用いたデータの持ち回りが必要となる。この場合、作成するほぼすべての画面でデータ持ち回りの処理を記述しなければならない。そのため、画面の実装コストを抑えるためにも、本チュートリアルではセッションを利用することを検討する。
+    * - | 商品検索情報
+      - | 商品検索情報は8画面にまたがって保持されるため、hiddenを用いたデータの持ち回りが必要となる。この場合、作成するほぼすべての画面でデータ持ち回りの処理を記述しなければならない。そのため、画面の実装コストを抑えるためにも、本チュートリアルではセッションを利用することを検討する。
+    * - | 商品情報
+      - | カート削除情報は1画面でのみ利用されるため、リクエストスコープでデータを扱えばよい。
+    * - | カート登録情報
+      - | カート削除情報は1画面でのみ利用されるため、リクエストスコープでデータを扱えばよい。
     * - | カート情報
       - | カート情報は8画面にまたがって保持されるため、hiddenを用いたデータの持ち回りが必要となる。この場合、作成するほぼすべての画面でデータ持ち回りの処理を記述しなければならない。そのため、画面の実装コストを抑えるためにも、本チュートリアルではセッションを利用することを検討する。
     * - | カート削除情報
@@ -509,7 +535,7 @@ URLの抽出
       - | 注文情報は1画面でのみ利用されるため、リクエストスコープでデータを扱えばよい。
 
 
-以上から、アカウント更新情報とカート情報の2つについて、セッションを利用することを検討する。
+以上から、アカウント更新情報、アカウント情報、カート情報、商品検索情報の4つについて、セッションを利用することを検討する。
 
 次に、セッションを利用することのデメリットを検証する。
 この検証によって、デメリットの影響が無視できないと判断される場合はセッションは利用しない。
@@ -560,6 +586,8 @@ URLの抽出
 最終的にセッションに格納するデータは以下のとおりである。
 
 * アカウント変更情報
+* アカウント情報
+* 商品検索情報
 * カート情報
 
 
@@ -591,10 +619,10 @@ URLの抽出
 
 ガイドラインでは、データの利用場所に応じて2種類の実装方法を提供している。
 :doc:`../ArchitectureInDetail/SessionManagement` では、1つのController内で完結するデータかどうかによって利用方法を区別している。
-したがって、セッションに格納するデータのライフサイクルとURLマッピングによって実装方法が決定される。
+したがって、セッションに格納するデータのライフサイクルとURLマッピングを考慮して実装方法を決める必要がある。
+また、認証情報に紐ずくデータである場合は、Spring Securityの機能によってセッション管理を実現することが望ましい。
 
-本チュートリアルでは、アカウント変更情報は1つのController内でのみ使用され、カート情報は複数のControllerで使用される。
-最終的に整理した結果が以下である。
+これらを考慮して、セッションで扱うデータを整理した最終的な結果が以下である。
 
  .. tabularcolumns::  |p{0.30\linewidth}|p{0.30\linewidth}|p{0.40\linewidth}|
  .. list-table::
@@ -607,9 +635,23 @@ URLの抽出
     * - | アカウント変更情報
       - | 1つのController内でのみ利用される
       - | @SessionAttributeアノテーションを用いた方法
+    * - | アカウント情報
+      - | 複数のController間で利用される
+        | 認証処理で使用される
+      - | Spring Securityの機能を用いた方法
+    * - | 商品検索情報
+      - | 複数のController間で利用される
+      - | SpringのセッションスコープのBeanを用いた方法
     * - | カート情報
       - | 複数のController間で利用される
       - | SpringのセッションスコープのBeanを用いた方法
+
+
+アカウント情報は初期資材として提供されるプロジェクトですでに作成済みであり、
+Spring Securityの機能を利用して管理されている。
+そのため、本チュートリアルでは具体的な利用方法の説明は行わない。
+具体的な利用方法については :doc:`../Security/Authentication` を参照されたい。
+
 
 セッションを利用する際の考慮事項
 --------------------------------------------------------------------------------
@@ -1613,6 +1655,7 @@ JSPの作成
 
 
 
+
 カートアイテム登録機能を作成する
 --------------------------------------------------------------------------------
 
@@ -1634,7 +1677,7 @@ JSPの作成
     * - | 商品をカートへ追加処理
       - | POST
       - | /addToCart
-      - | 商品一覧画面表示処理へ
+      - | 商品一覧画面表示処理へリダイレクト
 
 
 セッションスコープBeanを定義
@@ -1683,7 +1726,6 @@ Beanとして登録したいクラスに以下のアノテーションを追加�
         //省略
 
     }
-
 
 
 また、component-scanの対象となるbase-packageをBean定義ファイルに指定する必要がある。
@@ -1755,7 +1797,7 @@ Controllerを作成する。
 ``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/GoodsController.java``
 
 .. code-block:: java
-    :emphasize-lines: 32-34, 59-77
+    :emphasize-lines: 30-32, 57-75
 
     package com.example.session.app.goods;
 
@@ -1771,7 +1813,6 @@ Controllerを作成する。
     import org.springframework.web.bind.annotation.PathVariable;
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RequestMethod;
-    import org.springframework.web.bind.annotation.SessionAttributes;
     import org.springframework.web.servlet.mvc.support.RedirectAttributes;
     import org.terasoluna.gfw.common.message.ResultMessages;
 
@@ -1782,58 +1823,57 @@ Controllerを作成する。
 
     @Controller
     @RequestMapping("goods")
-    @SessionAttributes(value = { "goodViewForm" })
     public class GoodsController {
 
-    	@Inject
-    	GoodsService goodsService;
+        @Inject
+        GoodsService goodsService;
 
-    	// (1)
-    	@Inject
-    	Cart cart;
+        // (1)
+        @Inject
+        Cart cart;
 
-    	@ModelAttribute(value = "goodViewForm")
-    	public GoodViewForm setUpCategoryId() {
-    		return new GoodViewForm();
-    	}
+        @ModelAttribute(value = "goodViewForm")
+        public GoodViewForm setUpCategoryId() {
+            return new GoodViewForm();
+        }
 
-    	@RequestMapping(value = "", method = RequestMethod.GET)
-    	String showGoods(GoodViewForm form, Pageable pageable, Model model) {
+        @RequestMapping(value = "", method = RequestMethod.GET)
+        String showGoods(GoodViewForm form, Pageable pageable, Model model) {
 
-    		Page<Goods> page = goodsService.findByCategoryId(form.getCategoryId(),
-    				pageable);
-    		model.addAttribute("page", page);
-    		return "goods/showGoods";
-    	}
+            Page<Goods> page = goodsService.findByCategoryId(form.getCategoryId(),
+                    pageable);
+            model.addAttribute("page", page);
+            return "goods/showGoods";
+        }
 
-    	@RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
-    	public String showGoodsDetail(@PathVariable String goodsId, Model model) {
+        @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
+        public String showGoodsDetail(@PathVariable String goodsId, Model model) {
 
-    		Goods goods = goodsService.findOne(goodsId);
-    		model.addAttribute(goods);
+            Goods goods = goodsService.findOne(goodsId);
+            model.addAttribute(goods);
 
-    		return "/goods/showGoodsDetail";
-    	}
+            return "/goods/showGoodsDetail";
+        }
 
-    	@RequestMapping(value = "/addToCart", method = RequestMethod.POST)
-    	public String addToCart(@Validated GoodAddForm form, BindingResult result,
-    			RedirectAttributes attributes) {
+        @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
+        public String addToCart(@Validated GoodAddForm form, BindingResult result,
+                RedirectAttributes attributes) {
 
-    		if (result.hasErrors()) {
-    			ResultMessages messages = ResultMessages.error()
-    					.add("e.st.go.5001");
-    			attributes.addFlashAttribute(messages);
-    			return "redirect:/goods";
-    		}
+            if (result.hasErrors()) {
+                ResultMessages messages = ResultMessages.error()
+                        .add("e.st.go.5001");
+                attributes.addFlashAttribute(messages);
+                return "redirect:/goods";
+            }
 
-    		Goods goods = goodsService.findOne(form.getGoodsId());
-    		CartItem cartItem = new CartItem();
-    		cartItem.setGoods(goods);
-    		cartItem.setQuantity(form.getQuantity());
-    		cart.add(cartItem); // (2)
+            Goods goods = goodsService.findOne(form.getGoodsId());
+            CartItem cartItem = new CartItem();
+            cartItem.setGoods(goods);
+            cartItem.setQuantity(form.getQuantity());
+            cart.add(cartItem); // (2)
 
-    		return "redirect:/goods";
-    	}
+            return "redirect:/goods";
+        }
     }
 
 
@@ -2086,6 +2126,271 @@ JSPもすでに作成されているため、以下に示すコードをbodyタ�
 ここまでの実装でカートオブジェクトをセッションに格納しているため、
 アカウント情報更新画面に遷移して戻ってきてもカートの情報は保存されている。
 
+
+商品検索情報を保持する仕組みを作成する
+--------------------------------------------------------------------------------
+
+ここまでの実装で商品をカートに追加することはできるようになった。
+しかし、商品追加後に遷移する画面は、常に「book」カテゴリの1ページ目となっている。
+
+本チュートリアルでは、選択カテゴリやページ番号といった商品検索情報は注文が完了するまで保持する仕様となっている。
+そのため、商品追加後やアカウント更新画面から戻ってきたきたときに前の状態に遷移するように実装を修正する。
+
+
+:ref:`development_policy` で説明したとおり、商品検索情報はセッションスコープのBeanとして管理する。
+
+以下に修正する画面の情報を示す。
+
+ .. tabularcolumns::  |p{0.30\linewidth}|p{0.15\linewidth}|p{0.25\linewidth}|p{0.30\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 30 15 25 30
+    
+    * - 処理名
+      - HTTPメソッド
+      - パス
+      - 画面
+    * - | 商品一覧画面表示処理(デフォルト)
+      - | GET
+      - | /goods **(作成済み)**
+      - | /goods/showGoods
+    * - | 商品一覧画面表示処理(カテゴリ選択時)
+      - | GET
+      - | /goods?categoryId **(作成済み)**
+      - | /goods/showGoods
+    * - | 商品一覧画面表示処理(ページ選択時)
+      - | GET
+      - | /goods?page **(作成済み)**
+      - | /goods/showGoods
+
+セッションスコープBeanを作成
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+商品検索情報を保持するセッションスコープBeanを作成する。
+カート情報と同様にcomponent-scanを使用してbeanを定義する。
+
+``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/SearchCriteria.java``
+
+.. code-block:: java
+
+    package com.example.session.app.goods;
+
+    import java.io.Serializable;
+
+    import org.springframework.context.annotation.Scope;
+    import org.springframework.context.annotation.ScopedProxyMode;
+    import org.springframework.stereotype.Component;
+
+    @Component // (1)
+    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS) // (2)
+    public class SearchCriteria implements Serializable {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        private int categoryId = 1;
+
+        private int page = 0;
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
+        }
+
+        public int getPage() {
+            return page;
+        }
+
+        public void setPage(int page) {
+            this.page = page;
+        }
+
+        public void clear() {
+            categoryId = 1;
+            page = 0;
+        }
+
+    }
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :widths: 10 90
+    :header-rows: 1
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | component-scanの対象となるように\ ``@Component``\ アノテーションを指定する
+    * - | (2)
+      - | Beanのスコープを\ ``"session"``\ にする。また、proxyMode 属性で\ ``"ScopedProxyMode.TARGET_CLASS"``\ を指定し、scoped-proxyを有効にする。
+
+
+また、component-scanの対象となるbase-packageをBean定義ファイルに指定する必要がある。 しかし、本チュートリアルでは作成済みのBean定義ファイルにすでに以下の記述があるため、新たに記述を追加する必要はない。
+
+``/session-tutorial-init-web/src/main/resources/META-INF/spring/spring-mvc.xml``
+
+.. code-block:: xml
+
+    <!-- (1) -->
+    <context:component-scan base-package="com.example.session.app" />
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :widths: 10 90
+    :header-rows: 1
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | component-scanの対象となるパッケージを指定する。
+
+
+Controllerの修正
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+商品検索情報をセッションで保持する、また、セッションで保持されている商品検索情報を利用するようにControllerを修正する。
+
+``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/GoodsController.java``
+
+.. code-block:: java
+    :emphasize-lines: 34-36, 43-73
+
+    package com.example.session.app.goods;
+
+    import javax.inject.Inject;
+
+    import org.springframework.data.domain.Page;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.ui.Model;
+    import org.springframework.validation.BindingResult;
+    import org.springframework.validation.annotation.Validated;
+    import org.springframework.web.bind.annotation.ModelAttribute;
+    import org.springframework.web.bind.annotation.PathVariable;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RequestMethod;
+    import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+    import org.terasoluna.gfw.common.message.ResultMessages;
+
+    import com.example.session.domain.model.Cart;
+    import com.example.session.domain.model.CartItem;
+    import com.example.session.domain.model.Goods;
+    import com.example.session.domain.service.goods.GoodsService;
+
+    @Controller
+    @RequestMapping("goods")
+    public class GoodsController {
+
+        @Inject
+        GoodsService goodsService;
+
+        @Inject
+        Cart cart;
+
+        // (1)
+        @Inject
+        SearchCriteria criteria;
+
+        @ModelAttribute(value = "goodViewForm")
+        public GoodViewForm setUpCategoryId() {
+            return new GoodViewForm();
+        }
+
+        // (2)
+        @RequestMapping(value = "", method = RequestMethod.GET)
+        String showGoods(GoodViewForm form, Model model) {
+            Pageable pageable = new PageRequest(criteria.getPage(), 3);
+            form.setCategoryId(criteria.getCategoryId());
+            return showGoods(pageable, model);
+        }
+
+        // (3)
+        @RequestMapping(value = "", method = RequestMethod.GET, params = "categoryId")
+        String changeCategoryId(GoodViewForm form, Pageable pageable, Model model) {
+            criteria.setPage(pageable.getPageNumber());
+            criteria.setCategoryId(form.getCategoryId());
+            return showGoods(pageable, model);
+        }
+
+        // (4)
+        @RequestMapping(value = "", method = RequestMethod.GET, params = "page")
+        String changePage(GoodViewForm form, Pageable pageable, Model model) {
+            criteria.setPage(pageable.getPageNumber());
+            form.setCategoryId(criteria.getCategoryId());
+            return showGoods(pageable, model);
+        }
+
+        // (5)
+        String showGoods(Pageable pageable, Model model) {
+            Page<Goods> page = goodsService.findByCategoryId(
+                    criteria.getCategoryId(), pageable);
+            model.addAttribute("page", page);
+            return "goods/showGoods";
+        }
+
+        @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
+        public String showGoodsDetail(@PathVariable String goodsId, Model model) {
+
+            Goods goods = goodsService.findOne(goodsId);
+            model.addAttribute(goods);
+
+            return "/goods/showGoodsDetail";
+        }
+
+        @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
+        public String addToCart(@Validated GoodAddForm form, BindingResult result,
+                RedirectAttributes attributes) {
+
+            if (result.hasErrors()) {
+                ResultMessages messages = ResultMessages.error()
+                        .add("e.st.go.5001");
+                attributes.addFlashAttribute(messages);
+                return "redirect:/goods";
+            }
+
+            Goods goods = goodsService.findOne(form.getGoodsId());
+            CartItem cartItem = new CartItem();
+            cartItem.setGoods(goods);
+            cartItem.setQuantity(form.getQuantity());
+            cart.add(cartItem);
+
+            return "redirect:/goods";
+        }
+    }
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :widths: 10 90
+    :header-rows: 1
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | セッションスコープのBeanをDIコンテナから取得する。
+    * - | (2)
+      - | 通常の商品一覧画面表示処理の前処理を行う。セッションに格納されている商品カテゴリをフォームに、ページ番号を\ ``pageable``\ に設定する。商品カテゴリをフォームに設定するのは、セレクトボックスで表示される商品カテゴリを指定するためである。
+    * - | (3)
+      - | カテゴリが変更された時の商品一覧画面表示処理の前処理を行う。入力された商品カテゴリをセッションに格納する。ページ番号はデフォルトの1ページ目を\ ``pageable``\ に指定する。
+    * - | (4)
+      - | ページが変更された時の商品一覧画面表示処理の前処理を行う。入力されたページ番号をセッションに格納する。セッションに格納されている商品カテゴリをフォームに設定する。
+    * - | (5)
+      - | 共通部分を扱う。セッションで管理されている商品カテゴリ、前処理で取得した\ ``pageable``\ をもとに商品を検索する。
+
+
+動作確認
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ここまでの実装で、商品検索情報を保持することができるようになっている。
+例えば、「music」カテゴリの2ページ目で商品をカートに追加した際の遷移先がもとの「music」カテゴリの2ページ目のままとなる。
+また、同画面から「Account Update」ボタンを押してアカウント更新画面に遷移し、アカウント更新画面の「home」ボタンを押して戻ってきた際の遷移先がもとの「music」カテゴリの2ページ目のままとなる。
 
 
 カートアイテム削除機能を作成する
@@ -2389,6 +2694,7 @@ Controllerを作成する。
     import org.terasoluna.gfw.common.exception.BusinessException;
     import org.terasoluna.gfw.common.message.ResultMessages;
 
+    import com.example.session.app.goods.SearchCriteria;
     import com.example.session.domain.model.Cart;
     import com.example.session.domain.model.Order;
     import com.example.session.domain.service.order.EmptyCartOrderException;
@@ -2400,50 +2706,53 @@ Controllerを作成する。
     @RequestMapping("order")
     public class OrderController {
 
-    	@Inject
-    	OrderService orderService;
+        @Inject
+        OrderService orderService;
 
-    	// (1)
-    	@Inject
-    	Cart cart;
+        // (1)
+        @Inject
+        Cart cart;
 
-    	@RequestMapping(method = RequestMethod.GET, params = "confirm")
-    	String confirm(@AuthenticationPrincipal AccountDetails userDetails,
-    			Model model) {
-    		if (cart.isEmpty()) {
-    			ResultMessages messages = ResultMessages.error()
-    					.add("e.st.od.5001");
-    			model.addAttribute(messages);
-    			return "cart/viewCart";
-    		}
-    		model.addAttribute("account", userDetails.getAccount());
-    		model.addAttribute("signature", cart.calcSignature());
-    		return "order/confirm";
-    	}
+        @Inject
+        SearchCriteria criteria;
 
-    	@RequestMapping(method = RequestMethod.POST)
-    	String order(@AuthenticationPrincipal AccountDetails userDetails,
-    			@RequestParam String signature, RedirectAttributes attributes) {
-    		// (2)
-    		Order order = orderService.purchase(userDetails.getAccount(), cart,
-    				signature);
-    		attributes.addFlashAttribute(order);
-    		return "redirect:/order?finish";
-    	}
+        @RequestMapping(method = RequestMethod.GET, params = "confirm")
+        String confirm(@AuthenticationPrincipal AccountDetails userDetails,
+                Model model) {
+            if (cart.isEmpty()) {
+                ResultMessages messages = ResultMessages.error()
+                        .add("e.st.od.5001");
+                model.addAttribute(messages);
+                return "cart/viewCart";
+            }
+            model.addAttribute("account", userDetails.getAccount());
+            model.addAttribute("signature", cart.calcSignature());
+            return "order/confirm";
+        }
 
-    	@RequestMapping(method = RequestMethod.GET, params = "finish")
-    	String finish() {
-    		return "order/finish";
-    	}
+        @RequestMapping(method = RequestMethod.POST)
+        String order(@AuthenticationPrincipal AccountDetails userDetails,
+                @RequestParam String signature, RedirectAttributes attributes) {
+            Order order = orderService.purchase(userDetails.getAccount(), cart,
+                    signature); // (2)
+            attributes.addFlashAttribute(order);
+            criteria.clear(); // (3)
+            return "redirect:/order?finish";
+        }
 
-    	// (3)
-    	@ExceptionHandler({ EmptyCartOrderException.class,
-    			InvalidCartOrderException.class })
-    	@ResponseStatus(HttpStatus.CONFLICT)
-    	ModelAndView handleOrderException(BusinessException e) {
-    		return new ModelAndView("common/error/businessError").addObject(e
-    				.getResultMessages());
-    	}
+        @RequestMapping(method = RequestMethod.GET, params = "finish")
+        String finish() {
+            return "order/finish";
+        }
+
+        // (4)
+        @ExceptionHandler({ EmptyCartOrderException.class,
+                InvalidCartOrderException.class })
+        @ResponseStatus(HttpStatus.CONFLICT)
+        ModelAndView handleOrderException(BusinessException e) {
+            return new ModelAndView("common/error/businessError").addObject(e
+                    .getResultMessages());
+        }
     }
 
 
@@ -2463,6 +2772,8 @@ Controllerを作成する。
         | また、今回のアプリケーションでは、セッションスコープのBeanにある情報をBean破棄後に遷移する画面で使用する。
         | そのため、セッションスコープのBeanにあった情報を別のオブジェクトに入れなおしてフラッシュスコープに追加している。
     * - | (3)
+      - | 商品検索情報をデフォルト状態に戻している。
+    * - | (4)
       - | ServiceのメソッドでBusiness例外が発生する可能性があるため、このメソッドでエラーハンドリングを行っている。
         | これにより、Business例外が発生した場合、指定したエラー画面に遷移することになる。
 
