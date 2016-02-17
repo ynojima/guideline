@@ -140,7 +140,6 @@ PDFファイルのダウンロード
   </dependencies>
   
 
-
 \
     .. note::
         itextのバージョンはSpring IO Platformにて定義されている。
@@ -320,9 +319,18 @@ Excelファイルのダウンロード
           <groupId>org.apache.poi</groupId>
           <artifactId>poi-ooxml</artifactId>
       </dependency>
+      <exclusions>
+          <exclusion>
+              <groupId>stax</groupId>
+              <artifactId>stax-api</artifactId>
+          </exclusion>
+      </exclusions>
   </dependencies>
+  
+\
+    .. note::
+        poi-ooxmlが依存しているstax-apiはJava SEより標準で提供されるようになったため、不要なライブラリである。また、ライブラリの競合が発生する可能性があることから、 \ ``<exclusions>``\ 要素を追加し、当該ライブラリがアプリケーションに含まれないよう考慮する必要がある。
 
-        
 \
     .. note::
         poi-ooxmlのバージョンはSpring IO Platformにて定義されているものを利用するため、設定例では <version> を省略している。
