@@ -357,13 +357,12 @@ Ajaxを使ってリクエストを送信する場合は、HTMLのmetaタグと�
 
 .. _csrf_token-error-response:
 
-トークンチェックエラー時のレスポンス
+トークンチェックエラー時の遷移先の制御
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CSRFトークンチェックでエラーが発生した場合、Spring Securityは\ ``AccessDeniedHandler``\
-インタフェースを使用してエラーのレスポンスを行う。
+トークンチェックエラー時の遷移先の制御を行うためには、CSRFトークンチェックエラーに発生する例外である \ ``AccessDeniedException``\ をハンドリングして、その例外に対応した遷移先を指定する。
 
-CSRFのトークンチェック処理では、エラーの内容に応じて以下の2つの例外を使用する。
+CSRFのトークンチェックエラー時に発生する例外は以下の通りである。
 
 .. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
 .. list-table:: **CSRFトークンチェックで使用される例外クラス**
@@ -373,11 +372,13 @@ CSRFのトークンチェック処理では、エラーの内容に応じて以�
     * - クラス名
       - 説明
     * - | \ ``InvalidCsrfTokenException``\
-      - | クライアントから送られたトークン値と、サーバー側で保持しているトークン値が一致しない場合に使用する例外クラス。
+      - | クライアントから送られたトークン値と、サーバー側で保持しているトークン値が一致しない場合に使用する例外クラス（主に不正なリクエスト）。
     * - | \ ``MissingCsrfTokenException``\
-      - | サーバー側にトークン値が保存されていない場合に使用する例外クラス。
+      - | サーバー側にトークン値が保存されていない場合に使用する例外クラス（主にセッション切れ）。
 
-CSRFトークンチェックエラー時に専用のエラー画面に遷移させたい場合は、以下のようなBean定義を行う。(以下の定義例は、`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ からの抜粋である)
+\ ``DelegatingAccessDeniedHandler``\クラスを使用して上記の例外をハンドリングし、それぞれに \ ``AccessDeniedHandler``\ インタフェースの実装クラスを割り当てることで、例外毎の遷移先を設定することが可能である。
+
+CSRFトークンチェックエラー時に専用のエラー画面（JSP）に遷移させたい場合は、以下のようなBean定義を行う。(以下の定義例は、`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ からの抜粋である)
 
 * spring-security.xmlの定義例
 
@@ -413,9 +414,10 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
                 </entry>
             </map>
         </constructor-arg>
-        <constructor-arg index="1">  <!-- (6) -->
+        <!-- (6) -->
+        <constructor-arg index="1">
             <bean
-                class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (7) -->
+                class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
                 <property name="errorPage"
                     value="/WEB-INF/views/common/error/accessDeniedError.jsp" />
             </bean>
@@ -431,24 +433,23 @@ CSRFトークンチェックエラー時に専用のエラー画面に遷移さ�
    * - 項番
      - 説明
    * - | (1)
-     - | \ ``<sec:access-denied-handler>``\ タグのref属性に、Exception毎に遷移先を切り替えるAccessDeniedHandlerのBean名を指定する。
-       | エラー時遷移先が全て同じ画面である場合は ``error-page`` 属性に遷移先のjspを指定すればよい。
-       | Spring Securityの機能でハンドリングしない場合は、\ :ref:`SpringSecurityAuthorizationOnError`\ を参照されたい。
+     - | \ ``<sec:access-denied-handler>``\ タグのref属性に、Exception毎の制御を行うための\ ``AccessDeniedHandler``\ のBean名を指定する。
+       | エラー時遷移先が全て同じ画面である場合は ``error-page`` 属性に遷移先を指定すればよい。
+       | \ ``<sec:access-denied-handler>``\でハンドリングしない場合は、\ :ref:`SpringSecurityAuthorizationOnError`\ を参照されたい。
    * - | (2)
-     - | Spring Securityから提供されている ``DelegatingAccessDeniedHandler`` を使用して、Exceptionと ``AccessDeniedHandler`` のマッピングを行う。
+     - | \ ``DelegatingAccessDeniedHandler``\ を使用して、発生した例外（ \ ``AccessDeniedException``\ サブクラス ） と例外ハンドラ（ \ ``AccessDeniedHandler``\ 実装クラス ）を定義する。
    * - | (3)
-     - | コンストラクタの第1引数でデフォルト以外のException（\ ``AccessDeniedException``\ を継承したException）の種類毎に表示を変更する画面をMap形式で設定する。
+     - | コンストラクタの第1引数で、個別に遷移先を指定したい例外（ \ ``AccessDeniedException``\ サブクラス ）と、対応する例外ハンドラ（ \ ``AccessDeniedHandler``\ 実装クラス ）をMap形式で定義する。
    * - | (4)
-     - | keyに \ ``AccessDeniedException``\ を継承したExceptionを指定する。
-       | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
-       | propertyのnameにerrorPageを指定し、valueに表示するviewを指定する。
+     - | \ ``key``\ に \ ``AccessDeniedException``\ のサブクラスを指定する。
+       | \ ``value`` として、\ ``AccessDeniedHandler``\ の実装クラスである、 \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
+       | \ ``property``\ の \ ``name``\ に \ ``errorPage``\ を指定し、\ ``value``\ に表示するviewを指定する。
        | マッピングするExceptionに関しては、:ref:`csrf_token-error-response` を参照されたい。
    * - | (5)
-     - | (4)とExceptionの種類が違う場合に表示の変更を定義する。
+     - | (4)のExceptionと異なるExceptionを制御したい場合に定義する。
+       | 本例では \ ``InvalidCsrfTokenException``\ 、\ ``MissingCsrfTokenException``\ それぞれに異なる遷移先を設定している。
    * - | (6)
-     - | コンストラクタの第2引数でデフォルト（\ ``AccessDeniedException``\ とコンストラクタの第1引数で指定していない\ ``AccessDeniedException``\を継承したException）の場合のviewを指定する。
-   * - | (7)
-     - | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
+     - | コンストラクタの第2引数で、デフォルト例外（(4)(5)で指定していない \ ``AccessDeniedException``\のサブクラス）時の例外ハンドラ（ \ ``AccessDeniedHandler``\ 実装クラス ）と遷移先を指定する。
 
 
 .. note:: **無効なセッションを使ったリクエストの検知**
