@@ -1682,7 +1682,7 @@ initdbモジュールの構成
       - データベースを初期化するためのSQLファイルを格納するためのディレクトリ。
 
         作成時点では、空のディレクトリである。
-        作成例については、`サンプルアプリケーションのinitdbプロジェクト <https://github.com/terasolunaorg/terasoluna-tourreservation-mybatis3/tree/master/terasoluna-tourreservation-initdb>`_ を参照されたい。
+        作成例については、`サンプルアプリケーションのinitdbプロジェクト <https://github.com/terasolunaorg/terasoluna-tourreservation-mybatis3/tree/master/terasoluna-tourreservation-initdb/src/main/sqls/>`_ を参照されたい。
 
 .. note::
 
