@@ -1889,12 +1889,12 @@ ER図
 
            @Override
             public void authenticationFailure(String username) { // (1)
-                FailedAuthentication failureEvents = new FailedAuthentication();
-                failureEvents.setUsername(username);
-                failureEvents.setAuthenticationTimestamp(dateFactory.newTimestamp()
-                        .toLocalDateTime());
-                
                 if (accountSharedService.exists(username)){
+                    FailedAuthentication failureEvents = new FailedAuthentication();
+                    failureEvents.setUsername(username);
+                    failureEvents.setAuthenticationTimestamp(dateFactory.newTimestamp()
+                            .toLocalDateTime());
+                
                     failedAuthenticationRepository.create(failureEvents);
                 }
             }
