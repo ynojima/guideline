@@ -4202,8 +4202,8 @@ spring-security.xml
 
         <sec:http pattern="/resources/**" security="none"/>
         <sec:http>
-            <sec:form-login/>
-            <sec:logout/>
+            <sec:form-login />
+            <sec:logout />
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />

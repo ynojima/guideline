@@ -660,14 +660,13 @@ REST API用のSpring Securityの定義追加
         <sec:http
             pattern="/api/v1/**"
             create-session="stateless">
-            <sec:form-login/>
-            <sec:logout/>
+            <sec:http-basic />
             <sec:csrf disabled="true"/>
         </sec:http>
 
         <sec:http>
-            <sec:form-login/>
-            <sec:logout/>
+            <sec:form-login />
+            <sec:logout />
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />

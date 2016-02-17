@@ -5336,8 +5336,7 @@ RESTful Web Service向けのリクエストに対して、CSRF対策の処理が
     <sec:http
         pattern="/api/v1/**"
         create-session="stateless">
-        <sec:form-login/>
-        <sec:logout/>
+        <sec:http-basic/>
         <sec:csrf disabled="true"/>
     </sec:http>
 

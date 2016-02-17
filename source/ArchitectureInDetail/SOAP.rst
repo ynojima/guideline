@@ -749,7 +749,7 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
 
     <sec:http pattern="/ws/**"
               create-session="stateless">
-       <sec:csrf disabled="true">
+       <sec:csrf disabled="true" />
        <sec:http-basic />  <!-- (1) -->
        <sec:logout />
     </sec:http>
@@ -850,9 +850,8 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
     <!-- (1) -->
     <sec:http pattern="/ws/**"
         create-session="stateless">
-        <sec:form-login />
-        <sec:logout />
-        <sec:csrf disabled="true">
+        <sec:http-basic />
+        <sec:csrf disabled="true" />
     </sec:http>
 
 .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
