@@ -1121,7 +1121,7 @@ spring-security.xml
 作成したブランクプロジェクトの\ ``src/main/resources/META-INF/spring/spring-security.xml``\ は、以下のような設定となっている。
 
 .. code-block:: xml
-    :emphasize-lines: 9,12,20,22,24,26,30,33,66
+    :emphasize-lines: 9,12,14,16,18,20,24,27,60
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -1135,17 +1135,21 @@ spring-security.xml
         <sec:http pattern="/resources/**" security="none"/>
         <sec:http>
             <!-- (2) -->
-            <sec:access-denied-handler ref="accessDeniedHandler"/>
+            <sec:form-login/>
             <!-- (3) -->
-            <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
+            <sec:logout/>
             <!-- (4) -->
+            <sec:access-denied-handler ref="accessDeniedHandler"/>
+            <!-- (5) -->
+            <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
+            <!-- (6) -->
             <sec:session-management />
         </sec:http>
 
-        <!-- (5) -->
+        <!-- (7) -->
         <sec:authentication-manager></sec:authentication-manager>
 
-        <!-- (2) -->
+        <!-- (4) -->
         <!-- Change View for CSRF or AccessDenied -->
         <bean id="accessDeniedHandler"
             class="org.springframework.security.web.access.DelegatingAccessDeniedHandler">
@@ -1178,7 +1182,7 @@ spring-security.xml
             </constructor-arg>
         </bean>
 
-        <!-- (3) -->
+        <!-- (5) -->
         <!-- Put UserID into MDC -->
         <bean id="userIdMDCPutFilter" class="org.terasoluna.gfw.security.web.logging.UserIdMDCPutFilter">
         </bean>
@@ -1196,8 +1200,13 @@ spring-security.xml
       - \ ``<sec:http>``\ タグを使用してHTTPアクセスに対して認証・認可を制御する。
 
         ブランクプロジェクトのデフォルトの設定では、静的リソース(js, css, imageファイルなど)にアクセスするためのURLを認証・認可の対象外にしている。
-
-    * - | (2)
+    * - \ (2)
+      - \ ``<sec:form-login>``\ タグを定義し、フォーム認証を使用したログインに関する設定行う。
+        \ 使用方法については、「:ref:`form-login`」 を参照されたい
+    * - \ (3)
+      - \ ``<sec:logout>``\ タグ を定義し、ログアウトに関する設定を行う。
+        \ 使用方法については、「:ref:`SpringSecurityAuthenticationLogout`」 を参照されたい。
+    * - | (4)
       - \ ``<sec:access-denied-handler>``\ タグを使用して、アクセスを拒否した後の動作を制御する。
 
         ブランクプロジェクトのデフォルトの設定では、
@@ -1207,14 +1216,14 @@ spring-security.xml
         * 認可処理でアクセスが拒否された場合(上記以外の\ ``AccessDeniedException``\ が発生した場合)の遷移先
 
         が設定済みである。
-    * - | (3)
+    * - | (5)
       - Spring Securityの認証ユーザ名をロガーのMDCに格納するためのサーブレットフィルタを有効化する。
         この設定を有効化すると、ログに認証ユーザ名が出力されるため、トレーサビリティを向上することができる。
-    * - | (4)
+    * - | (6)
       - \ ``<sec:session-management>``\ タグを使用して、Spring Securityのセッション管理方法を制御する。
 
         使用方法については、「:ref:`SpringSecuritySessionManagementSetup`」を参照されたい。
-    * - | (5)
+    * - | (7)
       - \ ``<sec:authentication-manager>``\ タグを使用して、認証処理を制御する。
 
         使用方法については、「:ref:`AuthenticationProviderConfiguration`」を参照されたい。
