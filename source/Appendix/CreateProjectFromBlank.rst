@@ -47,13 +47,13 @@
     * - OS
       - Windows 7
     * - JVM
-      - `Java <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ 1.7
+      - `Java <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ 1.8
     * - IDE
-      - `Spring Tool Suite <http://spring.io/tools/sts/all>`_ 3.6.3.RELEASE (以降「STS」と呼ぶ)
+      - `Spring Tool Suite <http://spring.io/tools/sts/all>`_ 3.6.4.RELEASE (以降「STS」と呼ぶ)
     * - Build Tool
-      - `Apache Maven <http://maven.apache.org/download.cgi>`_ 3.2.5 (以降「Maven」と呼ぶ)
+      - `Apache Maven <http://maven.apache.org/download.cgi>`_ 3.3.9 (以降「Maven」と呼ぶ)
     * - Application Server
-      - `Pivotal tc Server <https://network.pivotal.io/products/pivotal-tcserver>`_ Developer Edition v3.0 (STSに同封)
+      - `Pivotal tc Server <https://network.pivotal.io/products/pivotal-tcserver>`_ Developer Edition v3.1 (STSに同封)
 
 |
 
@@ -135,7 +135,7 @@
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis3-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.1.0.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT

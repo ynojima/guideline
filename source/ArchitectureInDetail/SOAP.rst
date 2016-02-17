@@ -1533,7 +1533,7 @@ WebServiceインターフェースを実装したプロキシクラスを生成�
 
         .. Note:: **wsdlDocumentResourceへのWSDLファイルのURL以外の指定**
 
-            上記の例では、SOAPサーバがWSDLファイルを公開している前提である。\ ``classpath:``\ や\ ``file:``\ プレフィックスを使用して指定することで静的ファイルを指定することもできる。指定できる文字列は、\ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-resourceloader>`_\ を参照されたい。
+            上記の例では、SOAPサーバがWSDLファイルを公開している前提である。\ ``classpath:``\ や\ ``file:``\ プレフィックスを使用して指定することで静的ファイルを指定することもできる。指定できる文字列は、\ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/resources.html#resources-resourceloader>`_\ を参照されたい。
 
 
 .. Note:: **エンドポイントアドレスの上書き指定**

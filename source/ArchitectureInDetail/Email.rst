@@ -194,10 +194,10 @@ JavaMailSenderの設定方法
       - | \ `Apache Tomcat 8 User Guide(JNDI Resources HOW-TO) <http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions>`_\ (JavaMail Sessions)を参照されたい。
     * - 2.
       - Oracle WebLogic Server 12c
-      - \ `Oracle WebLogic Server 12.1.3.0 Documentation <http://docs.oracle.com/middleware/1213/wls/WLACH/taskhelp/mail/CreateMailSessions.html>`_\ を参照されたい。
+      - \ `Oracle WebLogic Server 12.2.1.0 Documentation <http://docs.oracle.com/middleware/1221/wls/WLACH/taskhelp/mail/CreateMailSessions.html>`_\ を参照されたい。
     * - 3.
       - IBM WebSphere Application Server Version 8.5
-      - \ `WebSphere Application Server Version 8.5.5 documentation <http://www-01.ibm.com/support/knowledgecenter/SSEQTP_8.5.5/com.ibm.websphere.base.doc/ae/tmai_jcmp.html>`_\ を参照されたい。
+      - \ `WebSphere Application Server Version 8.5.5 documentation <https://www-01.ibm.com/support/knowledgecenter/SSD28V_8.5.5/com.ibm.websphere.wlp.core.doc/ae/twlp_admin_javamail.html>`_\ を参照されたい。
     * - 4.
       - Red Hat JBoss Enterprise Application Platform Version 6.4
       - \ `Product Documentation <https://access.redhat.com/documentation/en-US/JBoss_Enterprise_Application_Platform/6.4/html/Administration_and_Configuration_Guide/chap-Mail_subsystem.html>`_\ を参照されたい。
@@ -763,18 +763,18 @@ HTMLメールの送信
       - 例外クラス
       - 発生条件
     * - 1.
-      - `MailAuthenticationException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailAuthenticationException.html>`_
+      - `MailAuthenticationException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailAuthenticationException.html>`_
       - | 認証失敗時に発生する。
     * - 2.
-      - `MailParseException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailParseException.html>`_
+      - `MailParseException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailParseException.html>`_
       - | メールメッセージのプロパティに不正な値が設定されている場合に発生する。
     * - 3.
-      - `MailPreparationException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailPreparationException.html>`_
+      - `MailPreparationException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailPreparationException.html>`_
       - | メールメッセージを作成中に想定外のエラーが起きた場合に発生する。
           想定外のエラーとしては、例えばテンプレートライブラリで発生するエラーといったものがある。
         | \ ``MimeMessagePreparator``\ で発生した例外が\ ``MailPreparationException``\ にラップされてスローされる。
     * - 4.
-      - `MailSendException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailSendException.html>`_
+      - `MailSendException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailSendException.html>`_
       - | メールの送信エラーが起きた場合に発生する。
 
 .. note::
@@ -860,7 +860,7 @@ FreeMarkerを使用したメール本文の作成
 
     .. note::
 
-       上記以外の設定については、\ `FreeMarkerConfigurationFactoryBeanのJavaDoc <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/ui/freemarker/FreeMarkerConfigurationFactoryBean.html>`_\ を参照されたい。
+       上記以外の設定については、\ `FreeMarkerConfigurationFactoryBeanのJavaDoc <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/ui/freemarker/FreeMarkerConfigurationFactoryBean.html>`_\ を参照されたい。
        また、FreeMarker自体の設定については、\ `FreeMarker Manual (Programmer's Guide / The Configuration) <http://freemarker.org/docs/pgui_config.html>`_\ を参照されたい。
 
 * メール本文のテンプレートファイルを作成する。
