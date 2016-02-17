@@ -363,8 +363,6 @@ Ajaxを使ってリクエストを送信する場合は、HTMLのmetaタグと�
 CSRFトークンチェックでエラーが発生した場合、Spring Securityは\ ``AccessDeniedHandler``\
 インタフェースを使用してエラーのレスポンスを行う。
 
-CSRFトークンチェックでエラーが発生した際に、専用のエラーページに遷移させたい場合は、Spring Securityから提供されている\ ``DelegatingAccessDeniedHandler``\ クラスを利用して、例外毎に\ ``AccessDeniedHandler``\ インタフェースの実装クラスを指定する。
-
 CSRFのトークンチェック処理では、エラーの内容に応じて以下の2つの例外を使用する。
 
 .. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
@@ -379,40 +377,93 @@ CSRFのトークンチェック処理では、エラーの内容に応じて以�
     * - | \ ``MissingCsrfTokenException``\
       - | サーバー側にトークン値が保存されていない場合に使用する例外クラス。
 
-CSRFトークンチェックエラー時に専用のエラー画面に遷移させたい場合のBean定義は「 :ref:`認可機能とCSRF対策の連動<SpringSecurityAuthorizationOnErrorWithCSRF>` 」を参照されたい。
+CSRFトークンチェックエラー時に専用のエラー画面に遷移させたい場合は、以下のようなBean定義を行う。(以下の定義例は、`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ からの抜粋である)
 
-.. _csrf_403-webxml-setting:
+* spring-security.xmlの定義例
 
-.. tip:: **<sec:access-denied-handler>の設定を省略した場合のエラーハンドリングについて**
+.. code-block:: xml
 
-  web.xmlに以下の設定を行うことで、任意のページに遷移させることができる。
+    <sec:http>
+        <!-- omitted -->
+        <sec:access-denied-handler ref="accessDeniedHandler"/>  <!-- (1) -->
+        <!-- omitted -->
+    </sec:http>
 
-    * web.xmlの設定例
+    <bean id="accessDeniedHandler"
+        class="org.springframework.security.web.access.DelegatingAccessDeniedHandler">  <!-- (2) -->
+        <constructor-arg index="0">  <!-- (3) -->
+            <map>
+                <!-- (4) -->
+                <entry
+                    key="org.springframework.security.web.csrf.InvalidCsrfTokenException">
+                    <bean
+                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                        <property name="errorPage"
+                            value="/WEB-INF/views/common/error/invalidCsrfTokenError.jsp" />
+                    </bean>
+                </entry>
+                <!-- (5) -->
+                <entry
+                    key="org.springframework.security.web.csrf.MissingCsrfTokenException">
+                    <bean
+                        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                        <property name="errorPage"
+                            value="/WEB-INF/views/common/error/missingCsrfTokenError.jsp" />
+                    </bean>
+                </entry>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1">  <!-- (6) -->
+            <bean
+                class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  <!-- (7) -->
+                <property name="errorPage"
+                    value="/WEB-INF/views/common/error/accessDeniedError.jsp" />
+            </bean>
+        </constructor-arg>
+    </bean>
 
-    .. code-block:: xml
 
-        <error-page>
-            <error-code>403</error-code>  <!-- (1) -->
-            <location>/WEB-INF/views/common/error/accessDeniedError.jsp</location>  <!-- (2) -->
-        </error-page>
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
 
-    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-    .. list-table::
-       :header-rows: 1
-       :widths: 10 90
+   * - 項番
+     - 説明
+   * - | (1)
+     - | \ ``<sec:access-denied-handler>``\ タグのref属性に、Exception毎に遷移先を切り替えるAccessDeniedHandlerのBean名を指定する。
+       | エラー時遷移先が全て同じ画面である場合は ``error-page`` 属性に遷移先のjspを指定すればよい。
+       | Spring Securityの機能でハンドリングしない場合は、\ :ref:`SpringSecurityAuthorizationOnError`\ を参照されたい。
+   * - | (2)
+     - | Spring Securityから提供されている ``DelegatingAccessDeniedHandler`` を使用して、Exceptionと ``AccessDeniedHandler`` のマッピングを行う。
+   * - | (3)
+     - | コンストラクタの第1引数でデフォルト以外のException（\ ``AccessDeniedException``\ を継承したException）の種類毎に表示を変更する画面をMap形式で設定する。
+   * - | (4)
+     - | keyに \ ``AccessDeniedException``\ を継承したExceptionを指定する。
+       | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
+       | propertyのnameにerrorPageを指定し、valueに表示するviewを指定する。
+       | マッピングするExceptionに関しては、:ref:`csrf_token-error-response` を参照されたい。
+   * - | (5)
+     - | (4)とExceptionの種類が違う場合に表示の変更を定義する。
+   * - | (6)
+     - | コンストラクタの第2引数でデフォルト（\ ``AccessDeniedException``\ とコンストラクタの第1引数で指定していない\ ``AccessDeniedException``\を継承したException）の場合のviewを指定する。
+   * - | (7)
+     - | 実装クラスとして、Spring Securityで用意されている \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` を指定する。
 
-       * - 項番
-         - 説明
-       * - | (1)
-         - | error-code要素に、ステータスコード403を設定する。
-       * - | (2)
-         - | location要素に、遷移先のパスを設定する。
+
+.. note:: **無効なセッションを使ったリクエストの検知**
+
+    セッション管理機能の「:ref:`SpringSecuritySessionDetectInvalidSession`」処理を有効にしている場合は、\ ``MissingCsrfTokenException``\ に対して「:ref:`SpringSecuritySessionDetectInvalidSession`」処理と連動する\ ``AccessDeniedHandler``\ インタフェースの実装クラスが適用される。
+
+    そのため、\ ``MissingCsrfTokenException``\ が発生すると、「:ref:`SpringSecuritySessionDetectInvalidSession`」処理を有効化する際に指定したパス(\ ``invalid-session-url``\ )にリダイレクトする。
 
 .. note::
 
   **ステータスコード403以外を返却したい場合**
 
-  リクエストに含まれるCSRFトークンが一致しない場合、ステータスコード403以外を返却したい場合は、\ ``org.springframework.security.web.access.AccessDeniedHandler``\ インタフェースを実装した、独自のAccessDeniedHandlerを作成する必要がある。
+  リクエストに含まれるCSRFトークンが一致しない場合に、ステータスコード403以外を返却したい場合は、\ ``org.springframework.security.web.access.AccessDeniedHandler``\ インタフェースを実装した、独自のAccessDeniedHandlerを作成する必要がある。
+
+|
 
 Appendix
 --------------------------------------------------------------------------------
