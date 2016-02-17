@@ -2953,6 +2953,7 @@ Service及びアプリケーション層を作成後にAPサーバーを起動�
     date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Releasing JDBC Connection [net.sf.log4jdbc.ConnectionSpy@4e53de7c] after transaction
     date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] TodoController.list(Model)-> view=todo/list, model={todoForm=todo.app.todo.TodoForm@2a075f1d, todos=[], org.springframework.validation.BindingResult.todoForm=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
     date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] TodoController.list(Model)-> 756,709,153 ns
+
 |
 
 .. _using_SpringDataJPA:
