@@ -789,14 +789,13 @@ ER図
 
   .. tip::
 
-     isInitialPassword および isCurrentPasswordExpired に付与されている @Cacheable は Spring の Cache Abstraction 機能を使用するためのアノテーションである。
-     @Cacheable アノテーションを付与することで、メソッドの引数に対する結果をキャッシュすることができる。
+     isInitialPassword および isCurrentPasswordExpired に付与されている \ ``@Cacheable``\ は Spring の Cache Abstraction 機能を使用するためのアノテーションである。
+     \ ``@Cacheable`` \ アノテーションを付与することで、メソッドの引数に対する結果をキャッシュすることができる。
      ここでは、キャッシュの使用により初期パスワード判定、パスワード期限切れ判定のたびにデータベースへのアクセスが発生することを防止し、パフォーマンスの低下を防いでいる。
-     Cache Abstraction については `公式ドキュメント <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/cache.html>`_ を参照すること。
+     Cache Abstraction については `公式ドキュメント <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/cache.html>`_ を参照すること。
 
-  .. tip::
-
-     キャッシュを使用する際には、パスワード変更時等の必要なタイミングでキャッシュをクリアする必要があることに注意すること。
+     尚、キャッシュを使用する際には、必要なタイミングでキャッシュをクリアする必要があることに注意すること。
+     本アプリケーションではパスワード変更時や、ログアウト時には再度初期パスワード判定、パスワード期限切れ判定を行うためにキャッシュをクリアする。
 
      また、必要に応じてキャッシュのTTL(生存時間)を設定すること。TTLは使用するキャッシュの実装によっては設定不能であることに注意。
 
