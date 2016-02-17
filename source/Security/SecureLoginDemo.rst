@@ -1587,19 +1587,16 @@ ER図
                  Model model) {
 
              Account account = userDetails.getAccount();
-             if (bindingResult.hasErrors()) {
+             if (bindingResult.hasErrors() ||
+                     !account.getUsername().equals(form.getUsername())) { // (2)
                  model.addAttribute(account);
                  return "passwordchange/changeForm";
              }
 
-             if (account.getUsername().equals(form.getUsername())) { // (2)
-                 passwordService.updatePassword(form.getUsername(),
-                         form.getNewPassword());
+             passwordService.updatePassword(form.getUsername(),
+                     form.getNewPassword());
 
-                 return "redirect:/password?complete";
-             } else {
-                 return "passwordchange/changeForm";
-             }
+             return "redirect:/password?complete";
          }
 
          // omitted
@@ -1616,7 +1613,7 @@ ER図
      * - | (1)
        - | パスワード変更時に呼び出されるハンドラメソッド。パラメータ中のFormに\ ``@Validated`` \ アノテーションを付与して、入力チェックを行う。
      * - | (2)
-       - | パスワード変更対象のユーザ名がログイン中のアカウントのユーザ名と一致していることを確認する。
+       - | パスワード変更対象のユーザ名がログイン中のアカウントのユーザ名と一致していることを確認する。両者が異なる場合には、再度パスワード変更画面へ遷移させる。
 
   .. note::
 
