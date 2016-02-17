@@ -106,17 +106,17 @@
       - パスワード再発行用秘密情報の発行
       - パスワード再発行時のユーザ確認に用いるために、事前に十分に推測困難な秘密情報（ランダム文字列）を生成する
     * - | (14)
-      - 
-      - パスワード再発行用の認証情報への有効期限の設定
-      - パスワード再発行画面のURLと秘密情報に有効期限を設定する
-    * - | (15)
       - :ref:`パスワード再発行のための認証情報の配布 <reissue-info-delivery>`
       - パスワード再発行画面URLのメール送付
       - パスワード再発行ページにアクセスするためのURLは、アカウントの登録済みメールアドレスへ送付する
-    * - | (16)
+    * - | (15)
       - 
       - パスワード再発行画面のURLと秘密情報の別配布
       - パスワード再発行画面のURLの漏えいに備え、秘密情報はメール以外の方法でユーザに配布する
+    * - | (16)
+      - :ref:`パスワード再発行実行時の検査 <reissue-info-validate>`
+      - パスワード再発行用の認証情報の有効期限の設定
+      - パスワード再発行画面のURLと秘密情報に有効期限を設定し、有効期限が切れた場合はパスワード再発行画面のURLと秘密情報を使用不能にする
     * - | (17)
       - :ref:`パスワード再発行の失敗上限回数の設定 <reissue-info-invalidate>`
       - パスワード再発行の失敗上限回数の設定
@@ -2911,7 +2911,6 @@ ER図
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 * :ref:`パスワード再発行用URLへのランダム文字列の付与 <sec-requirements>`
 * :ref:`パスワード再発行用秘密情報の発行 <sec-requirements>`
-* :ref:`パスワード再発行用の認証情報への有効期限の設定 <sec-requirements>`
   
 動作イメージ
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2927,7 +2926,7 @@ ER図
 メール送付されたURLには有効期限があり、有効期限内にアクセスして秘密情報と新しいパスワードを入力することで、パスワードを変更することができる。
 有効期限が切れた後にメール送付されたURLにアクセスした場合、エラー画面に遷移する。
 
-ここでは、秘密情報とトークンの生成について説明を行う
+ここでは、上記の流れのうち、秘密情報とトークンの生成について説明を行う。
 
 実装方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2935,8 +2934,7 @@ ER図
 | 本アプリケーションでは、ユーザを確認するための情報として、パスワード再発行画面のURLと秘密情報の二つを用いる。
 | パスワード再発行画面のURLを一意かつ推測困難にするために、ランダムな文字列を生成しURLに付加する。万が一URLが漏えいした場合に備え、ランダムな文字列である秘密情報を生成し、これを用いて認証を行う。
 | 二つのランダムな文字列は、片方からもう一方を推測することが不可能となるように、それぞれ異なる方法で生成する。
-| また、一般的にはパスワードの再発行は認証情報の生成から間を置かずに行われるため、不必要に長期間有効となることが無いよう有効期限を設定する。
-| 具体的には以下の三つの処理を実装することで要件を実現する。
+| 具体的には以下の処理を実装することで要件を実現する。
 
 * パスワード再発行のための認証情報の生成と保存
 
@@ -2947,18 +2945,11 @@ ER図
   * 秘密情報：パスワード再発行時にユーザに入力させるために生成するランダムな文字列
   * 有効期限：パスワード再発行のための認証情報の有効期限
 
+  トークンの生成には\ ``java.util.UUID`` \クラスの\ ``randomUUID`` \メソッドを用い、秘密情報の生成にはPassayのパスワード生成機能を用いる。
+  
   秘密情報については、パスワードと同様にハッシュ化してデータベースへ保存する。
+  有効期限の設定と確認処理については、:ref:`パスワード再発行実行時の検査 <reissue-info-validate>` に記す。
   パスワード再発行のための認証情報をユーザに配布する方法については、:ref:`パスワード再発行のための認証情報の配布 <reissue-info-delivery>` を参照。
-
-* パスワード再発行のための認証情報の有効期限の検査
-
-  パスワード再発行画面にアクセスされた際に、リクエストパラメータに含まれるトークンを取得し、トークンをキーとしてデータベースに保存されているパスワード再発行のための認証情報を検索する。
-  認証情報に含まれる有効期限と現在時刻を比較し、有効期限が切れていればエラー画面に遷移させる。
-
-* パスワード再発行のための認証情報を用いたユーザの確認
-
-  パスワードの再発行を行う際に、ユーザ名、トークンとユーザが入力した秘密情報の組み合わせがデータベース内の認証情報と一致しているかどうかを確認する。
-  一致する場合にはパスワードを再発行し、不一致の場合にはエラーメッセージを表示する。
 
 コード解説
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -3340,6 +3331,387 @@ ER図
        * - | (1)
          - | Formから取得したユーザ名から、パスワード再発行のための認証情報を生成し、データベースに登録する処理を呼び出す。
 
+
+.. _reissue-info-delivery:
+
+パスワード再発行のための認証情報の配布
+--------------------------------------------------------------------------------
+実装する要件一覧
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+* :ref:`パスワード再発行画面のURLと秘密情報の別配布 <sec-requirements>`
+* :ref:`パスワード再発行画面のURLのメール送付 <sec-requirements>`
+  
+動作イメージ
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+.. figure:: ./images/SecureLogin_password_reissue_give.png
+   :alt: Givee Password Reissue Information 
+   :width: 80%
+   :align: center
+
+:ref:`reissue-info-create` では、パスワード再発行のための認証情報の生成について説明した。
+ここでは、生成した認証情報の配布について説明する。
+
+パスワード再発行のための認証は、パスワード再発行画面のURLと秘密情報を用いて行う。
+この二つの情報が一度に漏れることを防ぐため、それぞれ別の方法でユーザに配布する。
+本アプリケーションでは、パスワード再発行画面のURLはユーザの登録済みメールアドレスへ送付し、秘密情報は画面に表示する。
+
+実装方法
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+| :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` で生成した認証情報を二つに分け、それぞれ別の方法でユーザに配布する。
+| 以下の二つの処理を実装して用いることで要件を実現する。
+
+* 秘密情報の画面表示
+
+  :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` で生成したハッシュ化前の秘密情報を、画面に表示させることでユーザに配布する。
+
+* パスワード再発行画面のURLのメール送付
+
+  :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` で生成したトークンを含むパスワード再発行画面のURLを、Spring FrameworkのMail連携用コンポーネントを用いて、メールで送付する。
+  
+
+コード解説
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+上記の実装方法に従って実装されたコードについて順に解説する。
+
+* 秘密情報の画面表示
+
+  Controllerから秘密情報の生成処理を呼び出し、Viewに表示するための一連の実装を以下に示す。
+
+  .. code-block:: java
+
+     package org.terasoluna.securelogin.app.passwordreissue;
+
+     // omitted
+
+     @Controller
+     @RequestMapping("/reissue")
+     public class PasswordReissueController {
+
+         @Inject
+         PasswordReissueService passwordReissueService;
+
+         // omitted
+
+         @RequestMapping(value = "create", method = RequestMethod.POST)
+         public String createReissueInfo(@Validated CreateReissueInfoForm form,
+                 BindingResult bindingResult, Model model,
+                 RedirectAttributes attributes) {
+             if (bindingResult.hasErrors()) {
+                 return showCreateReissueInfoForm(form);
+             }
+
+             String rawSecret = passwordReissueService.createAndSendReissueInfo(form.getUsername()); // (1)
+             attributes.addFlashAttribute("secret", rawSecret); // (2)
+             return "redirect:/reissue/create?complete"; // (3)
+         }
+
+         @RequestMapping(value = "create", params = "complete", method = RequestMethod.GET)
+         public String createReissueInfoComplete() {
+             return "passwordreissue/createReissueInfoComplete";
+         }
+
+         // omitted
+
+     }
+
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 10 90
+  
+     * - 項番
+       - 説明
+     * - | (1)
+       - | 秘密情報を生成する処理を呼び出す。
+     * - | (2)
+       - | RedirectAttributesを利用して、リダイレクト先に秘密情報を渡す。
+     * - | (3)
+       - | パスワード再発行用の認証情報完了画面にリダイレクトする。
+
+
+  **パスワード再発行用の認証情報生成完了画面(createReissueInfoComplete.jsp)**
+
+  .. code-block:: jsp
+
+     <!-- omitted -->
+
+     <body>
+         <div id="wrapper">
+             <h1>Your Password Reissue URL was successfully generated.</h1>
+             The URL was sent to your registered E-mail address.<br /> Please
+             access the URL and enter the secret shown below.
+             <h3>Secret : <span id=secret>${f:h(secret)}</span></h3> <!-- (1) -->
+         </div>
+     </body>
+
+     <!-- omitted -->
+
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 10 90
+  
+     * - 項番
+       - 説明
+     * - | (1)
+       - | 秘密情報を画面に表示する。
+
+* パスワード再発行画面のURLのメール送付
+
+  パスワード再発行用の認証情報からパスワード再発行画面のURLを作成し、メール送付する処理の実装を以下に示す。
+  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/Email` を参照。
+
+  .. code-block:: java
+
+     package org.terasoluna.securelogin.domain.service.mail;
+
+     // omitted
+
+     @Service
+     public class PasswordReissueMailSharedServiceImpl implements PasswordReissueMailSharedService {
+
+         @Inject
+         JavaMailSender mailSender; // (1)
+
+         @Inject
+         @Named("passwordReissueMessage")
+         SimpleMailMessage templateMessage; // (2)
+
+         // omitted
+
+         @Override
+         public void send(String to, String text) {
+             SimpleMailMessage message = new SimpleMailMessage(templateMessage); // (3)
+             message.setTo(to);
+             message.setText(text);
+             mailSender.send(message);
+         }
+
+     }
+
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 10 90
+  
+     * - 項番
+       - 説明
+     * - | (1)
+       - | \ ``org.springframework.mail.javamail.JavaMailSender`` \のBeanをインジェクションする。
+     * - | (2)
+       - | 送信元のメールアドレスとメールタイトルが設定された、\ ``org.springframework.mail.SimpleMailMessage`` \のBeanをインジェクションする。
+         | 本アプリケーションでは\ ``SimpleMailMessage`` \ のBeanは一つしか定義されていないが、一般にはメールのテンプレートとして複数のBeanが定義されるため、 \ ``@Named`` \でBean名を指定している。
+     * - | (3)
+       - | テンプレートから\ ``SimpleMailMessage`` \ のインスタンスを生成し、引数として与えられた宛先メールアドレスと本文を設定して送信する。
+
+  .. code-block:: java
+
+     package org.terasoluna.securelogin.domain.service.passwordreissue;
+
+     // omitted
+
+     @Service
+     @Transactional
+     public class PasswordReissueServiceImpl implements PasswordReissueService {
+
+         @Inject
+         ClassicDateFactory dateFactory;
+
+         @Inject
+         PasswordReissueMailSharedService mailSharedService;
+
+         @Inject
+         AccountSharedService accountSharedService;
+
+         @Inject
+         PasswordEncoder passwordEncoder;
+
+         @Value("${security.tokenLifeTimeSeconds}")
+         int tokenLifeTimeSeconds;
+
+         @Value("${app.hostAndPort}") // (1)
+         String hostAndPort;
+
+         @Value("${app.contextPath}")
+         String contextPath;
+
+         @Value("${app.passwordReissueProtocol}")
+         String protocol;
+
+         // omitted
+
+         @Override
+         public String createAndSendReissueInfo(String username) {
+            
+             String rowSecret = passwordGenerator.generatePassword(10, passwordGenerationRules);
+
+             if(!accountSharedService.exists(username)){
+                 return rowSecret;           
+             }
+            
+             Account account= accountSharedService.findOne(username);
+            
+             String token = UUID.randomUUID().toString();
+
+             LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
+                     .plusSeconds(tokenLifeTimeSeconds);
+
+             PasswordReissueInfo info = new PasswordReissueInfo();
+             info.setUsername(username);
+             info.setToken(token);
+             info.setSecret(passwordEncoder.encode(rowSecret));
+             info.setExpiryDate(expiryDate);
+
+             passwordReissueInfoRepository.create(info);
+
+             String passwordResetUrl = protocol + "://" + hostAndPort
+                     + contextPath + "/reissue/resetpassword/?form&token="
+                     + info.getToken(); // (2)
+
+             mailSharedService.send(account.getEmail(), passwordResetUrl); // (3)
+
+             return rowSecret;
+
+         }
+
+         // omitted
+
+     }
+
+  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+  .. list-table::
+     :header-rows: 1
+     :widths: 10 90
+  
+     * - 項番
+       - 説明
+     * - | (1)
+       - | パスワード再発行画面のURLに使用するプロトコル、ホスト名、ポート番号、コンテキストパスをプロパティファイルから取得する。
+     * - | (2)
+       - | (1)で取得した値と、生成したパスワード再発行用の認証情報に含まれるトークンを使用して、ユーザに配布するパスワード再発行画面のURLを作成する。
+     * - | (3)
+       - | ユーザの登録メールアドレス宛てに、パスワード再発行画面のURLを本文に記したメールを送付する。
+
+
+.. _reissue-info-validate:
+
+パスワード再発行実行時の検査
+--------------------------------------------------------------------------------
+実装する要件一覧
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+* :ref:`パスワード再発行用の認証情報の有効期限の設定 <sec-requirements>`
+  
+動作イメージ
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+.. figure:: ./images/SecureLogin_password_reissue_execute.png
+   :alt: Use Password Reissue Information 
+   :width: 80%
+   :align: center
+
+:ref:`reissue-info-delivery` では、パスワード再発行のための認証情報の配布について説明した。
+ここでは、配布された認証情報を使用する際の処理について説明する。
+
+パスワード再発行時の認証として、:ref:`reissue-info-delivery` でそれぞれ別配布したパスワード再発行画面のURLと秘密情報を照合する。
+URLに含まれるトークンと秘密情報の組が正しい場合にのみ、パスワードが再発行される。
+
+また、一般的にはパスワードの再発行は認証情報の生成から間を置かずに行われるため、不必要に長期間有効となることが無いように、認証情報に有効期限を設定する。
+パスワード再発行画面のURLにアクセスした際に、認証情報が有効期限内であればパスワード再発行画面を表示し、有効期限が切れていればエラー画面に遷移する。
+
+実装方法
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+| メールで送付されるパスワード再発行画面のURLには、リクエストパラメータとしてトークンが含まれている。パスワード再発行画面へアクセスされた際にトークンを取得し、このトークンをキーとしてデータベースからパスワード再発行のための認証情報を検索する。
+| 認証情報生成時にあらかじめ有効期限を設定しておき、データベースから取得した際に有効期限切れのチェックを行う。有効期限内であればパスワード変更画面を表示して秘密情報と新しいパスワードの入力を受け付ける。
+| データベースから取得した認証情報中の秘密情報と、ユーザが入力した秘密情報が一致すれば認証成功であり、パスワードを再発行する。
+| 具体的には以下の三つの処理を実装することで要件を実現する。
+
+* パスワード再発行用の認証情報の有効期限の設定
+
+  :ref:`reissue-info-create` で説明した処理の中で、生成した認証情報に有効期限を設定する。
+
+* パスワード再発行のための認証情報の有効期限の検査
+
+  パスワード再発行画面にアクセスされた際に、リクエストパラメータに含まれるトークンを取得し、トークンをキーとしてデータベースに保存されているパスワード再発行のための認証情報を検索する。
+  認証情報に含まれる有効期限と現在時刻を比較し、有効期限が切れていればエラー画面に遷移させる。
+
+* パスワード再発行のための認証情報を用いたユーザの確認
+
+  パスワードの再発行を行う際に、ユーザ名、トークンとユーザが入力した秘密情報の組み合わせがデータベース内の認証情報と一致しているかどうかを確認する。
+  一致する場合にはパスワードを再発行し、不一致の場合にはエラーメッセージを表示する。
+
+
+コード解説
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+* パスワード再発行用の認証情報の有効期限の設定
+
+  パスワード再発行用の認証情報への有効期限の設定自体は、 :ref:`reissue-info-create` で説明した処理に含まれている。ここでは、関連する実装箇所のみ再掲する。
+
+  * Serviceの実装
+
+    .. code-block:: java
+
+       package org.terasoluna.securelogin.domain.service.passwordreissue;
+
+       // omitted
+
+       @Service
+       @Transactional
+       public class PasswordReissueServiceImpl implements PasswordReissueService {
+
+           @Inject
+           ClassicDateFactory dateFactory;
+
+           @Inject
+           PasswordReissueInfoRepository passwordReissueInfoRepository;
+
+           @Value("${security.tokenLifeTimeSeconds}")
+           int tokenLifeTimeSeconds; // (1)
+
+           // omitted
+
+           @Override
+           public String createAndSendReissueInfo(String username) {
+               
+               // omitted
+
+               LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
+                       .plusSeconds(tokenLifeTimeSeconds); // (2)
+
+               PasswordReissueInfo info = new PasswordReissueInfo(); // (3)
+               info.setUsername(username);
+               info.setToken(token);
+               info.setSecret(passwordEncoder.encode(rowSecret));
+               info.setExpiryDate(expiryDate);
+
+               passwordReissueInfoRepository.create(info); // (4)
+
+               // omitted (Send E-Mail)
+
+           }
+
+           // omitted
+
+       }
+
+    .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+    .. list-table::
+       :header-rows: 1
+       :widths: 10 90
+    
+       * - 項番
+         - 説明
+       * - | (1)
+         - | パスワード再発行用の認証情報が有効である期間の長さを秒単位で指定する。プロパティファイルに定義された値をインジェクションしている。
+       * - | (2)
+         - | 現在時刻に(1)の値を加えることにより、パスワード再発行用の認証情報の有効期限を計算する。
+       * - | (3)
+         - | パスワード再発行用の認証情報を作成し、ユーザ名、トークン、秘密情報、有効期限を設定する。
+       * - | (4)
+         - | パスワード再発行用の認証情報をデータベースに登録する。
+
 * パスワード再発行のための認証情報の有効期限の検査
 
   パスワード再発行画面にアクセスされた際に、リクエストパラメータとしてURLに含まれるトークンからパスワード再発行のための認証情報を取得し、有効期限内であるかどうかを検査する処理の実装を以下に示す。
@@ -3710,259 +4082,6 @@ ER図
        * - | (1)
          - | Serviceのメソッドにユーザ名、トークン、秘密情報、新しいパスワードを渡す。ユーザ名、トークン、秘密情報の組み合わせが正しい場合、新しいパスワードに更新される。
 
-.. _reissue-info-delivery:
-
-パスワード再発行のための認証情報の配布
---------------------------------------------------------------------------------
-実装する要件一覧
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-* :ref:`パスワード再発行画面のURLと秘密情報の別配布 <sec-requirements>`
-* :ref:`パスワード再発行画面のURLのメール送付 <sec-requirements>`
-  
-動作イメージ
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-.. figure:: ./images/SecureLogin_password_reissue_give.png
-   :alt: Givee Password Reissue Information 
-   :width: 80%
-   :align: center
-
-実装方法
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` で生成した認証情報を二つに分け、それぞれ別の方法でユーザに配布する。
-| 以下の二つの処理を実装して用いることで要件を実現する。
-
-* 秘密情報の画面表示
-
-  :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` で生成したハッシュ化前の秘密情報を、画面に表示させることでユーザに配布する。
-
-* パスワード再発行画面のURLのメール送付
-
-  :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` で生成したトークンを含むパスワード再発行画面のURLを、Spring FrameworkのMail連携用コンポーネントを用いて、メールで送付する。
-  
-
-コード解説
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-上記の実装方法に従って実装されたコードについて順に解説する。
-
-* 秘密情報の画面表示
-
-  Controllerから秘密情報の生成処理を呼び出し、Viewに表示するための一連の実装を以下に示す。
-
-  .. code-block:: java
-
-     package org.terasoluna.securelogin.app.passwordreissue;
-
-     // omitted
-
-     @Controller
-     @RequestMapping("/reissue")
-     public class PasswordReissueController {
-
-         @Inject
-         PasswordReissueService passwordReissueService;
-
-         // omitted
-
-         @RequestMapping(value = "create", method = RequestMethod.POST)
-         public String createReissueInfo(@Validated CreateReissueInfoForm form,
-                 BindingResult bindingResult, Model model,
-                 RedirectAttributes attributes) {
-             if (bindingResult.hasErrors()) {
-                 return showCreateReissueInfoForm(form);
-             }
-
-             String rawSecret = passwordReissueService.createAndSendReissueInfo(form.getUsername()); // (1)
-             attributes.addFlashAttribute("secret", rawSecret); // (2)
-             return "redirect:/reissue/create?complete"; // (3)
-         }
-
-         @RequestMapping(value = "create", params = "complete", method = RequestMethod.GET)
-         public String createReissueInfoComplete() {
-             return "passwordreissue/createReissueInfoComplete";
-         }
-
-         // omitted
-
-     }
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - 項番
-       - 説明
-     * - | (1)
-       - | 秘密情報を生成する処理を呼び出す。
-     * - | (2)
-       - | RedirectAttributesを利用して、リダイレクト先に秘密情報を渡す。
-     * - | (3)
-       - | パスワード再発行用の認証情報完了画面にリダイレクトする。
-
-
-  **パスワード再発行用の認証情報生成完了画面(createReissueInfoComplete.jsp)**
-
-  .. code-block:: jsp
-
-     <!-- omitted -->
-
-     <body>
-         <div id="wrapper">
-             <h1>Your Password Reissue URL was successfully generated.</h1>
-             The URL was sent to your registered E-mail address.<br /> Please
-             access the URL and enter the secret shown below.
-             <h3>Secret : <span id=secret>${f:h(secret)}</span></h3> <!-- (1) -->
-         </div>
-     </body>
-
-     <!-- omitted -->
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - 項番
-       - 説明
-     * - | (1)
-       - | 秘密情報を画面に表示する。
-
-* パスワード再発行画面のURLのメール送付
-
-  パスワード再発行用の認証情報からパスワード再発行画面のURLを作成し、メール送付する処理の実装を以下に示す。
-  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/Email` を参照。
-
-  .. code-block:: java
-
-     package org.terasoluna.securelogin.domain.service.mail;
-
-     // omitted
-
-     @Service
-     public class PasswordReissueMailSharedServiceImpl implements PasswordReissueMailSharedService {
-
-         @Inject
-         JavaMailSender mailSender; // (1)
-
-         @Inject
-         SimpleMailMessage templateMessage; // (2)
-
-         // omitted
-
-         @Override
-         public void send(String to, String text) {
-             SimpleMailMessage message = new SimpleMailMessage(templateMessage); // (3)
-             message.setTo(to);
-             message.setText(text);
-             mailSender.send(message);
-         }
-
-     }
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - 項番
-       - 説明
-     * - | (1)
-       - | \ ``org.springframework.mail.javamail.JavaMailSender`` \のBeanをインジェクションする。
-     * - | (2)
-       - | 送信元のメールアドレスとメールタイトルが設定された、\ ``org.springframework.mail.SimpleMailMessage`` \のBeanをインジェクションする。
-     * - | (3)
-       - | テンプレートから\ ``SimpleMailMessage`` \ のインスタンスを生成し、引数として与えられた宛先メールアドレスと本文を設定して送信する。
-
-  .. code-block:: java
-
-     package org.terasoluna.securelogin.domain.service.passwordreissue;
-
-     // omitted
-
-     @Service
-     @Transactional
-     public class PasswordReissueServiceImpl implements PasswordReissueService {
-
-         @Inject
-         ClassicDateFactory dateFactory;
-
-         @Inject
-         PasswordReissueMailSharedService mailSharedService;
-
-         @Inject
-         AccountSharedService accountSharedService;
-
-         @Inject
-         PasswordEncoder passwordEncoder;
-
-         @Value("${security.tokenLifeTimeSeconds}")
-         int tokenLifeTimeSeconds;
-
-         @Value("${app.hostAndPort}") // (1)
-         String hostAndPort;
-
-         @Value("${app.contextPath}")
-         String contextPath;
-
-         @Value("${app.passwordReissueProtocol}")
-         String protocol;
-
-         // omitted
-
-         @Override
-         public String createAndSendReissueInfo(String username) {
-            
-             String rowSecret = passwordGenerator.generatePassword(10, passwordGenerationRules);
-
-             if(!accountSharedService.exists(username)){
-                 return rowSecret;           
-             }
-            
-             Account account= accountSharedService.findOne(username);
-            
-             String token = UUID.randomUUID().toString();
-
-             LocalDateTime expiryDate = dateFactory.newTimestamp().toLocalDateTime()
-                     .plusSeconds(tokenLifeTimeSeconds);
-
-             PasswordReissueInfo info = new PasswordReissueInfo();
-             info.setUsername(username);
-             info.setToken(token);
-             info.setSecret(passwordEncoder.encode(rowSecret));
-             info.setExpiryDate(expiryDate);
-
-             passwordReissueInfoRepository.create(info);
-
-             String passwordResetUrl = protocol + "://" + hostAndPort
-                     + contextPath + "/reissue/resetpassword/?form&token="
-                     + info.getToken(); // (2)
-
-             mailSharedService.send(account.getEmail(), passwordResetUrl); // (3)
-
-             return rowSecret;
-
-         }
-
-         // omitted
-
-     }
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - 項番
-       - 説明
-     * - | (1)
-       - | パスワード再発行画面のURLに使用するプロトコル、ホスト名、ポート番号、コンテキストパスをプロパティファイルから取得する。
-     * - | (2)
-       - | (1)で取得した値と、生成したパスワード再発行用の認証情報に含まれるトークンを使用して、ユーザに配布するパスワード再発行画面のURLを作成する。
-     * - | (3)
-       - | ユーザの登録メールアドレス宛てに、パスワード再発行画面のURLを本文に記したメールを送付する。
-
 .. _reissue-info-invalidate:
 
 パスワード再発行の失敗上限回数の設定
@@ -3979,15 +4098,19 @@ ER図
    :width: 80%
    :align: center
 
+パスワード再発行画面のURLが何らかの原因で漏えいした場合であっても、秘密情報が漏えいしていなければパスワードが不正に再発行されることはない。
+秘密情報には十分に推測困難なランダム値を用いているため簡単に破られる可能性は低いが、ブルートフォース攻撃を阻止する目的で認証失敗の回数に上限値を設定する。
+上限値を超えてパスワード再発行のための認証に失敗した場合、そのURL（トークン）でのパスワード再発行が行えないようにする。
+
 実装方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | 本アプリケーションでは、パスワード再発行に失敗した履歴を「パスワード再発行失敗イベント」エンティティとしてデータベースに保存し、このパスワード再発行失敗イベントエンティティを用いて、パスワード再発行の失敗回数をカウントする。
-| 失敗回数があらかじめ設定した上限値以上であれば、パスワード再発行時に例外をスローする。
+| 失敗回数があらかじめ設定した上限値以上であれば、パスワード再発行画面へのアクセス時に例外をスローする。
 | 具体的には、以下の二つの処理を実装して用いることにより、要件を実現する。
 
 * パスワード再発行失敗イベントエンティティの保存
 
-  :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` における、「パスワード再発行のための認証情報を用いたユーザの確認」処理の中で、ユーザの確認に失敗した場合に、使用したトークンと失敗日時の組をパスワード再発行失敗イベントエンティティとしてデータベースに登録する。
+  :ref:`reissue-info-validate` における、「パスワード再発行のための認証情報を用いたユーザの確認」処理の中で、ユーザの確認に失敗した場合に、使用したトークンと失敗日時の組をパスワード再発行失敗イベントエンティティとしてデータベースに登録する。
 
 * パスワード再発行時の例外のスロー
 
@@ -4003,7 +4126,7 @@ ER図
 
 * 共通部分
 
-  前提として、:ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` に記した各処理が実装されているものとする。
+  前提として、 :ref:`reissue-info-validate` に記した各処理が実装されているものとする。
   その他に共通的に必要な、データベースに対するパスワード再発行失敗イベントエンティティの登録、検索、削除に関する実装を以下に示す。
 
   * Entityの実装
@@ -4179,7 +4302,7 @@ ER図
      * - | (3)
        - | (2)で作成したパスワード再発行失敗イベントエンティティをデータベースに登録する。
 
-  :ref:`パスワード再発行のための認証情報の生成 <reissue-info-create>` の「パスワード再発行のための認証情報を用いたユーザの確認」処理の中から、パスワード再発行失敗時の処理を呼び出す。
+  :ref:`reissue-info-validate` の「パスワード再発行のための認証情報を用いたユーザの確認」処理の中から、パスワード再発行失敗時の処理を呼び出す。
 
   .. code-block:: java
 
