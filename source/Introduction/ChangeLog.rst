@@ -29,6 +29,22 @@
         * ガイドラインに記載している内容の動作検証環境に関する記載を追加
 
     * -
+      - :doc:`../Overview/FrameworkStack`
+      - 利用するOSSのバージョン(Spring IO Platformのバージョン)を更新
+
+        * Spring IO Platformのバージョンを2.0.1.RELEASEに更新
+        * Spring Frameworkのバージョンを4.2.4.RELEASEに更新
+        * Spring Securityのバージョンを4.0.3に更新
+
+        Spring IO Platformのバージョン更新に伴い利用するOSSのバージョンを更新
+
+        * 使用するOSSのバージョンを更新。更新内容は、\ `version 5.1.0の移行ガイド <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-5.1.0#step-1-update-dependency-libraries>`_\ を参照されたい。
+
+        新規追加
+
+        * \ ``terasoluna-gfw-string``\ 、\ ``terasoluna-gfw-codepoints``\ 、\ ``terasoluna-gfw-validator``\ 、\ ``terasoluna-gfw-web-jsp``\ プロジェクトの説明を追加。
+
+    * -
       - :doc:`../ArchitectureInDetail/Utilities/DateAndTime`
       - 新規追加
 
