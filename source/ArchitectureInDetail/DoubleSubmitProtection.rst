@@ -1159,7 +1159,7 @@ PRG(Post-Redirect-Get)パターンの適用
 
  .. note::
     
-    \ ``<form:form>``\タグでを使用すると、CSRFトークンチェックで必要となるパラメータも自動的に埋め込まれる。 CSRFトークンチェックで必要となるパラメータについては、\ :ref:`csrf_formformtag-use`\ を参照されたい。
+    \ ``<form:form>``\タグでを使用すると、CSRFトークンチェックで必要となるパラメータも自動的に埋め込まれる。 CSRFトークンチェックで必要となるパラメータについては、\ :ref:`csrf_htmlformtag-use`\ を参照されたい。
 
  .. note::
     
@@ -1518,7 +1518,7 @@ HTTPレスポンスヘッダの\ ``Cache-Control``\ の設定により、ブラ�
 
 この場合でも二重送信自体は防止されているため、問題はない。
 バージョン5.0.0.RELEASE以降の\ :doc:`雛形プロジェクト <../ImplementationAtEachLayer/CreateWebApplicationProject>`\ では、
-\ :ref:`Spring Securityの機能 <SpringSecurityAppendixSecHeaders>`\ でキャッシュが無効になる設定が行われている。
+\ :ref:`Spring Securityの機能 <SpringSecurityLinkageWithBrowser>`\ でキャッシュが無効になる設定が行われている。
 
 もしこの画面の表示が出る代わりにトランザクショントークンエラー画面を表示したい場合は、
 \ ``<sec:cache-control />``\ の設定を除外する必要があるが、セキュリティ観点では\ ``<sec:cache-control />``\ を設定しておくことを推奨する。

@@ -1,3 +1,5 @@
+.. _SpringSecurityOverview:
+
 Spring Security概要
 ================================================================================
 
@@ -6,57 +8,337 @@ Spring Security概要
  .. contents:: 目次
     :local:
 
-Overview
+
+Spring Securityは、アプリケーションにセキュリティ対策機能を実装する際に使用するフレームワークである。 
+Spring Securityはスタンドアロンなアプリケーションでも利用できるが、サーブレットコンテナにデプロイするWebアプリケーションに対してセキュリティ対策を行う際に利用するのが一般的である。
+本章では、Spring Securityが提供する機能のうち、一般的なWebアプリケーションでの利用頻度が高いと思われる機能にしぼって説明する。
+
+.. tip:: **ガイドラインで紹介していない機能**
+
+    Spring Securityは、本ガイドラインで紹介していない機能も多く提供している。
+    Spring Securityが提供するすべての機能を知りたい場合は、\ `Spring Security Reference <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#security-filter-chain>`_\ を参照されたい。
+
+.. note:: **Spring Securityのバージョン**
+
+    本ガイドラインでは、Spring Securityのバージョンは4.0以上を使用することを前提としている。
+    Spring Securityが4.0にバージョンアップするにあたり、様々な変更が適用されており、以降で記述されるサンプルについても、Spring Security 4を使用したサンプルとなっている。
+
+    変更内容については\ `Migrating from Spring Security 3.x to 4.x (XML Configuration) <http://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html>`_\ を参照されたい。
+
+.. _SpringSecurityFunctionalities:
+
+Spring Securityの機能
 --------------------------------------------------------------------------------
 
-| Spring Securityとは、アプリケーションのセキュリティを担う「認証」、「認可」の2つを
-| 主な機能として提供している。
-| 認証機能とは、なりすましによる不正アクセスに対抗するため、ユーザを識別する機能である。
-| 認可機能とは、認証された（ログイン中の）ユーザの権限に応じて、
-| システムのリソースに対するアクセス制御を行う機能である。
-| また、HTTPヘッダーを付与する機能を有する。
-
-| Spring Securityの概要図を、以下に示す。
-
-.. figure:: ./images/spring_security_overview.png
-   :alt: Spring Security Overview
-   :width: 80%
-   :align: center
-
-   **Picture - Spring Security Overview**
-
-| Spring Securityは、認証、認可のプロセスを何層にも連なる
-| ServletFilter の集まりで実現している。
-| また、パスワードハッシュ機能や、JSPの認可タグライブラリなども提供している。
-
-認証
+セキュリティ対策の基本機能
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| 認証とは、正当性を確認する行為であり、ネットワークやサーバへ接続する際に
-| ユーザ名とパスワードの組み合わせを使って、利用ユーザにその権利があるかどうかや、
-| その人が利用ユーザ本人であるかどうかを確認することである。
-| Spring Securityでの使用方法は、\ :doc:`Authentication`\ を参照されたい。
+Spring Securityは、セキュリティ対策の基本機能として以下の機能を提供している。
 
-パスワードハッシュ
+\
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **セキュリティ対策の基本機能**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - 機能
+      - 説明
+    * - :ref:`認証機能<SpringSecurityAuthentication>` 
+      - アプリケーションを利用するユーザーの正当性を確認する機能。
+    * - :ref:`認可機能<SpringSecurityAuthorization>`
+      - アプリケーションが提供するリソースや処理に対してアクセスを制御する機能。
+
+|
+
+セキュリティ対策の強化機能
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| 平文のパスワードから、ハッシュ関数を用いて計算されたハッシュ値を、元のパスワードと置き換えることである。
-| Spring Securityでの使用方法は、\ :doc:`PasswordHashing`\ を参照されたい。
+Spring Securityでは認証と認可という基本的な機能に加え、Webアプリケーションのセキュリティを強化するための機能をいくつか提供している。
 
-認可
+\
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **セキュリティ対策の強化機能**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - 機能
+      - 説明
+    * - :ref:`セッション管理機能<SpringSecuritySessionManagement>` 
+      - セッションハイジャック攻撃やセッション固定攻撃からユーザーを守る機能、
+        セッションのライフサイクル(生成、破棄、タイムアウト)を制御するための機能。
+    * - :ref:`CSRF対策機能<SpringSecurityCSRF>`
+      - クロスサイトリクエストフォージェリ(CSRF)攻撃からユーザーを守るための機能。
+    * - :ref:`セキュリティヘッダ出力機能<SpringSecurityLinkageWithBrowser>`
+      - Webブラウザのセキュリティ対策機能と連携し、ブラウザの機能を悪用した攻撃からユーザーを守るための機能。
+
+|
+
+.. _SpringSecurityArchitecture:
+
+Spring Securityのアーキテクチャ
+--------------------------------------------------------------------------------
+各機能の詳細な説明を行う前に、Spring Securityのアーキテクチャ概要とSpring Securityを構成する主要なコンポーネントの役割を説明する。
+
+.. note::
+
+    ここで説明する内容は、Spring Securityが提供するデフォルトの動作をそのまま利用する場合や、
+    Spring Securityのコンフィギュレーションをサポートする仕組みを利用する場合は、開発者が直接意識する必要ない。
+    そのため、まず各機能の使い方を知りたい場合は、本節を読み飛ばしても問題はない。
+    
+    ただし、ここで説明する内容は、Spring Securityのデフォルトの動作をカスタマイズする際に必要になるので、
+    アプリケーションのアーキテクトは一読しておくことを推奨する。
+
+|
+
+Spring Securityのモジュール
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| 認可とは、認証された利用者がリソースにアクセスしようとしたとき、
-| アクセス制御処理でその利用者がそのリソースの使用を許可されていることを調べることである。
-| Spring Securityでの使用方法は、\ :doc:`Authorization`\ を参照されたい。
 
-.. _howtouse_springsecurity:
+まずフレームワークスタックとなっているSpring Securityの提供モジュールを紹介する。
 
-How to use
+フレームワークスタックモジュール群
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+フレームワークスタックモジュールは、以下の通りである。
+本ガイドラインでもこれらのモジュールを使用してセキュリティ対策を行う方法について説明する。
+
+\
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **フレームワークスタックモジュール群**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - モジュール名
+      - 説明
+    * - \ ``spring-security-core``\
+      - 認証と認可機能を実現するために必要となるコアなコンポーネントが格納されている。
+        このモジュールに含まれるコンポーネントは、スタンドアロン環境で実行するアプリケーションでも使用することができる。
+    * - \ ``spring-security-web``\
+      - Webアプリケーションのセキュリティ対策を実現するために必要となるコンポーネントが格納されている。
+        このモジュールに含まれるコンポーネントは、Web層(サーブレットAPIなど)に依存する処理を行う。
+    * - \ ``spring-security-config``\
+      - 各モジュールから提供されているコンポーネントのセットアップをサポートするためのコンポーネント(コンフィギュレーションをサポートするクラスやXMLネームスペースを解析するクラスなど)が格納されている。
+        このモジュールを使用すると、Spring Securityのbean定義を簡単に行うことができる。
+    * - \ ``spring-security-taglibs``\
+      - 認証情報や認可機能にアクセスするためのJSPタグライブラリが格納されている。
+    * - \ ``spring-security-acl``\
+      - EntityなどのドメインオブジェクトをAccess Control List(ACL)を使用して認可制御するために必要となるコンポーネントが格納されている。
+        本モジュールは依存関係の都合上、フレームワークスタックに含まれているモジュールであるため、本ガイドラインにおいて使用方法の説明は行わない。
+
+要件に合わせて使用するモジュール群
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+フレームワークスタックではないが、一般的に利用される認証方法などをサポートするために、
+以下のようなモジュールも提供されている。
+セキュリティ要件に応じて、これらのモジュールの使用も検討されたい。
+
+\
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **要件に合わせて使用するモジュール群**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - モジュール名
+      - 説明
+    * - \ ``spring-security-remoting``\
+      - JNDI経由でDNSにアクセス、Basic認証が必要なWebサイトにアクセス、Spring Securityを使用してセキュリティ対策しているメソッドにRMI経由でアクセスする際に必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-aspects``\
+      - Javaのメソッドに対して認可機能を適用する際にAspectJの機能を使用する際に必要となるコンポーネントが格納されています。
+        このモジュールは、AOPとしてSpring AOPを使う場合は不要である。
+    * - \ ``spring-security-messaging``\ \ [#fSpringSecurityArchitecture5]_\ 
+      - SpringのWeb Socket機能に対してセキュリティ対策を追加するためのコンポーネントが格納されている。 
+    * - \ ``spring-security-data``\ \ [#fSpringSecurityArchitecture5]_\ 
+      - Spring Dataの機能から認証情報にアクセスできるようにするためのコンポーネントが格納されている。 
+    * - \ ``spring-security-ldap``\
+      - Lightweight Directory Access Protocol(LDAP)を使用した認証を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-openid``\
+      - OpenID\ [#fSpringSecurityArchitecture1]_\ を使用した認証を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-cas``\
+      - Central Authentication Service(CAS)\ [#fSpringSecurityArchitecture2]_\ と連携するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-crypto``\
+      - 暗号化、キーの生成、ハッシュアルゴリズムを利用したパスワードエンコーディングを行うためのコンポーネントが格納されている。
+        このモジュールに含まれるクラスは、フレームワークスタックモジュールである\ ``spring-security-core``\にも含まれている。
+
+テスト用のモジュール
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Spring Security 4.0からはテストを支援するためのモジュールが追加されている。
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}| 
+.. list-table:: **テスト用のモジュール** 
+    :header-rows: 1 
+    :widths: 25 75 
+  
+    * - モジュール名 
+      - 説明 
+    * - \ ``spring-security-test``\ \ [#fSpringSecurityArchitecture5]_\ 
+      - Spring Securityに依存しているクラスのテストを支援するためのコンポーネントが格納されている。 
+        このモジュールを使用すると、JUnitテスト時に必要となる認証情報を簡単にセットアップすることができる。 
+        また、Spring MVCのテスト用コンポーネント(\ ``MockMvc``\ )と連携して使用するコンポーネントも含まれている。 
+
+要件に合わせて利用する関連モジュール群
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+また、いくつかの関連モジュールも提供されている。
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **要件に合わせて利用する主な関連モジュール群**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - モジュール名
+      - 説明
+    * - \ ``spring-security-oauth2``\ \ [#fSpringSecurityArchitecture3]_\
+      - OAuth 2.0\ [#fSpringSecurityArchitecture4]_\ の仕組みを使用してAPIの認可を実現するために必要となるコンポーネントが格納されている。
+    * - \ ``spring-security-oauth``\ \ [#fSpringSecurityArchitecture3]_\
+      - OAuth 1.0の仕組みを使用してAPIの認可を実現するために必要となるコンポーネントが格納されている。
+
+|
+
+.. [#fSpringSecurityArchitecture1] OpenIDは、簡単に言うと「1つのIDで複数のサイトにログインできるようする」ための仕組みである。
+.. [#fSpringSecurityArchitecture2] CASは、OSSとして提供されているシングルサインオン用のサーバーコンポーネントである。詳細は https://www.apereo.org/cas を参照されたい。
+.. [#fSpringSecurityArchitecture3] 詳細は http://projects.spring.io/spring-security-oauth/ を参照されたい。
+.. [#fSpringSecurityArchitecture4] OAuth 2.0は、OAuth 1.0が抱えていた課題(署名と認証フローの複雑さ、モバイルやデスクトップのクライアントアプリの未対応など)を改善したバージョンで、OAuth 1.0との後方互換性はない。
+.. [#fSpringSecurityArchitecture5] Spring Security 4.0から追加されたモジュールである。
+
+|
+
+.. _SpringSecurityProcess:
+
+フレームワーク処理
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Securityは、サーブレットフィルタの仕組みを使用してWebアプリケーションのセキュリティ対策を行うアーキテクチャを採用しており、以下のような流れで処理を実行している。
+
+.. figure:: ./images_SpringSecurity/Architecture.png
+    :width: 100%
+
+    **Spring Securityのフレームワークアーキテクチャ**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - \ (1)
+      - クライアントは、Webアプリケーションに対してリクエストを送る。
+    * - \ (2)
+      - Spring Securityの\ ``FilterChainProxy``\ クラス(サーブレットフィルタ)がリクエストを受け取り、
+        \ ``HttpFirewall``\ インタフェースのメソッドを呼び出して\ ``HttpServletRequest``\ と\ ``HttpServletResponse``\ に対してファイアフォール機能を組み込む。
+    * - \ (3)
+      - \ ``FilterChainProxy``\ クラスは、Spring Securityが提供しているセキュリティ対策用のSecurity Filter(サーブレットフィルタ)クラスに処理を委譲する。
+    * - \ (4)
+      - Security Filterは複数のクラスで構成されており、サーブレットフィルタの処理が正常に終了すると後続のサーブレットフィルタが呼び出される。
+    * - \ (5)
+      - 最後のSecurity Filterの処理が正常に終了した場合、後続処理(サーブレットフィルタやサーブレットなど)を呼びだし、Webアプリケーション内のリソースへアクセスする。
+    * - \ (6)
+      - \ ``FilterChainProxy``\ クラスは、Webアプリケーションから返却されたリソースをクライアントへレスポンスする。
+
+|
+
+Webアプリケーション向けのフレームワーク処理を構成する主要なコンポーネントは以下の通りである。
+詳細は \ `Spring Security Reference -The Security Filter Chain- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#security-filter-chain>`_\ を参照されたい。
+
+
+FilterChainProxy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``FilterChainProxy``\ クラスは、Webアプリケーション向けのフレームワーク処理のエントリーポイントとなるサーブレットフィルタクラスである。
+このクラスはフレームワーク処理の全体の流れを制御するクラスであり、具体的なセキュリティ対策処理はSecurity Filterに委譲している。
+
+HttpFirewall
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``HttpFirewall``\ インタフェースは、\ ``HttpServletRequest``\ と\ ``HttpServletResponse``\ に対してファイアフォール機能を組み込むためのインタフェースである。
+デフォルトでは、\ ``DefaultHttpFirewall``\ クラスが使用され、ディレクトリトラバーサル攻撃やHTTPレスポンス分割攻撃に対するチェックなどが実装されている。
+
+SecurityFilterChain
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``SecurityFilterChain``\ インタフェースは、\ ``FilterChainProxy``\ が受け取ったリクエストに対して、適用するSecurity Filterのリストを管理するためのインタフェースである。
+デフォルトでは\ ``DefaultSecurityFilterChain``\ クラスが使用され、適用するSecurity Filterのリストを、リクエストURLのパターン毎に管理する。
+
+たとえば、以下のようなbean定義を行うと、URLに応じて異なる内容のセキュリティ対策を適用することができる。
+
+* xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例
+
+.. code-block:: xml
+
+    <sec:http pattern="/api/**">
+        <!-- ... -->
+    </sec:http>
+
+    <sec:http pattern="/ui/**">
+        <!-- ... -->
+    </sec:http>
+
+Security Filter
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Security Filterクラスは、フレームワーク機能やセキュリティ対策機能を実現する上で必要となる処理を提供するサーブレットフィルタクラスである。
+
+Spring Securityは、複数のSecurity Filterを連鎖させることでWebアプリケーションのセキュリティ対策を行う仕組みになっている。
+ここでは、認証と認可機能を実現するために必要となるコアなクラスを紹介する。
+詳細は \ `Spring Security Reference -Core Security Filters- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#core-web-filters>`_\ を参照されたい。
+
+.. _SpringSecurityTableSecurityFilter:
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **コアなSecurity Filter**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - クラス名
+      - 説明
+    * - \ ``SecurityContextPersistenceFilter``\
+      - 認証情報をリクエストを跨いで共有するための処理を提供するクラス。
+        デフォルトの実装では、\ ``HttpSession``\ に認証情報を格納することで、リクエストをまたいで認証情報を共有している。
+    * - \ ``UsernamePasswordAuthenticationFilter``\
+      - リクエストパラメータで指定されたユーザー名とパスワードを使用して認証処理を行うクラス。
+        フォーム認証を行う際に使用する。
+    * - \ ``LogoutFilter``\
+      - ログアウト処理を行うクラス。
+    * - \ ``FilterSecurityInterceptor``\
+      - HTTPリクエスト(\ ``HttpServletRequest``\ )に対して認可処理を実行するためのクラス。
+    * - \ ``ExceptionTranslationFilter``\
+      - \ ``FilterSecurityInterceptor``\ で発生した例外をハンドリングし、クライアントへ返却するレスポンスを制御するクラス。
+        デフォルトの実装では、未認証ユーザーからのアクセスの場合は認証を促すレスポンス、
+        認証済みのユーザーからのアクセスの場合は認可エラーを通知するレスポンスを返却する。
+
+|
+
+.. _SpringSecuritySetup:
+
+
+Spring Securityのセットアップ
 --------------------------------------------------------------------------------
 
-| Spring Securityを使用するために、以下の設定を定義する必要がある。
+WebアプリケーションにSpring Securityを適用するためのセットアップ方法について説明する。
 
-pom.xmlの設定
+ここでは、WebアプリケーションにSpring Securityを適用し、Spring Securityが提供しているデフォルトのログイン画面を表示させる最もシンプルなセットアップ方法を説明する。
+実際のアプリケーション開発で必要となるカスタマイズ方法や拡張方法については、次節以降で順次説明する。
+
+.. note::
+
+    開発プロジェクトを\ `ブランンクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ から作成すると、ここで説明する各設定はセットアップ済みの状態になっている。
+    開発プロジェクトの作成方法については、「:doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`」を参照されたい。
+
+|
+
+.. _SpringSecuritySetupDependency:
+
+依存ライブラリの適用
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| Spring Securityを使用する場合、以下のdependencyを、pom.xmlに追加する必要がある。
+
+まず、Spring Securityを依存関係として使用している共通ライブラリを適用する。
+Spring Securityと共通ライブラリの関連については、:ref:`frameworkstack_common_library` を参照されたい。
+
+本ガイドラインでは、Mavenを使って開発プロジェクトを作成していることを前提とする。
+
+* xxx-domain/pom.xmlの設定例
 
 .. code-block:: xml
 
@@ -65,6 +347,10 @@ pom.xmlの設定
         <artifactId>terasoluna-gfw-security-core</artifactId>  <!-- (1) -->
     </dependency>
 
+* xxx-web/pom.xmlの設定例
+
+.. code-block:: xml
+
     <dependency>
         <groupId>org.terasoluna.gfw</groupId>
         <artifactId>terasoluna-gfw-security-web</artifactId>  <!-- (2) -->
@@ -72,43 +358,127 @@ pom.xmlの設定
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-   :header-rows: 1
-   :widths: 10 90
+    :header-rows: 1
+    :widths: 10 90
 
-   * - 項番
-     - 説明
-   * - | (1)
-     - | terasoluna-gfw-security-coreは、webに依存しないため、ドメイン層のプロジェクトから使用する場合は、
-       | terasoluna-gfw-security-coreのみをdependencyに追加すること。
-   * - | (2)
-     - | terasoluan-gfw-webはwebに関連する機能を提供する。terasoluna-gfw-security-coreにも依存しているため、
-       | Webプロジェクトは、terasoluna-gfw-security-webのみをdependencyに追加すること。
+    * - 項番
+      - 説明
+    * - \ (1)
+      - ドメイン層のプロジェクトでSpring Securityの機能を使用する場合は、terasoluna-gfw-security-coreをdependencyに追加する。
+    * - \ (2)
+      - アプリケーション層のプロジェクトでSpring Securityの機能を使用する場合は、terasoluna-gfw-security-webをdependencyに追加する。
 
-Web.xmlの設定
+
+.. note::
+
+    本ガイドラインでは、Spring IO Platformを使用してライブラリのバージョンを管理する前提で記載しているため、\ ``<version>``\ 要素は省略している。
+
+|
+
+bean定義ファイルの作成
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. code-block:: xml
-   :emphasize-lines: 5,13-20
+Spring Securityのコンポーネントをbean定義するため、以下のようなXMLファイルを作成する。（`ブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\より抜粋）
 
-    <context-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>  <!-- (1) -->
-          classpath*:META-INF/spring/applicationContext.xml
-          classpath*:META-INF/spring/spring-security.xml
-      </param-value>
-    </context-param>
+* xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:sec="http://www.springframework.org/schema/security"
+           xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/security
+            http://www.springframework.org/schema/security/spring-security.xsd
+           "> <!-- (1) -->
+
+        <sec:http> <!-- (2) -->
+            <sec:form-login /> <!-- (3) -->
+            <sec:logout /> <!-- (4) -->
+            <sec:access-denied-handler ref="accessDeniedHandler"/> <!-- (5) -->
+            <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/> <!-- (6) -->
+            <sec:session-management /> <!-- (7) -->
+        </sec:http>
+
+        <sec:authentication-manager /> <!-- (8) -->
+
+        <bean id="accessDeniedHandler" class="org.springframework.security.web.access.DelegatingAccessDeniedHandler"> <!-- (9) -->
+            <!-- omitted -->
+        </bean>
+
+        <bean id="userIdMDCPutFilter" class="org.terasoluna.gfw.security.web.logging.UserIdMDCPutFilter">  <!-- (10) -->
+            <!-- omitted -->
+        </bean>
+
+    </beans>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+
+    * - 項番
+      - 説明
+    * - \ (1)
+      - Spring Securityから提供されているXMLネームスペースを有効する。
+        上記例では、\ ``sec``\ という名前を割り当てている。
+        XMLネームスペースを使用すると、Spring Securityのコンポーネントのbean定義を簡単に行うことができる。
+    * - \ (2)
+      - \ ``<sec:http>``\ タグを定義する。
+        \ ``<sec:http>``\ タグを定義すると、Spring Securityを利用するために必要となるコンポーネントのbean定義が自動的に行われる。
+    * - \ (3)
+      - \ ``<sec:form-login>``\ タグを定義し、フォーム認証を使用したログインに関する設定行う。
+        \ 詳細は :ref:`form-login` を参照されたい
+    * - \ (4)
+      - \ ``<sec:logout>``\ タグ を定義し、ログアウトに関する設定を行う。
+        \ 詳細は :ref:`SpringSecurityAuthenticationLogout` を参照されたい。
+    * - \ (5)
+      - \ ``<sec:access-denied-handler>``\ タグを定義し、アクセスエラー時の制御を行うための設定を定義する。
+        \ 詳細は :ref:`SpringSecurityAuthorizationAccessDeniedHandler` 、 :ref:`SpringSecurityAuthorizationOnError` を参照されたい。
+    * - \ (6)
+      - ログ出力するユーザ情報をMDCに格納するための共通ライブラリのフィルタを定義する。
+    * - \ (7)
+      - \ ``<sec:session-management>``\ タグ を定義し、セッション管理に関する設定を行う。
+        \ 詳細は :ref:`SpringSecuritySessionManagement` を参照されたい
+    * - \ (8)
+      - \ ``<sec:authentication-manager>``\ タグを定義して、認証機能用のコンポーネントをbean定義する。
+        このタグを定義しておかないとサーバ起動時にエラーが発生する。
+    * - \ (9)
+      - \ アクセスエラー時のエラーハンドリングを行うコンポーネントをbean定義する。
+    * - \ (10)
+      - \ ログ出力するユーザ情報をMDCにする共通ライブラリのコンポーネントをbean定義する。
+
+
+.. note:: **静的リソースへのアクセス**
+
+    JSPでCSS等の静的リソースを使用している場合は、それらを格納するフォルダにアクセス権を付与する必要がある。
+    詳細は、:ref:`SpringSecurityNotApply` を参照されたい。 
+
+|
+
+作成したbean定義ファイルを使用してSpringのDIコンテナを生成するように定義する。
+
+* xxx-web/src/main/webapp/WEB-INF/web.xmlの設定例
+
+.. code-block:: xml
+
+    <!-- (1) -->
     <listener>
-      <listener-class>
-        org.springframework.web.context.ContextLoaderListener
-      </listener-class>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
     </listener>
-    <filter>
-      <filter-name>springSecurityFilterChain</filter-name>  <!-- (2) -->
-      <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>  <!-- (3) -->
-    </filter>
-    <filter-mapping>
-      <filter-name>springSecurityFilterChain</filter-name>
-      <url-pattern>/*</url-pattern>  <!-- (4) -->
-    </filter-mapping>
+    <!-- (2) -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:META-INF/spring/applicationContext.xml
+            classpath*:META-INF/spring/spring-security.xml
+        </param-value>
+    </context-param>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -117,210 +487,81 @@ Web.xmlの設定
 
    * - 項番
      - 説明
-   * - | (1)
-     - | contextConfigLocationには、applicationContext.xmlに加えて、
-       | クラスパスにSpring Security設定ファイルを追加する。本ガイドラインでは、「spring-security.xml」とする。
-   * - | (2)
-     - | filter-nameには、Spring Securityの内部で使用されるBean名、「springSecurityFilterChain」 で定義すること。
-   * - | (3)
-     - 各種機能を有効にするための、Spring Securityのフィルタ設定。
-   * - | (4)
-     - 全てのリクエストに対して設定を有効にする。
-
-spring-security.xmlの設定
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-| web.xmlにおいて指定したパスに、spring-security.xmlを配置する。
-| 通常はsrc/main/resources/META-INF/spring/spring-security.xmlに設定する。
-| 以下の例は、雛形のみであるため、詳細な説明は、次章以降を参照されたい。
-
-* spring-mvc.xml
-
-  .. code-block:: xml
-
-    <beans xmlns="http://www.springframework.org/schema/beans"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:sec="http://www.springframework.org/schema/security"
-        xmlns:context="http://www.springframework.org/schema/context"
-        xsi:schemaLocation="http://www.springframework.org/schema/security
-            http://www.springframework.org/schema/security/spring-security.xsd
-            http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context.xsd">
-        <sec:http  use-expressions="true">  <!-- (1) -->
-        <!-- omitted -->
-        </sec:http>
-    </beans>
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - 項番
-       - 説明
-     * - | (1)
-       - | use-expressions="true"と記載することで、アクセス属性のSpring EL式を有効することができる。
-
-  \
-
-      .. note::
-          use-expressions="true" で有効になるSpring EL式は、以下を参照されたい。
-
-          \ `Expression-Based Access Control <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#el-access>`_\
-
-Appendix
---------------------------------------------------------------------------------
-
-.. _SpringSecurityAppendixSecHeaders:
-
-セキュアなHTTPヘッダー付与の設定
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-以下のようにspring-security.xmlの\ ``<sec:http>``\ の内の\ ``<sec:headers>``\ 要素を設定することで、HTTPレスポンスに自動でセキュリティに関するヘッダを設定することができる。
-これらのHTTPレスポンスヘッダをつけることにより、Webブラウザが攻撃を検知して対処できる。
-必須の設定ではないが、セキュリティ強化のために設定しておくことを推奨する。
-
-.. code-block:: xml
-
-    <sec:http use-expressions="true">
-      <!-- omitted -->
-      <sec:headers />
-      <!-- omitted -->
-    </sec:http>
-
-本設定で、以下の項目に関するHTTPレスポンスヘッダが設定される。
-
-* Cache-Control
-* X-Content-Type-Options
-* Strict-Transport-Security
-* X-Frame-Options
-* X-XSS-Protection
-
-.. tabularcolumns:: |p{0.2\linewidth}|p{0.5\linewidth}||p{0.3\linewidth}|
-.. list-table:: 
-   :header-rows: 1
-   :widths: 20 50 30
-
-   * - HTTPヘッダ名
-     - 設定が不適切(未設定含む)な場合の問題
-     - 適切に設定した場合の挙動
-   * - | \ ``Cache-Control``\ 
-     - | あるユーザーがログインして閲覧できるコンテンツがキャッシュされ、ログアウト後に別ユーザーも閲覧できてしまう場合がある。
-     - | コンテンツをキャッシュしないように指示をして、ブラウザがサーバの情報を常に取得するようにする。
-   * - | \ ``X-Content-Type-Options``\ 
-     - | ブラウザが、Content-Typeで内容を決めずにコンテンツの中身を調べて動作させる内容を判断してしまい、想定しないScriptが実行されてしまう場合がある。
-     - | ブラウザが、Content-Typeで内容を決めずにコンテンツの中身を調べて動作させる内容を判断しないようにする。MIMEタイプが一致しない場合、Scriptが実行されることを制限する。
-   * - | \ ``Strict-Transport-Security``\ 
-     - | セキュアなページにHTTPSでアクセスされることを期待しているにも関わらず、HTTPでアクセスされた際に、HTTP由来の攻撃を受ける可能性がある。(例: 中間攻撃者がユーザーのHTTPリクエストを傍受し、悪意のあるサイトへリダイレクトさせる。)
-     - | 一度正規のWebサイトへHTTPSでアクセスすれば、ブラウザは自動的にHTTPSのみを用いるよう理解して、悪意のあるサイトへ誘導されるという中間者攻撃の実行を防ぐ。
-   * - | \ ``X-Frame-Options``\ 
-     - | 悪意あるWebサイトAの画面を透過処理で見えなくし、代わりに\ ``<iframe>``\ タグで他の正常なサイトBを埋め込むと、攻撃者はユーザにサイトBのつもりでサイトAにアクセスさせることができる。
-       | この状況において、サイトAの送信ボタンとサイトBのリンクの位置を重ねると、攻撃者はユーザーに、正常なサイトBのリンクをクリックしたつもりでサイトAによる悪意のあるリクエストを送信させることができる。(\ `Clickjacking <https://www.owasp.org/index.php/Clickjacking>`_\ )
-     - | 自身の作成したWebサイト(=サイトB)が他のWebサイト(=サイトA)に\ ``<iframe>``\ タグを利用して読み込まれないようにする。
-   * - | \ ``X-XSS-Protection``\ 
-     - | ブラウザに実装されているXSSフィルターによる有害スクリプトの判定が無効化される。
-     - | ブラウザに実装されているXSSフィルターが、有害なスクリプトとを判断して実行するかどうかをユーザに問い合わせる、または無効にする(挙動はブラウザによって異なる)。
-
-
-
-上記設定は以下の(1)から(5)のように個別設定も可能である。必要に応じて取捨選択されたい。
-
-.. code-block:: xml
-
-    <sec:http use-expressions="true">
-      <!-- omitted -->
-      <sec:headers>
-        <sec:cache-control />  <!-- (1) -->
-        <sec:content-type-options />  <!-- (2) -->
-        <sec:hsts />  <!-- (3) -->
-        <sec:frame-options />  <!-- (4) -->
-        <sec:xss-protection />  <!-- (5) -->
-      </sec:headers>
-      <!-- omitted -->
-    </sec:http>
-
-.. tabularcolumns:: |p{0.05\linewidth}|p{0.45\linewidth}|p{0.40\linewidth}|p{0.10\linewidth}|
-.. list-table:: Spring Security によるHTTPヘッダー付与
-   :header-rows: 1
-   :widths: 5 45 40 10
-
-   * - 項番
-     - 説明
-     - デフォルトで出力されるHTTPレスポンスヘッダ
-     - 属性有無
-   * - | (1)
-     - | クライアントにデータをキャッシュしないように指示する。
-     - | \ ``Cache-Control:no-cache, no-store, max-age=0, must-revalidate``\ 
-       | \ ``Pragma: no-cache``\ 
-       | \ ``Expires: 0``\ 
-     - | 無し
-   * - | (2)
-     - | コンテントタイプを無視して、クライアント側がコンテンツ内容により、自動的に処理方法を決めないように指示する。
-     - | \ ``X-Content-Type-Options:nosniff``\ 
-     - | 無し
-   * - | (3)
-     - | HTTPSでアクセスしたサイトでは、HTTPSの接続を続けるように指示する。（HTTPでのサイトの場合、無視され、ヘッダ項目として付与されない。）
-     - | \ ``Strict-Transport-Security:max-age=31536000 ; includeSubDomains``\ 
-     - | 有り
-   * - | (4)
-     - | コンテンツをiframe内部に表示の可否を指示する。
-     - | \ ``X-Frame-Options:DENY``\ 
-     - | 有り
-   * - | (5)
-     - | \ `XSS攻撃 <https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)>`_\ を検出できるフィルターが実装されているブラウザに対して、XSSフィルター機能を有効にする指示をする。
-     - | \ ``X-XSS-Protection:1; mode=block``\ 
-     - | 有り
+   * - \(1)
+     -  サーブレットコンテナのリスナクラスとして、\ ``ContextLoaderListener``\ クラスを指定する。
+   * - \(2)
+     -  サーブレットコンテナの\ ``contextClass``\ パラメータに、\ ``applicationContext.xml``\ に加えて、Spring Security用のbean定義ファイルを追加する。
 
 |
 
-個別設定した場合は属性を設定可能である。設定可能な属性をいくつか説明する。
+サーブレットフィルタの設定
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+最後に、Spring Securityが提供しているサーブレットフィルタクラス(\ ``FilterChainProxy``\) をサーブレットコンテナに登録する。
 
-.. tabularcolumns:: |p{0.05\linewidth}|p{0.20\linewidth}|p{0.30\linewidth}|p{0.20\linewidth}|p{0.25\linewidth}|
-.. list-table:: 設定可能な属性
+* xxx-web/src/main/webapp/WEB-INF/web.xmlの設定例
+
+.. code-block:: xml
+
+    <!-- (1) -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>
+            org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+    </filter>
+    <!-- (2) -->
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
    :header-rows: 1
-   :widths: 5 20 30 20 25
-
+   :widths: 10 90
+   
    * - 項番
-     - オプション
      - 説明
-     - 指定例
-     - 出力されるHTTPレスポンスヘッダ
-   * - | (3)
-     - | \ ``max-age-seconds``\ 
-     - | 該当サイトに対してHTTPSのみでアクセスすることを記憶する秒数（デフォルトは365日）
-     - | \ ``<sec:hsts max-age-seconds="1000" />``\ 
-     - | \ ``Strict-Transport-Security:max-age=1000 ; includeSubDomains``\ 
-   * - | (3)
-     - | \ ``include-subdomains``\ 
-     - | サブドメインに対しての適用指示。デフォルト値は\ ``true``\ である。\ ``false``\ を指定すると出力されなくなる。
-     - | \ ``<sec:hsts include-subdomains="false" />``\ 
-     - | \ ``Strict-Transport-Security:max-age=31536000``\ 
-   * - | (4)
-     - | \ ``policy``\ 
-     - | コンテンツをiframe内部に表示する許可方法を指示する。デフォルト値は\ ``DENY``\ （フレーム内に表示するのを全面禁止）である。\ ``SAMEORIGIN``\ (同サイト内ページのみフレームに読み込みを許可する)にも変更可能である。
-     - | \ ``<sec:frame-options policy="SAMEORIGIN" />``\ 
-     - | \ ``X-Frame-Options:SAMEORIGIN``\ 
-   * - | (5)
-     - | \ ``enabled,block``\ 
-     - | \ ``false``\ を指定して、XSSフィルターを無効にすることが可能となるが、有効化を推奨する。
-     - | \ ``<sec:xss-protection enabled="false" block="false" />``\ 
-     - | \ ``X-XSS-Protection:0``\ 
+   * - \ (1)
+     - Spring Frameworkから提供されている\ ``DelegatingFilterProxy``\ を使用して、
+       SpringのDIコンテナで管理されているbean(\ ``FilterChainProxy``\ )をサーブレットコンテナに登録する。
+       サーブレットフィルタの名前には、SpringのDIコンテナで管理されているbeanのbean名(\ ``springSecurityFilterChain``\ )を指定する。
+   * - \ (2)
+     -  Spring Securityを適用するURLのパターンを指定する。
+        上記例では、すべてのリクエストに対してSpring Securityを適用する。
 
+|
 
-.. note::
+.. _SpringSecurityNotApply:
 
-    これらのヘッダに対する処理は、一部のブラウザではサポートされていない。ブラウザの公式サイトまたは以下のページを参照されたい。
+セキュリティ対策を適用しないため設定
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    * https://www.owasp.org/index.php/HTTP_Strict_Transport_Security (Strict-Transport-Security)
-    * https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet (X-Frame-Options)
-    * https://www.owasp.org/index.php/List_of_useful_HTTP_headers (X-Content-Type-Options, X-XSS-Protection)
+セキュリティ対策が不要なリソースのパス(cssファイルやimageファイルにアクセスするためのパスなど)に対しては、
+\ ``<sec:http>``\ タグを使用して、Spring Securityのセキュリティ機能(Security Filter)が適用されないように制御することができる。
 
+* xxx-web/src/main/resources/META-INF/spring/spring-security.xmlの定義例
 
-詳細については\ `公式リファレンス <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#default-security-headers>`_\ を参照されたい。
+.. code-block:: xml
+  
+    <sec:http pattern="/resources/**" security="none"/>  <!-- (1) (2) -->
+    <sec:http>
+        <!-- omitted -->
+    </sec:http>
+  
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+  
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``pattern``\ 属性にセキュリティ機能を適用しないパスのパターンを指定する。
+    * - | (2)
+      - | \ ``security``\ 属性に\ ``none``\ を指定する。
+        | \ ``none``\ を指定すると、Spring Securityのセキュリティ機能(Security Filter)が適用されない。
 
-    
 .. raw:: latex
 
    \newpage
