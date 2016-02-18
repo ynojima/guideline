@@ -3530,14 +3530,8 @@ ER図
          @Value("${security.tokenLifeTimeSeconds}")
          int tokenLifeTimeSeconds;
 
-         @Value("${app.host}") // (1)
-         String host;
-
-         @Value("${app.port}")
-         String port;
-
-         @Value("${app.contextPath}")
-         String contextPath;
+         @Value("${app.applicationBaseUrl}") // (1)
+         String baseUrl;
 
          @Value("${app.passwordReissueProtocol}")
          String protocol;
@@ -3568,11 +3562,10 @@ ER図
 
              passwordReissueInfoRepository.create(info);
 
-             UriComponentsBuilder uriBuilder = UriComponentsBuilder.newInstance();
-             uriBuilder.scheme(protocol).host(host).port(port).path(contextPath)
-                     .pathSegment("reissue").pathSegment("resetpassword")
+             UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(baseUrl);
+             uriBuilder.pathSegment("reissue").pathSegment("resetpassword")
                      .queryParam("form").queryParam("token", info.getToken());  // (2)
-             String passwordResetUrl = uriBuilder.build().toString();
+             String passwordResetUrl = uriBuilder.build().encode().toUriString();
 
              mailSharedService.send(account.getEmail(), passwordResetUrl); // (3)
 
@@ -3592,7 +3585,7 @@ ER図
      * - 項番
        - 説明
      * - | (1)
-       - | パスワード再発行画面のURLに使用するプロトコル、ホスト名、ポート番号、コンテキストパスをプロパティファイルから取得する。
+       - | パスワード再発行画面のURLに使用するベースURLをプロパティファイルから取得する。
      * - | (2)
        - | (1)で取得した値と、生成したパスワード再発行用の認証情報に含まれるトークンを使用して、ユーザに配布するパスワード再発行画面のURLを作成する。
          | URLの作成には \ ``org.springframework.web.util.UriComponentsBuilder`` \ を利用する。\ ``UriComponentsBuilder`` \ については、:ref:`RESTAppendixHyperMediaLink` の中で説明されている。
