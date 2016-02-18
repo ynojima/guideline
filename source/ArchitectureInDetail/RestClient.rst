@@ -323,6 +323,36 @@ How to use
 \ ``RestTemplate``\ を使用する場合は、\ ``RestTemplate``\ をDIコンテナに登録し、\ ``RestTemplate``\ を利用するコンポーネントにインジェクションする。
 
 
+依存ライブラリ設定
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| \ ``RestTemplate``\ を使用するために\ ``pom.xml``\ に、Spring Frameworkのspring-webライブラリを追加する。
+| マルチプロジェクト構成の場合は、domainプロジェクトの\ ``pom.xml``\ に追加する。
+| バージョンは、Spring Framework にて管理されているため、ここでバージョンを定義する必要はない。
+
+.. code-block:: xml
+
+    <dependencies>
+
+        <!-- (1) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+    </dependencies>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | Spring Frameworkの\ ``spring-web``\ ライブラリをdependenciesに追加する。
+
+
 \ ``RestTemplate``\ のbean定義
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
