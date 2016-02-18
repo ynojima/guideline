@@ -66,9 +66,9 @@
 
     * -
       - :doc:`../ArchitectureInDetail/FileDownload`
-      - ガイドラインのバグ修正
+      - 記述内容の改善
 
-        * \ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
+        * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
 
     * -
       - :doc:`../ArchitectureInDetail/Internationalization`
@@ -99,13 +99,13 @@
       - :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
       - 記述内容の改善
 
-        * \`` SQL Maven Plugin``\を使用してSQLを実行する方法を追加 (\ `guideline#1428 <https://github.com/terasolunaorg/guideline/issues/1428>`_\ )
+        * \ ``SQL Maven Plugin``\を使用してSQLを実行する方法を追加 (\ `guideline#1428 <https://github.com/terasolunaorg/guideline/issues/1428>`_\ )
 
     * -
       - :doc:`../Security/Authentication`
       - 記述内容の改善
 
-        * \`` RedirectAuthenticationHandler``\のパッケージ修正 (\ `guideline#1482 <https://github.com/terasolunaorg/guideline/issues/1482>`_\ )
+        * \ ``RedirectAuthenticationHandler``\のパッケージ修正 (\ `guideline#1482 <https://github.com/terasolunaorg/guideline/issues/1482>`_\ )
 
     * -
       - :doc:`../Security/PasswordHashing`
