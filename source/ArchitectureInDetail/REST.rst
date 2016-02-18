@@ -4612,6 +4612,399 @@ CSRF対策
 
 |
 
+
+.. _RESTHowToExtend:
+
+How to extend
+--------------------------------------------------------------------------------
+
+
+
+.. _RESTAppendixJsonview:
+
+@JsonViewを使用したレスポンスの出力制御
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+| \ ``@JsonView``\ を使用することによって、Resourceオブジェクト内のプロパティーをグループ分けすることができる。
+| この機能はSpring FrameworkがJacksonの機能をサポートすることにより実現している。
+| 詳細は、\ `JacksonJsonViews <http://wiki.fasterxml.com/JacksonJsonViews>`_\ を参照されたい。
+
+| Controllerにてグループを指定することで、指定したグループに所属するプロパティーのみ出力することができる。
+| 1つのプロパティーは、複数のグループに所属することも可能である。
+|
+| 以下は、Memberリソースを「概要」と「詳細」の２つのフォーマットで扱う際の実装例である。
+| 「概要フォーマット」はMemberリソースの主要項目を、「詳細フォーマット」はMemberリソースの全項目を出力する。
+
+* :file:`MemberResource.java`
+
+ .. code-block:: java
+
+    package org.terasoluna.examples.rest.api.member;
+    
+    import java.io.Serializable;
+    
+    import org.joda.time.DateTime;
+    import org.joda.time.LocalDate;
+
+    import com.fasterxml.jackson.annotation.JsonView;
+    
+    public class MemberResource implements Serializable {
+    
+        private static final long serialVersionUID = 1L;
+
+        // (1)
+        interface Summary {
+        }
+
+        // (2)
+        interface Detail {
+        }
+
+        // (3)
+        @JsonView({Summary.class, Detail.class})
+        private String memberId;
+
+        @JsonView({Summary.class, Detail.class})
+        private String firstName;
+
+        @JsonView({Summary.class, Detail.class})
+        private String lastName;
+
+        // (4)
+        @JsonView(Detail.class)
+        private String genderCode;
+
+        @JsonView(Detail.class)
+        private LocalDate dateOfBirth;
+
+        @JsonView(Detail.class)
+        private String emailAddress;
+
+        @JsonView(Detail.class)
+        private String telephoneNumber;
+
+        @JsonView(Detail.class)
+        private String zipCode;
+
+        @JsonView(Detail.class)
+        private String address;
+
+        // (5)
+        private DateTime createdAt;
+
+        private DateTime lastModifiedAt;
+
+        // omitted setter and getter
+    
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | 出力制御するグループを指定するためのマーカーインターフェースを定義している。
+        | 上記例では、概要出力時に指定するグループを定義している。
+    * - | (2)
+      - | 出力制御するグループを指定するためのマーカーインターフェースを定義している。
+        | 上記例では、詳細出力時に指定するグループを定義している。
+    * - | (3)
+      - | 複数のグループで出力したい項目には、引数を配列にして複数のマーカーインターフェースを渡すことで、複数のグループに所属させることができる。
+        | 上記例の場合、概要と詳細の両方のグループに所属させたい項目であるため、2つのマーカーインターフェースを引数にしている。
+    * - | (4)
+      - | 単一のグループで出力したい項目には、マーカーインターフェースを引数にすることで、
+        | 該当のグループに所属させることができる。
+        | この場合は要素が1つため、配列にする必要はない。
+        | 上記例の場合、詳細のみのグループに所属させたい項目であるため、1つのマーカーインターフェースを引数にしている。
+    * - | (5)
+      - | グループに所属しない項目には\ ``@JsonView``\ を設定しない。
+        | グループに所属しない項目を出力するかどうかは設定によって変えることができる。
+        | 設定方法については後述する。
+
+|
+
+
+* :file:`MemberRestController.java`
+
+ .. code-block:: java
+
+    package org.terasoluna.examples.rest.api.member;
+    
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import javax.inject.Inject;
+    
+    import org.dozer.Mapper;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.web.bind.annotation.PathVariable;
+    import org.springframework.web.bind.annotation.RequestBody;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RequestMethod;
+    import org.springframework.web.bind.annotation.ResponseStatus;
+    import org.springframework.web.bind.annotation.RestController;
+    import org.terasoluna.examples.rest.domain.model.Member;
+    import org.terasoluna.examples.rest.domain.service.member.MemberService;
+    
+    import com.fasterxml.jackson.annotation.JsonView;
+    
+    @RequestMapping("members")
+    @RestController
+    public class MemberRestController {
+    
+        @Inject
+        MemberService memberService;
+    
+        @Inject
+        Mapper beanMapper;
+        
+        // (1)
+        @JsonView(Summary.class)
+        @RequestMapping(value = "{memberId}", params = "format=summary", method = RequestMethod.GET)
+        @ResponseStatus(HttpStatus.OK)
+        public MemberResource getMemberSummary(@PathVariable("memberId") String memberId) {
+
+            Member member = memberService.getMember(memberId);
+
+            MemberResource responseResource = beanMapper.map(member,
+                    MemberResource.class);
+
+            return responseResource;
+        }
+        
+        // (2)
+        @JsonView(Detail.class)
+        @RequestMapping(value = "{memberId}", params = "format=detail", method = RequestMethod.GET)
+        @ResponseStatus(HttpStatus.OK)
+        public MemberResource getMemberDetail(@PathVariable("memberId") String memberId) {
+
+            Member member = memberService.getMember(memberId);
+
+            MemberResource responseResource = beanMapper.map(member,
+                    MemberResource.class);
+
+            return responseResource;
+        }
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``@JsonView``\ を付けて、出力したいグループのマーカーインターフェースを設定する。
+        | 概要を出力するメソッドに\ ``Summary``\ マーカーインターフェースを設定する。
+    * - | (2)
+      - | 詳細を出力するメソッドに\ ``Detail``\ マーカーインターフェースを設定する。
+
+
+|
+
+| 出力されるボディは、Controllerで指定したグループに所属するプロパティーのみ出力される。
+| 出力例は以下の通りとなる。
+
+* Summary
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith",
+      "createdAt" : "2014-03-14T11:02:41.477Z",
+      "lastModifiedAt" : "2014-03-14T11:02:41.477Z"
+    }
+
+
+|
+
+* Detail
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith",
+      "genderCode" : "1",
+      "dateOfBirth" : "2013-03-14",
+      "emailAddress" : "user1394794959984@test.com",
+      "telephoneNumber" : "09012345678",
+      "zipCode" : "1710051",
+      "address" : "Tokyo",
+      "createdAt" : "2014-03-14T11:02:41.477Z",
+      "lastModifiedAt" : "2014-03-14T11:02:41.477Z"
+    }
+
+
+|
+
+| \ ``@JsonView``\ を付けなかったプロパティーは、\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ の設定を有効にすれば出力され、無効にすれば出力されない。
+| 上記の出力例は、\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を有効にした場合の出力例である。
+| \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を有効にする場合は、以下のように設定する。
+
+ .. code-block:: xml
+ 
+   <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+       <!-- ... -->
+       
+       <!-- (1) -->
+       <property name="featuresToEnable">
+           <array>
+               <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+           </array>
+       </property>
+   </bean>
+
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``featuresToEnable``\ 要素に\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を定義することで設定が有効となる。
+    
+
+|
+
+
+| \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を無効にする場合は、以下のように設定する。
+
+ .. code-block:: xml
+ 
+   <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+       <!-- ... -->
+       
+       <!-- (1) -->
+       <property name="featuresToDisable">
+           <array>
+               <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+           </array>
+       </property>
+   </bean>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``featuresToDisable``\ 要素に\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を定義することで設定が無効となる。
+    
+
+| \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ が無効の場合、先ほどの出力例は、以下のように出力内容が変更される。
+
+* Summary
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith"
+    }
+
+
+|
+
+* Detail
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith",
+      "genderCode" : "1",
+      "dateOfBirth" : "2013-03-14",
+      "emailAddress" : "user1394794959984@test.com",
+      "telephoneNumber" : "09012345678",
+      "zipCode" : "1710051",
+      "address" : "Tokyo"
+    }
+
+|
+    
+    
+.. warning::
+ 
+    \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ を指定しない場合のデフォルト値は、\ ``ObjectMapper``\ の設定方法によって異なるデフォルト値となるため注意が必要である。
+    \ :ref:`RESTHowToUseApplicationSettingsOfSpringMVC`\ でも記述しているが、\ ``ObjectMapper``\ のBean定義方法を\ ``ObjectMapper``\ を直接Bean定義するスタイルにすると、デフォルト値が有効になる。\ ``Jackson2ObjectMapperFactoryBean``\ を利用すると、デフォルト値は無効になる。設定を明示するため、どちらのスタイルで設定する場合においても、\ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\ の指定を記述することを推奨する。
+    
+
+
+    
+.. note::
+  \ ``@JsonView``\ は以下の2つの機能を使用して作成されている。これらは、Controller内の\ ``@RequestMapping``\ が付けられた処理メソッドで、Objectとのマッピング前後に共通的な処理を実装したい場合に、使用することができる機能である。
+  
+  * \ ``org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice``\ 
+  * \ ``org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice``\
+
+  \ ``@ControllerAdvice``\ をこれらのインタフェースの実装クラスにつけることで適用することができる。\ ``@ControllerAdvice``\ の詳細は、\ :ref:`application_layer_controller_advice`\を参照されたい。
+  
+  \ ``RequestBodyAdvice``\ は下記のメソッドを実装することができる。
+
+
+  * :file:`org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice`
+
+   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+   .. list-table::
+      :header-rows: 1
+      :widths: 10 20 70
+
+      * - 項番
+        - メソッド名
+        - 概要
+      * - | (1)
+        - | supports
+        - | このAdviceが送信されたリクエストに対して適用されるかどうか決定する。\ ``true``\ だと適用される。
+      * - | (2)
+        - | handleEmptyBody
+        - | リクエストボディの内容をControllerで使用するオブジェクトに反映する前かつ、ボディが空の場合に呼び出される。
+      * - | (3)
+        - | beforeBodyRead
+        - | リクエストボディの内容をControllerで使用するオブジェクトに反映する前に呼び出される。
+      * - | (4)
+        - | afterBodyRead
+        - | リクエストボディの内容をControllerで使用するオブジェクトに反映した後に呼び出される。
+
+  上記すべてのタイミングで処理を記述する必要がない場合は、上記のsupports以外のメソッドが何もしない状態で実装された\ ``org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter``\ を継承し、必要な部分だけオーバーライドすることで、簡単に実装することができる。
+
+
+
+
+  \ ``ResponseBodyAdvice``\ は下記のメソッドを実装することができる。
+
+  * :file:`org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice`
+
+   .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+   .. list-table::
+      :header-rows: 1
+      :widths: 10 20 70
+
+      * - 項番
+        - メソッド名
+        - 概要
+      * - | (1)
+        - | supports
+        - | このAdviceが送信されたリクエストに対して適用されるかどうか決定する。\ ``true``\ だと適用される。
+      * - | (2)
+        - | beforeBodyWrite
+        - | Contorollerでの処理終了後、レスポンスに返り値を反映する前に呼び出される。
+
+|
+
+
 .. _RESTAppendix:
 
 Appendix
