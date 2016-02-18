@@ -174,7 +174,7 @@
 * アプリケーションが生成するパスワード再発行画面のURLは以下の形式である
     * {baseUrl}/reissue/resetpassword?form&token={token}
         * {baseUrl} : アプリケーションのベースURL
-        * {token} : 36文字、128bitのランダム文字列
+        * {token} : UUID version4形式の文字列（ハイフン込みで36文字、128bit）
 * パスワード再発行画面のURLには30分の有効期限を設け、有効期限内のみ認証可能
       
 設計情報
