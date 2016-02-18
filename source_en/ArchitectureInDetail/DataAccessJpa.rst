@@ -3395,7 +3395,7 @@ When type of matching (Forward match, Backward Match, Partial Match) is to be sp
 
  .. note :: **About wildcard character "_"**
 
-    As described in [:ref:`how_to_specify_query_annotation-label`], the wildcard character ``"%"`` can be use directly within ``@Query`` annotation in JPQL.
+    As described in [:ref:`how_to_specify_query_annotation-label`], the wildcard character ``"%"`` can be use directly in JPQL only if the ``@Query`` annotation is used.
     The wildcard character ``"_"`` cannot use directly in LIKE search of JPQL. It can be used in the following two ways.
     
     #. Include wildcard character ``"_"`` in the bind variable.
