@@ -4517,23 +4517,23 @@ Passayが提供している検証規則のクラスの一部を以下の表に�
      - 主なプロパティ
    * - | \ ``LengthRule`` \
      - | パスワード長の最小値、最大値を規定するための検証規則のクラス
-     - | \ ``minimuxLength`` \ : パスワード長の最小値(int)。コンストラクタまたはsetterで設定。
-       | \ ``maximumLength`` \ : パスワード長の最大値(int)。コンストラクタまたはsetterで設定。
+     - | \ ``minimuxLength`` \ : パスワード長の最小値(\ ``int`` \)。コンストラクタまたはsetterで設定。
+       | \ ``maximumLength`` \ : パスワード長の最大値(\ ``int`` \)。コンストラクタまたはsetterで設定。
    * - | \ ``CharacterRule`` \
      - | パスワードに含まれるべき文字種別と、その文字種別の最低文字数を規定するための検証規則のクラス
      - | \ ``characterData``\ : 文字種別(\ ``org.passay.CharacterData`` \)。コンストラクタで設定。
-       | \ ``numberOfCharacters`` \ : 最低文字数(int)。コンストラクタまたはsetterで設定。
+       | \ ``numberOfCharacters`` \ : 最低文字数(\ ``int`` \)。コンストラクタまたはsetterで設定。
    * - | \ ``CharacterCharacteristicsRule`` \
      - | 複数の\ ``CharacterRule`` \のうち、いくつ以上の規則を満たす必要があるかを規定するための検証規則のクラス
      - | \ ``rules``\ : 文字種別に関する検証規則のリスト(\ ``List<CharacterRule>`` \)。setterで設定。
-       | \ ``numberOfCharacteristics`` \ : 満たすべき検証規則の数の最小値(int)。setterで設定。
+       | \ ``numberOfCharacteristics`` \ : 満たすべき検証規則の数の最小値(\ ``int`` \)。setterで設定。
    * - | \ ``HistoryRule`` \
      - | パスワードが以前に使用したパスワードと一致していないことをチェックするための検証規則のクラス
      - | なし
    * - | \ ``UsernameRule`` \
      - | パスワードがユーザ名を含まないことをチェックするための検証規則のクラス
-     - | \ ``matchBackwards`` \ : ユーザ名を逆にした文字列もチェックする(boolean)。コンストラクタまたはsetterで設定。
-       | \ ``ignoreCase`` \ : 大文字、小文字を区別しない(boolean)。コンストラクタまたはsetterで設定。
+     - | \ ``matchBackwards`` \ : ユーザ名を逆にした文字列もチェックする(\ ``boolean`` \)。コンストラクタまたはsetterで設定。
+       | \ ``ignoreCase`` \ : 大文字、小文字を区別しない(\ ``boolean`` \)。コンストラクタまたはsetterで設定。
 
 この他にも、特定の文字を含む/含まないことのチェックや、正規表現によるチェックを行うための検証規則のクラス等が提供されている。
 詳細は `<http://www.passay.org/>`_ を参照。
