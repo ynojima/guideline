@@ -4082,7 +4082,7 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
 
  .. note:: **Dialect 拡張について**
 
-    ``@Where`` アノテーション内でSQL固有のキーワードを指定する場合、HibernateがSQL固有のキーワードを一般的な文字列として認識されてしまい、期待したSQLへ変換されないケースがあります。
+    ``@Where`` アノテーション内でSQL固有のキーワードを指定する場合、HibernateがSQL固有のキーワードを一般的な文字列として認識されてしまい、期待したSQLへ変換されないケースがある。
     SQL固有のキーワードを利用する場合に、 ``Dialect`` を拡張して使用する必要がある。
 
 - 標準的なキーワード ``true`` 、``false`` 、``unknown`` などを登録するための ``Dialect`` を拡張する
@@ -4109,8 +4109,8 @@ Repositoryインタフェースのメソッド呼び出し時に実行されるJ
     * - 項番
       - 説明
     * - | (1)
-      - | Hibernate 4.3のデフォルトの状態では、SQLのキーワードを正しく認識できない場合があります。例えば、PostgreSQL向けのキーワードを管理する ``org.hibernate.dialect.PostgreSQL9Dialect`` にはキーワードとしてBOOLEAN型の ``true`` 、``false`` 、``unknown`` などが登録されていないため、一般的な文字列として認識されてしまい、正しいSQLへ変換されません。
-        | そのため、必要に応じて ``org.hibernate.dialect.Dialect`` を拡張し、キーワードを登録する必要があります。
+      - | Hibernate 4.3のデフォルトの状態では、SQLのキーワードを正しく認識できない場合がある。例えば、PostgreSQL向けのキーワードを管理する ``org.hibernate.dialect.PostgreSQL9Dialect`` にはキーワードとしてBOOLEAN型の ``true`` 、``false`` 、``unknown`` などが登録されていないため、一般的な文字列として認識されてしまい、正しいSQLへ変換されない。
+        | そのため、必要に応じて ``org.hibernate.dialect.Dialect`` を拡張し、キーワードを登録する必要がある。
     * - | (2)
       - | ``@Where`` で利用する可能性のあるSQLキーワードを登録する。
 
