@@ -3393,6 +3393,14 @@ When type of matching (Forward match, Backward Match, Partial Match) is to be sp
     * - | (2)
       - | In case of escaping provided by the common library, ``"~"`` is being used as escape characters; hence specify ``"ESCAPE '~'"`` after LIKE clause.
 
+ .. note :: **About wildcard character "_"**
+
+    As described in [:ref:`how_to_specify_query_annotation-label`], the wildcard character ``"%"`` can be use directly in JPQL only if the ``@Query`` annotation is used.
+    The wildcard character ``"_"`` cannot use directly in LIKE search of JPQL. It can be used in the following two ways.
+    
+    #. Include wildcard character ``"_"`` in the bind variable.
+    #. Concatenate the wildcard character ``"_"`` with bind variable using database string concatenation function such as ``CONCAT`` . 
+
 |
 
 - Service
