@@ -1535,7 +1535,7 @@ ER図
 * パスワードの入力チェック
 
   Bean Validationアノテーションを使用してアプリケーション層で、パスワード入力チェックを行う。
-  Formクラスに付与されたアノテーションによって必要な入力チェックが網羅されていることから、単項目チェックのアノテーションを付与していない。
+  Formクラスに付与されたアノテーションによってNullチェック以外の入力チェックが網羅されていることから、単項目チェックとしては\ ``@NotNull`` \のみを付与している。
 
   .. code-block:: java
 
@@ -1554,12 +1554,16 @@ ER図
 
          private static final long serialVersionUID = 1L;
          
+         @NotNull
          private String username;
 
+         @NotNull
          private String oldPassword;
 
+         @NotNull
          private String newPassword;
 
+         @NotNull
          private String confirmNewPassword;
 
      }
@@ -3929,7 +3933,7 @@ URLに含まれるトークンと秘密情報の組が正しい場合にのみ�
 
   * Formの実装
 
-       クラスに付与されたアノテーションによって必要な入力チェックが網羅されていることから、単項目チェックのアノテーションを付与していない。
+    クラスに付与されたアノテーションによってNullチェック以外の入力チェックが網羅されていることから、単項目チェックとしては\ ``@NotNull`` \のみを付与している。
        
     .. code-block:: java
 
@@ -3945,14 +3949,19 @@ URLに含まれるトークンと秘密情報の組が正しい場合にのみ�
 
            private static final long serialVersionUID = 1L;
 
+           @NotNull
            private String username;
 
+           @NotNull
            private String token;
 
+           @NotNull
            private String secret;
 
+           @NotNull
            private String newPassword;
 
+           @NotNull
            private String confirmNewPassword;
        }
 
