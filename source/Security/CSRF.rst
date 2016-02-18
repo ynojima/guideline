@@ -472,9 +472,7 @@ Appendix
 マルチパートリクエスト(ファイルアップロード)時の留意点
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ファイルアップロードなど、マルチパートリクエストを送信する場合、formから送信されるCSRFトークンを\ ``springSecurityFilterChain``\ 内では取得できないため、CSRFトークンエラーが発生する。
-
-そのため、マルチパートリクエストを送信する場合は、以下の方法によって、CSRFトークンを取得できるようにする必要がある。
+マルチパートリクエストを送信する場合は、以下の方法によって、CSRFトークンを取得できるようにする必要がある。
 
 * \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用する
 * クエリのパラメータでCSRFトークンを送信する
@@ -490,7 +488,10 @@ Appendix
 
 MultipartFilterを使用する方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-\ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用することで、マルチパートリクエストでも、\ ``springSecurityFilterChain``\ 内で、formから送信されたCSRFトークンを取得することができる。
+
+マルチパートリクエストを送信する場合、ファイルアップロードで許容する最大サイズを超えた場合の動作が、アプリケーションサーバによって異なる。
+\ ``org.springframework.web.multipart.support.MultipartFilter``\を使用することで、アプリケーションサーバ依存を無くすことができる。
+
 
 .. warning:: **MultipartFilterを使用する際の留意点**
 
@@ -578,6 +579,10 @@ MultipartFilterを使用する方法
     * ブラウザのアドレスバーにCSRFトークンが表示される
     * ブックマークした場合、ブックマークにCSRFトークンが記録される
     * WebサーバのアクセスログにCSRFトークンが記録される
+
+    また、WebLogic など一部のアプリケーションサーバでは、\ ``MultipartFilter``\ を使用しないと、
+    java.lang.IllegalStateExceptionが事前に発生してしまうため、CSRFトークンチェック前に
+    異なるエラーになる。そのため、web.xmlの<error-page>機能を使って別途例外をハンドリングする必要がある。
 
 
 以下に、CSRFトークンをクエリパラメータとして送る実装例を示す。
