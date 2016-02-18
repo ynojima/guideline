@@ -5335,14 +5335,16 @@ RESTful Web Service向けのリクエストに対して、CSRF対策の処理が
     <!-- (1) -->
     <sec:http
         pattern="/api/v1/**"
-        auto-config="true"
         create-session="stateless">
+        <sec:http-basic/>
         <sec:csrf disabled="true"/>
     </sec:http>
 
-    <sec:http auto-config="true">
+    <sec:http>
         <sec:access-denied-handler ref="accessDeniedHandler"/>
         <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
+        <sec:form-login/>
+        <sec:logout/>
         <sec:session-management />
     </sec:http>
 

@@ -4201,7 +4201,9 @@ spring-security.xml
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true">
+        <sec:http>
+            <sec:form-login />
+            <sec:logout />
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />
