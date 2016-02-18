@@ -581,7 +581,7 @@ MultipartFilterを使用する方法
     * WebサーバのアクセスログにCSRFトークンが記録される
 
     また、WebLogic など一部のアプリケーションサーバでは、\ ``MultipartFilter``\ を使用しないと、
-    java.lang.IllegalStateExceptionが事前に発生してしまうため、CSRFトークンチェック前に
+    \ ``java.lang.IllegalStateException``\ が事前に発生してしまうため、CSRFトークンチェック前に
     異なるエラーになる。そのため、web.xmlの<error-page>機能を使って別途例外をハンドリングする必要がある。
 
 
