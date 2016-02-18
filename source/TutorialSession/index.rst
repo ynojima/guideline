@@ -2197,7 +2197,7 @@ JSPもすでに作成されているため、以下に示すコードをbodyタ�
 商品検索情報を保持するセッションスコープBeanを作成する。
 カート情報と同様にcomponent-scanを使用してbeanを定義する。
 
-``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/SearchCriteria.java``
+``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/GoodsSearchCriteria.java``
 
 .. code-block:: java
 
@@ -2211,7 +2211,7 @@ JSPもすでに作成されているため、以下に示すコードをbodyタ�
 
     @Component // (1)
     @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS) // (2)
-    public class SearchCriteria implements Serializable {
+    public class GoodsSearchCriteria implements Serializable {
 
         /**
          * 
@@ -2244,6 +2244,7 @@ JSPもすでに作成されているため、以下に示すコードをbodyタ�
         }
 
     }
+
 
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -2324,7 +2325,7 @@ Controllerの修正
 
         // (1)
         @Inject
-        SearchCriteria criteria;
+        GoodsSearchCriteria criteria;
 
         @ModelAttribute(value = "goodViewForm")
         public GoodViewForm setUpCategoryId() {
@@ -2722,7 +2723,7 @@ Controllerを作成する。
     import org.terasoluna.gfw.common.exception.BusinessException;
     import org.terasoluna.gfw.common.message.ResultMessages;
 
-    import com.example.session.app.goods.SearchCriteria;
+    import com.example.session.app.goods.GoodsSearchCriteria;
     import com.example.session.domain.model.Cart;
     import com.example.session.domain.model.Order;
     import com.example.session.domain.service.order.EmptyCartOrderException;
@@ -2742,7 +2743,7 @@ Controllerを作成する。
         Cart cart;
 
         @Inject
-        SearchCriteria criteria;
+        GoodsSearchCriteria criteria;
 
         @RequestMapping(method = RequestMethod.GET, params = "confirm")
         String confirm(@AuthenticationPrincipal AccountDetails userDetails,
@@ -2782,7 +2783,6 @@ Controllerを作成する。
                     .getResultMessages());
         }
     }
-
 
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
