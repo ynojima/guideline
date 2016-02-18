@@ -519,7 +519,7 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
 
   .. note:: **暗号化したデータを文字列として扱いたい場合**
 
-    外部システム連携等、暗号化したデータを文字列でやり取りしたい場合は文字列化の１つの方法としてBase64エンコードをあげられる。Java SE8以降の場合は、Java標準の\ ``java.util.Base64``\ を使用する。それ以前の場合は、Spring Securityの\ ``org.springframework.security.crypto.codec.Base64``\ を使用する。
+    外部システム連携等、暗号化したデータを文字列でやり取りしたい場合は、１つの手段としてBase64エンコードが挙げられる。Java SE8以降の場合は、Java標準の\ ``java.util.Base64``\ を使用する。それ以前の場合は、Spring Securityの\ ``org.springframework.security.crypto.codec.Base64``\ を使用する。
 
     Base64エンコードおよびデコードする方法をJava標準の\ ``java.util.Base64``\ を使用して説明する。
     
