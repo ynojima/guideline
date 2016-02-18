@@ -326,7 +326,7 @@ How to use
 依存ライブラリ設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| \ ``RestTemplate``\ を使用するために\ ``pom.xml``\ に、Spring Frameworkのspring-webライブラリが追加する。
+| \ ``RestTemplate``\ を使用するために\ ``pom.xml``\ に、Spring Frameworkのspring-webライブラリを追加する。
 | マルチプロジェクト構成の場合は、domainプロジェクトの\ ``pom.xml``\ に追加する。
 | バージョンは、Spring Framework にて管理されているため、ここでバージョンを定義する必要はない。
 
