@@ -580,9 +580,9 @@ MultipartFilterを使用する方法
     * ブックマークした場合、ブックマークにCSRFトークンが記録される
     * WebサーバのアクセスログにCSRFトークンが記録される
 
-    また、WebLogic など一部のアプリケーションサーバでは、\ ``MultipartFilter``\ を使用しないと、
-    \ ``java.lang.IllegalStateException``\ が事前に発生してしまうため、CSRFトークンチェック前に
-    異なるエラーになる。そのため、web.xmlの<error-page>機能を使って別途例外をハンドリングする必要がある。
+    また、WebLogicなど一部のアプリケーションサーバでは、\ ``MultipartFilter``\ を使用しないと、アップロード許容サイズを超過した場合、
+    CSRFトークンをパラメータから取得する前に\ ``java.lang.IllegalStateException``\ が発生するため、CSRFトークンチェックが実施できなくなる。
+    アップロード許容サイズ超過の場合に例外ハンドリングが必要な場合は、web.xmlの<error-page>機能などを使って、\ ``IllegalStateException``\ を定義する必要がある。
 
 
 以下に、CSRFトークンをクエリパラメータとして送る実装例を示す。
