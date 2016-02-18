@@ -636,6 +636,7 @@ ER図
            @Inject
            PasswordHistoryRepository passwordHistoryRepository;
 
+           @Transactional(propagation = Propagation.REQUIRES_NEW)
            public int insert(PasswordHistory history) {
                return passwordHistoryRepository.create(history);
            }
@@ -1897,8 +1898,9 @@ ER図
            }
 
 
+           @Transactional(propagation = Propagation.REQUIRES_NEW)
            @Override
-            public void authenticationFailure(String username) { // (1)
+           public void authenticationFailure(String username) { // (1)
                 if (accountSharedService.exists(username)){
                     FailedAuthentication failureEvents = new FailedAuthentication();
                     failureEvents.setUsername(username);
@@ -1928,6 +1930,7 @@ ER図
        * - | (1)
          - | 認証失敗イベントエンティティを作成してデータベースに登録するメソッド。
            | 引数として受け取ったユーザ名のアカウントが存在しない場合、データベースの外部キー制約に違反するため、データベースへの登録処理をスキップする。
+           | 本メソッド実行後の例外により認証失敗イベントエンティティが登録されない可能性を考慮し、トランザクションの伝搬方法に\ ``REQUIRES_NEW`` \を指定している。
            
 以下、実装方法に従って実装されたコードについて順に解説する。
 
@@ -2176,6 +2179,7 @@ ER図
 
            // omitted
 
+           @Transactional(propagation = Propagation.REQUIRES_NEW)
            @Override
            public void authenticationSuccess(String username) {
 
@@ -2642,6 +2646,7 @@ ER図
                return successAuthenticationRepository.findLatestEvents(username, count);
            }
 
+           @Transactional(propagation = Propagation.REQUIRES_NEW)
            @Override
              public void authenticationSuccess(String username) {
                  SuccessfulAuthentication successEvent = new SuccessfulAuthentication();
