@@ -1825,7 +1825,7 @@ Controllerを作成する。
 ``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/GoodsController.java``
 
 .. code-block:: java
-    :emphasize-lines: 30-32, 57-75
+    :emphasize-lines: 9-10, 15-16, 18-19, 30-32, 57-75
 
     package com.example.session.app.goods;
 
@@ -2288,7 +2288,7 @@ Controllerの修正
 ``/session-tutorial-init-web/src/main/java/com/example/session/app/goods/GoodsController.java``
 
 .. code-block:: java
-    :emphasize-lines: 34-36, 43-73
+    :emphasize-lines: 6, 34-36, 43-73
 
     package com.example.session.app.goods;
 
