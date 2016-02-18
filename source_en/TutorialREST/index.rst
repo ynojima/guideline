@@ -35,7 +35,7 @@ Verification environment
     * - Type
       - Product
     * - REST Client
-      - \ `DHC(aka Dev HTTP Client) <https://chrome.google.com/webstore/detail/dhc-resthttp-api-client/aejoelaoggembcahagimdiliamlcdmfm>`_\  0.7.11
+      - \ `DHC REST Client <https://chrome.google.com/webstore/detail/dhc-resthttp-api-client/aejoelaoggembcahagimdiliamlcdmfm>`_\  1.2.3
     * - Product other than the above
       - Similar to \ :doc:`../TutorialTodo/index`\
 
@@ -70,14 +70,14 @@ Search by entering [dev http client] in search form.
 
 |
 
-Click the [+ FREE] button of Dev HTTP Client.
+Click the [+ ADD TO CHROME] button of DHC REST Client.
 
 .. figure:: ./images_rest/install-dev-http-client4.png
    :width: 80%
 
 |
 
-Click [Add] button.
+Click [Add app] button.
 
 .. figure:: ./images_rest/install-dev-http-client5.png
 
