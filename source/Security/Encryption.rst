@@ -294,6 +294,10 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
      * - | (2)
        - | 平文を\ ``encrypt``\ メソッドで暗号化する。
 
+  .. note:: **GCMを用いたAESへのJavaの対応状況**
+
+    GCMを用いたAESはJava SE8以降で使用可能である。詳細については、\ `JDK 8セキュリティの拡張機能 <http://docs.oracle.com/javase/jp/8/docs/technotes/guides/security/enhancements-8.html>`_\を参照されたい。
+
 |
 
 文字列の復号
@@ -484,7 +488,6 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
             PrivateKey privateKey = keyPair.getPrivate();
 
             byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey);  // (4)
-            System.out.println(Base64.getEncoder().encodeToString(cipherBytes));
             String plainText = decryptByPrivateKey(cipherBytes, privateKey); // (5)
             System.out.println(plainText);
         } catch (NoSuchAlgorithmException e) {
@@ -513,6 +516,30 @@ Oracleなど、一部のJava製品ではAESの鍵長256ビットを扱うため�
 
      * - | (5)
        - | 秘密鍵を利用して復号処理を行う。処理内容は後述する。
+
+  .. note:: **暗号化したデータを文字列として扱いたい場合**
+
+    外部システム連携等、暗号化したデータを文字列でやり取りしたい場合は、1つの手段としてBase64エンコードが挙げられる。Java SE8以降の場合は、Java標準の\ ``java.util.Base64``\ を使用する。それ以前の場合は、Spring Securityの\ ``org.springframework.security.crypto.codec.Base64``\ を使用する。
+
+    Base64エンコードおよびデコードする方法をJava標準の\ ``java.util.Base64``\ を使用して説明する。
+    
+   * Base64エンコード
+
+    .. code-block:: java
+
+            // omitted
+            byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey);  // 暗号化処理
+            String cipherString = Base64.getEncoder().encodeToString(cipherBytes);  // バイト配列の暗号文を文字列に変換
+            // omitted
+
+   * Base64デコード
+
+    .. code-block:: java
+
+            // omitted
+            byte[] cipherBytes = Base64.getDecoder().decode(cipherString); // 文字列の暗号文をバイト配列に変換
+            String plainText = decryptByPrivateKey(cipherBytes, privateKey); // 復号処理
+            // omitted
 
 |
 
