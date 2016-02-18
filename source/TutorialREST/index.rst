@@ -35,7 +35,7 @@
     * - 種別
       - プロダクト
     * - REST Client
-      - \ `DHC(aka Dev HTTP Client) <https://chrome.google.com/webstore/detail/dhc-resthttp-api-client/aejoelaoggembcahagimdiliamlcdmfm>`_\  0.7.11
+      - \ `DHC REST Client <https://chrome.google.com/webstore/detail/dhc-resthttp-api-client/aejoelaoggembcahagimdiliamlcdmfm>`_\  1.2.3
     * - 上記以外のプロダクト
       - \ :doc:`../TutorialTodo/index`\ と同様
 
@@ -70,14 +70,14 @@ Chromeの「Tools」→「Extensions」を選択する。
 
 |
 
-Dev HTTP Clientの「+ FREE」ボタンを押下する。
+DHC REST Clientの「+ ADD TO CHROME」ボタンを押下する。
 
 .. figure:: ./images_rest/install-dev-http-client4.png
    :width: 80%
 
 |
 
-「Add」ボタンを押下する。
+「Add app」ボタンを押下する。
 
 .. figure:: ./images_rest/install-dev-http-client5.png
 
