@@ -43,7 +43,7 @@
    * - A6
      - `Sensitive Data Exposure <https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure>`_
      - * \ :doc:`../ArchitectureInDetail/PropertyManagement`\ 
-       * \ :doc:`../Security/PasswordHashing`\  (パスワードハッシュにのみ言及)
+       * \ :ref:`SpringSecurityAuthenticationPasswordHashing`\  (パスワードハッシュにのみ言及)
    * - A7
      - `Missing Function Level Access Control <https://www.owasp.org/index.php/Top_10_2013-A7-Missing_Function_Level_Access_Control>`_
      - * \ :doc:`../Security/Authorization`\ 

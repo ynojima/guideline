@@ -611,7 +611,7 @@ Spring Securityの設定
      - | ログインフォームを表示するためのURL
    * - | /login.jsp?error=true
      - | 認証エラー時に遷移するページ(ログインページ)を表示するためのURL
-   * - | /authenticate
+   * - | /login
      - | 認証処理を行うためのURL
    * - | /logout
      - | ログアウト処理を行うためのURL
@@ -639,32 +639,21 @@ Spring Securityの設定
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true" use-expressions="true">
-            <sec:headers>
-                <sec:cache-control />
-                <sec:content-type-options />
-                <sec:hsts />
-                <sec:frame-options />
-                <sec:xss-protection />
-            </sec:headers>
-            <sec:csrf />
+        <sec:http>
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />
             <!-- (1) -->
             <sec:form-login
                 login-page="/login.jsp"
-                authentication-failure-url="/login.jsp?error=true"
-                login-processing-url="/authenticate" />
+                authentication-failure-url="/login.jsp?error=true" />
             <!-- (2) -->
             <sec:logout
-                logout-url="/logout"
                 logout-success-url="/"
                 delete-cookies="JSESSIONID" />
             <!-- (3) -->
             <sec:intercept-url pattern="/login.jsp" access="permitAll" />
             <sec:intercept-url pattern="/**" access="isAuthenticated()" />
-
         </sec:http>
 
         <sec:authentication-manager>
@@ -730,7 +719,6 @@ Spring Securityの設定
 
         * \ ``login-page``\ 属性にログインフォームを表示するためのURL
         * \ ``authentication-failure-url``\ 属性に認証エラー時に遷移するページを表示するためのURL
-        * \ ``login-processing-url``\ 属性に認証処理を行うためのURL
 
         を設定する。
     * - | (2)
@@ -738,7 +726,6 @@ Spring Securityの設定
 
         \ ``<sec:logout>``\ タグには、
 
-        * \ ``logout-url``\ 属性にログアウト処理を行うためのURL
         * \ ``logout-success-url``\ 属性にログアウト後に遷移するページを表示するためのURL(本チュートリアルではウェルカムページを表示するためのURL)
         * \ ``delete-cookies``\ 属性にログアウト時に削除するCookie名(本チュートリアルではセッションIDのCookie名)
 
@@ -764,14 +751,6 @@ Spring Securityの設定
       - \ ``<sec:password-encoder>``\ タグを使用して、ログインフォームで指定されたパスワードをハッシュ化するためのクラス(\ ``PasswordEncoder``\ )の設定を行う。
 
         本チュートリアルでは、\ ``applicationContext.xml``\ に定義されている\ ``org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder``\ を利用する。
-
-.. note::
-
-    認証処理とログアウト処理を行うためのURLについては、Spring Securityが提供しているデフォルトのURLを変更している。
-
-    これは、これらのURLの中にSpring Securityを使用している事がわかる文字列(\ ``spring_security``\ )が含まれているためである。
-    デフォルトのURLをそのまま使用した場合、Spring Securityにセキュリティ上の脆弱性が発覚した場合に、
-    悪意のあるユーザからの攻撃を受けやすくなるという点に注意してほしい。
 
 |
 
@@ -802,17 +781,17 @@ Spring Securityの設定
             </c:if>
 
             <!-- (3) -->
-            <form:form action="${pageContext.request.contextPath}/authenticate">
+            <form:form action="${pageContext.request.contextPath}/login">
                 <table>
                     <tr>
-                        <td><label for="j_username">User:</label></td>
-                        <td><input type="text" id="j_username"
-                            name="j_username" value='demo'>(demo)</td><!-- (4) -->
+                        <td><label for="username">User:</label></td>
+                        <td><input type="text" id="username"
+                            name="username" value='demo'>(demo)</td><!-- (4) -->
                     </tr>
                     <tr>
-                        <td><label for="j_password">Password:</label></td>
-                        <td><input type="password" id="j_password"
-                            name="j_password" value="demo" />(demo)</td><!-- (5) -->
+                        <td><label for="password">Password:</label></td>
+                        <td><input type="password" id="password"
+                            name="password" value="demo" />(demo)</td><!-- (5) -->
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -832,24 +811,24 @@ Spring Securityの設定
     * - 項番
       - 説明
     * - | (1)
-      - 認証が失敗した場合、\ ``"/login.jsp?error=true"``\ が呼び出し、ログインページを表示する。
+      - 認証が失敗した場合、\ ``"/login.jsp?error=true"``\ が呼び出され、ログインページを表示する。
         そのため、認証エラー後の表示の時のみエラーメッセージが表示されるように\ ``<c:if>``\ タグを使用する。
     * - | (2)
       - 共通ライブラリから提供されている\ ``<t:messagesPanel>``\ タグを使用してエラーメッセージを表示する。
 
         認証が失敗した場合、認証エラーの例外オブジェクトが\ ``"SPRING_SECURITY_LAST_EXCEPTION"``\ という属性名でセッションスコープに格納される。
     * - | (3)
-      - \ ``<form:form>``\ タグの\ ``action``\ 属性に、認証処理用のURL(\ ``"/authenticate"``\ )と設定する。
+      - \ ``<form:form>``\ タグの\ ``action``\ 属性に、認証処理用のURL(\ ``"/login"``\ )を設定する。このURLはSpring Securityのデフォルトである。
 
         認証処理に必要なパラメータ(ユーザー名とパスワード)をPOSTメソッドを使用して送信する。
     * - | (4)
       - ユーザー名を指定するテキストボックスを作成する。
 
-        Spring Securityのデフォルトのパラメータ名は\ ``j_username``\ である。
+        Spring Securityのデフォルトのパラメータ名は\ ``username``\ である。
     * - | (5)
       - パスワードを指定するテキストボックス(パスワード用のテキストボックス)を作成する。
 
-        Spring Securityのデフォルトのパラメータ名は\ ``j_password``\ である。
+        Spring Securityのデフォルトのパラメータ名は\ ``password``\ である。
 
 |
 
@@ -1000,7 +979,7 @@ JSPからログインユーザーのアカウント情報へアクセス
     * - | (1)
       - \ ``<form:form>``\ タグを使用して、ログアウト用のフォームを追加する。
 
-        \ ``action``\ 属性には、ログアウト処理用のURL(\ ``"/logout"``\ )を指定して、Logoutボタンを追加する。
+        \ ``action``\ 属性には、ログアウト処理用のURL(\ ``"/logout"``\ )を指定して、Logoutボタンを追加する。このURLはSpring Securityのデフォルトである。
 
 |
 
@@ -1021,7 +1000,7 @@ Controllerからログインユーザーのアカウント情報へアクセス
   
     package com.example.security.app.account;
 
-    import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.RequestMapping;
@@ -1142,7 +1121,7 @@ spring-security.xml
 作成したブランクプロジェクトの\ ``src/main/resources/META-INF/spring/spring-security.xml``\ は、以下のような設定となっている。
 
 .. code-block:: xml
-    :emphasize-lines: 9,12,20,22,24,26,30,33,66
+    :emphasize-lines: 9,12,14,16,18,20,24,27,60
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -1154,17 +1133,11 @@ spring-security.xml
 
         <!-- (1) -->
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true" use-expressions="true">
+        <sec:http>
             <!-- (2) -->
-            <sec:headers>
-                <sec:cache-control />
-                <sec:content-type-options />
-                <sec:hsts />
-                <sec:frame-options />
-                <sec:xss-protection />
-            </sec:headers>
+            <sec:form-login/>
             <!-- (3) -->
-            <sec:csrf />
+            <sec:logout/>
             <!-- (4) -->
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <!-- (5) -->
@@ -1227,14 +1200,12 @@ spring-security.xml
       - \ ``<sec:http>``\ タグを使用してHTTPアクセスに対して認証・認可を制御する。
 
         ブランクプロジェクトのデフォルトの設定では、静的リソース(js, css, imageファイルなど)にアクセスするためのURLを認証・認可の対象外にしている。
-    * - | (2)
-      - \ ``<sec:headers>``\ タグを使用して、セキュリティ対策用のレスポンスヘッダの付与を制御する。
-
-        使用方法については、「:ref:`SpringSecurityAppendixSecHeaders`」を参照されたい。
-    * - | (3)
-      - \ ``<sec:csrf>``\ タグを使用して、CSRF対策を制御する。
-
-        使用方法については、「:doc:`../Security/CSRF`」を参照されたい。
+    * - \ (2)
+      - \ ``<sec:form-login>``\ タグを使用して、フォーム認証を使用したログインに関する動作を制御する。
+        \ 使用方法については、「:ref:`form-login`」 を参照されたい
+    * - \ (3)
+      - \ ``<sec:logout>``\ タグ を使用して、ログアウトに関する動作を制御する。
+        \ 使用方法については、「:ref:`SpringSecurityAuthenticationLogout`」 を参照されたい。
     * - | (4)
       - \ ``<sec:access-denied-handler>``\ タグを使用して、アクセスを拒否した後の動作を制御する。
 
@@ -1251,12 +1222,11 @@ spring-security.xml
     * - | (6)
       - \ ``<sec:session-management>``\ タグを使用して、Spring Securityのセッション管理方法を制御する。
 
-        使用方法については、「:ref:`authentication(spring_security)_how_to_use_sessionmanagement`」を参照されたい。
+        使用方法については、「:ref:`SpringSecuritySessionManagementSetup`」を参照されたい。
     * - | (7)
       - \ ``<sec:authentication-manager>``\ タグを使用して、認証処理を制御する。
 
         使用方法については、「:ref:`AuthenticationProviderConfiguration`」を参照されたい。
-
 
 |
 
@@ -1291,7 +1261,7 @@ Spring Securityと関係のない設定については、説明を割愛する�
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <!-- (1) -->
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
 
