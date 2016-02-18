@@ -1190,7 +1190,7 @@ Controllerでは、入力情報を受け取るフォームを ``@SessionAttribut
 
     import org.dozer.Mapper;
     import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-    import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.stereotype.Controller;
     import org.springframework.validation.BindingResult;
     import org.springframework.validation.annotation.Validated;
@@ -2710,7 +2710,7 @@ Controllerを作成する。
     import javax.inject.Inject;
 
     import org.springframework.http.HttpStatus;
-    import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.ExceptionHandler;
