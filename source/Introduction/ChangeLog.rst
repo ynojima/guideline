@@ -20,7 +20,6 @@
 
         * GroupId「\ ``org.springframework``\」のバージョンを3.2.14.RELEASEから3.2.16.RELEASEに更新
         * GroupId「\ ``commons-collections``\」のバージョンを3.2.1から3.2.2に更新
-        * 更新内容は、\ `version 1.0.4の移行ガイド <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-1.0.4#step-1-update-dependency-libraries>`_\ を参照されたい。
     * - 2015-07-31
       - \-
       - 1.0.3 RELEASE版公開
