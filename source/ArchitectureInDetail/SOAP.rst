@@ -751,7 +751,6 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
               create-session="stateless">
        <sec:csrf disabled="true" />
        <sec:http-basic />  <!-- (1) -->
-       <sec:logout />
     </sec:http>
 
     <!-- (2) -->
