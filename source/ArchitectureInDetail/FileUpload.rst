@@ -318,33 +318,13 @@ multipart/form-dataリクエストの時、ファイルアップロードで許�
     また、プロジェクト独自で作成するServlet Filterでリクエストパラメータにアクセスするものがある場合は、そのServlet Filterより前に定義すること。
     
 
+ .. note::
 
-Servlet3.0のアップロード機能とSpring MVCを連携するための設定
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-| \ ``MultipartFilter``\ を使用する場合は必要ないが、\ ``MultipartFilter``\ を使用しない場合、Servlet 3.0のアップロード機能とSpring MVCを連携するために、 \ ``StandardServletMultipartResolver``\のbean定義をする必要がある。
-| 以下に、設定例を示す。
-
-- :file:`spring-mvc.xml`
-
- .. code-block:: xml
-
-    <bean id="multipartResolver"
-        class="org.springframework.web.multipart.support.StandardServletMultipartResolver"> <!-- (1) -->
-    </bean>
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | Servlet 3.0用のMultipartResolverである\ ``StandardServletMultipartResolver``\ を、bean定義する。
-       | beanIDは、\ ``"multipartResolver"``\ とすること。
-       |
-       | この設定を行うことで、アップロードされたファイルを\ ``org.springframework.web.multipart.MultipartFile``\ として、Controllerの引数およびフォームオブジェクトのプロパティとして、受け取ることができる。
+    **MultipartResolverのデフォルト呼び出し**
+    
+    \ ``MultipartFilter``\ を使用すると、デフォルトで
+    \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ が呼び出される。
+    \ ``StandardServletMultipartResolver``\ は、アップロードされたファイルを\ ``org.springframework.web.multipart.MultipartFile``\ として生成し、Controllerの引数およびフォームオブジェクトのプロパティとして、受け取ることができるようにする。
 
 
 例外ハンドリングの設定
