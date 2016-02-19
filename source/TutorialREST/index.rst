@@ -644,7 +644,7 @@ REST API用のSpring Securityの定義追加
 | ``src/main/resources/META-INF/spring/spring-security.xml``
 
 .. code-block:: xml
-    :emphasize-lines: 11-12
+    :emphasize-lines: 11-18
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -657,7 +657,12 @@ REST API用のSpring Securityの定義追加
         <sec:http pattern="/resources/**" security="none"/>
 
         <!-- (1) -->
-        <sec:http pattern="/api/v1/**" security="none" />
+        <sec:http
+            pattern="/api/v1/**"
+            create-session="stateless">
+            <sec:http-basic />
+            <sec:csrf disabled="true"/>
+        </sec:http>
 
         <sec:http>
             <sec:form-login />
@@ -718,6 +723,9 @@ REST API用のSpring Securityの定義追加
      - | REST API用のSpring Securityの定義を追加する。
        | \ ``<sec:http>``\ 要素の\ ``pattern``\ 属性に、REST API用のリクエストパスのURLパターンを指定している。
        | 本チュートリアルでは\ ``/api/v1/``\ で始まるリクエストパスをREST API用のリクエストパスとして扱う。
+       | また、\ ``create-session``\ 属性を\ ``stateless``\ とする事で、Spring Securityの処理でセッションが使用されなくなる。
+       | 
+       | CSRF対策を無効化するために、\ ``<sec:csrf>``\ 要素に \ ``disabled="true"``\ を指定している。
 
 |
 

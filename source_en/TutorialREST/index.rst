@@ -645,7 +645,7 @@ Definition of Spring Security for REST API
 | ``src/main/resources/META-INF/spring/spring-security.xml``
 
 .. code-block:: xml
-    :emphasize-lines: 11-12
+    :emphasize-lines: 11-18
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -658,7 +658,13 @@ Definition of Spring Security for REST API
         <sec:http pattern="/resources/**" security="none"/>
 
         <!-- (1) -->
-        <sec:http pattern="/api/v1/**" security="none" />
+        <sec:http
+            pattern="/api/v1/**"
+            auto-config="true"
+            use-expressions="true"
+            create-session="stateless">
+            <sec:headers />
+        </sec:http>
 
         <sec:http auto-config="true" use-expressions="true">
             <sec:headers>
@@ -725,6 +731,7 @@ Definition of Spring Security for REST API
      - | Add the definition of Spring Security for REST API.
        | Specify the URL pattern of the REST API request path at \ ``pattern`` \ attribute of the \ ``<sec:http>`` \ element.
        | In this tutorial, request path starts with \ ``/api/v1/`` \ is considered as a REST API request.
+       | Furthermore, session is no longer used in the processing of Spring Security by specifying \ ``stateless`` \ at \ ``create-session`` \ attribute.
 
 |
 
