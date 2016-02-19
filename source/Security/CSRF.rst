@@ -469,11 +469,6 @@ JSONでリクエストを送信する場合も、同様にHTTPヘッダを設定
 マルチパートリクエストを送信する場合、CSRFトークンチェックを実施するには以下の方法がある。
 
 * \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用する
-* クエリのパラメータでCSRFトークンを送信する
-
-.. note::
-
-    それぞれメリット・デメリットが存在するため、システム要件を考慮して、採用する対策方法を決めて頂きたい。
 
 ファイルアップロードの詳細については、\ :doc:`FileUpload <../ArchitectureInDetail/FileUpload>`\ を参照されたい。
 
@@ -556,58 +551,4 @@ MultipartFilterを使用する方法
        |
        | **<form> タグを使用する場合**
        | \ :ref:`csrf_formtag-use`\ でCSRFトークンを設定すること。
-
-
-クエリパラメータでCSRFトークンを送る方法
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を防ぎたい場合は、
-\ ``MultipartFilter``\ は使用せず、クエリパラメータでCSRFトークンを送る必要がある。
-
-.. warning::
-
-    この方法でCSRFトークンを送った場合、
-
-    * ブラウザのアドレスバーにCSRFトークンが表示される
-    * ブックマークした場合、ブックマークにCSRFトークンが記録される
-    * WebサーバのアクセスログにCSRFトークンが記録される
-
-    また、WebLogicなど一部のアプリケーションサーバでは、\ ``MultipartFilter``\ を使用しないと、アップロード許容サイズを超過した場合、
-    CSRFトークンをパラメータから取得する前に\ ``java.lang.IllegalStateException``\ が発生するため、CSRFトークンチェックが実施できなくなる。
-    アップロード許容サイズ超過の場合に例外ハンドリングが必要な場合は、web.xmlの<error-page>機能などを使って、\ ``IllegalStateException``\ を定義する必要がある。
-
-
-以下に、CSRFトークンをクエリパラメータとして送る実装例を示す。
-
-**JSPの実装例**
-
-.. code-block:: jsp
-
-    <form:form action="${pageContext.request.contextPath}/fileupload?${f:h(_csrf.parameterName)}=${f:h(_csrf.token)}"
-        method="post" modelAttribute="fileUploadForm" enctype="multipart/form-data"> <!-- (1) -->
-        <table>
-            <tr>
-                <td width="65%"><form:input type="file" path="uploadFile" /></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Upload" /></td>
-            </tr>
-        </table>
-    </form:form>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | \ ``<form:form>``\ タグのaction属性に、以下のクエリを付与する必要がある。
-       | \ ``?${f:h(_csrf.parameterName)}=${f:h(_csrf.token)}``\
-       | \ ``<form>``\ タグを使用する場合も、同様の設定が必要である。
-
-.. raw:: latex
-
-   \newpage
 
