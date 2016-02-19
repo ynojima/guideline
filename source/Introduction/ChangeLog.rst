@@ -89,10 +89,16 @@
         *  JdbcCodeListに\ ``JdbcTemplate``\を指定するパターンを推奨とする記述を追加(\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
 
     * -
+      - :doc:`../ArchitectureInDetail/FileUpload`
+      - 記述内容の改善
+
+        * アップロード処理の基本フロー、及びその説明をSpringの\ ``MultipartFilter``\を用いた記述に修正 (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
+
+    * -
       - :doc:`../ArchitectureInDetail/FileDownload`
       - 記述内容の改善
 
-        * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
+        * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正 (\ `guideline#1310 <https://github.com/terasolunaorg/guideline/issues/1310>`_\ )
 
     * -
       - :doc:`../ArchitectureInDetail/REST`
