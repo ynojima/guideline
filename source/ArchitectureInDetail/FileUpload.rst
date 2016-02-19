@@ -57,26 +57,28 @@ Servlet 3.0からサポートされたファイルアップロード機能と、
    * - | (1)
      - | アップロードするファイルを選択し、アップロードを実行する。
    * - | (2)
-     - | サーブレットコンテナは、\ ``multipart/form-data``\ リクエストを受け取り、\ ``org.springframework.web.servlet.DispatcherServlet``\ を呼び出す。
+     - | サーブレットコンテナは、\ ``multipart/form-data``\ リクエストを受け取り、\ ``org.springframework.web.multipart.support.MultipartFilter``\ を呼び出す。
    * - | (3)
-     - | \ ``DispatcherServlet``\ は、 ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、Servlet 3.0のファイルアップロード機能を、Spring MVCで扱えるようにする。
-       | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入されたAPI(\ ``javax.servlet.http.Part``\ )をラップする\ ``org.springframework.web.multipart.MultipartFile``\ のオブジェクトを生成する。
+     - | \ ``MultipartFilter``\ は、 \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ のメソッドを呼び出し、Servlet 3.0のファイルアップロード機能を、Spring MVCで扱えるようにする。
+       | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入されたAPI( \ ``javax.servlet.http.Part``\ )をラップする \ ``org.springframework.web.multipart.MultipartFile``\ のオブジェクトを生成する。
    * - | (4)
-     - | \ ``DispatcherServlet``\ は、Controllerのハンドラメソッドを呼び出す。
-       | (3)で生成された\ ``MultipartFile``\ オブジェクトは、 Controllerの引数またはフォームオブジェクトに、バインドされる。
+     - | \ ``MultipartFilter``\ から \ ``DispatcherServlet``\ にフィルタチェーンする。
    * - | (5)
-     - | Controllerは、\ ``MultipartFile``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得する。
+     - | \ ``DispatcherServlet``\ は、Controllerのハンドラメソッドを呼び出す。
+       | (3)で生成された \ ``MultipartFile``\ オブジェクトは、 Controllerの引数またはフォームオブジェクトに、バインドされる。
    * - | (6)
-     - | \ ``MultipartFile``\ は、Servlet 3.0から導入された\ ``Part``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得し、Controllerに返却する。
+     - | Controllerは、 \ ``MultipartFile``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得する。
    * - | (7)
+     - | \ ``MultipartFile``\ は、Servlet 3.0から導入された \ ``Part``\ オブジェクトのメソッドを呼び出し、アップロードされたファイルの中身と、メタ情報(ファイル名など)を取得し、Controllerに返却する。
+   * - | (8)
      - | Controllerは、Serviceのメソッドを呼び出し、アップロード処理を実行する。
        | \ ``MultipartFile``\ オブジェクトより取得した、ファイルの中身と、メタ情報(ファイル名など)は、Serviceのメソッドの引数として、引き渡す。
-   * - | (8)
-     - | Serviceは、アップロードされたファイルの中身と、メタ情報(ファイル名など)を、ファイルまたはデータベースに格納する。
    * - | (9)
-     - | \ ``DispatcherServlet``\ は、\ ``StandardServletMultipartResolver``\ を呼び出し、Servlet 3.0のファイルアップロード機能で使用される一時ファイルを削除する。
+     - | Serviceは、アップロードされたファイルの中身と、メタ情報(ファイル名など)を、ファイルまたはデータベースに格納する。
    * - | (10)
-     - | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入された\ ``Part``\ オブジェクトのメソッドを呼び出し、ディスクに保存されている一時ファイルを削除する。
+     - | \ ``MultipartFilter``\ は、 \ ``StandardServletMultipartResolver``\ を呼び出し、Servlet 3.0のファイルアップロード機能で使用される一時ファイルを削除する。
+   * - | (11)
+     - | \ ``StandardServletMultipartResolver``\ は、Servlet 3.0から導入された \ ``Part``\ オブジェクトのメソッドを呼び出し、ディスクに保存されている一時ファイルを削除する。
 
  .. note::
 
@@ -118,9 +120,9 @@ Spring Webから提供されているファイルアップロード用のクラ�
    * - 5.
      - | org.springframework.web.multipart.support.
        | MultipartFilter
-     - | multipart/form-dataリクエストの時に、Servlet Filterの処理内でリクエストパラメータを取得できるようにするためのクラス。
-       | このクラスを使用しないと、Servlet Filterでリクエストパラメータの取得ができないため、Spring Securityから提供されているCSRFトークンチェック機能が正しく動作しない。
-       | 具体的には、CSRFトークンが取得できないため、常にCSRFトークンエラーとなりファイルのアップロードが出来ない。
+     - | multipart/form-dataリクエストの時に、DIコンテナからMultipartResolverを実装するクラスを呼び出し、MultipartFileを生成するクラス。
+       | このクラスを使用しないと、ファイルアップロードで許容する最大サイズを超えた場合に、Servlet Filterの処理内でリクエストパラメータを取得できない。
+       | そのため、本ガイドラインではMultipartFilterを使用することを推奨している。
 
  .. tip::
 
@@ -279,9 +281,12 @@ Servlet 3.0のアップロード機能を有効化するために、以下の設
 
         アプリケーションとしてアップロードされたファイルを一時的なファイルとして保存しておきたい場合は、\ ``<location>``\ 要素で指定するディレクトリとは、別のディレクトリに出力すること。
 
-Servlet Filterの処理内でリクエストパラメータを取得できるようにするための設定
+Servlet Filterの設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-multipart/form-dataリクエストの時に、Servlet Filterの処理内でリクエストパラメータを取得できるようにするために、以下の設定を行う。
+multipart/form-dataリクエストの時、ファイルアップロードで許容する最大サイズを超えた場合の動作は、アプリケーションサーバによって異なる。アプリケーションサーバによっては、許容サイズを超えたアップロードの際に発生する\ ``MultipartException``\ が検知されず、後述する例外ハンドリングの設定が有効にならない場合がある。
+
+| この動作は\ ``MiltipartFilter``\ を設定することで回避できるため、本ガイドラインでは\ ``MiltipartFilter``\ の設定を前提として説明を行う。
+| 以下に、設定例を示す。
 
 - :file:`web.xml`
 
@@ -319,31 +324,13 @@ multipart/form-dataリクエストの時に、Servlet Filterの処理内でリ�
     また、プロジェクト独自で作成するServlet Filterでリクエストパラメータにアクセスするものがある場合は、そのServlet Filterより前に定義すること。
     
 
+ .. note::
 
-Servlet 3.0のアップロード機能とSpring MVCを連携するための設定
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Servlet 3.0のアップロード機能と、Spring MVCを連携するために、以下の設定を行う。
-
-- :file:`spring-mvc.xml`
-
- .. code-block:: xml
-
-    <bean id="multipartResolver"
-        class="org.springframework.web.multipart.support.StandardServletMultipartResolver"> <!-- (1) -->
-    </bean>
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | Servlet 3.0用のMultipartResolverである\ ``StandardServletMultipartResolver``\ を、bean定義する。
-       | beanIDは、\ ``"multipartResolver"``\ とすること。
-       |
-       | この設定を行うことで、アップロードされたファイルを\ ``org.springframework.web.multipart.MultipartFile``\ として、Controllerの引数およびフォームオブジェクトのプロパティとして、受け取ることができる。
+    **MultipartResolverのデフォルト呼び出し**
+    
+    \ ``MultipartFilter``\ を使用すると、デフォルトで
+    \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ が呼び出される。
+    \ ``StandardServletMultipartResolver``\ は、アップロードされたファイルを\ ``org.springframework.web.multipart.MultipartFile``\ として生成し、Controllerの引数およびフォームオブジェクトのプロパティとして、受け取ることができるようにする。
 
 
 例外ハンドリングの設定
