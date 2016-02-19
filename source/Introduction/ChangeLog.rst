@@ -38,13 +38,13 @@
 
         Spring IO Platformのバージョン更新に伴い利用するOSSのバージョンを更新
 
-        * 使用するOSSのバージョンを更新。更新内容は、\ `version 5.0.2の移行ガイド <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-5.1.0#step-1-update-dependency-libraries>`_\ を参照されたい。
+        * 使用するOSSのバージョンを更新。更新内容は、\ `version 5.0.2の移行ガイド <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-5.0.2#step-1-update-dependency-libraries>`_\ を参照されたい。
 
     * -
-      - :doc:`../ArchitectureInDetail/Codelist`
-      - 記載内容の追加
+      - :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
+      - 記述内容の改善
 
-        *  JdbcCodeListに\ ``JdbcTemplate``\を指定するパターンを推奨とする記述を追加(\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
+        * \ ``SQL Maven Plugin``\を使用してSQLを実行する方法を追加 (\ `guideline#1428 <https://github.com/terasolunaorg/guideline/issues/1428>`_\ )
 
     * -
       - :doc:`../ArchitectureInDetail/DataAccessCommon`
@@ -53,22 +53,28 @@
         *  \ ``Log4jdbcProxyDataSource``\のオーバヘッドに対する注意点を追加(\ `guideline#1471 <https://github.com/terasolunaorg/guideline/issues/1471>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessJpa`
-      - ガイドラインのバグ修正
-
-        *  Like条件を使用するユーティリティを適切に修正(\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
-
-    * -
       - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
       - MyBatis 3.3 対応に伴う記載内容の追加
 
         * 遅延読み込み時のデフォルトが \ ``JAVASSIST``\に変更されている点を追加(\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/FileDownload`
+      - :doc:`../ArchitectureInDetail/DataAccessJpa`
+      - ガイドラインのバグ修正
+
+        *  Like条件を使用するユーティリティを適切に修正(\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Validation`
       - 記述内容の改善
 
-        * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
+        * 入力チェックエラーメッセージの「属性値のインデックス位置」はアルファベット順になることを追加 (\ `guideline#1296 <https://github.com/terasolunaorg/guideline/issues/1296>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Logging`
+      - 記述内容の改善
+
+        * Logbackの設定に\ ``ServiceLoader``\の仕組みを利用した記述の追加(\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
 
     * -
       - :doc:`../ArchitectureInDetail/Internationalization`
@@ -77,10 +83,16 @@
         *  JSPに適切にロケールを反映させるための記述を追加(\ `guideline#1439 <https://github.com/terasolunaorg/guideline/issues/1439>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Logging`
+      - :doc:`../ArchitectureInDetail/Codelist`
+      - 記載内容の追加
+
+        *  JdbcCodeListに\ ``JdbcTemplate``\を指定するパターンを推奨とする記述を追加(\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileDownload`
       - 記述内容の改善
 
-        * Logbackの設定に\ ``ServiceLoader``\の仕組みを利用した記述の追加(\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
+        * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
 
     * -
       - :doc:`../ArchitectureInDetail/REST`
@@ -90,16 +102,10 @@
         *  REST APIアプリケーションのドメイン層の実装にMyBatis3を前提とした形に修正 (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Validation`
-      - 記述内容の改善
+      - :doc:`../Security/Tutorial`
+      - ガイドラインのバグ修正
 
-        * 入力チェックエラーメッセージの「属性値のインデックス位置」はアルファベット順になることを追加 (\ `guideline#1296 <https://github.com/terasolunaorg/guideline/issues/1296>`_\ )
-
-    * -
-      - :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
-      - 記述内容の改善
-
-        * \ ``SQL Maven Plugin``\を使用してSQLを実行する方法を追加 (\ `guideline#1428 <https://github.com/terasolunaorg/guideline/issues/1428>`_\ )
+        * ログアウトができないソースコードになっていた箇所を修正 (\ `guideline#1300 <https://github.com/terasolunaorg/guideline/issues/1300>`_\ )
 
     * -
       - :doc:`../Security/Authentication`
@@ -112,12 +118,6 @@
       - ガイドラインのバグ修正
 
         * SecureRandom使用に伴う遅延問題を解消するVM引数が誤っているため修正 (\ `guideline#1502 <https://github.com/terasolunaorg/guideline/issues/1502>`_\ )
-
-    * -
-      - :doc:`../Security/Tutorial`
-      - ガイドラインのバグ修正
-
-        * ログアウトができないソースコードになっていた箇所を修正 (\ `guideline#1300 <https://github.com/terasolunaorg/guideline/issues/1300>`_\ )
 
     * - 2015-08-05
       - \-
