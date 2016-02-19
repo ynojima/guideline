@@ -13,6 +13,7 @@ TERASOLUNA Server Framework for Java (5.x)によるセキュリティ対策
    LinkageWithBrowser
    XSS
    Encryption
+   SecureLoginDemo
 
 .. raw:: latex
 
