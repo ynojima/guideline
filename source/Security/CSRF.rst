@@ -472,25 +472,10 @@ Appendix
 マルチパートリクエスト(ファイルアップロード)時の留意点
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-マルチパートリクエストを送信する場合、CSRFトークンチェックを実施するには以下の方法がある。
-
-* \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用する
+\ ``MultipartFilter``\ を使用したマルチパートリクエストは、\ ``springSecurityFilterChain``\による認証・認可処理が行われる前にアップロード処理が行われるため、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容してしまうことになる。
 
 ファイルアップロードの詳細については、\ :doc:`FileUpload <../ArchitectureInDetail/FileUpload>`\ を参照されたい。
 
-
-.. _csrf_use-multipart-filter:
-
-MultipartFilterを使用する方法
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-マルチパートリクエストを送信する場合、ファイルアップロードで許容する最大サイズを超えた場合の動作が、アプリケーションサーバによって異なる。
-\ ``org.springframework.web.multipart.support.MultipartFilter``\を使用することで、アプリケーションサーバ依存を無くすことができる。
-
-
-.. warning:: **MultipartFilterを使用する際の留意点**
-
-    \ ``MultipartFilter``\ を使用した場合、\ ``springSecurityFilterChain``\による認証・認可処理が行われる前にアップロード処理が行われるため、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容してしまうことになる。
 
 \ ``MultipartFilter``\ を使用するには、以下のように設定する。
 
