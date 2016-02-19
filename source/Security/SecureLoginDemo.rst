@@ -4510,19 +4510,16 @@ Overview
    * - 項番
      - 説明
    * - | (1)
-     - | 検証器は\ ``org.passay.PasswordValidator`` \のインスタンスである、検証器を作成する。検証器には\ ``org.passay.Rule`` \インタフェースを実装したクラスのインスタンスである検証規則を一つ以上設定する。
+     - | \ ``org.passay.PasswordData`` \のインスタンスを作成し、入力チェック対象のパスワードに関する情報を設定する。
+       | \ ``PasswordData`` \は、パスワード、ユーザ名に加え、過去に使用したパスワードのリスト等をプロパティとして持つことができる。
+       | 過去に使用したパスワード等は\ ``org.passay.PasswordData.Reference`` \のインスタンスとして保持する。
    * - | (2)
-     - | 入力チェック対象に関する情報を \ ``org.passay.PasswordData`` \ のインスタンスに設定する。
-       | \ ``PasswordData`` \は、パスワード、ユーザ名、過去に使用したパスワードのリスト等をプロパティとして持つ。
-       | 過去に使用したパスワードは\ ``org.passay.PasswordData.Reference`` \のインスタンスとして保持する。
+     - | 検証規則に従い、検証器を用いて\ ``PasswordData`` \に対する入力チェックを行う。
+       | 検証規則は\ ``org.passay.Rule`` \の実装クラスのインスタンスとして作成する。検証器は\ ``org.passay.PasswordValidator`` \のインスタンスであり、複数の検証規則をプロパティとして持つことができる。
    * - | (3)
-     - | \ ``PasswordValidator`` \ の \ ``validate`` \ メソッドに、\ ``PasswordData`` \を引数として渡し、パスワード入力チェックを実行する。
-   * - | (3')
-     - | \ ``PasswordValidator`` \ の \ ``validate`` \の結果は、\ ``org.passay.RuleResult`` \ として返される。
+     - | 検証器による入力チェックの結果として\ ``org.passay.RuleResult`` \のインスタンスが作成される。
    * - | (4)
-     - | \ ``RuleResult`` \ の \ ``isValid`` \ メソッドを用いて、パスワード入力チェックの結果を真理値として得る。
-   * - | (5)
-     - | パスワード入力チェックの結果がエラーであった場合、\ ``PasswordValidator`` \ の \ ``getMessages`` \ メソッドに、\ ``RuleResult`` \を引数として渡すことで、エラーメッセージが取得できる。
+     - | \ ``RuleResult`` \ からパスワード入力チェックの結果を\ ``boolean`` \として得ることができる。また、検証器を使って\ ``RuleResult`` \からエラーメッセージが取得できる。
 
 Passayが提供している検証規則のクラスの一部を以下の表に示す。
 
