@@ -41,15 +41,15 @@ In this tutorial, operations are verified on following environment. In case of i
     * - OS
       - Windows 7
     * - JVM
-      - `Java <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ 1.7
+      - `Java <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ 1.8
     * - IDE
-      - `Spring Tool Suite <http://spring.io/tools/sts/all>`_ 3.6.3.RELEASE (Onwards referred as [STS])
+      - `Spring Tool Suite <http://spring.io/tools/sts/all>`_ 3.6.4.RELEASE (Onwards referred as [STS])
     * - Build Tool
-      - `Apache Maven <http://maven.apache.org/download.cgi>`_ 3.2.5 (Onwards referred as [Maven])
+      - `Apache Maven <http://maven.apache.org/download.cgi>`_ 3.3.9 (Onwards referred as [Maven])
     * - Application Server
-      - `Pivotal tc Server <https://network.pivotal.io/products/pivotal-tcserver>`_ Developer Edition v3.0 (Enclosed in STS)
+      - `Pivotal tc Server <https://network.pivotal.io/products/pivotal-tcserver>`_ Developer Edition v3.1 (Enclosed in STS)
     * - Web Browser
-      - `Google Chrome <https://www.google.co.jp/chrome/browser/desktop/index.html>`_ 39.0.2171.99 m
+      - `Google Chrome <https://www.google.co.jp/chrome/browser/desktop/index.html>`_ 46.0.2490.80 m
 
 |
 
@@ -219,7 +219,7 @@ This is a procedure to create a blank project using the Windows command prompt.
          -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases\
          -DarchetypeGroupId=org.terasoluna.gfw.blank\
          -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype\
-         -DarchetypeVersion=5.0.1.RELEASE\
+         -DarchetypeVersion=5.1.0.RELEASE\
          -DgroupId=todo\
          -DartifactId=todo\
          -Dversion=1.0.0-SNAPSHOT
@@ -240,7 +240,7 @@ run the following command to create O/R Mapper independent blank project in comm
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.1.0.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -259,7 +259,7 @@ run the following command to create a blank project for the MyBatis3. This way t
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis3-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.1.0.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -278,7 +278,7 @@ run the following command to create a blank project for the JPA. This way to cre
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-jpa-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.1.0.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -608,7 +608,7 @@ Right click on project and select [Run As] -> [Run on Server].
 
 |
 
-Select [Next] after selecting AP server (Pivotal tc Server Developer Edition v3.0).
+Select [Next] after selecting AP server (Pivotal tc Server Developer Edition v3.1).
 
 .. figure:: ./images/image032.jpg
    :width: 70%
@@ -629,14 +629,14 @@ For \ ``"/"`` \ path, it is understood that hello method of \ ``todo.app.welcome
 .. code-block:: console
    :emphasize-lines: 3
 
-    date:2015-01-16 21:32:05	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.springframework.web.servlet.DispatcherServlet 	message:FrameworkServlet 'appServlet': initialization started
-    date:2015-01-16 21:32:07	thread:localhost-startStop-1	X-Track:	level:DEBUG	logger:o.t.gfw.web.codelist.CodeListInterceptor        	message:registered codeList : []
-    date:2015-01-16 21:32:07	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.w.s.m.m.a.RequestMappingHandlerMapping      	message:Mapped "{[/],methods=[GET || POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.String todo.app.welcome.HomeController.home(java.util.Locale,org.springframework.ui.Model)
-    date:2015-01-16 21:32:11	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.w.s.m.m.a.RequestMappingHandlerAdapter      	message:Looking for @ControllerAdvice: WebApplicationContext for namespace 'appServlet-servlet': startup date [Fri Jan 16 21:32:05 JST 2015]; parent: Root WebApplicationContext
-    date:2015-01-16 21:32:12	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.w.s.m.m.a.RequestMappingHandlerAdapter      	message:Looking for @ControllerAdvice: WebApplicationContext for namespace 'appServlet-servlet': startup date [Fri Jan 16 21:32:05 JST 2015]; parent: Root WebApplicationContext
-    date:2015-01-16 21:32:12	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.web.servlet.handler.SimpleUrlHandlerMapping 	message:Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
-    date:2015-01-16 21:32:12	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.web.servlet.handler.SimpleUrlHandlerMapping 	message:Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
-    date:2015-01-16 21:32:12	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.springframework.web.servlet.DispatcherServlet 	message:FrameworkServlet 'appServlet': initialization completed in 6957 ms
+    date:2016-02-17 11:25:30	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.springframework.web.servlet.DispatcherServlet 	message:FrameworkServlet 'appServlet': initialization started
+    date:2016-02-17 11:25:31	thread:localhost-startStop-1	X-Track:	level:DEBUG	logger:o.t.gfw.web.codelist.CodeListInterceptor        	message:registered codeList : []
+    date:2016-02-17 11:25:31	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.w.s.m.m.a.RequestMappingHandlerMapping      	message:Mapped "{[/],methods=[GET || POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.String todo.app.welcome.HomeController.home(java.util.Locale,org.springframework.ui.Model)
+    date:2016-02-17 11:25:31	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.w.s.m.m.a.RequestMappingHandlerAdapter      	message:Looking for @ControllerAdvice: WebApplicationContext for namespace 'appServlet-servlet': startup date [Wed Feb 17 11:25:30 JST 2016]; parent: Root WebApplicationContext
+    date:2016-02-17 11:25:32	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.w.s.m.m.a.RequestMappingHandlerAdapter      	message:Looking for @ControllerAdvice: WebApplicationContext for namespace 'appServlet-servlet': startup date [Wed Feb 17 11:25:30 JST 2016]; parent: Root WebApplicationContext
+    date:2016-02-17 11:25:32	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.web.servlet.handler.SimpleUrlHandlerMapping 	message:Mapped URL path [/**] onto handler 'org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler#0'
+    date:2016-02-17 11:25:32	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.s.web.servlet.handler.SimpleUrlHandlerMapping 	message:Mapped URL path [/resources/**] onto handler 'org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0'
+    date:2016-02-17 11:25:33	thread:localhost-startStop-1	X-Track:	level:INFO 	logger:o.springframework.web.servlet.DispatcherServlet 	message:FrameworkServlet 'appServlet': initialization completed in 2826 ms
 
 |
 
@@ -654,13 +654,12 @@ If you confirm the console,
 are the log output.
 
 .. code-block:: console
-   :emphasize-lines: 1-2,4-5
+   :emphasize-lines: 1-4
 
-    date:2015-01-16 21:36:36	thread:tomcat-http--11	X-Track:2c4902f4fe5a477b8ad8aefb10973c04	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[START CONTROLLER] HomeController.home(Locale,Model)
-    date:2015-01-16 21:36:36	thread:tomcat-http--11	X-Track:2c4902f4fe5a477b8ad8aefb10973c04	level:INFO 	logger:todo.app.welcome.HomeController                 	message:Welcome home! The client locale is en_US.
-    date:2015-01-16 21:36:36	thread:tomcat-http--11	X-Track:2c4902f4fe5a477b8ad8aefb10973c04	level:DEBUG	logger:o.t.gfw.web.codelist.CodeListInterceptor        	message:locale for I18nCodelist is 'en_US'.
-    date:2015-01-16 21:36:36	thread:tomcat-http--11	X-Track:2c4902f4fe5a477b8ad8aefb10973c04	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] HomeController.home(Locale,Model)-> view=welcome/home, model={serverTime=January 16, 2015 9:36:36 PM JST}
-    date:2015-01-16 21:36:36	thread:tomcat-http--11	X-Track:2c4902f4fe5a477b8ad8aefb10973c04	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] HomeController.home(Locale,Model)-> 983,574 ns
+    date:2016-02-17 11:25:35	thread:tomcat-http--11	X-Track:b49b630274974bffbcd9e8d13261f6a7	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[START CONTROLLER] HomeController.home(Locale,Model)
+    date:2016-02-17 11:25:35	thread:tomcat-http--11	X-Track:b49b630274974bffbcd9e8d13261f6a7	level:INFO 	logger:todo.app.welcome.HomeController                 	message:Welcome home! The client locale is ja_JP.
+    date:2016-02-17 11:25:35	thread:tomcat-http--11	X-Track:b49b630274974bffbcd9e8d13261f6a7	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] HomeController.home(Locale,Model)-> view=welcome/home, model={serverTime=2016/02/17 11:25:35 JST}
+    date:2016-02-17 11:25:35	thread:tomcat-http--11	X-Track:b49b630274974bffbcd9e8d13261f6a7	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] HomeController.home(Locale,Model)-> 97,346,576 ns
 
 .. note::
  
@@ -2930,28 +2929,31 @@ Since the creation of infrastructure layer using MyBatis3 has been completed, cr
 Once creation of the Services and application layer are completed, execute the Todo application after starting the AP server, SQL and transaction log output is as following.
 
 .. code-block:: console
-   :emphasize-lines: 2-3,6-15,17-19
+   :emphasize-lines: 2-3,6-18,20-22
 
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[START CONTROLLER] TodoController.list(Model)
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Creating new transaction with name [todo.domain.service.todo.TodoServiceImpl.findAll]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly; ''
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Acquired Connection [net.sf.log4jdbc.ConnectionSpy@20c7885b] for JDBC transaction
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:t.domain.repository.todo.TodoRepository.findAll 	message:==>  Preparing: SELECT todo_id, todo_title, finished, created_at FROM todo
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:t.domain.repository.todo.TodoRepository.findAll 	message:==> Parameters:
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:jdbc.sqltiming                                  	message: sun.reflect.NativeMethodAccessorImpl.invoke0(NativeMethodAccessorImpl.java:-2)
-    2. SELECT
+    date:2016-02-17 13:18:54	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[START CONTROLLER] TodoController.list(Model)
+    date:2016-02-17 13:18:54	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Creating new transaction with name [todo.domain.service.todo.TodoServiceImpl.findAll]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly; ''
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Acquired Connection [net.sf.log4jdbc.ConnectionSpy@4e53de7c] for JDBC transaction
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:t.domain.repository.todo.TodoRepository.findAll 	message:==>  Preparing: SELECT todo_id, todo_title, finished, created_at FROM todo 
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:t.domain.repository.todo.TodoRepository.findAll 	message:==> Parameters: 
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:jdbc.sqltiming                                  	message: sun.reflect.NativeMethodAccessorImpl.invoke0(NativeMethodAccessorImpl.java:-2)
+    1. SELECT
                 todo_id,
                 todo_title,
                 finished,
                 created_at
             FROM
                 todo {executed in 0 msec}
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:t.domain.repository.todo.TodoRepository.findAll 	message:<==      Total: 0
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Initiating transaction commit
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Committing JDBC transaction on Connection [net.sf.log4jdbc.ConnectionSpy@20c7885b]
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Releasing JDBC Connection [net.sf.log4jdbc.ConnectionSpy@20c7885b] after transaction
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:DEBUG	logger:o.t.gfw.web.codelist.CodeListInterceptor        	message:locale for I18nCodelist is 'ja_JP'.
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] TodoController.list(Model)-> view=todo/list, model={todoForm=todo.app.todo.TodoForm@5e98d549, todos=[], org.springframework.validation.BindingResult.todoForm=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
-    date:2015-01-17 14:59:06	thread:tomcat-http--7	X-Track:6a624a51b4f64a528c16c87ad6e9e2ea	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] TodoController.list(Model)-> 4,324,544 ns
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:INFO 	logger:jdbc.resultsettable                             	message:|--------|-----------|---------|-----------|
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:INFO 	logger:jdbc.resultsettable                             	message:|TODO_ID |TODO_TITLE |FINISHED |CREATED_AT |
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:INFO 	logger:jdbc.resultsettable                             	message:|--------|-----------|---------|-----------|
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:INFO 	logger:jdbc.resultsettable                             	message:|--------|-----------|---------|-----------|
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:t.domain.repository.todo.TodoRepository.findAll 	message:<==      Total: 0
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Initiating transaction commit
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Committing JDBC transaction on Connection [net.sf.log4jdbc.ConnectionSpy@4e53de7c]
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:DEBUG	logger:o.s.jdbc.datasource.DataSourceTransactionManager	message:Releasing JDBC Connection [net.sf.log4jdbc.ConnectionSpy@4e53de7c] after transaction
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] TodoController.list(Model)-> view=todo/list, model={todoForm=todo.app.todo.TodoForm@2a075f1d, todos=[], org.springframework.validation.BindingResult.todoForm=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
+    date:2016-02-17 13:18:55	thread:tomcat-http--5	X-Track:390066c43aa94b6588e5bac6a54812b2	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] TodoController.list(Model)-> 756,709,153 ns
 
 |
 
@@ -3132,18 +3134,21 @@ Since the creation of infrastructure layer using Spring Data JPA has been comple
 Once creation of the Services and application layer are completed, execute the Todo application after starting the AP server, SQL and transaction log output is as following.
 
 .. code-block:: console
-   :emphasize-lines: 2-7
+   :emphasize-lines: 2-11
 
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[START CONTROLLER] TodoController.list(Model)
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:DEBUG	logger:o.h.e.transaction.spi.AbstractTransactionImpl   	message:begin
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:DEBUG	logger:o.h.e.transaction.internal.jdbc.JdbcTransaction 	message:initial autocommit status: false
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:DEBUG	logger:jdbc.sqltiming                                  	message: org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.extract(ResultSetReturnImpl.java:82)
-    6. /* select generatedAlias0 from Todo as generatedAlias0 */ select todo0_.todo_id as todo_id1_0_, todo0_.created_at as created_2_0_, todo0_.finished as finished3_0_, todo0_.todo_title as todo_tit4_0_ from todo todo0_ {executed in 0 msec}
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:DEBUG	logger:o.h.e.transaction.spi.AbstractTransactionImpl   	message:committing
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:DEBUG	logger:o.h.e.transaction.internal.jdbc.JdbcTransaction 	message:committed JDBC Connection
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:DEBUG	logger:o.t.gfw.web.codelist.CodeListInterceptor        	message:locale for I18nCodelist is 'ja_JP'.
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] TodoController.list(Model)-> view=todo/list, model={todoForm=todo.app.todo.TodoForm@38574f7e, todos=[], org.springframework.validation.BindingResult.todoForm=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
-    date:2015-01-17 15:45:55	thread:tomcat-http--4	X-Track:5fcebe300ab844f49a1bac35b68184c8	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] TodoController.list(Model)-> 5,288,781 ns
+    date:2016-02-17 13:32:44	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[START CONTROLLER] TodoController.list(Model)
+    date:2016-02-17 13:32:44	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:DEBUG	logger:o.h.e.transaction.spi.AbstractTransactionImpl   	message:begin
+    date:2016-02-17 13:32:44	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:DEBUG	logger:o.h.e.transaction.internal.jdbc.JdbcTransaction 	message:initial autocommit status: false
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:DEBUG	logger:jdbc.sqltiming                                  	message: org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.extract(ResultSetReturnImpl.java:82)
+    5. /* select generatedAlias0 from Todo as generatedAlias0 */ select todo0_.todo_id as todo_id1_0_, todo0_.created_at as created_2_0_, todo0_.finished as finished3_0_, todo0_.todo_title as todo_tit4_0_ from todo todo0_ {executed in 1 msec}
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:INFO 	logger:jdbc.resultsettable                             	message:|--------|-----------|---------|-----------|
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:INFO 	logger:jdbc.resultsettable                             	message:|TODO_ID |CREATED_AT |FINISHED |TODO_TITLE |
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:INFO 	logger:jdbc.resultsettable                             	message:|--------|-----------|---------|-----------|
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:INFO 	logger:jdbc.resultsettable                             	message:|--------|-----------|---------|-----------|
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:DEBUG	logger:o.h.e.transaction.spi.AbstractTransactionImpl   	message:committing
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:DEBUG	logger:o.h.e.transaction.internal.jdbc.JdbcTransaction 	message:committed JDBC Connection
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[END CONTROLLER  ] TodoController.list(Model)-> view=todo/list, model={todoForm=todo.app.todo.TodoForm@5dac2c75, todos=[], org.springframework.validation.BindingResult.todoForm=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
+    date:2016-02-17 13:32:45	thread:tomcat-http--5	X-Track:7c34263e0a2143639f3ffd191b35c135	level:TRACE	logger:o.t.gfw.web.logging.TraceLoggingInterceptor     	message:[HANDLING TIME   ] TodoController.list(Model)-> 320,129,237 ns
 
 |
 
@@ -4140,7 +4145,7 @@ The Spring MVC related definitions are done in \ :file:`spring-mvc.xml`\.
        | If \ ``styles.css`` \ is not stored anywhere, 404 error is returned.
 
        | Here, cache period (3600 seconds = 60 minutes) of static resources is set in \ ``cache-period`` \ attribute.
-       | \ ``cache-period="3600"`` \ is also correct, however, in order to demonstrate that it is 60 minutes, it is better to write as \ ``cache-period="#{60 * 60}"`` \ which uses `SpEL <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_.
+       | \ ``cache-period="3600"`` \ is also correct, however, in order to demonstrate that it is 60 minutes, it is better to write as \ ``cache-period="#{60 * 60}"`` \ which uses `SpEL <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_.
    * - | (5)
      - | Set interceptor that outputs trace log of controller processing. 
        | Set so that it excludes the path under\ ``/resources`` \ from mapping.
