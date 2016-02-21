@@ -9,6 +9,17 @@
     * - 更新日付
       - 更新箇所
       - 更新内容
+    * - 2016-02-24
+      - \-
+      - 1.0.4 RELEASE版公開
+
+        * 更新内容の詳細は、\ `1.0.4のIssue一覧 <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A1.0.4+is%3Aclosed>`_\ を参照されたい。
+    * -
+      - :doc:`../Overview/FrameworkStack`
+      - 利用するOSSのバージョンを更新
+
+        * GroupId「\ ``org.springframework``\」のバージョンを3.2.14.RELEASEから3.2.16.RELEASEに更新
+        * GroupId「\ ``commons-collections``\」のバージョンを3.2.1から3.2.2に更新
     * - 2015-07-31
       - \-
       - 1.0.3 RELEASE版公開
