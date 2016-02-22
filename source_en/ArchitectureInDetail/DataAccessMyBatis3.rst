@@ -5856,6 +5856,7 @@ a method which assigns \ ``@org.apache.ibatis.annotations.Flush``\  annotation i
 
 How to create and call a method which assigns \ ``@Flush``\  annotation is given below.
 |
+
  .. code-block:: java
 
     public interface TodoRepository {
