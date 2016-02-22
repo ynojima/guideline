@@ -9,6 +9,130 @@
     * - 更新日付
       - 更新箇所
       - 更新内容
+    * - 2016-02-24
+      - \-
+      - 5.0.2 RELEASE版公開
+
+        * 更新内容の詳細は、\ `5.0.2のIssue一覧 <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A5.0.2+is%3Aclosed>`_\ を参照されたい。
+    * -
+      - 全般
+      - ガイドラインの誤記(タイプミスや単純な記述ミスなど)の修正
+
+        記載内容の改善
+
+        * 改善内容の詳細は、\ `5.0.2のIssue一覧(improvement) <https://github.com/terasolunaorg/guideline/issues?q=milestone%3A5.0.2+label%3Aimprovement+is%3Aclosed>`_\ を参照されたい。
+
+    * -
+      - :doc:`index`
+      - 記載内容の追加
+
+        * ガイドラインに記載している内容の動作検証環境に関する記載を追加
+
+    * -
+      - :doc:`../Overview/FrameworkStack`
+      - 利用するOSSのバージョン(Spring IO Platformのバージョン)を更新
+
+        * Spring IO Platformのバージョンを1.1.5.RELEASEに更新
+        * Spring Frameworkのバージョンを4.1.9.RELEASEに更新
+        * Spring Securityのバージョンを3.2.9.RELEASEに更新
+
+        Spring IO Platformのバージョン更新に伴い利用するOSSのバージョンを更新
+
+        * 使用するOSSのバージョンを更新。更新内容は、\ `version 5.0.2の移行ガイド <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-5.0.2#step-1-update-dependency-libraries>`_\ を参照されたい。
+
+    * -
+      - :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
+      - 記述内容の改善
+
+        * \ ``SQL Maven Plugin``\を使用してSQLを実行する方法を追加 (\ `guideline#1428 <https://github.com/terasolunaorg/guideline/issues/1428>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - 記載内容の追加
+
+        *  \ ``Log4jdbcProxyDataSource``\のオーバヘッドに対する注意点を追加(\ `guideline#1471 <https://github.com/terasolunaorg/guideline/issues/1471>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - MyBatis 3.3 対応に伴う記載内容の追加
+
+        * 遅延読み込み時のデフォルトが \ ``JAVASSIST``\に変更されている点を追加(\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessJpa`
+      - ガイドラインのバグ修正
+
+        *  Like条件を使用するユーティリティを適切に修正(\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Validation`
+      - 記述内容の改善
+
+        * 入力チェックエラーメッセージの「属性値のインデックス位置」はアルファベット順になることを追加 (\ `guideline#1296 <https://github.com/terasolunaorg/guideline/issues/1296>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Logging`
+      - 記述内容の改善
+
+        * Logbackの設定に\ ``ServiceLoader``\の仕組みを利用した記述の追加(\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Internationalization`
+      - 記述内容の改善
+
+        *  JSPに適切にロケールを反映させるための記述を追加(\ `guideline#1439 <https://github.com/terasolunaorg/guideline/issues/1439>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Codelist`
+      - 記載内容の追加
+
+        *  JdbcCodeListに\ ``JdbcTemplate``\を指定するパターンを推奨とする記述を追加(\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileUpload`
+      - 記述内容の改善
+
+        * アップロード処理の基本フロー、及びその説明をSpringの\ ``MultipartFilter``\を用いた記述に修正 (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
+        * セキュリティ上の問題や、APサーバによって動作が異なる等の課題があるため、「クエリパラメータでCSRFトークンを送る方法」を削除。
+          ファイルアップロードの許容サイズを超過した場合、一部APサーバでCSRFトークンチェックが正しく行われない注意点を追加(\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileDownload`
+      - 記述内容の改善
+
+        * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正 (\ `guideline#1310 <https://github.com/terasolunaorg/guideline/issues/1310>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/REST`
+      - 記述内容の改善
+
+        *  \ ``Jackson2ObjectMapperFactoryBean``\を利用したOnjectMappper作成を追加(\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )
+        *  REST APIアプリケーションのドメイン層の実装にMyBatis3を前提とした形に修正 (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )
+
+    * -
+      - :doc:`../Security/Tutorial`
+      - ガイドラインのバグ修正
+
+        * ログアウトができないソースコードになっていた箇所を修正 (\ `guideline#1300 <https://github.com/terasolunaorg/guideline/issues/1300>`_\ )
+
+    * -
+      - :doc:`../Security/Authentication`
+      - 記述内容の改善
+
+        * \ ``RedirectAuthenticationHandler``\のパッケージ修正 (\ `guideline#1482 <https://github.com/terasolunaorg/guideline/issues/1482>`_\ )
+
+    * -
+      - :doc:`../Security/PasswordHashing`
+      - ガイドラインのバグ修正
+
+        * SecureRandom使用に伴う遅延問題を解消するVM引数が誤っているため修正 (\ `guideline#1502 <https://github.com/terasolunaorg/guideline/issues/1502>`_\ )
+
+    * -
+      - :doc:`../Security/CSRF`
+      - 記述内容の改善
+
+        * マルチパートリクエストに関する項目を :doc:`../ArchitectureInDetail/FileUpload` に移動 (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
     * - 2015-08-05
       - \-
       - 5.0.1 RELEASE版公開
