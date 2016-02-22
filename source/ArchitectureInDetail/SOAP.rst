@@ -748,10 +748,11 @@ webプロジェクト内にWebServiceインターフェースの実装クラス�
 
 .. code-block:: xml
 
+    <!-- (1) -->
     <sec:http pattern="/ws/**"
               create-session="stateless">
        <sec:csrf disabled="true" />
-       <sec:http-basic />  <!-- (1) -->
+       <sec:http-basic />
     </sec:http>
 
     <!-- (2) -->

@@ -634,17 +634,15 @@ spring-mvc-rest.xmlの作成
 
 REST API用のSpring Securityの定義追加
 --------------------------------------------------------------------------------
-| 本チュートリアルで作成するREST APIでは、CSRF対策を無効にする。
-| REST APIを使って構築するWebアプリケーションでも、CSRF対策は必要である。ただし、本チュートリアルの目的としてCSRF対策の話題は本質的ではないため、機能を無効化し、説明も割愛する。
-
-| CSRF対策を無効化すると、セッションを使用する必要がなくなる。
-| そのため、本チュートリアルではセッションを使用しないアーキテクチャ（ステートレスなアーキテクチャ）を採用する。
+| ブランクプロジェクトでは、CSRF対策といった、Spring Securityのセキュリティ対策機能が有効になっている。
+| REST APIを使って構築するWebアプリケーションでも、セキュリティ対策機能は必要である。ただし、本チュートリアルの目的として、
+| セキュリティ対策の話題は本質的ではないため、機能を無効化し、説明も割愛する。
 
 | 以下の設定を追加する事で、CSRF対策の無効化及びセッションを使用しないようにする事ができる。
 | ``src/main/resources/META-INF/spring/spring-security.xml``
 
 .. code-block:: xml
-    :emphasize-lines: 11-18
+    :emphasize-lines: 11-12
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -657,12 +655,7 @@ REST API用のSpring Securityの定義追加
         <sec:http pattern="/resources/**" security="none"/>
 
         <!-- (1) -->
-        <sec:http
-            pattern="/api/v1/**"
-            create-session="stateless">
-            <sec:http-basic />
-            <sec:csrf disabled="true"/>
-        </sec:http>
+        <sec:http pattern="/api/v1/**" security="none"/>
 
         <sec:http>
             <sec:form-login />
@@ -719,13 +712,10 @@ REST API用のSpring Securityの定義追加
 
    * - 項番
      - 説明
-   * - | (1)
-     - | REST API用のSpring Securityの定義を追加する。
+   * - | (1) 
+     - | REST API用のSpring Securityのセキュリティ機能を無効にする定義を追加する。
        | \ ``<sec:http>``\ 要素の\ ``pattern``\ 属性に、REST API用のリクエストパスのURLパターンを指定している。
        | 本チュートリアルでは\ ``/api/v1/``\ で始まるリクエストパスをREST API用のリクエストパスとして扱う。
-       | また、\ ``create-session``\ 属性を\ ``stateless``\ とする事で、Spring Securityの処理でセッションが使用されなくなる。
-       | 
-       | CSRF対策を無効化するために、\ ``<sec:csrf>``\ 要素に \ ``disabled="true"``\ を指定している。
 
 |
 
@@ -961,8 +951,6 @@ Application Serverを起動し、実装したAPIの動作確認を行う。
 
 .. figure:: ./images_rest/get-todos2.png
    :width: 100%
-   
-Spring Securityの設定を、セッションを使用しない設定に変更しているため、「RESPONSE」の「HEADERS」に\ ``"Set-Cookie: JSESSIONID=xxxx"``\ がないという点にも着目してほしい。
   
 |
 
