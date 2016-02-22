@@ -167,7 +167,7 @@ spring-security.xmlの設定
       .. note::
           use-expressions="true" で有効になるSpring EL式は、以下を参照されたい。
 
-          \ `Expression-Based Access Control <http://static.springsource.org/spring-security/site/docs/3.1.x/reference/el-access.html>`_\
+          \ `Expression-Based Access Control <http://static.springsource.org/spring-security/site/docs/3.1.4.RELEASE/reference/el-access.html>`_\
 
 .. raw:: latex
 

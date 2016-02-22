@@ -1358,7 +1358,7 @@ spring-mvc.xmlの確認
        | この設定の場合<contextPath>/rerources/css/styles.cssに対してリクエストが来た場合、WEB-INF/resources/css/styles.cssを探し、見つからなければクラスパス上(src/main/resourcesやjar内)のresources/css/style.cssを探す。
        | WEB-INF/resources/css/styles.cssが見つからなければ、404エラーを返す。
        | ここではcache-period属性で静的リソースのキャッシュ時間(3600秒=60分)も設定している。
-       | ``cache-period="3600"`` と設定しても良いが、60分であることを明示するために `SpEL <http://static.springsource.org/spring/docs/3.2.x/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_ を使用して ``cache-period="#{60 * 60}"`` と書く方が分かりやすい。
+       | ``cache-period="3600"`` と設定しても良いが、60分であることを明示するために `SpEL <http://static.springsource.org/spring/docs/3.2.16.RELEASE/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_ を使用して ``cache-period="#{60 * 60}"`` と書く方が分かりやすい。
    * - | (5)
      - | コントローラ処理のTraceログを出力するインターセプタを設定する。/resources以下を除く任意のパスに適用されるように設定する。
    * - | (6)
