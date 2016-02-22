@@ -316,17 +316,17 @@ multipart/form-dataリクエストの時、ファイルアップロードで許�
      - | \ ``MultipartFilter``\ を適用するURLのパターンを指定する。
      
 
- .. warning::
- 
-    **MultipartFilterは、リクエストパラメータにアクセスするServlet Filterより前に定義する必要がある。**
-    
+ .. warning:: **Spring Security使用時の注意点**
+
     Spring Securityを使ってセキュリティ対策を行う場合は、 ``springSecurityFilterChain`` より前に定義すること。
     また、プロジェクト独自で作成するServlet Filterでリクエストパラメータにアクセスするものがある場合は、そのServlet Filterより前に定義すること。
-    
+    ただし、\ ``springSecurityFilterChain``\ より前に定義することで、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容することになる。
 
- .. note::
+ .. warning:: **ファイルアップロードの許容サイズを超過した場合の注意点**
 
-    **MultipartResolverのデフォルト呼び出し**
+   ファイルアップロードの許容サイズを超過した場合、WebLogicなど一部のアプリケーションサーバでは、CSRFトークンを取得する前にサイズ超過のエラーが検知され、CSRFトークンチェックが行われないことがある。
+
+ .. note:: **MultipartResolverのデフォルト呼び出し**
     
     \ ``MultipartFilter``\ を使用すると、デフォルトで
     \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ が呼び出される。
@@ -1805,7 +1805,7 @@ Commons FileUploadを使用する場合は以下の設定を行う。
      - | Commons FileUploadを使用する場合、Servlet 3.0のアップロード機能を無効にする必要がある。
        | \ ``DispatcherServlet``\ の定義の中に\ ``<multipart-config>``\ 要素がある場合は、必ず削除すること。
    * - | (2)
-     - | Commons Fileuploadを使用する場合、\ :ref:`CSRF対策 <csrf_use-multipart-filter>`\ を有効にするために\ ``MultipartFilter``\ を定義する必要がある。
+     - | Commons Fileuploadを使用する場合、Spring Securityを使ったセキュリティ対策を有効にするために\ ``MultipartFilter``\ を定義する必要がある。
        | \ ``MultipartFilter``\ のマッピング定義は、springSecurityFilterChain(Spring SecurityのServlet Filter)の定義より前に行うこと。
 
 .. tip::
