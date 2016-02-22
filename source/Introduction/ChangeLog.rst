@@ -34,7 +34,7 @@
 
         * Spring IO Platformのバージョンを2.0.1.RELEASEに更新
         * Spring Frameworkのバージョンを4.2.4.RELEASEに更新
-        * Spring Securityのバージョンを4.0.3に更新
+        * Spring Securityのバージョンを4.0.3.RELEASEに更新
 
         Spring IO Platformのバージョン更新に伴い利用するOSSのバージョンを更新
 
