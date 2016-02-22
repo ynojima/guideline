@@ -17,5 +17,6 @@ script:
   - cat $ERROR_LOG_FILE
 
 after_script:
+  - ERROR_COUNT=`grep ERROR $ERROR_LOG_FILE | wc -l`
   - WARNING_COUNT=`grep WARNING $ERROR_LOG_FILE | wc -l`
-  - if [[ $WARNING_COUNT -ne 0 ]]; then echo "Build is failed. Please fix warnings."; exit 1; fi
+  - if [[ $ERROR_COUNT -ne 0 || $WARNING_COUNT -ne 0 ]]; then echo "Build is failed. Please fix errors or warnings."; exit 1; fi
