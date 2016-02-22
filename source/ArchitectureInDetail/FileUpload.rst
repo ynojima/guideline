@@ -281,6 +281,8 @@ Servlet 3.0のアップロード機能を有効化するために、以下の設
 
         アプリケーションとしてアップロードされたファイルを一時的なファイルとして保存しておきたい場合は、\ ``<location>``\ 要素で指定するディレクトリとは、別のディレクトリに出力すること。
 
+.. _file-upload_setting_servlet_filter:
+
 Servlet Filterの設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 multipart/form-dataリクエストの時、ファイルアップロードで許容する最大サイズを超えた場合の動作は、アプリケーションサーバによって異なる。アプリケーションサーバによっては、許容サイズを超えたアップロードの際に発生する\ ``MultipartException``\ が検知されず、後述する例外ハンドリングの設定が有効にならない場合がある。
@@ -316,17 +318,19 @@ multipart/form-dataリクエストの時、ファイルアップロードで許�
      - | \ ``MultipartFilter``\ を適用するURLのパターンを指定する。
      
 
- .. warning::
- 
-    **MultipartFilterは、リクエストパラメータにアクセスするServlet Filterより前に定義する必要がある。**
-    
-    Spring Securityを使ってセキュリティ対策を行う場合は、 ``springSecurityFilterChain`` より前に定義すること。
+ .. warning:: **Spring Security使用時の注意点**
+
+    Spring Securityを使ってセキュリティ対策を行う場合は、\ ``springSecurityFilterChain``\ より前に定義すること。
     また、プロジェクト独自で作成するServlet Filterでリクエストパラメータにアクセスするものがある場合は、そのServlet Filterより前に定義すること。
-    
 
- .. note::
+    ただし、\ ``springSecurityFilterChain``\ より前に定義することで、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容することになる。
+    この動作を回避する方法が\ `Spring Security Reference -Cross Site Request Forgery (CSRF)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#csrf-include-csrf-token-in-action>`_\ の中で紹介されているが、セキュリティ上のリスクを含む回避方法になるため、本ガイドラインでは回避策の適用は推奨していない。
 
-    **MultipartResolverのデフォルト呼び出し**
+ .. warning:: **ファイルアップロードの許容サイズを超過した場合の注意点**
+
+   ファイルアップロードの許容サイズを超過した場合、WebLogicなど一部のアプリケーションサーバでは、CSRFトークンを取得する前にサイズ超過のエラーが検知され、CSRFトークンチェックが行われないことがある。
+
+ .. note:: **MultipartResolverのデフォルト呼び出し**
     
     \ ``MultipartFilter``\ を使用すると、デフォルトで
     \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\ が呼び出される。
@@ -1805,7 +1809,7 @@ Commons FileUploadを使用する場合は以下の設定を行う。
      - | Commons FileUploadを使用する場合、Servlet 3.0のアップロード機能を無効にする必要がある。
        | \ ``DispatcherServlet``\ の定義の中に\ ``<multipart-config>``\ 要素がある場合は、必ず削除すること。
    * - | (2)
-     - | Commons Fileuploadを使用する場合、\ :ref:`CSRF対策 <csrf_use-multipart-filter>`\ を有効にするために\ ``MultipartFilter``\ を定義する必要がある。
+     - | Commons Fileuploadを使用する場合、Spring Securityを使ったセキュリティ対策を有効にするために\ ``MultipartFilter``\ を定義する必要がある。
        | \ ``MultipartFilter``\ のマッピング定義は、springSecurityFilterChain(Spring SecurityのServlet Filter)の定義より前に行うこと。
 
 .. tip::
