@@ -127,6 +127,12 @@
 
         * SecureRandom使用に伴う遅延問題を解消するVM引数が誤っているため修正 (\ `guideline#1502 <https://github.com/terasolunaorg/guideline/issues/1502>`_\ )
 
+    * -
+      - :doc:`../Security/CSRF`
+      - 記述内容の改善
+
+        * マルチパートリクエストに関する項目を :doc:`../ArchitectureInDetail/FileUpload` に移動 (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
     * - 2015-08-05
       - \-
       - 5.0.1 RELEASE版公開
