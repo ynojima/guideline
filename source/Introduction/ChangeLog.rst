@@ -93,6 +93,7 @@
       - 記述内容の改善
 
         * アップロード処理の基本フロー、及びその説明をSpringの\ ``MultipartFilter``\を用いた記述に修正 (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
+        * CSRFトークンの記述を修正 ファイルアップロードの許容サイズを超過した場合、一部APサーバでCSRFトークンチェックが正しく行われない注意点を追加(\ `guideline#1620 <https://github.com/terasolunaorg/guideline/issues/1620>`_\ )
 
     * -
       - :doc:`../ArchitectureInDetail/FileDownload`
