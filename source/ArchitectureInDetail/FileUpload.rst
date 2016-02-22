@@ -281,6 +281,8 @@ Servlet 3.0のアップロード機能を有効化するために、以下の設
 
         アプリケーションとしてアップロードされたファイルを一時的なファイルとして保存しておきたい場合は、\ ``<location>``\ 要素で指定するディレクトリとは、別のディレクトリに出力すること。
 
+.. _file-upload_setting_servlet_filter:
+
 Servlet Filterの設定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 multipart/form-dataリクエストの時、ファイルアップロードで許容する最大サイズを超えた場合の動作は、アプリケーションサーバによって異なる。アプリケーションサーバによっては、許容サイズを超えたアップロードの際に発生する\ ``MultipartException``\ が検知されず、後述する例外ハンドリングの設定が有効にならない場合がある。
@@ -318,9 +320,11 @@ multipart/form-dataリクエストの時、ファイルアップロードで許�
 
  .. warning:: **Spring Security使用時の注意点**
 
-    Spring Securityを使ってセキュリティ対策を行う場合は、 ``springSecurityFilterChain`` より前に定義すること。
+    Spring Securityを使ってセキュリティ対策を行う場合は、\ ``springSecurityFilterChain``\ より前に定義すること。
     また、プロジェクト独自で作成するServlet Filterでリクエストパラメータにアクセスするものがある場合は、そのServlet Filterより前に定義すること。
+
     ただし、\ ``springSecurityFilterChain``\ より前に定義することで、認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容することになる。
+    この動作を回避する方法が\ `Spring Security Reference -Cross Site Request Forgery (CSRF)- <http://docs.spring.io/spring-security/site/docs/3.2.9.RELEASE/reference/htmlsingle/#csrf-include-csrf-token-in-action>`_\ の中で紹介されているが、セキュリティ上のリスクを含む回避方法になるため、本ガイドラインでは回避策の適用は推奨していない。
 
  .. warning:: **ファイルアップロードの許容サイズを超過した場合の注意点**
 

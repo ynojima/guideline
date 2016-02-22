@@ -54,6 +54,13 @@ Overview
   CSRFトークンチェックは、別サイトからの不正な更新リクエストをチェックし、エラーとするものである。
   ユーザに順序性（一連の業務フロー）を守らせ、チェックするためには、\ :ref:`double-submit_transactiontokencheck`\ を参照されたい。
 
+.. warning:: **マルチパートリクエスト(ファイルアップロード)時におけるCSRF対策**
+
+    ファイルアップロード時のCSRF対策については、\ :ref:`ファイルアップロード Servlet Filterの設定 <file-upload_setting_servlet_filter>`\ を留意されたい。
+
+
+
+
 |
 
 How to use
