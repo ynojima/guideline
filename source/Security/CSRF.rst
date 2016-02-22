@@ -54,6 +54,13 @@ Overview
   CSRFトークンチェックは、別サイトからの不正な更新リクエストをチェックし、エラーとするものである。
   ユーザに順序性（一連の業務フロー）を守らせ、チェックするためには、\ :ref:`double-submit_transactiontokencheck`\ を参照されたい。
 
+.. warning:: **マルチパートリクエスト(ファイルアップロード)時におけるCSRF対策**
+
+    ファイルアップロード時のCSRF対策については、\ :ref:`ファイルアップロード Servlet Filterの設定 <file-upload_setting_servlet_filter>`\ を留意されたい。
+
+
+
+
 |
 
 How to use
@@ -461,158 +468,9 @@ JSONでリクエストを送信する場合も、同様にHTTPヘッダを設定
 
 .. todo::
 
-  \ :doc:`../ArchitectureInDetail/Ajax`\ 対応する例がなくなっているため、例を直す。
-
-マルチパートリクエスト(ファイルアップロード)時の留意点
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-| 一般的に、ファイルアップロードなどマルチパートリクエストを送る場合、formから送信される値を\ ``Filter``\ では取得できない。
-| そのため、これまでの説明だけでは、マルチパートリクエスト時に\ ``CsrfFileter``\ がCSRFトークンを取得できず、不正なリクエストと見なされてしまう。
-
-そのため、以下のどちらかの方法によって、対策する必要がある。
-
-* \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用する
-* クエリのパラメータでCSRFトークンを送信する
-
 .. note::
 
-    それぞれメリット・デメリットが存在するため、システム要件を考慮して、採用する対策方法を決めて頂きたい。
+  **ステータスコード403以外を返却したい場合**
 
-ファイルアップロードの詳細については、\ :doc:`FileUpload <../ArchitectureInDetail/FileUpload>`\ を参照されたい。
-
-
-.. _csrf_use-multipart-filter:
-
-MultipartFilterを使用する方法
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| 通常、マルチパートリクエストの場合、formから送信された値は\ ``Filter``\ 内で取得できない。
-| \ ``org.springframework.web.multipart.support.MultipartFilter``\ を使用することで、マルチパートリクエストでも、\ ``Filter``\ 内で、
-| formから送信された値を取得することができる。
-
-
-.. warning::
-
-    \ ``MultipartFilter``\ を使用した場合、\ ``springSecurityFilterChain``\による認証・認可処理が行われる前にアップロード処理が行われるため、
-    認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を許容してしまう。
-
-
-\ ``MultipartFilter``\ を使用するには、以下のように設定すればよい。
-
-**web.xmlの設定例**
-
-.. code-block:: xml
-
-    <filter>
-        <filter-name>MultipartFilter</filter-name>
-        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class> <!-- (1) -->
-    </filter>
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name> <!-- (2) -->
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>MultipartFilter</filter-name>
-        <servlet-name>/*</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | \ ``org.springframework.web.multipart.support.MultipartFilter``\ を 定義する。
-   * - | (2)
-     - | \ ``springSecurityFilterChain``\ より前に、\ ``MultipartFilter``\ を定義すること。
-
-**JSPの実装例**
-
-.. code-block:: jsp
-
-    <form:form action="${pageContext.request.contextPath}/fileupload"
-        method="post" modelAttribute="fileUploadForm" enctype="multipart/form-data">  <!-- (1) -->
-        <table>
-            <tr>
-                <td width="65%"><form:input type="file" path="uploadFile" /></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Upload" /></td>
-            </tr>
-        </table>
-    </form:form>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | spring-mvc.xmlの設定の通り、\ ``CsrfRequestDataValueProcessor``\ が定義されている場合、
-       | \ ``<form:form>``\ タグを使うことで、CSRFトークンが埋め込まれた\ ``<input type="hidden">``\ タグが自動的に追加されるため、
-       | JSPの実装で、CSRFトークンを意識する必要はない。
-       |
-       | **<form> タグを使用する場合**
-       | \ :ref:`csrf_formtag-use`\ でCSRFトークンを設定すること。
-
-
-クエリパラメータでCSRFトークンを送る方法
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-認証又は認可されていないユーザーからのアップロード(一時ファイル作成)を防ぎたい場合は、
-\ ``MultipartFilter``\ は使用せず、クエリパラメータでCSRFトークンを送る必要がある。
-
-.. warning::
-
-    この方法でCSRFトークンを送った場合、
-
-    * ブラウザのアドレスバーにCSRFトークンが表示される
-    * ブックマークした場合、ブックマークにCSRFトークンが記録される
-    * WebサーバのアクセスログにCSRFトークンが記録される
-
-    ため、\ ``MultipartFilter``\ を使用する方法と比べると、攻撃者にCSRFトークンを悪用されるリスクが高くなる。
-
-    Spring Securityのデフォルト実装では、CSRFトークンの値としてランダムなUUIDを生成しているため、
-    仮にCSRFトークンが漏洩してもセッションハイジャックされる事はないという点を補足しておく。
-
-以下に、CSRFトークンをクエリパラメータとして送る実装例を示す。
-
-**JSPの実装例**
-
-.. code-block:: jsp
-
-    <form:form action="${pageContext.request.contextPath}/fileupload?${f:h(_csrf.parameterName)}=${f:h(_csrf.token)}"
-        method="post" modelAttribute="fileUploadForm" enctype="multipart/form-data"> <!-- (1) -->
-        <table>
-            <tr>
-                <td width="65%"><form:input type="file" path="uploadFile" /></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Upload" /></td>
-            </tr>
-        </table>
-    </form:form>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - 項番
-     - 説明
-   * - | (1)
-     - | \ ``<form:form>``\ タグのaction属性に、以下のクエリを付与する必要がある。
-       | \ ``?${f:h(_csrf.parameterName)}=${f:h(_csrf.token)}``\
-       | \ ``<form>``\ タグを使用する場合も、同様の設定が必要である。
-
-.. raw:: latex
-
-   \newpage
+  リクエストに含まれるCSRFトークンが一致しない場合に、ステータスコード403以外を返却したい場合は、\ ``org.springframework.security.web.access.AccessDeniedHandler``\ インタフェースを実装した、独自のAccessDeniedHandlerを作成する必要がある。
 
