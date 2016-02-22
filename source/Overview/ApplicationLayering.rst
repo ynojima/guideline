@@ -178,7 +178,7 @@ Domain Objectは、大きく分けて、以下3つに分類される。
    Domain Modelは、\ `状態と振る舞いをもつもの <http://martinfowler.com/eaaCatalog/domainModel.html>`_\ と定義されているが、
    厳密には触れない。
 
-   Eric Evansの提唱するような\ `Richなドメインモデル <http://domaindrivendesign.org>`_\ も、本ガイドラインでは扱わないが、
+   Eric Evansの提唱するような\ `Richなドメインモデル <http://dddcommunity.org/>`_\ も、本ガイドラインでは扱わないが、
    分類上はここに含まれる。
 
 |

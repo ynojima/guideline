@@ -588,7 +588,7 @@ ANSI/ISO SQL標準では、トランザクションの分離レベル（各ト�
 .. note:: **JPA(Hibernate)を使用する場合**
 
      悲観ロックの取得方法はデータベースによって異なるが、その差分はJPA(Hibernate)によって吸収される。
-     HibernateのサポートしているRDBMSについては、 `Hibernate Developer Guide <http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html_single/#d5e233>`_ を参照されたい。
+     HibernateのサポートしているRDBMSについては、 `Hibernate Developer Guide <http://docs.jboss.org/hibernate/orm/4.3/devguide/en-US/html_single/#d5e233>`_ を参照されたい。
 
 悲観ロックによる排他制御は、以下3ケースのいずれかに当てはまる場合に使用する。
 
