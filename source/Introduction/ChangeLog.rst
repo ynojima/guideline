@@ -44,7 +44,7 @@
 
         * \ ``terasoluna-gfw-string``\ 、\ ``terasoluna-gfw-codepoints``\ 、\ ``terasoluna-gfw-validator``\ 、\ ``terasoluna-gfw-web-jsp``\ プロジェクトの説明を追加。
 
-        新規機能追加
+        共通ライブラリの新機能追加
 
         \ ``terasoluna-gfw-string``\ 
          * 半角全角変換
@@ -168,6 +168,13 @@
         *  SOAP Web Service（サーバ/クライアント）を追加(\ `guideline#1340 <https://github.com/terasolunaorg/guideline/issues/1340>`_\ )
 
     * -
+      - :doc:`../ArchitectureInDetail/FileUpload`
+      - 記述内容の改善
+
+        * アップロード処理の基本フロー、及びその説明をSpringの\ ``MultipartFilter``\を用いた記述に修正 (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
+        * CSRFトークンの記述を修正 ファイルアップロードの許容サイズを超過した場合、一部APサーバでCSRFトークンチェックが正しく行われない注意点を追加(\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
+    * -
       - :doc:`../ArchitectureInDetail/FileDownload`
       - Spring Framework4.2 対応に伴う記載内容の追加
 
@@ -201,6 +208,13 @@
       - 新規追加
 
         *  文字列処理を追加(\ `guideline#1451 <https://github.com/terasolunaorg/guideline/issues/1451>`_\ )
+
+    * -
+      - :doc:`../Security/index`
+      - 構成見直し
+
+        * \ ``パスワードハッシュ化``\は、:doc:`../Security/Authentication` に移動
+        * :doc:`../Security/Authentication` から、セッション管理の項目を :doc:`../Security/SessionManagement` として独立
 
     * -
       - :doc:`../Security/SpringSecurity`
