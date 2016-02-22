@@ -172,7 +172,9 @@
       - 記述内容の改善
 
         * アップロード処理の基本フロー、及びその説明をSpringの\ ``MultipartFilter``\を用いた記述に修正 (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
-        * CSRFトークンの記述を修正 ファイルアップロードの許容サイズを超過した場合、一部APサーバでCSRFトークンチェックが正しく行われない注意点を追加(\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+        * セキュリティ上の問題や、APサーバによって動作が異なる等の課題があるため、「クエリパラメータでCSRFトークンを送る方法」を削除。
+          ファイルアップロードの許容サイズを超過した場合、一部APサーバでCSRFトークンチェックが正しく行われない注意点を追加(\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
 
     * -
       - :doc:`../ArchitectureInDetail/FileDownload`
@@ -260,6 +262,10 @@
         * 全記述の再編
 
          * CSRF無効化の設定を修正\ ``<sec:csrf disabled="true"/>``\
+
+        * 記述内容の改善
+
+         * マルチパートリクエストに関する項目を :doc:`../ArchitectureInDetail/FileUpload` に移動 (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
 
     * -
       - :doc:`../Security/Encryption`
