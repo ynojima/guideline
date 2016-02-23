@@ -638,7 +638,7 @@ REST API用のSpring Securityの定義追加
 | REST APIを使って構築するWebアプリケーションでも、セキュリティ対策機能は必要である。ただし、本チュートリアルの目的として、
 | セキュリティ対策の話題は本質的ではないため、機能を無効化し、説明も割愛する。
 
-| 以下の設定を追加する事で、CSRF対策の無効化及びセッションを使用しないようにする事ができる。
+| 以下の設定を追加する事で、Spring Securityのセキュリティ対策機能を無効化することができる。
 | ``src/main/resources/META-INF/spring/spring-security.xml``
 
 .. code-block:: xml
