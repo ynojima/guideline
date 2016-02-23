@@ -29,13 +29,13 @@ DIコンテナ
 DIコンテナとしてSpring Frameworkを利用する。
 
 
-* `Spring Framework 3.2 <http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/beans.html>`_
+* `Spring Framework 3.2 <http://docs.spring.io/spring/docs/3.2.16.RELEASE/spring-framework-reference/html/beans.html>`_
 
 MVCフレームワーク
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Web MVCフレームワークとしてSpring MVCを利用する。
 
-* `Spring MVC 3.2 <http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/mvc.html>`_
+* `Spring MVC 3.2 <http://docs.spring.io/spring/docs/3.2.16.RELEASE/spring-framework-reference/html/mvc.html>`_
 
 O/R Mapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -87,7 +87,7 @@ Viewのレイアウトを共通化する場合は、
 
   * 実装は、\ `Hibernate Validator 4.3 <http://docs.jboss.org/hibernate/validator/4.3/reference/en-US/html/>`_\ を利用する。
 
-* 相関チェックには\ `BeanValidation <http://download.oracle.com/otn-pub/jcp/bean_validation-1.0-fr-oth-JSpec/bean_validation-1_0-final-spec.pdf>`_\ 、もしくは\ `Spring Validation <http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/validation.html>`_\ を利用する。
+* 相関チェックには\ `BeanValidation <http://download.oracle.com/otn-pub/jcp/bean_validation-1.0-fr-oth-JSpec/bean_validation-1_0-final-spec.pdf>`_\ 、もしくは\ `Spring Validation <http://docs.spring.io/spring/docs/3.2.16.RELEASE/spring-framework-reference/html/validation.html>`_\ を利用する。
 
   * 使い分けについては\ :doc:`../ArchitectureInDetail/Validation`\ を参照されたい。
 

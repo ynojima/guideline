@@ -207,7 +207,7 @@ Delete TODO
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype^
-     -DarchetypeVersion=1.0.3.RELEASE^
+     -DarchetypeVersion=1.0.4.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -220,7 +220,7 @@ Delete TODO
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-jpa-archetype^
-     -DarchetypeVersion=1.0.3.RELEASE^
+     -DarchetypeVersion=1.0.4.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -233,7 +233,7 @@ Delete TODO
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis2-archetype^
-     -DarchetypeVersion=1.0.3.RELEASE^
+     -DarchetypeVersion=1.0.4.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -246,7 +246,7 @@ Delete TODO
     More?  -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
     More?  -DarchetypeGroupId=org.terasoluna.gfw.blank^
     More?  -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype^
-    More?  -DarchetypeVersion=1.0.3.RELEASE^
+    More?  -DarchetypeVersion=1.0.4.RELEASE^
     More?  -DgroupId=todo^
     More?  -DartifactId=todo^
     More?  -Dversion=1.0.0-SNAPSHOT
@@ -264,7 +264,7 @@ Delete TODO
     [INFO] Generating project in Batch mode
     [INFO] Archetype repository missing. Using the one from [org.terasoluna.gfw.blank:terasoluna-gfw-web-blank-archetype:1.0.0.RELEASE -> http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases] found in catalog http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-web-blank-archetype:1.0.3.RELEASE
+    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-web-blank-archetype:1.0.4.RELEASE
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: todo
     [INFO] Parameter: artifactId, Value: todo
@@ -322,7 +322,7 @@ Package Explorerに、次のようなプロジェクトが生成される( **要
          -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases\
          -DarchetypeGroupId=org.terasoluna.gfw.blank\
          -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype\
-         -DarchetypeVersion=1.0.3.RELEASE\
+         -DarchetypeVersion=1.0.4.RELEASE\
          -DgroupId=todo\
          -DartifactId=todo\
          -Dversion=1.0.0-SNAPSHOT
@@ -1358,7 +1358,7 @@ spring-mvc.xmlの確認
        | この設定の場合<contextPath>/rerources/css/styles.cssに対してリクエストが来た場合、WEB-INF/resources/css/styles.cssを探し、見つからなければクラスパス上(src/main/resourcesやjar内)のresources/css/style.cssを探す。
        | WEB-INF/resources/css/styles.cssが見つからなければ、404エラーを返す。
        | ここではcache-period属性で静的リソースのキャッシュ時間(3600秒=60分)も設定している。
-       | ``cache-period="3600"`` と設定しても良いが、60分であることを明示するために `SpEL <http://static.springsource.org/spring/docs/3.2.x/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_ を使用して ``cache-period="#{60 * 60}"`` と書く方が分かりやすい。
+       | ``cache-period="3600"`` と設定しても良いが、60分であることを明示するために `SpEL <http://static.springsource.org/spring/docs/3.2.16.RELEASE/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_ を使用して ``cache-period="#{60 * 60}"`` と書く方が分かりやすい。
    * - | (5)
      - | コントローラ処理のTraceログを出力するインターセプタを設定する。/resources以下を除く任意のパスに適用されるように設定する。
    * - | (6)

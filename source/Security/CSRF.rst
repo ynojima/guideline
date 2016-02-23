@@ -194,7 +194,7 @@ spring-security.xmlの設定
 
   リクエストに含まれるCSRFトークンが一致しない場合、ステータスコード403以外を返却したい場合は、\ ``org.springframework.security.web.access.AccessDeniedHandler``\ インタフェースを
   実装した、独自のAccessDeniedHandlerを作成する必要がある。
-  詳細は、\ `Spring Securityのレファレンスドキュメント <http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf>`_\ を参照されたい。
+  詳細は、\ `Spring Securityのレファレンスドキュメント <http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#csrf>`_\ を参照されたい。
 
 .. todo::
 
@@ -203,7 +203,7 @@ spring-security.xmlの設定
     Spring Security 3.2を使用する場合、\ ``<sec:http>``\ 要素に\ ``<sec:csrf />``\ 要素を設定することで、
     前述した設定を省略することができる。
     
-    \ `Spring Securityのレファレンスドキュメント <http://docs.spring.io/spring-security/site/docs/3.2.0.RELEASE/reference/htmlsingle/#csrf-configure>`_\ を参照されたい。
+    \ `Spring Securityのレファレンスドキュメント <http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#csrf-configure>`_\ を参照されたい。
 
 .. _csrf_spring-mvc-setting:
 
