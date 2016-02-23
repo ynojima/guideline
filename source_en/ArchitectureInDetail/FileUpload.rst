@@ -27,8 +27,8 @@ Overview
 
     Application server for which a occurrence of problem is confirmed at the time of version 5.0.1.RELEASE is as given below.
 
-    * WebLogic 12c
-    * JBoss EAP 6
+    * WebLogic 12.1.3
+    * JBoss EAP 6.4.0.GA
 
  .. warning::
  
@@ -1695,10 +1695,9 @@ File upload using Commons FileUpload
 If File Upload functionality of Servlet 3.0 is only used partially on Application Server, 
 it may likely result into garbling of multi byte characters of file names or request parameters.
 
-For example: If File Upload functionality of Servlet 3.0 is used on WebLogic (verification version 12.1.3),
+For example: If File Upload functionality of Servlet 3.0 is used on WebLogic 12.1.3,
 it has been confirmed that multi byte characters of fields to be sent along with file are garbled.
-Although it seems that there is a problem at the Application Server side,
-it is not possible to send the file and multi byte characters simultaneously unless the problem at the Application Server is fixed.
+Note that it has been corrected in WebLogic 12.2.1.
 
 **This problem can be avoided using Commons FileUpload.
 Therefore, this guideline describes about file upload using Commons FileUpload
