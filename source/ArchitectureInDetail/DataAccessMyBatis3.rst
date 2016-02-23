@@ -456,10 +456,10 @@ pom.xmlの設定
         <dependency>
             <groupId>org.terasoluna.gfw</groupId>
             <artifactId>terasoluna-gfw-mybatis3</artifactId>
-            <version>5.0.1.RELEASE</version>
+            <version>5.1.0.RELEASE</version>
         </dependency>
         
-    上記例では5.0.1.RELEASEを指定しているが、実際に指定するバージョンは、プロジェクトで利用するバージョンを指定すること。
+    上記例では5.1.0.RELEASEを指定しているが、実際に指定するバージョンは、プロジェクトで利用するバージョンを指定すること。
 
 |
 
@@ -3221,7 +3221,7 @@ JDBCのバッチ更新機能を使用する方法については、「:ref:`Data
 
     * `Oracle 12c <http://docs.oracle.com/database/121/SQLRF/statements_9014.htm>`_
     * `DB2 10.5 <http://www-01.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.sql.ref.doc/doc/r0000970.html>`_
-    * `PostgreSQL 9.3 <http://www.postgresql.org/docs/9.3/static/sql-insert.html>`_
+    * `PostgreSQL 9.4 <http://www.postgresql.org/docs/9.4/static/sql-insert.html>`_
     * `MySQL 5.7 <http://dev.mysql.com/doc/refman/5.7/en/insert.html>`_
 
 |
@@ -6604,7 +6604,7 @@ MyBatis3では、JDBCドライバから接続しているデータベースの�
  .. tip::
 
     上記例では、PostgreSQLのUUID生成関数として\ ``UUID_GENERATE_V4()``\を呼び出しているが、
-    この関数は、`uuid-ossp <http://www.postgresql.org/docs/9.3/static/uuid-ossp.html>`_\と呼ばれるサブモジュールの関数である。
+    この関数は、`uuid-ossp <http://www.postgresql.org/docs/9.4/static/uuid-ossp.html>`_\と呼ばれるサブモジュールの関数である。
 
     この関数を使用したい場合は、uuid-osspモジュールを有効にする必要がある。
 
