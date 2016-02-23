@@ -152,7 +152,7 @@
       - :doc:`../ArchitectureInDetail/REST`
       - 記述内容の改善
 
-        *  \ ``Jackson2ObjectMapperFactoryBean``\を利用したObjectMappper作成を追加(\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )
+        *  \ ``Jackson2ObjectMapperFactoryBean``\を利用したObjectMapper作成を追加(\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )
         *  REST APIアプリケーションのドメイン層の実装にMyBatis3を前提とした形に修正 (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )
 
     * -
