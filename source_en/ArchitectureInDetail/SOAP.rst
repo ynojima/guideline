@@ -184,7 +184,8 @@ Although client is again assumed to be a Web application, the basic idea for cal
         | For details, refer "\ :ref:`SOAPAppendixWsimport`\ ".
     * - | (2)
       - | Add a model project and webservice project besides a conventional multi-project while creating a SOAP server.
-        | Publish these two projects in the client.
+        | Publish these two projects to the client.
+        | It is assumed that the model and webservice projects of the client are added in the Maven dependencies.
 
 |
 
@@ -508,7 +509,7 @@ An interface to call Web service is created in webservice project.
               
     * - | (2)
       - | Apply \ ``@WebMethod``\  to the method which is published as a Web service method.
-        |Method can be published on WSDL and used externally by applying this annotation.
+        | Method can be published on WSDL and used externally by applying this annotation.
     * - | (3)
       - | Apply \ ``@WebResult``\  to return value and specify name in \ ``name``\  attribute. It is not required in the absence of a return value.
         | It is published as a return value on WSDL by applying this annotation.
@@ -2313,7 +2314,7 @@ Recommended project configuration of [client projectName]-env project is shown b
       - | Directory for managing configuration files for each environment.
         | Subdirectory configuration and configuration files to be managed are same as (4).
     * - | (4)
-      - |Directory for managing configuration files for local development environment.
+      - | Directory for managing configuration files for local development environment.
     * - | (5)
       - | Define a Bean for local development environment.
         | Specify a proxy class of Web service in this file.
