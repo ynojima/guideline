@@ -741,9 +741,16 @@ The attributes that can be specified in ``@TransactionTokenCheck``\  annotation 
      - value
      - | Any character string. Used as NameSpace.
      - None
-     - | value = "create"
-       | If there is only 1 argument, the "value =" part can be omitted.
+     - | \ ``value = "create"``\ 
+       | \ ``value =``\  part can be omitted if there is only one argument.
    * - (2)
+     - namespace
+     - | Any string.Used as NameSpace.
+       | It is an alias of value attribute.
+     - None
+     - | \ ``namespace = "create"``\ 
+       | Synonymous with \ ``value = "create"``\ . It is used as an alternative to value attribute since value attribute cannot be used while using  \ ``@TransactionTokenCheck``\  as a meta-annotation.
+   * - (3)
      - type
      - | **BEGIN**
        | A transaction token is created and a new transaction is started.
@@ -760,7 +767,7 @@ The attributes that can be specified in ``@TransactionTokenCheck``\  annotation 
 
  .. note::
  
-    It is recommended that the value to be set in "value" attribute should be same as the config value of "value" attribute for \ ``@RequestMapping``\  annotation.
+    It is recommended that the value to be set in value attribute or namespace attribute should be same as the config value of "value" attribute for \ ``@RequestMapping``\  annotation.
 
  .. note::
  
