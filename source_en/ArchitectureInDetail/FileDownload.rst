@@ -38,7 +38,7 @@ Overview of File Download process is given below.
 | when rendering PDF files using model information.
 |
 | **For Excel files**
-| \ ``org.springframework.web.servlet.view.document.AbstractExcelView``\  class of Spring is used as a subclass
+| \ ``org.springframework.web.servlet.view.document.AbstractXlsxView``\  class of Spring is used as a subclass
 | when rendering Excel files using model information.
 |
 | For file formats other than those specified above, various types of View implementations are provided in Spring.
@@ -91,11 +91,11 @@ Implementation of Custom View
      - | In this example, this class comes under the scope of component scanning by using \ ``@Component``\  annotation.
        | It will also come under the scope of \ ``org.springframework.web.servlet.view.BeanNameViewResolver``\  which is described later.
    * - | (2)
-     - | Inherit AbstractPdfView.
+     - | Inherit \ ``AbstractPdfView``\ .
    * - | (3)
-     - | Execute buildPdfDocument method.
+     - | Execute \ ``buildPdfDocument``\  method.
 
-| AbstractPdfView uses \ `iText <http://itextpdf.com/>`_\  for PDF rendering.
+| \ ``AbstractPdfView``\  uses \ `iText <http://itextpdf.com/>`_\  for PDF rendering.
 | Therefore, it is necessary to add itext definition to pom.xml of Maven.
 
 .. code-block:: xml
@@ -149,7 +149,7 @@ Implementation of Custom View
 Definition of ViewResolver
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 \ ``org.springframework.web.servlet.view.BeanNameViewResolver``\  is a class,
-that selects \ ``View``\  to be executed using bean name stored in Spring context.
+that selects View to be executed using bean name stored in Spring context.
 
 When using \ ``BeanNameViewResolver``\ , it is recommended to define such that \ ``BeanNameViewResolver``\  is executed before
 
@@ -161,7 +161,7 @@ which are generally used.
 .. note::
 
     Spring Framework provides various types of \ ``ViewResolver``\  and it allows chaining of multiple \ ``ViewResolver``\ .
-    Therefore, some unintended \ ``View``\  may get selected under certain conditions.
+    Therefore, some unintended View may get selected under certain conditions.
 
     It is possible to avoid such a situation by setting appropriate priority order in \ ``ViewResolver``\ .
     Method to set priority order differs depending on definition method of \ ``ViewResolver``\ .
@@ -223,7 +223,7 @@ which are generally used.
 Specifying View in controller
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| With the help of BeanNameViewResolver, by returning "samplePDFView" in Controller,
+| With the help of \ ``BeanNameViewResolver``\ , by returning "samplePDFView" in Controller,
 | a view named "samplePDFView" gets used from the BeanIDs stored in Spring Context.
 
 **Java source code**
@@ -245,7 +245,7 @@ Specifying View in controller
      - Description
    * - | (1)
      - | With "samplePdfView" as the return value of method,
-       | SamplePdfView class stored in Spring context is executed.
+       | \ ``SamplePdfView``\  class stored in Spring context is executed.
 
 | Following PDF file can be opened after executing the above procedure.
 
@@ -261,25 +261,25 @@ Specifying View in controller
 Downloading Excel files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | For rendering EXCEL files, it is necessary to create a class that
-| inherits \ ``org.springframework.web.servlet.view.document.AbstractExcelView``\  provided by Spring.
+| inherits \ ``org.springframework.web.servlet.view.document.AbstractXlsxView``\  provided by Spring.
 | The procedure to download an EXCEL file using controller is explained below.
 
 Implementation of Custom View
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-**Implementation of class that inherits AbstractExcelView**
+**Implementation of class that inherits AbstractXlsxView**
 
 .. code-block:: java
 
         @Component  // (1)
-        public class SampleExcelView extends AbstractExcelView {  // (2)
+        public class SampleExcelView extends AbstractXlsxView {  // (2)
 
             @Override
             protected void buildExcelDocument(Map<String, Object> model,
-                    HSSFWorkbook workbook, HttpServletRequest request,
+                    Workbook workbook, HttpServletRequest request,
                     HttpServletResponse response) throws Exception {  // (3)
-                HSSFSheet sheet;
-                HSSFCell cell;
+                Sheet sheet;
+                Cell cell;
 
                 sheet = workbook.createSheet("Spring");
                 sheet.setDefaultColumnWidth(12);
@@ -304,11 +304,11 @@ Implementation of Custom View
      - | In this example, this class comes under the scope of component scanning by using \ ``@Component``\  annotation.
        | It will also come under the scope of \ ``org.springframework.web.servlet.view.BeanNameViewResolver``\  which is described earlier.
    * - | (2)
-     - | Inherit AbstractExcelView.
+     - | Inherit \ ``AbstractXlsxView``\ .
    * - | (3)
-     - | Execute buildExcelDocument method.
+     - | Execute \ ``buildExcelDocument``\  method.
 
-| AbstractExcelView uses \ `Apache POI <http://poi.apache.org/>`_\  to render EXCEL file.
+| \ ``AbstractXlsxView``\ uses \ `Apache POI <http://poi.apache.org/>`_\  to render EXCEL file.
 | Therefore, it is necessary to add POI definition to the pom.xml file of Maven.
 
 .. code-block:: xml
@@ -317,16 +317,18 @@ Implementation of Custom View
       <!-- omitted -->
       <dependency>
           <groupId>org.apache.poi</groupId>
-          <artifactId>poi</artifactId>
-          <version>${org.apache.poi.poi.version}</version>
+          <artifactId>poi-ooxml</artifactId>
       </dependency>
   </dependencies>
-  
-  <properties>
-      <!-- omitted -->
-      <org.apache.poi.poi.version>3.9</org.apache.poi.poi.version>
-  </properties>
+
         
+\
+    .. note::
+        <version> is omitted in the configuration example since poi-ooxml version uses details defined in Spring IO Platform.
+
+        Also, \ ``AbstractExcelView``\  uses @Deprecated annotation from Spring Framework 4.2. Hence, it is recommended to use \ ``AbstractXlsxView``\ in the same way even if you want to use a xls file.
+        For details, refer \ `AbstractExcelView - JavaDoc <https://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/web/servlet/view/document/AbstractExcelView.html>`_\ .
+          
 
 Definition of ViewResolver
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -336,7 +338,7 @@ Settings are same as that for PDF file rendering. For details, refer to \ :ref:`
 Specifying View in controller
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| With the help of BeanNameViewResolver, by returning "sampleExcelView" in Controller, 
+| With the help of \ ``BeanNameViewResolver``\ , by returning "sampleExcelView" in Controller, 
 | a view named "sampleExcelView" gets used from the BeanIDs stored in Spring Context.
 
 **Java source**
@@ -358,7 +360,7 @@ Specifying View in controller
      - Description
    * - | (1)
      - | With "sampleExcelView"as the return value of method,
-       | SampleExcelView class stored in Spring context is executed.
+       | \ ``SampleExcelView``\  class stored in Spring context is executed.
 
 | EXCEL file can be opened as shown below after executing the above procedures.
 
@@ -373,7 +375,7 @@ Downloading arbitrary files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | To download files in formats other than PDF or EXCEL,
 | class that inherits \ ``org.terasoluna.gfw.web.download.AbstractFileDownloadView``\  provided by common library can be implemented.
-| Following steps should be implemented in AbstractFileDownloadView to render files in other format.
+| Following steps should be implemented in \ ``AbstractFileDownloadView``\  to render files in other format.
 
 1. Fetch InputStream in order to write to the response body.
 2. Set information in HTTP header.
@@ -419,12 +421,12 @@ Implementation of Custom View
      - | In this example, this class comes under the scope of component scanning by using \ ``@Component``\  annotation.
        | It will also come under the scope of \ ``org.springframework.web.servlet.view.BeanNameViewResolver``\  which is described earlier.
    * - | (2)
-     - | Inherit AbstractFileDownloadView.
+     - | Inherit \ ``AbstractFileDownloadView``\ .
    * - | (3)
-     - | Execute getInputStream method.
-       | InputStream to be downloaded should be returned.
+     - | Execute \ ``getInputStream``\  method.
+       | \ ``InputStream``\  to be downloaded should be returned.
    * - | (4)
-     - | Execute addResponseHeader method.
+     - | Execute \ ``addResponseHeader method``\ .
        | Set Content-Disposition or ContentType as per the file to be downloaded.
 
 Definition of ViewResolver
@@ -434,7 +436,7 @@ Settings are same as that of PDF file rendering. For details, refer to \ :ref:`v
 
 Specifying View in controller
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| With the help of BeanNameViewResolver, by returning "textFileDownloadView" in Controller, 
+| With the help of \ ``BeanNameViewResolver``\ , by returning "textFileDownloadView" in Controller, 
 | a view named "textFileDownloadView" gets used from the BeanIDs stored in Spring Context. 
 
 **Java source**
@@ -455,7 +457,7 @@ Specifying View in controller
      - Description
    * - | (1)
      - | With "textFileDownloadView"as the return value of method, 
-       | TextFileDownloadView class stored in Spring context is executed.
+       | \ ``TextFileDownloadView``\  class stored in Spring context is executed.
 
 \
 
