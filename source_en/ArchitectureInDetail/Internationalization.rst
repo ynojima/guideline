@@ -37,6 +37,11 @@ The image of switching locale is as follows:
 
     For internationalization of Codelist, refer to :doc:`Codelist`.
 
+.. note::
+
+    When the error screen is to be internationalised, transition to error screen is performed by using MVC Controller of Spring.
+    If a direct transition to error screen is performed without Spring MVC, it may happen that the message is not output in intended language.
+
 .. tip::
 
     The most commonly known abbreviation of internationalization is i18n.
