@@ -5316,7 +5316,6 @@ prevented for RESTful Web Service requests.
     <sec:http
         pattern="/api/v1/**"
         auto-config="true"
-        use-expressions="true"
         create-session="stateless">
         <sec:csrf disabled="true"/>
     </sec:http>
