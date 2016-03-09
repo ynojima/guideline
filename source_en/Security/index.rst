@@ -1,4 +1,4 @@
-Security for TERASOLUNA Server Framework for Java (5.x)
+Security countermeasures for TERASOLUNA Server Framework for Java (5.x)
 ================================================================================
 
 .. toctree::
@@ -11,6 +11,7 @@ Security for TERASOLUNA Server Framework for Java (5.x)
    Authorization
    XSS
    CSRF
+   Encryption
 
 .. raw:: latex
 
