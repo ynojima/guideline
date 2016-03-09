@@ -13,12 +13,12 @@ Overview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | There are very few operations in string standard API of Java which specialise in Japanese language.
-| A process must be devised independently for conversion of full width katakana / half width katakana and determination of a string consisting of only half width katakana.
-| 
+| A process must be devised independently for conversion of full width katakana / half width katakana and 
+| determination of a string consisting of only half width katakana.
 
 | Also, note that although in Java, all the strings are represented in Unicode
 | the special characters like 𠮷 are represented in unicode by char type 2 (32 bits) which is referred to as surrogate pair.
-| Even while handling these characters, an implementation which takes into account various types of characters is necessary to prevent occurrence of unexpected behavior.
+| Even while handling these characters, an implementation which takes into account various types of characters are necessary to prevent occurrence of unexpected behavior.
 
 | The guideline assumes a case wherein Japanese language is processed, and
 | includes a typical string operation example and offering a Japanese language operation API by a common library.
@@ -44,7 +44,7 @@ Trim
    StringUtils.trimTrailingCharacter(str, '!'); // => "  Hello World"
 
 .. note::
-  There is no change in the behaviour even if surrogate pair string is specified in the first argument of | ``StringUtils#trimLeadingCharacter`` and ``StringUtils#trimTrailingCharacter``. Also note that, since the second argument is of char type, surrogate pair cannot be specified.
+  There is no change in the behaviour even if surrogate pair string is specified in the first argument of ``StringUtils#trimLeadingCharacter`` and ``StringUtils#trimTrailingCharacter``. Also note that, since the second argument is of char type, surrogate pair cannot be specified.
 
 Padding, Suppress
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -62,8 +62,8 @@ Padding, Suppress
    String suppressStr = paddingStr.replaceFirst("^0+(?!$)", ""); // => "1"
 
 .. warning::
-  | If a surrogate pair is included while carrying out padding of apparent length, appropriate results cannot be obtained since surrogate pair cannot be taken into account by ``String#format``.
-  | In order to achieve the padding by using surrogate pair, it is necessary to count number of characters considered as surrogate pair described later, calculate appropriate number of characters that should be padded and join the strings.
+  If a surrogate pair is included while carrying out padding of apparent length, appropriate results cannot be obtained since surrogate pair cannot be taken into account by ``String#format``.
+  In order to achieve the padding by using surrogate pair, it is necessary to count number of characters considered as surrogate pair described later, calculate appropriate number of characters that should be padded and join the strings.
 
 Processing of a string considered as a surrogate pair
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -97,7 +97,7 @@ Fetching string length
 
 |
 | Further, Unicode consists of "concatenation".
-| Since there is no apparent difference between ``\u304c`` indicating "が" and ``\u304b\u3099`` indicating "か" and "濁点", "か" and "濁点" are likely to be counted as two characters.
+| Since there is no appearance difference between ``\u304c`` indicating [が] and ``\u304b\u3099`` indicating [か] plus [voiced sound mark], however [か] plus [voiced sound mark] are likely to be counted as two characters.
 | When number of characters are to be counted including the combining characters as well as described above, counting is done after normalization of text using ``java.text.Normalizer``.
 |
 | A method which returns length of the string after considering combining characters and surrogate pair is given below.
@@ -161,7 +161,7 @@ String split
 
     .. note::
       | Surrogate pair can also be specified in the argument of ``String#split`` as a delimiter.
-      
+
     .. note::
       | Please note that behaviour while passing a blank character in ``String#split`` changes in Java SE 7 environment, and Java SE 8. Refer `Pattern#split Javadoc <http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#split-java.lang.CharSequence-int->`_
       
@@ -233,7 +233,7 @@ Conversion to half width string
 
 .. note::
 
-    \ ``FullHalfConverter``\  cannot convert combining characters that represent a single character using 2 or more characters (Example: "\ ``"シ"``\ (\ ``\u30b7``\ ) + 濁点(\ ``\u3099``\ )"）to half width character (Example: \ ``"ｼﾞ"``\ ).
+    \ ``FullHalfConverter``\  cannot convert combining characters that represent a single character using 2 or more characters (Example: "\ ``"シ"``\ (\ ``\u30b7``\ ) + voiced sound mark(\ ``\u3099``\ )"）to half width character (Example: \ ``"ｼﾞ"``\ ).
     When combining characters are to be converted to half width characters, \ ``FullHalfConverter``\  must be used after converting the same to integrated characters （Example:\ ``"ジ"``\ (\ ``\u30b8``\ )）by carrying out text normalization.
     
     \ ``java.text.Normalizer``\  is used while carrying out text normalization.
@@ -277,7 +277,7 @@ Conversion to half width string
 .. _StringOperationsHowToUseCustomFullHalfConverter:
 
 Creating FullHalfConverter class for which a unique full width and half width character pair definition is registered
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 | \ ``FullHalfConverter``\  for which a unique full width and half width character pair definition is registered can also be used without using \ ``DefaultFullHalf``\ .
 | How to use \ ``FullHalfConverter``\  for which a unique full width character and half width character pair definition is registered, is shown below.
