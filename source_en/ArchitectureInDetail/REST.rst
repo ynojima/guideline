@@ -1653,7 +1653,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
 - :file:`spring-mvc-rest.xml`
 
  .. code-block:: xml
-    :emphasize-lines: 22, 30-32, 39-41, 44-47, 51, 61, 65
+    :emphasize-lines: 22, 32-34, 39-41, 44-47, 51, 61, 65
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans" 
@@ -1682,16 +1682,16 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
     
         <bean id="jsonMessageConverter"
             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-            <property name="objectMapper">
-                <bean id="objectMapper" class="com.fasterxml.jackson.datatype.joda.JodaMapper">
-                    <!-- (2) -->
-                    <property name="dateFormat">
-                        <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
-                    </property>
-                </bean>
-            </property>
+            <property name="objectMapper" ref="objectMapper" />
         </bean>
     
+        <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+            <!-- (2) -->
+            <property name="dateFormat">
+                <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
+            </property>
+        </bean>
+
         <!-- Register components of Spring MVC. -->
         <!-- (3) -->
          <mvc:annotation-driven>
@@ -1743,6 +1743,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
         | For the details of fetching a value from property file, refer to ":doc:`PropertyManagement`".
     * - | (2)
       - | Add the settings for handling the JSON date field format as extended ISO-8601 format.
+        | Also, when JSR-310 Date and Time API or Joda Time class is to be used as a property of JavaBean which represents a resource (Resource class), "\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ " must be carried out.
     * - | (3)
       - | Perform bean registration for the Spring MVC framework component necessary for providing RESTful Web Service.
         | JSON can be used as a resource format by performing these settings.
@@ -1763,6 +1764,36 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
     * - | (7)
       - | Specify AOP definition to output the exception handled by Spring MVC framework to a log.
         | Refer to \ :doc:`ExceptionHandling`\  for \ ``HandlerExceptionResolverLoggingInterceptor``\ .
+
+.. note:: **How to define a Bean for ObjectMapper**
+
+    When a Bean is to be defined for \ ``com.fasterxml.jackson.databind.ObjectMapper``\  of Jackson,
+    \ ``Jackson2ObjectMapperFactoryBean``\  provided by Spring should be used.
+    If \ ``Jackson2ObjectMapperFactoryBean``\  is used, extension module for JSR-310 Date and Time API or Joda Time can be auto-registered.
+    Further, \ ``ObjectMapper``\  configuration which is difficult to represent in Bean definition file of XML can be easily configured as well.
+
+    Also, when style is to be changed from directly defining a Bean for \ ``ObjectMapper``\  to using \ ``Jackson2ObjectMapperFactoryBean``\ ,
+    it should be noted that default value for the following configuration differs from the default value of Jackson (disabled).
+
+    * `MapperFeature#DEFAULT_VIEW_INCLUSION <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/MapperFeature.html?is-external=true#DEFAULT_VIEW_INCLUSION>`_\
+    * `DeserializationFeature#FAIL_ON_UNKNOWN_PROPERTIES <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html?is-external=true#FAIL_ON_UNKNOWN_PROPERTIES>`_\
+
+    When \ ``ObjectMapper``\  operation and default Jackson operation are to be matched, the configuration above is enabled using \ ``featuresToEnable``\  property.
+
+     .. code-block:: xml
+
+        <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+            <!-- ... -->
+            <property name="featuresToEnable">
+                <array>
+                    <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+                    <util:constant static-field="com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES"/>
+                </array>
+            </property>
+        </bean>
+
+    For \ ``Jackson2ObjectMapperFactoryBean``\  details, refer `JavaDoc of Jackson2ObjectMapperFactoryBean <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/http/converter/json/Jackson2ObjectMapperFactoryBean.html>`_\ .
+
 
 .. _REST_note_changed_jackson_version:
 
@@ -4567,6 +4598,53 @@ Cache control for resource
 
 Appendix
 --------------------------------------------------------------------------------
+
+.. _RESTAppendixUsingJSR310_JodaTime:
+
+Configuration while using JSR-310 Date and Time API / Joda Time
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When JSR-310 Date and Time API or Joda Time class is to be used as a property of JavaBean which represents a resource (Resource class),
+an extension module provided by Jackson in \ ``pom.xml``\  is added to dependent library.
+
+**When JSR-310 Date and Time API class is used**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+**When Joda Time class is used**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>org.terasoluna.gfw</groupId>
+        <artifactId>terasoluna-gfw-jodatime</artifactId>
+    </dependency>
+
+or
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-joda</artifactId>
+    </dependency>
+
+.. note::
+
+    Besides above, extension modules (\ ``jackson-datatype-xxx``\ ) for handling
+
+    * \ ``java.nio.file.Path``\  added from Java SE 7
+    * \ ``java.util.Optional``\  added from Java SE 8
+    * Objects that are set as Proxy by using Lazy Load function of Hibernate ORM
+
+    are provided by another Jackson.
+
+|
 
 .. _RESTAppendixSettingsOfDeployInSameWarFileRestAndClientApplication:
 
