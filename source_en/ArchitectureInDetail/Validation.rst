@@ -3870,10 +3870,31 @@ Annotation provided by \ `terasoluna-gfw-common <https://github.com/terasolunaor
       - Refer \ :ref:`@ExistInCodeList <codelist-validate>`\ 
 
 
+terasoluna-gfw-codepoints check rules
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Annotation (\ ``org.terasoluna.gfw.common.codepoints.*``\ ) offered by \ `terasoluna-gfw-codepoints <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-codepoints>`_\  is shown below. Further, \ ``terasoluna-gfw-codepoints``\  can be used in 5.1.0.RELEASE and subsequent versions.
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 15 30 30 25
+
+    * - Annotation
+      - Target type
+      - Description
+      - Usage example
+    * - \ ``@ConsistOf``\
+      - | Implementation class of \ ``CharSequence``\ 
+        | (\ ``String``\, \ ``StringBuilder``\  etc)
+      - Verify whether all the character strings to be checked are included in the specified code point set.
+      - Refer \ :ref:`@ConsistOf <StringProcessingHowToUseCodePointsValidator>`\ 
+
+
 terasoluna-gfw-validator check rules
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Annotation provided by \ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\  (\ ``org.terasoluna.gfw.common.validator.constraints.*``\ ) is shown below.
+Annotation (\ ``org.terasoluna.gfw.common.validator.constraints.*``\ ) offered by \ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\  is shown below. Further, \ ``terasoluna-gfw-validator``\ can be used in 5.1.0.RELEASE and subsequent versions.
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
@@ -4033,7 +4054,7 @@ How to apply check rules of common library
 
 Apply check rules of common library using the procedure below.
 
-Add a dependent library. \ ``terasoluna-gfw-validator``\  can be used in version 5.1.0.RELEASE.
+Add a dependent library for the rules that are to be used. An example for how to add \ ``terasoluna-gfw-validator``\  is shown below.
 
 .. code-block:: xml
 
@@ -4043,10 +4064,6 @@ Add a dependent library. \ ``terasoluna-gfw-validator``\  can be used in version
             <artifactId>terasoluna-gfw-validator</artifactId>
         </dependency>
     </dependencies>
-
-.. note::
-
-    When \ ``@ExistInCodeList``\  is used, add \ ``terasoluna-gfw-common``\  as a dependent library.
 
 Next, a message definition corresponding to annotation is added to :file:`ValidationMessages.properties`  as explained in \ :ref:`Validation_message_in_validationmessages`\ .
 
