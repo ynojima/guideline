@@ -4,6 +4,7 @@ Utilities
    :maxdepth: 1
    
    Dozer
+   DateAndTime
    JodaTime
    StringProcessing
 
