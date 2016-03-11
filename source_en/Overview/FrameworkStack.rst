@@ -623,38 +623,54 @@ Basically, application development is possible using TERASOLUNA Server Framework
       - Provide general-purpose functionalities and dependency definitions irrespective of Web.
       - Yes
     * - \ (2)
-      - terasoluna-gfw-jodatime
-      - Provide functionalities and dependency definitions that depend on the Joda Time.
+      - terasoluna-gfw-string
+      - Provide function related to string processing. (Add from 5.1.0)
       - Yes
     * - \ (3)
-      - terasoluna-gfw-web
-      - Provide group of functionalities and dependency definitions for creating web application.
+      - terasoluna-gfw-codepoints
+      - Provide function to check whether the code point constituting target string is incorporated in the codepoint set.(Add from 5.1.0)
       - Yes
     * - \ (4)
+      - terasoluna-gfw-validator
+      - Provide by adding a constraint annotation of generic Bean validation. (Add from 5.1.0)
+      - Yes
+    * - \ (5)
+      - terasoluna-gfw-jodatime
+      - Provide function that depends on Joda Time and dependency relation definition. (Add from 5.0.0)
+      - Yes
+    * - \ (6)
+      - terasoluna-gfw-web
+      - Provide function to be used while creating a Web application and dependency relation definition. Function not dependent on View and dependency relation definition are consolidated.
+      - Yes
+    * - \ (7)
+      - terasoluna-gfw-web-jsp
+      - Provide function and dependency relation definition to be used while creating a Web application which adopts JSP in View.
+      - Yes
+    * - \ (8)
       - terasoluna-gfw-mybatis3
       - Provide dependency definitions for using MyBatis3.
       - No
-    * - \ (5)
+    * - \ (9)
       - terasoluna-gfw-jpa
       - Provide dependency definitions for using JPA.
       - No
-    * - \ (6)
+    * - \ (10)
       - terasoluna-gfw-security-core
       - Provide dependency definitions for using Spring Security (other than Web).
       - No
-    * - \ (7)
+    * - \ (11)
       - terasoluna-gfw-security-web
       - Provide dependency definitions for using Spring Security (related to Web) and extended classes of Spring Security.
       - Yes
-    * - \ (8)
+    * - \ (12)
       - terasoluna-gfw-recommended-dependencies
       - Provide dependency definitions of recommended libraries that doesn't depends on web.
       - No
-    * - \ (9)
+    * - \ (13)
       - terasoluna-gfw-recommended-web-dependencies
       - Provide dependency definitions of recommended libraries that depends on web.
       - No
-    * - \ (10)
+    * - \ (14)
       - terasoluna-gfw-parent
       - Provide dependency libraries management and recommended settings of build plugins.
       - No
@@ -705,6 +721,65 @@ terasoluna-gfw-common provide following components.
     * -
       - Sequencer
       - Provide classes for retrieving the sequence value.
+
+terasoluna-gfw-string
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-string provides following components.
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - Classification
+      - Component Name
+      - Description
+    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - Half width to full width conversion
+      - Provide a class which carries out a process wherein half width character of input string is converted to full width and a process wherein full width character is converted to half width based on mapping table of half width string and full width string.
+
+
+terasoluna-gfw-codepoints
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-codepoints provides following components.
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - Classification
+      - Component Name
+      - Description
+    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - Codepoint check
+      - Provide a class which checks whether the codepoint constituting target string is incorporated in the codepoint set.
+    * - :doc:`../ArchitectureInDetail/Validation`
+      - Bean validation constraint annotation for codepoint check
+      - Provide constraint annotation to carry out Bean validation for codepoint check.
+
+
+terasoluna-gfw-validator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-validator provides following components.
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - Classification
+      - Component name
+      - Description
+    * - :doc:`../ArchitectureInDetail/Validation`
+      - Bean Validation constraint annotation for byte length check
+      - Provide a constraint annotation to check whether the byte length in the character code of input value is less than or equal to specified maximum value, and greater than or equal to specified minimum value, using Bean Validation.
+    * -
+      - Bean Validation constraint annotation for field value comparison correlation check
+      - Provide a constraint annotation to check magnitude correlation of two fields using Bean Validation.
 
 terasoluna-gfw-jodatime
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -763,6 +838,23 @@ terasoluna-gfw-web provide following components.
     * -
       - ServletFilter for clearing MDC
       - Provide ServletFilter class for clearing information that stored in Logger's MDC.
+
+terasoluna-gfw-web-jsp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+terasoluna-gfw-web-jsp provides following components.
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.30\linewidth}|p{0.50\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 30 50
+
+    * - Classification
+      - Component name
+      - Description
+    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+      - JSP tag for transaction token output
+      - Provide a JSP tag library to output transaction tokens as hidden items.
     * - :doc:`../ArchitectureInDetail/Pagination`
       - JSP Tag for displaying Pagination Links
       - Provide JSP Tag Library for displaying Pagination Links using classes that provided by Spring Data Commons.
@@ -798,9 +890,6 @@ terasoluna-gfw-security-web provide following components.
     * - :doc:`../ArchitectureInDetail/Logging`
       - ServletFilter for storing name of authenticated user
       - Provide ServletFilter class for setting name of authenticated user into MDC, for the purpose of improving traceability.
-    * - :doc:`../Security/Authentication`
-      - Authentication Success Handler that can be specified redirect path
-      - Provide Authentication Success Handler class that redirect to specified path in the Web Application when authentication is successful.
 
 
 .. raw:: latex
