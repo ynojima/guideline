@@ -323,6 +323,36 @@ This chapter explains how to implement a client process which uses \ ``RestTempl
 When \ ``RestTemplate``\  is used, \ ``RestTemplate``\  is registered in DI container and injected in the component which uses \ ``RestTemplate``\ .
 
 
+Dependent library setup
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| spring-web library of Spring Framework is added to \ ``pom.xml``\  for using \ ``RestTemplate``\ .
+| In case of multi-project configuration, it is added to \ ``pom.xml``\  of domain project.
+| It is not necessary to specify version here since it is managed in Spring Framework.
+
+.. code-block:: xml
+
+    <dependencies>
+
+        <!-- (1) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+    </dependencies>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Add \ ``spring-web``\  library of Spring Framework to dependencies.
+
+
 Bean definition of \ ``RestTemplate``\ 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
