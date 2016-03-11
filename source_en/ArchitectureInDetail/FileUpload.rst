@@ -12,20 +12,20 @@ Overview
 
 | This chapter explains how to upload files.
 
-| Files are uploaded using the File Upload functionality supported by Servlet3.0 and classes provided by Spring Web.
+| Files are uploaded using the File Upload functionality supported by Servlet 3.0 and classes provided by Spring Web.
 
  .. note::
 
-    In this chapter, File Upload functionality supported by Servlet3.0 is used; hence, Servlet version 3.0 or above is a prerequisite here.
+    In this chapter, File Upload functionality supported by Servlet 3.0 is used; hence, Servlet version 3.0 or above is a prerequisite here.
 
  .. note::
 
-    File Upload functionality of Servlet 3.0 may likely result into garbling of multi byte characters of file names or request parameters on some application servesr.
+    File Upload functionality of Servlet 3.0 may likely result into garbling of multi byte characters of file names or request parameters on some application server.
 
-    In case of using an application server, wherein problems are likely to occur, using Commons FileUpload can help in avoiding such problems.
+    When the Application Server wherein problems are likely to occur is to be used, using Commons FileUpload can help in avoiding such problems.
     For settings to use Commons FileUpload, refer to ":ref:`file-upload_usage_commons_fileupload`". 
 
-    At the time of version 5.0.1.RELEASE, application servers where this problem is confirmed are as follows:
+    Application server for which a occurrence of problem is confirmed at the time of version 5.0.1.RELEASE is as given below.
 
     * WebLogic 12c
     * JBoss EAP 6
@@ -36,10 +36,11 @@ Overview
     Hence ensure that there are no such vulnerabilities in the application server to be used.
     
     In case of using Tomcat, it is necessary to use version 7.0.52 or above for series 7.0, and version 8.0.3 or above for series 8.0.
+    A file upload function of Servlet 3.0 should be used since problems do not occur while using Tomcat 7/8 as an Application Server.
 
 Basic flow of upload process
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Basic flow of uploading files using File Upload functionality supported by Servlet3.0, and classes of Spring Web, is as shown below.
+Basic flow of uploading files using File Upload functionality supported by Servlet 3.0, and classes of Spring Web, is as shown below.
 
  .. figure:: ./images/file-upload-overview_basicflow.png
    :alt: Screen image of single file upload.
@@ -57,7 +58,7 @@ Basic flow of uploading files using File Upload functionality supported by Servl
    * - | (2)
      - | Servlet container receives \ ``multipart/form-data``\  request and calls \ ``org.springframework.web.servlet.DispatcherServlet``\ .
    * - | (3)
-     - | \ ``DispatcherServlet``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet3.0 in Spring MVC.
+     - | \ ``DispatcherServlet``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet 3.0 in Spring MVC.
        | \ ``StandardServletMultipartResolver``\  generates ``org.springframework.web.multipart.MultipartFile`` object that wraps the API (``javax.servlet.http.Part``) introduced through Servlet 3.0.
    * - | (4)
      - | \ ``DispatcherServlet``\  calls the processing method of Controller.
@@ -65,20 +66,20 @@ Basic flow of uploading files using File Upload functionality supported by Servl
    * - | (5)
      - | Controller calls the method of \ ``MultipartFile``\  object and fetches the contents and meta information (file name etc.) of uploaded file.
    * - | (6)
-     - | \ ``MultipartFile``\  calls the method of \ ``Part``\  object introduced through Servlet3.0, fetches the contents and meta information (file name etc.) of the uploaded file and returns the same to the Controller.
+     - | \ ``MultipartFile``\  calls the method of \ ``Part``\  object introduced through Servlet 3.0, fetches the contents and meta information (file name etc.) of the uploaded file and returns the same to the Controller.
    * - | (7)
      - | Controller calls the Service method and executes upload process.
        | It passes the contents and meta information (file name etc.) of the file retrieved from \ ``MultipartFile``\  object as an argument of Service method.
    * - | (8)
      - | Service stores the contents and meta information (file name etc.) of the uploaded file in the file or database.
    * - | (9)
-     - | \ ``DispatcherServlet``\  calls \ ``StandardServletMultipartResolver``\  and deletes the temporary file used by File Upload functionality of Servlet3.0.
+     - | \ ``DispatcherServlet``\  calls \ ``StandardServletMultipartResolver``\  and deletes the temporary file used by File Upload functionality of Servlet 3.0.
    * - | (10)
-     - | \ ``StandardServletMultipartResolver``\  calls the method of \ ``Part``\  object introduced through Servlet3.0 and deletes the temporary file saved on disk.
+     - | \ ``StandardServletMultipartResolver``\  calls the method of \ ``Part``\  object introduced through Servlet 3.0 and deletes the temporary file saved on disk.
 
  .. note::
 
-    Controller performs the process for \ ``MultipartFile``\  object of Spring Web; hence implementation which is dependent on the File Upload API provided by Servlet3.0 can be excluded.
+    Controller performs the process for \ ``MultipartFile``\  object of Spring Web; hence implementation which is dependent on the File Upload API provided by Servlet 3.0 can be excluded.
 
 
 About classes provided by Spring Web
@@ -102,8 +103,8 @@ Classes provided by Spring Web for uploading a file are as follows:
      - | org.springframework.web.multipart.support.
        | StandardMultipartHttpServletRequest$
        | StandardMultipartFile
-     - | \ ``MultipartFile``\  class of File Upload functionality introduced through Servlet3.0. 
-       | Process is delegated to the \ ``Part``\  object introduced through Servlet3.0.
+     - | \ ``MultipartFile``\  class of File Upload functionality introduced through Servlet 3.0. 
+       | Process is delegated to the \ ``Part``\  object introduced through Servlet 3.0.
    * - 3.
      - | org.springframework.web.multipart.
        | MultipartResolver
@@ -112,7 +113,7 @@ Classes provided by Spring Web for uploading a file are as follows:
    * - 4.
      - | org.springframework.web.multipart.support.
        | StandardServletMultipartResolver
-     - | \ ``MultipartResolver``\  class for File Upload functionality introduced through Servlet3.0.
+     - | \ ``MultipartResolver``\  class for File Upload functionality introduced through Servlet 3.0.
    * - 5.
      - | org.springframework.web.multipart.support.
        | MultipartFilter
@@ -135,9 +136,9 @@ How to use
 Application settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Settings to enable Servlet3.0 upload functionality 
+Settings to enable Servlet 3.0 upload functionality 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to enable upload functionality of Servlet3.0.
+Perform the following settings to enable upload functionality of Servlet 3.0.
 
 - :file:`web.xml`
 
@@ -173,7 +174,7 @@ Perform the following settings to enable upload functionality of Servlet3.0.
    * - Sr. No.
      - Description
    * - | (1)
-     - | Specify the XSD file of Servlet3.0 or above in \ ``xsi:schemaLocation``\  attribute of \ ``<web-app>``\  element.
+     - | Specify the XSD file of Servlet 3.0 or above in \ ``xsi:schemaLocation``\  attribute of \ ``<web-app>``\  element.
    * - | (2)
      - | Specify version  ``3.0`` or above in the \ ``version``\  attribute of \ ``<web-app>``\  element.
    * - | (3)
@@ -318,9 +319,9 @@ Perform the following settings to fetch request parameters in Servlet Filter pro
     
 
 
-Settings to link Spring MVC with upload functionality of Servlet3.0
+Settings to link Spring MVC with upload functionality of Servlet 3.0
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to link Spring MVC with Servlet3.0 upload functionality.
+Perform the following settings to link Spring MVC with Servlet 3.0 upload functionality.
 
 - :file:`spring-mvc.xml`
 
@@ -338,7 +339,7 @@ Perform the following settings to link Spring MVC with Servlet3.0 upload functio
    * - Sr. No.
      - Description
    * - | (1)
-     - | Define a bean for \ ``StandardServletMultipartResolver``\  which is a MultipartResolver for Servlet3.0.
+     - | Define a bean for \ ``StandardServletMultipartResolver``\  which is a MultipartResolver for Servlet 3.0.
        | BeanID should be \ ``"multipartResolver"``\ .
        |
        | By performing these settings, the uploaded file can be treated as \ ``org.springframework.web.multipart.MultipartFile``\  and received as a Controller argument and form object property.
@@ -1697,11 +1698,12 @@ it may likely result into garbling of multi byte characters of file names or req
 For example: If File Upload functionality of Servlet 3.0 is used on WebLogic (verification version 12.1.3),
 it has been confirmed that multi byte characters of fields to be sent along with file are garbled.
 Although it seems that there is a problem at the Application Server side,
-it is not possible to send the file and multi byte characters simultaneously unless the said problem is fixed.
+it is not possible to send the file and multi byte characters simultaneously unless the problem at the Application Server is fixed.
 
-This problem can be avoided using Commons FileUpload.
+**This problem can be avoided using Commons FileUpload.
 Therefore, this guideline describes about file upload using Commons FileUpload
-as a temporary measure till the application server gets modified.
+as a temporary measure for the specific environment where problems are likely to occur.
+Using Commons FileUpload is not recommended where problems are not likely.**
 
 Perform the following settings when using Commons FileUpload.
 
