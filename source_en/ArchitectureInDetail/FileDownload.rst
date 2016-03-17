@@ -319,9 +319,18 @@ Implementation of Custom View
           <groupId>org.apache.poi</groupId>
           <artifactId>poi-ooxml</artifactId>
       </dependency>
+      <exclusions>
+          <exclusion>
+              <groupId>stax</groupId>
+              <artifactId>stax-api</artifactId>
+          </exclusion>
+      </exclusions>
   </dependencies>
 
-        
+\
+    .. note::
+        Since stax-api on which poi-ooxml is dependent, is provided as a standard from SE, the library is not required. Also, since a conflict is likely in the library, \ ``<exclusions>``\  element should be added and the relevant library should not be added in the application.
+
 \
     .. note::
         <version> is omitted in the configuration example since poi-ooxml version uses details defined in Spring IO Platform.
