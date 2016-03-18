@@ -56,26 +56,28 @@ Basic flow of uploading files using File Upload functionality supported by Servl
    * - | (1)
      - | Select and upload the target files.
    * - | (2)
-     - | Servlet container receives \ ``multipart/form-data``\  request and calls \ ``org.springframework.web.servlet.DispatcherServlet``\ .
+     - | Servlet container receives \ ``multipart/form-data``\  request and calls \ ``org.springframework.web.multipart.support.MultipartFilter``\ .
    * - | (3)
-     - | \ ``DispatcherServlet``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet 3.0 in Spring MVC.
+     - | \ ``MultipartFilter``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet 3.0 in Spring MVC.
        | \ ``StandardServletMultipartResolver``\  generates ``org.springframework.web.multipart.MultipartFile`` object that wraps the API (``javax.servlet.http.Part``) introduced through Servlet 3.0.
    * - | (4)
-     - | \ ``DispatcherServlet``\  calls the handler method of Controller.
-       | \ ``DispatcherServlet``\  object created in step (3) binds to the Controller argument or form object.
+     - | Apply a filter chain in \ ``DispatcherServlet``\  from \ ``MultipartFilter``\ .
    * - | (5)
-     - | Controller calls the method of \ ``MultipartFile``\  object and fetches the contents and meta information (file name etc.) of uploaded file.
+     - | \ ``DispatcherServlet``\  calls handler method of Controller.
+       | \ ``MultipartFile``\  object generated in (3) is bound to Controller argument or form object.
    * - | (6)
-     - | \ ``MultipartFile``\  calls the method of \ ``Part``\  object introduced through Servlet 3.0, fetches the contents and meta information (file name etc.) of the uploaded file and returns the same to the Controller.
+     - | Controller calls a method of \ ``MultipartFile``\  object and fetch contents of uploaded file and meta information (file name etc.).
    * - | (7)
+     - | \ ``MultipartFile``\  calls a method of \ ``Part``\  object introduced from Servlet 3.0, fetches contents of uploaded file and meta information (file name etc.) and returns to Controller.
+   * - | (8)
      - | Controller calls the Service method and executes upload process.
        | It passes the contents and meta information (file name etc.) of the file retrieved from \ ``MultipartFile``\  object as an argument of Service method.
-   * - | (8)
-     - | Service stores the contents and meta information (file name etc.) of the uploaded file in the file or database.
    * - | (9)
-     - | \ ``DispatcherServlet``\  calls \ ``StandardServletMultipartResolver``\  and deletes the temporary file used by File Upload functionality of Servlet 3.0.
+     - | Service stores contents of uploaded file and meta information (file name etc.) in the file or database.
    * - | (10)
-     - | \ ``StandardServletMultipartResolver``\  calls the method of \ ``Part``\  object introduced through Servlet 3.0 and deletes the temporary file saved on disk.
+     - | \ ``MultipartFilter``\  calls \ ``StandardServletMultipartResolver``\  and deletes temporary file used by file upload function of Servlet 3.0.
+   * - | (11)
+     - | \ ``StandardServletMultipartResolver``\  calls a method of \ ``Part``\  object introducted from Servlet 3.0 and deletes the temporary file stored in the disc.
 
  .. note::
 
@@ -117,9 +119,9 @@ Classes provided by Spring Web for uploading a file are as follows:
    * - 5.
      - | org.springframework.web.multipart.support.
        | MultipartFilter
-     - | Class that enables fetching of request parameters in Servlet Filter process, at the time of multipart/form-data request.
-       | If this class is not used, request parameters cannot be fetched in Servlet Filter; hence CSRF Token Check functionality provided by Spring Security does not work correctly.
-       | To be more precise, as CSRF token cannot be fetched, it always throws CSRF token error leading to file upload failure.
+     - | A class which generates MultipartFile by calling a class which implements MultipartResolver from DI container, at the time of multipart/form-data request.
+       | If this class is not used, a request parameter cannot be fetched in Servlet Filter process when maximum size allowed in file upload exceeds the limit.
+       | Therefore, it is recommended to use MultipartFilter in this guideline.
 
  .. tip::
 
@@ -278,9 +280,14 @@ Perform the following settings to enable upload functionality of Servlet 3.0.
 
         When the files uploaded as application are to be saved as temporary files, they should be output to a directory other than the directory specified in \ ``<location>``\  element.
 
-Settings to enable fetching of request parameters in Servlet Filter processing
+.. _file-upload_setting_servlet_filter:
+
+Servlet Filter settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to fetch request parameters in Servlet Filter processing at the time of multipart/form-data request.
+The operation when the maximum size allowed in file upload exceeds the limit at the time of multipart/form-data request, varies depending on the application server. \ ``MultipartException``\  generated when maximum size exceeds the limit depending on the application server is likely to be not detected and exception handling settings described later will be invalid.
+
+| Since this operation can be evaded by setting \ ``MiltipartFilter``\ , \ ``MiltipartFilter``\  setting is described as a prerequisite in this guideline.
+| Setting example is given below.
 
 - :file:`web.xml`
 
@@ -310,39 +317,23 @@ Perform the following settings to fetch request parameters in Servlet Filter pro
      - | Specify the URL pattern for applying \ ``MultipartFilter``\ .
      
 
- .. warning::
- 
-    **MultipartFilter needs to be defined before the Servlet Filter that accesses request parameters.**
-    
-    When security measures are to be carried out using Spring Security, it should be defined before ``springSecurityFilterChain``.
+ .. warning:: **Precautions while using Spring Security**
+
+    When security countermeasures are to be carried out by using Spring Security, they should be defined prior to \ ``springSecurityFilterChain``\ .
     Further, when request parameters are accessed by a project-specific Servlet Filter, MultipartFilter should be defined before that Servlet Filter.
+
+    However, when defined before \ ``springSecurityFilterChain``\ , unauthenticated or unauthorized users may be allowed to upload the file (create temporary file).
+    Although a method to avoid this operation has been given in \ `Spring Security Reference -Cross Site Request Forgery (CSRF)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#csrf-include-csrf-token-in-action>`_\ , it is not recommended to be applied in this guideline since it poses a security risk.
+
+ .. warning:: **Precautions when maximum size limit for file upload is exceeded**
+
+   When allowable size limit for file upload has been exceeded, an 'Over the size limit" error may get detected before fetching a CSRF token in some of the application servers like WebLogic and CSRF token check is not performed.
+
+ .. note:: **Default calling of MultipartResolver**
     
-
-
-Settings to link Spring MVC with upload functionality of Servlet 3.0
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to link Spring MVC with Servlet 3.0 upload functionality.
-
-- :file:`spring-mvc.xml`
-
- .. code-block:: xml
-
-    <bean id="multipartResolver"
-        class="org.springframework.web.multipart.support.StandardServletMultipartResolver"> <!-- (1) -->
-    </bean>
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Define a bean for \ ``StandardServletMultipartResolver``\  which is a MultipartResolver for Servlet 3.0.
-       | BeanID should be \ ``"multipartResolver"``\ .
-       |
-       | By performing these settings, the uploaded file can be treated as \ ``org.springframework.web.multipart.MultipartFile``\  and received as a Controller argument and form object property.
+    If \ ``MultipartFilter``\  is used,
+    \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  is called by default.
+    \ ``StandardServletMultipartResolver``\  should be able to generates uploaded file as \ ``org.springframework.web.multipart.MultipartFile``\  and receive as property of Controller argument and form object.
 
 
 Settings for exception handling
@@ -1818,7 +1809,7 @@ Perform the following settings when using Commons FileUpload.
      - | When using Commons FileUpload, an upload function of Servlet 3.0 should be disabled.
        | If \ ``<multipart-config>``\  element is present in \ ``DispatcherServlet``\  definition, make sure to delete the same. 
    * - | (2)
-     - | When using Commons Fileupload, \ ``MultipartFilter``\  should be defined to enable \ :ref:`CSRF measures <csrf_use-multipart-filter>`\ .
+     - | When using Commons Fileupload, \ ``MultipartFilter``\  must be defined to enable security countermeasures which use Spring Security.
        | \ ``MultipartFilter``\ mapping should be defined before defining springSecurityFilterChain (Servlet Filter of Spring Security).
 
 .. tip::
