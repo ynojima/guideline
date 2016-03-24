@@ -7,10 +7,11 @@ Security countermeasures for TERASOLUNA Server Framework for Java (5.x)
    SpringSecurity
    Tutorial
    Authentication
-   PasswordHashing
    Authorization
-   XSS
+   SessionManagement
    CSRF
+   LinkageWithBrowser
+   XSS
    Encryption
 
 .. raw:: latex

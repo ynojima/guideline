@@ -608,7 +608,7 @@ Following are URL patterns to be handled by the application created in this tuto
      - | URL to display login form
    * - | /login.jsp?error=true
      - | URL to display transition page (login page) in case of authentication error
-   * - | /authenticate
+   * - | /login
      - | URL for authentication
    * - | /logout
      - | URL for logout
@@ -636,7 +636,7 @@ Following are URL patterns to be handled by the application created in this tuto
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true" use-expressions="true">
+        <sec:http>
             <sec:headers>
                 <sec:cache-control />
                 <sec:content-type-options />
@@ -651,8 +651,7 @@ Following are URL patterns to be handled by the application created in this tuto
             <!-- (1) -->
             <sec:form-login
                 login-page="/login.jsp"
-                authentication-failure-url="/login.jsp?error=true"
-                login-processing-url="/authenticate" />
+                authentication-failure-url="/login.jsp?error=true" />
             <!-- (2) -->
             <sec:logout
                 logout-url="/logout"
@@ -794,17 +793,17 @@ Creating login page
             </c:if>
 
             <!-- (3) -->
-            <form:form action="${pageContext.request.contextPath}/authenticate">
+            <form:form action="${pageContext.request.contextPath}/login">
                 <table>
                     <tr>
-                        <td><label for="j_username">User:</label></td>
-                        <td><input type="text" id="j_username"
-                            name="j_username" value='demo'>(demo)</td><!-- (4) -->
+                        <td><label for="username">User:</label></td>
+                        <td><input type="text" id="username"
+                            name="username" value='demo'>(demo)</td><!-- (4) -->
                     </tr>
                     <tr>
-                        <td><label for="j_password">Password:</label></td>
-                        <td><input type="password" id="j_password"
-                            name="j_password" value="demo" />(demo)</td><!-- (5) -->
+                        <td><label for="password">Password:</label></td>
+                        <td><input type="password" id="password"
+                            name="password" value="demo" />(demo)</td><!-- (5) -->
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -824,24 +823,24 @@ Creating login page
     * - Sr. No.
       - Description
     * - | (1)
-      - When authentication fails, display login page by calling \ ``"/login.jsp?error=true"``\ .
+      - When authentication fails, \ ``"/login.jsp?error=true"``\  is called and login page is displayed.
         Therefore, use \ ``<c:if>``\  tag, so that error message is displayed only at the time after the display of authentication error.
     * - | (2)
       - Display an error message using \ ``<t:messagesPanel>``\  tag provided by common library.
 
         When authentication fails, an exception object of authentication error is stored with attribute name \ ``"SPRING_SECURITY_LAST_EXCEPTION"``\  in session scope.
     * - | (3)
-      - Set URL for authentication (\ ``"/authenticate"``\ ) in \ ``action``\  attribute of \ ``<form:form>``\  tag.
+      - Set URL for authentication (\ ``"/login"``\ ) in \ ``action``\  attribute of \ ``<form:form>``\  tag. This URL is default for Spring Security.
 
         Send parameters necessary for authentication (user name and password) using POST method.
     * - | (4)
       - Create a text box to specify user name.
 
-        Spring Security's default parameter name is \ ``j_username``\ .
+        Spring Security's default parameter name is \ ``username``\ .
     * - | (5)
       - Create a text box to specify password (text box for password).
 
-        Spring Security's default parameter name is \ ``j_password``\ .
+        Spring Security's default parameter name is \ ``password``\ .
 
 |
 
@@ -989,7 +988,7 @@ Adding logout button
     * - | (1)
       - Add a form for logout using \ ``<form:form>``\  tag.
 
-        Add Logout button by specifying the URL for logout (\ ``"/logout"``\ ) in \ ``action``\  attribute.
+        Add Logout button by specifying the URL for logout (\ ``"/logout"``\ ) in \ ``action``\  attribute. This URL is default for Spring Security.
 
 |
 
@@ -1010,7 +1009,7 @@ Accessing account information of login user from Controller
   
     package com.example.security.app.account;
 
-    import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.RequestMapping;
@@ -1130,7 +1129,7 @@ Perform definitions related to Spring Security in \ ``spring-security.xml``\ .
 \ ``src/main/resources/META-INF/spring/spring-security.xml``\ of the blank project which has been created has following settings.
 
 .. code-block:: xml
-    :emphasize-lines: 9,12,20,22,24,26,30,33,66
+    :emphasize-lines: 9,12,14,16,18,20,24,27,60
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -1142,9 +1141,9 @@ Perform definitions related to Spring Security in \ ``spring-security.xml``\ .
 
         <!-- (1) -->
         <sec:http pattern="/resources/**" security="none"/>
-        <sec:http auto-config="true" use-expressions="true">
+        <sec:http>
             <!-- (2) -->
-            <sec:headers>
+            <sec:form-login/>
                 <sec:cache-control />
                 <sec:content-type-options />
                 <sec:hsts />
@@ -1152,7 +1151,7 @@ Perform definitions related to Spring Security in \ ``spring-security.xml``\ .
                 <sec:xss-protection />
             </sec:headers>
             <!-- (3) -->
-            <sec:csrf />
+            <sec:logout/>
             <!-- (4) -->
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <!-- (5) -->
@@ -1216,13 +1215,13 @@ Perform definitions related to Spring Security in \ ``spring-security.xml``\ .
 
         As per the default settings of blank project , URL to access static resources (js, css, image files, etc.) is out of authentication/authorization scope.
     * - | (2)
-      - Control the response header for security measures using \ ``<sec:headers>``\  tag.
+      - Control login related operation which use form  authentication, by using \ ``<sec:form-login>``\  tag.
 
-        For usage method, refer to ":ref:`SpringSecurityAppendixSecHeaders`".
+        For usage method, refer to ":ref:`form-login`".
     * - | (3)
-      - Control CSRF measures using \ ``<sec:csrf>``\  tag.
+      - Control logout related operations by using \ ``<sec:logout>``\  tag.
 
-        For usage method, refer to ":doc:`../Security/CSRF`".
+        For usage method, refer to ":ref:`SpringSecurityAuthenticationLogout".
     * - | (4)
       - Control action after access is denied using \ ``<sec:access-denied-handler>``\  tag.
 
@@ -1238,7 +1237,7 @@ Perform definitions related to Spring Security in \ ``spring-security.xml``\ .
     * - | (6)
       - Control session management method of Spring Security using \ ``<sec:session-management>``\  tag.
 
-        For usage method, refer to ":ref:`authentication(spring_security)_how_to_use_sessionmanagement`".
+        For usage method, refer to ":ref:`SpringSecuritySessionManagementSetup`".
     * - | (7)
       - Control authentication using \ ``<sec:authentication-manager>``\  tag.
 
@@ -1278,7 +1277,7 @@ Description of settings not related to Spring Security is omitted.
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <!-- (1) -->
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
 
