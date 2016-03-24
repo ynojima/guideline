@@ -84,7 +84,7 @@ Spring Security is used as the framework for Authentication and Authorization.
     For mechanism to protect Web applications from malicious attackers, Refer, 
 
     * :doc:`../Security/CSRF`
-    * :ref:`SpringSecurityAppendixSecHeaders`
+    * :doc:`../Security/LinkageWithBrowser`
 
 
 

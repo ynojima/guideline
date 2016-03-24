@@ -1,3 +1,5 @@
+.. _SpringSecurityAuthorization:
+
 Authorization
 ================================================================================
 
@@ -8,134 +10,379 @@ Authorization
 
 Overview
 --------------------------------------------------------------------------------
-| This chapter explains about Authorization functionality provided by Spring Security.
+This chapter explains authorization function provided by Spring Security.
 
-| As authorization is implemented using access authorization functionality of Spring Security, it is a pre-requisite that authentication functionality of Spring Security is used.
-| For details on authentication method using Spring Security, refer to \ :doc:`Authentication`\ .
+Authorization process controls the resources that can be accessed by the users of the application.
+The standard method to control the resources that can be accessed by the user include defining an access policy for each resource (or a group of resources)
+and control the resources by checking the access policy when the user tries to access a resource.
 
-| Following 3 are the target resources of access authorization.
+Access policy defines whether to allow a user to access a particular resource.
+An access policy for following 3 types of resources is defined in Spring Security.
 
-#. Web (Request URL)
+* Web resource
+* Java method
+* Domain object \ [#fSpringSecurityAuthorization1]_\
+* Screen fields of JSP
 
-   * Authority required to access specific URLs can be set.
+This section introduces an implementation example (definition example) wherein authorization process is applied to access "Web resource", "Java method" and "Screen fields of JSP" and explains the authorization function of Spring Security.
 
-#. Screen fields (JSP)
-
-   * Authority required to display specific elements in a screen can be set.
-
-#. Method
-
-   * Authority required to execute specific methods in a screen can be set.
-
-| In Spring Security, the functionality is implemented by describing access authorization information in configuration file or by using annotations.
-
-Access authorization (Request URL)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: ./images/Authorization_Filter_overview.png
-   :alt: Authorization (Request URL)
-   :width: 60%
-
-   **Picture - Authorization (Request URL)**
-
-#. Spring Security's filter chain interrupts the process for user requests.
-#. Target URL for authorization control and request are matched and a query is sent to access authorization manager regarding decision on access authorization.
-#. Access authorization manager checks the user authority and access authorization information
-   and throws access denial exception when the required role is not assigned.
-#. Process is continued if the required role is assigned.
+.. For authorization function to access domain object [#fSpringSecurityAuthorization1], refer \ `Spring Security Reference -Domain Object Security (ACLs)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#domain-acls>`_\ .
 
 |
 
-Access authorization (JSP)
+Authorization process architecture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: ./images/Authorization_Jsp_overview.png
-   :alt: Authorization(JSP)
-   :width: 60%
+Spring Security performs authorization process as per the flow below.
 
-   **Picture - Authorization(JSP)**
+.. figure:: ./images_Authorization/AuthorizationArchitecture.png
+    :width: 100%
 
-#. The servlet generated from JSP inquires with access authorization manager.
-#. Access authorization manager checks the user authority and access authorization information.
-   If the required role is not assigned, it does not evaluate the internal tag.
-#. It evaluates internal tag if the required role is assigned.
+    **Authorization process architecture**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | A client accesses any resource.
+    * - | (2)
+      - | \ ``FilterSecurityInterceptor``\  class calls \ ``AccessDecisionManager``\  interface method and checks whether the user has access rights for the resource.
+    * - | (3)
+      - | \ ``AffirmativeBased``\  class (Implementation class of \ ``AccessDecisionManager``\  used as a default) calls \ ``AccessDecisionVoter``\  interface method and votes for whether the user has access rights.
+    * - | (4)
+      - | \ ``FilterSecurityInterceptor``\  accesses the resource only if the access rights have been granted by \ ``AccessDecisionManager``\ .
 
 |
 
-Access authorization (Method)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ExceptionTranslationFilter
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-.. figure:: ./images/Authorization_Method_overview.png
-   :alt: Authorization(Method)
-   :width: 60%
+\ ``ExceptionTranslationFilter``\  is a security filter which handles exceptions generated by authorization process (\ ``AccessDecisionManager``\ ) and sends appropriate response to the client.
+In the default implementation, a response to ask for authentication in case of access by an unauthenticated user and a response to throw an authorization error in case of an authenticated user are returned.
 
-   **Picture - Authorization(Method)**
+|
 
-#. Spring container generates an interceptor for the target object on the basis of access authorization information and interrupts the process.
-#. Interceptor inquires with access authorization manager on the basis of set roles.
-#. Access authorization manager checks user authority and access authorization information
-   and throws access denial exception when the required role is not assigned.
-#. The process is continued if the required role is assigned. (Authority can be checked after executing the process as per the settings).
+FilterSecurityInterceptor
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``FilterSecurityInterceptor``\  is a security filter to apply an authorization process for HTTP request and delegates actual authorization process to \ ``AccessDecisionManager``\ .
+While calling a method of \ ``AccessDecisionManager``\  interface, it is linked with the access policy specified in the resource which a client trying to access.
+
+|
+
+AccessDecisionManager
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``AccessDecisionManager``\  interface checks whether the user has the access rights for the resource which he is trying to access.
+
+Spring Security provides 3 types of implementation classes and all the classes call \ ``AccessDecisionVoter``\  interface method and determine whether the access rights have been granted.
+\ ``AccessDecisionVoter``\  votes for "Assign", "Deny" or Abstain" and then implementation class of \ ``AccessDecisionManager``\  aggregates the voting results and determines final access rights.
+\ ``AccessDeniedException``\  exception is thrown and access is denied if determined as "no access rights".
+
+Note that, if all the voting results indicate "Abstain", it is determined as "no access rights" in Spring Security by default.
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **Implementation class of AccessDecisionManager provided by Spring Security**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Class name
+      - Description
+    * - | \ ``AffirmativeBased``\
+      - | An implementation class which assigns the access rights when 1 vote is given to "Assign"  during voting by \ ``AccessDecisionVoter``\ .
+        | **Implementation class used as a default.**
+    * - | \ ``ConsensusBased``\
+      - | An implementation class which assigns the access rights when the majority of votes are for "Assign" during voting for all \ ``AccessDecisionVoter``\ .
+        | When 1 vote each is given to "Assign" and "Deny" or when it is a tie, it is considered as "Have access rights" by default in Spring Security.
+    * - | \ ``UnanimousBased``\
+      - | An implementation class which **does not give access rights** when 1 vote is given to "Deny" during voting by \ ``AccessDecisionVoter``\ .
+
+.. note:: **Selecting AccessDecisionVoter**
+
+    If only one \ ``AccessDecisionVoter``\  is used, no difference is observed in the operation regardless of the implementation class.
+    When multiple \ ``AccessDecisionVoter``\  are used, implementation class should be selected in accordance with the requirements.
+
+|
+
+AccessDecisionVoter
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``AccessDecisionVoter``\  is an interface which checks the access policy specified in the resource which the user is trying to access and votes for whether the access rights are to be granted.
+
+Main implementation classes provided by Spring Security are as given below.
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **Main implementation class of AccessDecisionVoter provided by Spring Security**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Class name
+      - Description
+    * - | \ ``WebExpressionVoter``\
+      - | An implementation class which carries out voting by checking the rights information retained by authentication information (\ ``Authentication``\ ) through SpEL and request information (\ ``HttpServletRequest``\ ).
+    * - | \ ``RoleVoter``\
+      - | An implementation class which carries out voting by checking the role of the user.
+    * - | \ ``RoleHierarchyVoter``\
+      - | An implementation class which carries out voting by checking the role hierarchy of a user.
+    * - | \ ``AuthenticatedVoter``\
+      - | An implementation class which carries out voting by checking the authentication status.
+
+.. note:: **AccessDecisionVoter to be applied by default**
+
+    Implementation class of \ ``AccessDecisionVoter``\  interface applied by default is integrated with \ ``WebExpressionVoter``\  from Spring Security 4.0 onwards.
+    Since \ ``WebExpressionVoter``\  can play the role similar to using \ ``RoleVoter``\ ,\ ``RoleHierarchyVoter``\  and \ ``AuthenticatedVoter``\ ,
+    this guideline will also assume the use of default \ ``WebExpressionVoter``\  for explaining authorization process.
 
 |
 
 How to use
 --------------------------------------------------------------------------------
-| How to use access authorization (Request URL), access authorization (JSP) and access authorization (Method) is explained here.
 
-Access authorization (Request URL)
+A bean definition example (how to specify an access policy) and implementation method required for using authorization function are explained.
+
+|
+
+.. _SpringSecurityAuthorizationPolicy:
+
+How to describe an access policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| The contents to be described in the Spring Security configuration file in order to use access authorization (Request URL) functionality, are shown below.
-| For basic settings, refer to \ :doc:`SpringSecurity`\ .
 
-.. _authorization-intercept-url:
+How to describe an access policy is explained.
 
-Setting \ ``<sec:intercept-url>``\  element
+Spring Security supports Spring Expression Language (SpEL) as a method which describes how to specify an access policy.
+Although there are other methods which do not use SpEL, this guideline explains how to specify an access policy by using Expression.
+How to use SpEL is briefly explained in this section, however for detailed description, refer \ `Spring Framework Reference Documentation -Spring Expression Language (SpEL)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/htmlsingle/#expressions>`_\ .
+
+|
+
+Built-In Common Expressions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| By describing the target URL to be controlled and the role to be authorized in the \ ``<sec:intercept-url>``\  element which is a child element of \ ``<sec:http>``\  element,
-| authorization can be controlled for each URL path.
 
-| Setting example is described below.
+Common Expressions provided by Spring Security are as given below.
 
-* spring-security.xml
+.. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
+.. list-table:: **Common Expression provided by Spring Security**
+    :header-rows: 1
+    :widths: 30 70
+
+    * - Expression
+      - Description
+    * - | \ ``hasRole(String role)``\
+      - | Return \ ``true``\  when logged in user has a role specified in the argument.
+    * - | \ ``hasAnyRole(String... roles)``\
+      - | Return \ ``true``\  when logged in user has one of the roles specified in the argument.
+    * - | \ ``isAnonymous()``\
+      - | Return \ ``true``\  in case of an anonymous user who has not logged in.
+    * - | \ ``isRememberMe()``\
+      - | Return \ ``true``\  in case of a user logged in by using Remember Me authentication.
+    * - | \ ``isAuthenticated()``\
+      - | Return \ ``true``\  in case of a login.
+    * - | \ ``isFullyAuthenticated()``\
+      - | Return \ ``true``\  in case of a user who has logged in using normal authentication process instead of Remember Me authentication.
+    * - | \ ``permitAll``\
+      - | Always return \ ``true``\ .
+    * - | \ ``denyAll``\
+      - | Always return \ ``false``\ .
+    * - | \ ``principal``\
+      - | Return user information of authenticated user (an object of a class which implements \ ``UserDetails``\  interface).
+    * - | \ ``authentication``\
+      - | Return authentication information of authenticated user (an object of a class which implements \ ``Authentication``\  interface).
+
+.. note:: **Accessing authentication information which uses Expression**
+
+    Since user information and authentication information of a logged in user can be accessed when \ ``principal``\  and \ ``authentication``\  are used as Expressions, an access policy can be set by using attributes other than role.
+
+.. note:: **Role name prefix** 
+
+    It was necessary to specify \ ``"ROLE_"`` \  prefix to role name till Spring Security 3.2. However, specifying \ ``"ROLE_"`` \  prefix is no longer required from Spring Security 4.0 onwards.
+
+    Example)
+
+    * Before Spring Security 3.2 : \ ``hasRole('ROLE_USER')``\ 
+    * Spring Security 4.0 onwards : \ ``hasRole('USER')``\ 
+
+|
+
+Built-In Web Expressions
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Expressions for Web applications provided by Spring Security are as below.
+
+.. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
+.. list-table:: **Expressions for Web applications provided by Spring Security**
+    :header-rows: 1
+    :widths: 30 70
+
+    * - Expression
+      - Description
+    * - | \ ``hasIpAddress(String ipAddress)``\
+      - | Return \ ``true``\ when requested IP address matches the IP address system specified in the argument.
+
+Using operator
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Determination using an operator can also be performed.
+In the example below, access can be granted if both role and requested IP address match.
+
+* Definition example of spring-security.xml
 
   .. code-block:: xml
   
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>
+    <sec:http>
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN') and hasIpAddress('192.168.10.1')"/>
         <!-- omitted -->
     </sec:http>
   
+  **List of operators that can be used**
+
   .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
   .. list-table::
      :header-rows: 1
      :widths: 20 80
   
-     * - | Attribute name
-       - | Description
-     * - | \ ``pattern``\
-       - | Describes the target URL pattern for access authorization. Wild cards "*" and "**" can be used.
-         | "*" is used only for URL patterns of same level while "**" targets all URLs under specified level for authorization setting.
-     * - | \ ``access``\
-       - | Specifies the access control type and accessible role using Spring EL.
-     * - | \ ``method``\
-       - | Specifies the HTTP method (GET, POST etc.). Matches only the specified method with URL pattern.
-         | When not specified, any HTTP method is applied. It can be utilized in the Web services that mainly use REST.
-     * - | \ ``requires-channel``\ 
-       - | Specifies "http" or "https". It enforces access to the specified protocol.
-         | When not specified, both protocols can be accessed.
+     * - Operator
+       - Description
+     * - | \ ``[Ž®1] and [Ž®2]``\ 
+       - | Return true when both expression 1 and expression 2 are true.
+     * - | \ ``[Ž®1] or [Ž®2]``\ 
+       - | Return true when one of the expressions is true.
+     * - | \ ``![Ž®]``\ 
+       - | Return false when expression is true and return true when expression is false.
 
-  | For attributes other than the above, refer to \ `<intercept-url> <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#nsa-intercept-url>`_\ .
+|
 
-| A setting example with roles namely "ROLE_USER" and "ROLE_ADMIN" assigned to login user, is shown below.
+Authorization of Web resource
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* spring-security.xml
+Spring Security performs authorization process for Web resource (HTTP request) using a servlet filter system.
+
+Applying authorization process
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Define a bean as below when authorization process is to be applied for a Web resource.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:http>
+        <!-- omitted -->
+        <sec:intercept-url pattern="/**" access="isAuthenticated()" />  <!-- (1) -->
+        <!-- omitted -->
+    </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Define an access policy in \ ``<sec:intercept-url>``\  tag for a HTTP request.
+        | Here, an access policy is defined by using SpEL wherein "Only authenticated users are granted access for all the requests under a Web application".
+
+.. note:: **Default definition of use-expressions**
+
+    Since default value of \ ``use-expressions``\  attribute of \ ``<sec:http>``\  tag is changed to \ ``true``\  from Spring Security 4.0 onwards, it is no longer necessary to explicitly describe while using \ ``true``\ .
+
+Defining access policy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+How to define an access policy for a Web resource using a bean definition file is explained.
+
+Specifying a Web resource for applying access policy
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+First, a resource (HTTP request) for which an access policy is to be applied, is specified.
+Attribute under \ ``<sec:intercept-url>``\  tag is used for the specification of a resource for which an access policy is to be applied.
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+.. list-table:: **Attribute for specifying a resource for which an access policy is to be applied**
+    :header-rows: 1
+    :widths: 20 80
+
+    * - Attribute name
+      - Description
+    * - | \ ``pattern``\
+      - | An attribute which uses a resource matching with path pattern specified in Ant format or regular expression as an application target.
+    * - | \ ``method``\
+      - | An attribute which uses a resource as an application target when access is to be done by using specified HTTP methods (GET, POST etc).
+    * - | \ ``requires-channel``\ 
+      - | Specify "http" or "https". An attribute for controlling the access by specified protocol.
+        | if it is not specified, either of these can be accessed.
+
+For the attributes other than above, refer \ `<intercept-url> <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-intercept-url>`_\ .
+
+* Definition example of \ ``<sec:intercept-url>``\  tag \ ``pattern``\  attribute (spring-security.xml)
+
+.. code-block:: xml
+
+    <sec:http >
+        <sec:intercept-url pattern="/admin/accounts/**" access="..."/>
+        <sec:intercept-url pattern="/admin/**" access="..."/>
+        <sec:intercept-url pattern="/**" access="..."/>
+        <!-- omitted -->
+    </sec:http>
+
+
+Spring Security matches the requests in the defined order and the definition which is matched at first is applied.
+Therefore, definition order must be taken into consideration even while specifying an access policy by using a bean definition file.
+
+.. tip:: **Interpretation of path pattern**
+
+    Path pattern is interpreted in Ant format, in the default operation of Spring Security.
+    When the path pattern is to be specified in the regular expression, \ ``"regex"``\  should be specified in \ ``request-matcher``\  attribute of \ ``<sec:http>``\  tag
+    
+
+      .. code-block:: xml
+
+          <sec:http request-matcher="regex">
+              <sec:intercept-url pattern="/admin/accounts/.*" access=hasRole('ACCOUNT_MANAGER')" />
+              <!-- omitted -->
+          </sec:http>
+
+Specifying an access policy
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Next, an access policy is specified.
+Access policy is specified in \ ``access``\  attribute of \ ``<sec:intercept-url>``\  tag.
+
+* Definition example of \ ``<sec:intercept-url>``\  tag \ ``access``\  attribute (\ ``spring-security.xml``\ )
 
   .. code-block:: xml
   
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:intercept-url pattern="/reserve/*" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" /> <!-- (1) -->
-        <sec:intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')" /> <!-- (2) -->
+    <sec:http>
+        <sec:intercept-url pattern="/admin/accounts/**" access="hasRole('ACCOUNT_MANAGER')"/>
+        <sec:intercept-url pattern="/admin/configurations/**" access="hasIpAddress('127.0.0.1') and hasRole('CONFIGURATION_MANAGER')" />
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
+        <!-- omitted -->
+    </sec:http>
+  
+  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+  .. list-table:: **Attribute for specifying an access policy**
+     :header-rows: 1
+     :widths: 20 80
+  
+     * - Attribute name
+       - Description
+     * - | \ ``access``\ 
+       - | Specify access control expression using SpEL and a role that can be accessed.
+
+| A setting example with roles namely "ROLE_USER" and "ROLE_ADMIN" assigned to login user, is shown below.
+
+* Definition example of \ ``<sec:intercept-url>``\  tag \ ``pattern``\ attribute (spring-security.xml)
+
+  .. code-block:: xml
+  
+    <sec:http>
+        <sec:intercept-url pattern="/reserve/**" access="hasAnyRole('USER','ADMIN')" /> <!-- (1) -->
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')" /> <!-- (2) -->
         <sec:intercept-url pattern="/**" access="denyAll" /> <!-- (3) -->
         <!-- omitted -->
     </sec:http>
@@ -145,34 +392,34 @@ Setting \ ``<sec:intercept-url>``\  element
      :header-rows: 1
      :widths: 10 90 
   
-     * - | Sr. No.
-       - | Description
+     * - Sr. No.
+       - Description
      * - | (1)
-       - | To access "/reserve/\*", either the role "ROLE_USER" or "ROLE_ADMIN" is required.
+       - | To access "//reserve/\**", either the role "ROLE_USER" or "ROLE_ADMIN" is required.
          | \ ``hasAnyRole``\  will be described later.
      * - | (2)
-       - | To access "/admin/\*", the role "ROLE_ADMIN" is required.
+       - | To access "/admin/\**", the role "ROLE_ADMIN" is required.
          | \ ``hasRole``\  will be described later.
      * - | (3)
        - | \ ``denyAll``\  is set for all patterns
-         | and it is set such that no user can access the URLs for which authority settings are not performed.
+         | Any user should not be able to access a URL for which no rights settings are described.
          | \ ``denyAll``\  will be described later.
 
-  .. note::    **Description order of URL pattern**
+  .. note:: **About description sequence of URL pattern**
 
-   Match the request received from client with the pattern in intercept-url, starting from the top.
-   Perform access authorization for the matched pattern. Therefore, pattern should be described from restricted patterns.
+   The request received from client is matched with the pattern in intercept-url, starting from the top and access is granted for the matched pattern.
+   Therefore, pattern should always be described from limited patterns.
 
-| Spring EL is enabled by setting \ ``use-expressions="true"``\  in \ ``<sec:http>``\  attribute.
-| Since Spring EL is evaluated by Boolean values, access is authorized when the expression is true.
-| Example is shown below.
+\ SpEL is enabled in Spring Security by default.
+SpEL described in \ ``access``\  attribute is determined as a true value. If the expression is true, access is granted.
+How to use is shown below.
 
-* spring-security.xml
+* Definition example of spring-security.xml
 
   .. code-block:: xml
 
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>  <!-- (1) -->
+    <sec:http>
+        <sec:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>  <!-- (1) -->
         <!-- omitted -->
     </sec:http>
   
@@ -184,386 +431,662 @@ Setting \ ``<sec:intercept-url>``\  element
      * - Sr. No.
        - Description
      * - | (1)
-       - | By specifying \ ``hasRole('role name')``\ , 'true' is returned if the login user has the specified role.
+       - | Return true if the logged in user retains the specified role, by specifying \ ``hasRole('Role name')``\ .
   
   .. _spring-el:
 
-  | **Example of available expressions list**
-  
-  .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 30 70
-  
-     * - Attribute name
-       - Description
-     * - | \ ``hasRole('Role name')``\ 
-       - | Returns true if the user has the specified role.
-     * - | \ ``hasAnyRole('Role 1','Role 2')``\ 
-       - | Returns true if the user has any of the specified roles.
-     * - | \ ``permitAll``\ 
-       - | Always returns true. Note that it is accessible even if not authenticated.
-     * - | \ ``denyAll``\ 
-       - | Always returns false.
-     * - | \ ``isAnonymous()``\ 
-       - | Returns true in case of an anonymous user.
-     * - | \ ``isAuthenticated()``\ 
-       - | Returns true in case of an authenticated user.
-     * - | \ ``isFullyAuthenticated()``\ 
-       - | Returns false, in case of an anonymous user or authentication by RememberMe functionality.
-     * - | \ ``hasIpAddress('IP address')``\ 
-       - | Enabled only by the access authorization to request URL and JSP tag.
-         | Returns true if there is a request from specified IP address.
-  
-  | For other available Spring EL, refer to \ `Common built-in expressions <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#el-common-built-in>`_\ .
+For main Expression that can be used, refer :ref:`SpringSecurityAuthorizationPolicy`.
 
-  | Determination can also be performed using operator.
-  | In the following example, it can be accessed when it matches with both the role and the requested IP address.
+|
 
-* spring-security.xml
-
-  .. code-block:: xml
-  
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN') and hasIpAddress('192.168.10.1')"/>
-        <!-- omitted -->
-    </sec:http>
-  
-  | **Available operators list**
-  
-  .. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 20 80
-  
-     * - Operator
-       - Description
-     * - | \ ``[Expression1] and [Expression2]``\ 
-       - | Returns true when both Expression1 and Expression2 are true.
-     * - | \ ``[Expression1] or [Expression2]``\ 
-       - | Returns true when either of the expressions is true.
-     * - | \ ``![Expression]``\ 
-       - | Returns false when expression is true and true when the expression is false.
-
-
-Setting the URL for which access authorization is not controlled
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Use pattern attribute and security attribute of http element for
-| URLs such as top page and login screen, css file path etc. where authentication is not required.
-
-  * spring-security.xml
-  
-  .. code-block:: xml
-  
-    <sec:http pattern="/css/*" security="none"/>  <!-- Perform steps (1) and (2) in the specified attribute order -->
-    <sec:http pattern="/login" security="none"/>
-    <sec:http auto-config="true" use-expressions="true">
-        <!-- omitted -->
-    </sec:http>
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - | Sr. No.
-       - | Description
-     * - | (1)
-       - | Describe the target URL pattern for which settings are to be performed in \ ``pattern``\  attribute. When not specifying \ ``pattern``\  attribute, match with all patterns.
-     * - | (2)
-       - | By specifying \ ``none``\  in \ ``security``\  attribute, Spring Security filter chain can be avoided for the path stated in \ ``pattern``\  attribute.
-
-
-Exception handling in URL pattern
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| \ ``org.springframework.security.access.AccessDeniedException``\  is thrown when an unauthorized URL is accessed.
-| As per default setting, \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl``\  which is set in \ ``org.springframework.security.web.access.ExceptionTranslationFilter``\ ,
-| returns error code 403.
-| By setting the error page at the time of access denial in http element, it is possible to transit to the specified error page.
-
-* spring-security.xml
-
-  .. code-block:: xml
-  
-    <sec:http auto-config="true" use-expressions="true">
-        <!-- omitted -->
-        <sec:access-denied-handler error-page="/accessDeneidPage" />  <!-- (1) -->
-    </sec:http>
-    
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - | Sr. No.
-       - | Description
-     * - | (1)
-       - | Specify destination path in \ ``error-page``\  attribute of \ ``<sec:access-denied-handler>``\  element.
-
-
-Access authorization (JSP)
+Authorization for the method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| Use custom JSP tag \ ``<sec:authorize>``\  provided by Spring Security, to control screen display fields.
-| Usage declaration settings of tag library``<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>``
-| is the precondition.
-
-* Attributes list of \ ``<sec:authorize>``\  tag
-
-  .. tabularcolumns:: |p{0.15\linewidth}|p{0.85\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 15 85
-  
-     * - | Attribute name
-       - | Description
-     * - | \ ``access``\ 
-       - | Describes the access control expression. If true, tag contents are evaluated.
-     * - | \ ``url``\ 
-       - | Tag contents are evaluated when authority is granted to the set URL. It is used to control link display etc.
-     * - | \ ``method``\ 
-       - | Specifies the HTTP method (GET, POST etc.).It is used by combining with url attribute and only the specified method
-         | is matched with the specified URL pattern. When not specified, GET is applied.
-     * - | \ ``ifAllGranted``\ 
-       - | Tag contents are evaluated when all the set roles are granted. Role hierarchy functionality is not effective.
-     * - | \ ``ifAnyGranted``\ 
-       - | Tag contents are evaluated when any one of the set roles is granted. Role hierarchy functionality is not effective.
-     * - | \ ``ifNotGranted``\ 
-       - | Tag contents are evaluated when the set role is not granted. Role hierarchy functionality is not effective.
-     * - | \ ``var``\ 
-       - | Declares the variables of page scope that stores tag evaluation result. It is used when same authorization check is performed in a page.
-
-| Example showing use of \ ``<sec:authorize>``\  tag is as follows:
-
-* spring-security.xml
-
-  .. code-block:: jsp
-  
-    <div>
-      <sec:authorize access="hasRole('ROLE_USER')">  <!-- (1) -->
-          <p>This screen is for ROLE_USER</p>
-      </sec:authorize>
-      <sec:authorize url="/admin/menu">  <!-- (2) -->
-          <p>
-            <a href="/admin/menu">Go to admin screen</a>
-          </p>
-      </sec:authorize>
-    </div>
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - | Sr. No.
-       - | Description
-     * - | (1)
-       - | Tag contents are displayed only when it contains  "ROLE_USER".
-     * - | (2)
-       - | Tag contents are displayed when access is authorized for "/admin/menu".
-
-  .. warning::
-
-     The authorization process using \ ``<sec:authorize>``\  tag \ **can only be controlled by screen display**\ . As a result, even if the link is not displayed by specific authority, the URL of the link can be directly accessed by guessing the URL.
-     Therefore, make sure to use it together with the "Access authorization (request URL)" described earlier or the "Access authorization (Method)" that will be described later and perform the essential access control.
-
-
-Access authorization (Method)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| Authorization control can be performed for method.
-| The Bean stored in Spring's DI container is the target of authorization.
-
-| The two authorization methods described earlier were authorization controls in application layer.
-| However, method level authorization is controlled with respect to domain layer (Service class).
-| It is advisable to set \ ``org.springframework.security.access.prepost.PreAuthorize``\  annotation for the method to be controlled.
-
-* spring-security.xml
-
   .. code-block:: xml
-  
-    <sec:global-method-security pre-post-annotations="enabled"/>  <!-- (1) -->
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - | Sr. No.
-       - | Description
-     * - | (1)
-       - | Specify \ ``pre-post-annotations``\  attribute of \ ``<sec:global-method-security>``\  element in \ ``enabled``\ .
-         | It is \ ``disabled``\  by default.
+Spring Security performs authorization process for calling a method of Bean which is managed in DI container by using Spring AOP system.
 
-* Java code
+Authorization process for the method is provided by considering its use for calling a domain layer (service layer) method.
+If authorization process for the method is used, a detailed access policy can be defined since a property of domain object can be checked.
 
-  .. code-block:: java
+|
 
-    @Service
-    @Transactional
-    public class UserServiceImpl implements UserService {
-        // omitted
+Enabling AOP
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-        @PreAuthorize("hasRole('ROLE_ADMIN')") // (1)
-        @Override
-        public User create(User user) {
-           // omitted
-        }
+When the authorization process for the method is to be used, a component (AOP) for performing authorization process for calling the method must be enabled.
+If AOP is enabled, access policy can be defined in the method annotation.
 
+Spring Security supports following annotations.
 
-        @PreAuthorize("isAuthenticated()")
-        @Override
-        public User update(User user) {
-           // omitted
-        }
+* \ ``@PreAuthorize``\ , \ ``@PostAuthorize``\ , \ ``@PreFilter``\ , \ ``@PostFilter``\
+* JSR-250 (\ ``javax.annotation.security``\  package) annotation (\ ``@RolesAllowed``\  etc.)
+* \ ``@Secured``\
+
+This guideline explains how to use \ ``@PreAuthorize``\  and \ ``@PostAuthorize``\  which enable the use of access policy by Expression.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:global-method-security pre-post-annotations="enabled" /> <!-- (1) (2) -->
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | AOP which performs authorization process for method calling is enabled if \ ``<sec:global-method-security>``\  tag is assigned.
+    * - | (2)
+      - | Specify \ ``true``\  in \ ``pre-post-annotations``\  attribute.
+        | If \ ``true``\  is specified in \ ``pre-post-annotations``\  attribute, the annotation that can define an access policy by specifying Expression is enabled.
+
+|
+
+Applying authorization process
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+An annotation which specifies an access policy is used and an access policy is defined for each method by applying authorization process for the method.
+
+Defining access policy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Specifying an access policy to be applied prior to method execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+When an access policy is to be specified for applying prior to method execution, \ ``@PreAuthorize``\  is used.
+
+When the results of the Expression specified in \ ``value``\  attribute of \ ``@PreAuthorize``\  become \ ``true``\ , execution of the method is allowed.
+In the example below, it has been defined that only administrator can access the account information for other persons.
+
+* Definition example of \ ``@PreAuthorize``\
+
+.. code-block:: java
+
+    // (1) (2)
+    @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
+    public Account findOne(String username) {
+        return accountRepository.findOne(username);
     }
 
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-  
-     * - | Sr. No.
-       - | Description
-     * - | (1)
-       - | State the access control expression. The expression is evaluated before executing the method and if it is true, the method is executed.
-         | If the expression is false, \ ``org.springframework.security.access.AccessDeniedException``\  is thrown.
-         | Expression stated in \ :ref:`authorization-intercept-url`\  and
-         | the expression stated in \ `Spring Expression Language (SpEL) <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/expressions.html>`_\  can be set as the value.
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
 
-  .. tip::
-  
-    Following annotations can also be used in the above setting, other than \ ``org.springframework.security.access.prepost.PreAuthorize``\ .
-  
-    * \ ``org.springframework.security.access.prepost.PostAuthorize``\ 
-    * \ ``org.springframework.security.access.prepost.PreFilter``\ 
-    * \ ``org.springframework.security.access.prepost.PostFilter``\ 
-  
-    For their details, refer \ `Spring Security manual <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#el-pre-post-annotations>`_\ .
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Assign \ ``@PreAuthorize``\  to the method which needs to be authorized.
+    * - | (2)
+      - | Define an access policy for the method, in \ ``value``\  attribute.
+        | Here, an access policy - "Allow access to all accounts for the administrator" and "Allow access to only individual account when other than administrator" is defined.
 
-  .. note::
+The part wherein a method argument is accessed from the Expression is discussed here.
+Specifically, "\ ``#username``\ " part accesses the argument.
+A method argument can be accessed by specifying Expression of "# + argument name" format in Expression.
 
-    In Spring Security, authorization can also be controlled by using \ ``javax.annotation.security.RolesAllowed``\  annotation of JSR-250 which is a standard Java specification.
-    However, SpEL expressions cannot be stated in \ ``@RolesAllowed``\ . By \ ``@PreAuthorize``\  annotation, using SpEL, authorization control can be performed in the same notations as spring-security.xml settings.
+.. tip:: **Annotation which specifies argument name**
 
-
-  .. note::
-  
-    It is recommended to perform authorization control for request path by carrying out settings in spring-security.xml, instead of assigning annotation to Controller method.
+    Spring Security resolves the argument name from debug information output in the class.
+    However an argument name can be explicitly specified by using an annotation (\ ``@org.springframework.security.access.method.P``\ )
     
-    If Service is executed only via Web and if authorization control is performed for all the request path patterns, authorization control for Service need not be performed.
-    It is advisable to use annotation when it is not known from where Service will be executed and thus authorization control is necessary.
+
+    A variable name can be specified explicitly by using the annotation if it is applicable to following cases.
+
+    * Debug information of variable is not output in the class
+    * When it is to be accessed by using a name different from that of actual variable name in the Expression (for example shortened name)
+
+      .. code-block:: java
+
+          @PreAuthorize("hasRole('ADMIN') or (#username == principal.username)")
+          public Account findOne(@P("username") String username) {
+              return accountRepository.findOne(username);
+          }
+    
+    Note that when \ ``#username``\  and a method argument - \ ``username``\  name are identical,  \ ``@P``\  can be omitted.
+    However, since Spring Security resolves the argument name by using an argument name of implementation class, note that the **argument name of implementation class should match with #username specified in @PreAuthorize**
+    when ``@PreAuthorize`` annotation  is defined in the interface.
+
+    When compile option added from JDK 8 (\ ``-parameters``\ ) is used, meta data for reflection is generated in the method parameter. Hence argument name is resolved even when the annotation is not specified.
+
+Specifying access policy to be applied after method execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+When an access policy to be applied after execution of the method is specified, \ ``@PostAuthorize``\  is used.
+
+When the results of the Expression specified in \ ``value``\  attribute of \ ``@PostAuthorize``\  become true, results of method execution are returned to the call source.
+In the example below, it has been defined such that the user is not allowed to access the information of the user belonging to other department.
+
+* Definition example of \ ``@PostAuthorize``\
+
+.. code-block:: java
+
+    @PreAuthorize("...")
+    @PostAuthorize("(returnObject == null) " +
+            "or (returnObject.departmentCode == principal.account.departmentCode)")
+    public Account findOne(String username) {
+        return accountRepository.findOne(username);
+    }
+
+The part wherein the return value of the method is accessed from the Expression is discussed here.
+Specifically, "\ ``returnObject.departmentCode``\ " part accesses the return value.
+The return value of the method can be accessed by specifying \ ``returnObject``\  in the Expression.
+
+|
+
+Authorization for JSP screen fields
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security can apply authorization process for JSP screen fields by using a JSP tag library.
+
+Here, a method to apply authorization process for accessing JSP screen fields is explained using a simple definition as an example.
+
+|
+
+Defining an access policy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+A condition to allow display (access policy) is defined in JSP while defining an access policy for JSP screen fields using a JSP tag library.
+
+* Definition example of access policy
+
+.. code-block:: jsp
+
+    <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+    <!-- (1) -->
+    <sec:authorize access="hasRole('ADMIN')"> <!-- (2) -->
+        <h2>Admin Menu</h2>
+        <!-- omitted -->
+    </sec:authorize>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Enclose part for which an access policy is to be applied with \ ``<sec:authorize>``\  tag.
+    * - | (2)
+      - | Define an access policy in \ ``access``\  attribute. Here, an access policy - "allow display in case of administrator" is defined.
+
+|
+
+Linking with the access policy specified in the Web resource
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When an access policy is to be defined for buttons or links (screen fields associated with the requests to the server), it is linked with an access policy defined in the Web resource for request.
+\ ``url``\  attribute of \ ``<sec:authorize>``\  tag is used for linking with access policy specified in the Web resource.
+
+JSP process implemented in \ ``<sec:authorize>``\  tag is executed only when Web resource specified in \ ``url``\  attribute can be accessed.
+
+* Example of linking with access policy defined in Web resource
+
+.. code-block:: jsp
+
+    <ul>
+        <!-- (1) -->
+        <sec:authorize url="/admin/accounts"> <!-- (2) -->
+            <li>
+                <a href="<c:url value='/admin/accounts' />">Account Management</a>
+            </li>
+        </sec:authorize>
+    </ul>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Enclose part which outputs button or link with \ ``<sec:authorize>``\  tag.
+    * - | (2)
+      - | Specify a URL for accessing a Web resource in \ ``url``\  attribute of \ ``<sec:authorize>``\  tag.
+        | Here, an access policy - "Allow display when a Web resource allocated with \ ``"/admin/accounts"``\  URL can be accessed" is defined however it is not necessary to be directly aware of the access policy defined in Web resource.
+
+.. note:: **Specifying a policy by HTTP method**
+
+    When a different access policy is specified by HTTP method while defining an access policy of Web resource, the definition to be linked must be identified by using \ ``method``\  attribute of \ ``<sec:authorize>``\  tag.
+
+.. warning:: **Notes related to display control**
+
+    When display for a button or link is to be controlled, it should always be linked with an access policy defined in the Web resource.
+
+    If an access policy is not defined independently for a Web resource by specifying a direct access policy for button or link,
+    an unauthorized access such as accessing a URL directly cannot be prevented.
+
+|
+
+Storing determination results of authorization process in the variable
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Determination results of authorization process called by using \ ``<sec:authorize>``\  tag can be reused by storing in the variable.
+
+* Implementation example of JSP
+
+.. code-block:: jsp
+
+    <sec:authorize url="/admin/accounts"
+                   var="hasAccountsAuthority"/> <!-- (1) -->
+
+    <c:if test="${hasAccountsAuthority}"> <!-- (2) -->
+        <!-- omitted -->
+    </c:if>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - |  (1)
+      - | Specify a variable name for storing determination results in \ ``var``\  attribute.
+        | When access is allowed, \ ``true``\  is set in the variable.
+    * - | (2)
+      - | Refer variable value and implement display process.
+
+|
+
+Response at the time of authorization error
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security handles the errors as shown in the following flow and controls the response when access to a resource is denied.
+
+.. figure:: ./images_Authorization/AuthorizationAccessDeniedHandling.png
+    :width: 100%
+
+    **Mechanism for handling authorization error**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Spring Security generates a \ ``AccessDeniedException``\  for denying access to a resource or a method.
+    * - | (2)
+      - | \ ``ExceptionTranslationFilter``\  class catches \ ``AccessDeniedException``\  and performs error handling by calling methods of \ ``AccessDeniedHandler``\  or \ ``AuthenticationEntryPoint``\  interface.
+    * - | (3)
+      - | Perform error handling by calling a method of \ ``AccessDeniedHandler``\  interface in case of an access by authenticated user.
+    * - | (4)
+      - | Perform error handling by calling a method of \ ``AuthenticationEntryPoint``\  interface in case of an access by unauthenticated user.
+
+|
+
+AccessDeniedHandler
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``AccessDeniedHandler``\  interface handles the error responses when the access is denied to authenticated users.
+Spring Security offers following classes as the implementation class of \ ``AccessDeniedHandler``\  interface.
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **Implementation class of AccessDeniedHandler provided by Spring Security**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Class name
+      - Description
+    * - | \ ``AccessDeniedHandlerImpl``\
+      - | Set 403 (Forbidden) in HTTP response code and move to specified error page.
+        | When error page is not specified, send error response (\ ``HttpServletResponse#sendError``\ ) by setting 403 (Forbidden) in HTTP response code.
+    * - | \ ``InvalidSessionAccessDeniedHandler``\
+      - | Delegate the process to implementation class of \ ``InvalidSessionStrategy``\  interface.
+        | This class is used when the settings to detect a session timeout is enabled by using CSRF countermeasure and session management function at the time when CSRF token does not exist in the session (a session timeout has occurred).
+    * - | \ ``DelegatingAccessDeniedHandler``\
+      - | Map implementation classes of \ ``AccessDeniedException``\  and \ ``AccessDeniedHandler``\  interface and delegate the process to the implementation class of \ ``AccessDeniedHandler``\  interface corresponding to \ ``AccessDeniedException``\  thus occurred.
+        | \ ``InvalidSessionAccessDeniedHandler``\  is called by using this mechanism.
+
+
+In the default setting of Spring Security, \ ``AccessDeniedHandlerImpl``\ is used wherein an error page is not specified.
+
+|
+
+AuthenticationEntryPoint
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``AuthenticationEntryPoint``\  interface handles the error responses when the access is denied to unauthenticated users.
+Spring Security offers following class as an implementation class of \ ``AuthenticationEntryPoint``\  interface.
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **Main implementation class of AuthenticationEntryPoint offered by Spring Security**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Class Name
+      - Description
+    * - | \ ``LoginUrlAuthenticationEntryPoint``\
+      - | Display a login form for form authentication.
+    * - | \ ``BasicAuthenticationEntryPoint``\
+      - | Send error response for Basic authentication.
+        | Specifically, set 401 (Unauthorized) in HTTP response code, \ ``WWW-Authenticate``\  header for Basic authentication as a response header and send error response (\ ``HttpServletResponse#sendError``\ ).
+    * - | \ ``DigestAuthenticationEntryPoint``\
+      - | Send error response for Digest authentication.
+        | Specifically, set 401 (Unauthorised) in the HTTP response code, \ ``WWW-Authenticate``\  header for Digest authentication as a response header and send error response (\ ``HttpServletResponse#sendError``\ ).
+    * - | \ ``Http403ForbiddenEntryPoint``\
+      - | Set 403 (Forbidden) in HTTP response code and send error response (\ ``HttpServletResponse#sendError``\ ).
+    * - | \ ``DelegatingAuthenticationEntryPoint``\
+      - | Map implementation class of \ ``RequestMatcher``\  and \ ``AuthenticationEntryPoint``\  interface, and delegate the process to implementation class of \ ``AuthenticationEntryPoint``\  interface corresponding to HTTP request.
+
+Implementation class of \ ``AuthenticationEntryPoint``\  interface corresponding to authentication method is used in the default setup of Spring Security.
+
+|
+
+.. _SpringSecurityAuthorizationOnError:
+
+
+Transition destination at the time of authorization error
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In the default setting of Spring Security, when the access is denied to the authenticated user, an error page of application server is displayed.
+If error page of application server is displayed, it is likely to result in system degradation. Hence it is recommended to display an appropriate error screen.
+Error page can be specified by defining a bean as below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:http>
+        <!-- omitted -->
+        <sec:access-denied-handler
+            error-page="/WEB-INF/views/common/error/accessDeniedError.jsp" /> <!-- (1) -->
+        <!-- omitted -->
+    </sec:http>
+    
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify an error page for authorization error in \ ``error-page``\  attribute of \ ``<sec:access-denied-handler>``\  tag.
+
+.. tip:: **Using error page function of servlet container**
+
+    Error page for authorization error can also be specified by using an error page function of servlet container.
+
+    When error page function of servlet container is used, error page is specified by using \ \ ``<error-page>``\  tag of \ ``web.xml``\ .
+
+     .. code-block:: xml
+
+         <error-page>
+             <error-code>403</error-code>
+             <location>/WEB-INF/views/common/error/accessDeniedError.jsp</location>
+         </error-page>
 
 How to extend
 --------------------------------------------------------------------------------
 
-Role hierarchy functionality
+This section explains customization points and extension methods offered by Spring Security.     
+
+Spring Security provides a lot of customization points of which only a few will be introduced here.
+This section will focus on some typical customization points.
+
+|
+
+Response at the time of authorization error (Authenticated user)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| Hierarchical relation can be set in roles.
-| Roles that are set at higher level can have all the accesses authorized by the lower roles.
-| Consider using hierarchy functionality if the role relation is complex.
 
-| It is explained by setting a hierarchical relation wherein ROLE_ADMIN is the higher role and ROLE_USER is set as the lower role.
+Here, a method to customise the operation when an access from authenticated user is denied, is explained.
 
-.. figure:: ./images/Authorization_RoleHierarchy.png
-   :alt: RoleHierarchy
-   :width: 30%
-   :align: center
+.. _SpringSecurityAuthorizationAccessDeniedHandler:
 
-   **Picture - RoleHierarchy**
+Applying AccessDeniedHandler
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| Here, if access authorization is set as follows,
-| the user with "ROLE_ADMIN" role can also access "/user/\*" URL.
+When the requirements are not met only by customising default operation provided by Spring Security, implementation class of \ ``AccessDeniedHandler``\  interface can be directly applied.
 
-**Spring Security configuration file**
+For example, when an authorization error occurs in Ajax request (REST API etc), error information is displayed in JSON format instead of displaying an error page (HTML).
+In such a case, an implementation class of \ ``AccessDeniedHandler``\  interface can be created and applied in Spring Security.
+
+* How to create an implementation class of AccessDeniedHandler interface
+
+.. code-block:: java
+
+    public class JsonDelegatingAccessDeniedHandler implements AccessDeniedHandler {
+
+        private final RequestMatcher jsonRequestMatcher;
+        private final AccessDeniedHandler delegateHandler;
+
+        public JsonDelegatingAccessDeniedHandler(
+                RequestMatcher jsonRequestMatcher, AccessDeniedHandler delegateHandler) {
+            this.jsonRequestMatcher = jsonRequestMatcher;
+            this.delegateHandler = delegateHandler;
+        }
+
+        public void handle(HttpServletRequest request, HttpServletResponse response,
+                           AccessDeniedException accessDeniedException)
+                throws IOException, ServletException {
+            if (jsonRequestMatcher.matches(request)) {
+                // response error information of JSON format
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                // omitted
+            } else {
+                // response error page of HTML format
+                delegateHandler.handle(
+                        request, response, accessDeniedException);
+            }
+        }
+
+    }
+
+* Definition example of spring-security.xml
 
 .. code-block:: xml
 
-  <sec:http auto-config="true" use-expressions="true">
-      <sec:intercept-url pattern="/user/*" access="hasAnyRole('ROLE_USER')" />
-      <!-- omitted -->
-  </sec:http>
+    <!-- (1) -->
+    <bean id="accessDeniedHandler"
+          class="com.example.web.security.JsonDelegatingAccessDeniedHandler">
+        <constructor-arg>
+            <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                <constructor-arg value="/api/**"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                <property name="errorPage"
+                          value="/WEB-INF/views/common/error/accessDeniedError.jsp"/>
+            </bean>
+        </constructor-arg>
+    </bean>
 
-| The setting method differs for access authorization (request URL), access authorization (JSP) and access authorization (Method).
-| How to use these methods is explained below.
+    <sec:http>
+        <!-- omitted -->
+        <sec:access-denied-handler ref="accessDeniedHandler" />  <!-- (2) -->
+        <!-- omitted -->
+    </sec:http>
 
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
 
-Common settings
+    * - Sr. No.
+      - Description
+    * - \ (1)
+      - Define a bean for implementation class of \ ``AccessDeniedHandler``\  interface and register in DI container.
+    * - \ (2)
+      - Specify a bean for \ ``AccessDeniedHandler``\  in  \ ``ref``\  attribute of \ ``<sec:access-denied-handler>``\  tag.
+
+|
+
+Response at the time of authorization error (Unauthenticated user)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here, a method to customise operation when access is denied to an unauthenticated user, is explained.
+
+Applying AuthenticationEntryPoint for each request
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Required common settings are described here.
-| Perform Bean definition of \ ``org.springframework.security.access.hierarchicalroles.RoleHierarchy`` class that stores the hierarchical relation.
 
-* spring-security.xml
+Similarly to authenticated user, when authorization error occurs in Ajax request (REST API etc), error information is displayed in JSON format instead of displaying it in login page (HTML).
+In such a case, implementation class of \ ``AuthenticationEntryPoint``\  interface for each pattern of request is applied in Spring Security.
 
-  .. code-block:: xml
-  
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <!-- (1) -->
+    <bean id="authenticationEntryPoint"
+          class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
+        <constructor-arg>
+            <map>
+                <entry>
+                    <key>
+                        <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                            <constructor-arg value="/api/**"/>
+                        </bean>
+                    </key>
+                    <bean class="com.example.web.security.JsonAuthenticationEntryPoint"/>
+                </entry>
+            </map>
+        </constructor-arg>
+        <property name="defaultEntryPoint">
+            <bean class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+                <constructor-arg value="/login"/>
+            </bean>
+        </property>
+    </bean>
+
+    <sec:http entry-point-ref="authenticationEntryPoint"> <!-- (2) -->
+        <!-- omitted -->
+    </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Define a bean for implementation class of \ ``AuthenticationEntryPoint``\  interface and register in DI container.
+        | Here, an implementation class of \ ``AuthenticationEntryPoint``\  interface is applied for each pattern of request by using \ ``DelegatingAuthenticationEntryPoint``\  class offered by Spring Security.
+    * - | (2)
+      - | Specify a bean for \ ``AuthenticationEntryPoint``\ in \ ``entry-point-ref``\  attribute of  \ ``<sec:http>``\  tag.
+
+.. note:: **AuthenticationEntryPoint applied by default**
+
+    When the implementation class of \ ``AuthenticationEntryPoint``\  interface corresponding to request is not specified, the implementation class of \ ``AuthenticationEntryPoint``\  interface defined by Spring Security by default is used.
+    When form authentication is used as an authentication method, \ ``LoginUrlAuthenticationEntryPoint``\  class is used and login form is displayed.
+
+|
+
+Role hierarchy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+A hierarchy can be set for a role in the authorization process.
+
+Higher level roles can also access the resources for which access is granted to the lower level roles.
+When the role relation is complex, hierarchy relation must also be established.
+
+For example, when a hierarchy relation is established wherein "ROLE_ADMIN" is a higher role and "ROLE_USER" is a lower role,
+and if an access policy is set as below, user with "ROLE_ADMIN" rights can access a path under \ ``"/user"``\ 
+(a path which can be accessed by a user with "ROLE_USER" rights).
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:http>
+        <sec:intercept-url pattern="/user/**" access="hasAnyRole('USER')" />
+        <!-- omitted -->
+    </sec:http>
+
+|
+
+Setting hierarchy relation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Role hierarchy relation is resolved by using implementation class of \ ``org.springframework.security.access.hierarchicalroles.RoleHierarchy``\  interface.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
     <bean id="roleHierarchy"
         class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl"> <!-- (1) -->
-        <property name="hierarchy">
-            <value> <!-- (2) -->
+        <property name="hierarchy"> <!-- (2) -->
+            <value>
                 ROLE_ADMIN > ROLE_STAFF
                 ROLE_STAFF > ROLE_USER
             </value>
         </property>
     </bean>
   
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
      :header-rows: 1
      :widths: 10 90
   
-     * - | Sr. No.
-       - | Description
+     * - Sr. No.
+       - Description
      * - | (1)
-       - | Specify the default class of \ ``RoleHierarchy``\  namely, ``org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl``.
+       - | Specify \ ``org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl`` class.
+         | \ ``RoleHierarchyImpl``\  is a default implementation class offered by Spring Security.
      * - | (2)
-       - | Define the hierarchical relation in \ ``hierarchy``\  property.
-         | Format:
-         | [Higher role] > [Lower role]
-         | In the example, STAFF can access all the USER authorized resources.
-         | ADMIN can access all the resources authorized by USER and STAFF.
+       - | Define the hierarchy relation in \ ``hierarchy``\  property.
+         |
+         | Format : [Higher role] > [Lower role]
+         |
+         | In the example above,
+         | STAFF can also access resources authorised by USER.
+         | ADMIN can also access resources authorised by USER and STAFF.
 
+|
 
-How to use it in access authorization (request URL) and access authorization (JSP)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| How to set role hierarchy for request URL and JSP is explained here.
+Applying authorization process of Web resource
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-* spring-security.xml
+A method to apply role hierarchy to authorization process for Web resource and JSP screen fields is explained.
+
+* Definition example of spring-security.xml
 
   .. code-block:: xml
   
+    <!-- (1) -->
     <bean id="webExpressionHandler"
-        class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">  <!-- (1) -->
+        class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
         <property name="roleHierarchy" ref="roleHierarchy"/>  <!-- (2) -->
     </bean>
   
-    <sec:http auto-config="true" use-expression="true">
+    <sec:http>
         <!-- omitted -->
         <sec:expression-handler ref="webExpressionHandler" />  <!-- (3) -->
     </sec:http>
   
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
      :header-rows: 1
      :widths: 10 90
   
      * - | Sr. No.
        - | Explanation
      * - | (1)
-       - | Specify \ ``org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler``\  in class.
+       - | Define a Bean for \ ``org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler``\ .
      * - | (2)
-       - | Set the Bean ID of \ ``RoleHierarchy``\  in \ ``roleHierarchy``\  property.
+       - | Specify a Bean for implementation class of \ ``RoleHierarchy``\  interface in \ ``roleHierarchy``\  property.
      * - | (3)
-       - | Specify the Bean ID of handler class that implemented \ ``org.springframework.security.access.expression.SecurityExpressionHandler``\  in \ ``expression-handler``\  element.
+       - | Specify a Bean for implementation class of \ ``org.springframework.security.access.expression.SecurityExpressionHandler``\  interface in \ ``ref``\  attribute of \ ``<sec:expression-handler>``\  tag.
 
+|
 
-How to use it in access authorization (Method)
+Applying authorization process of method
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Role hierarchy settings when authorization control is performed by assigning annotation to Service method, are explained here.
 
+A method to apply role hierarchy to authorization process for Java method is explained.
 
-* spring-security.xml
+* Definition example of spring-security.xml
 
-  .. code-block:: xml
+.. code-block:: xml
   
     <bean id="methodExpressionHandler"
         class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler"> <!-- (1) -->
@@ -574,19 +1097,19 @@ How to use it in access authorization (Method)
         <sec:expression-handler ref="methodExpressionHandler" /> <!-- (3) -->
     </sec:global-method-security>
   
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
      :header-rows: 1
      :widths: 10 90
   
-     * - | Sr. No.
-       - | Description
+     * - Sr. No.
+       - Description
      * - | (1)
-       - | Specify \ ``org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler``\  in class.
+       - | Define a Bean for \ ``org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler``\ .
      * - | (2)
-       - | Set the Bean ID of \ ``RoleHierarchy``\  in \ ``roleHierarchy``\  property.
+       - | Specify a Bean for implementation class of \ ``RoleHierarchy``\  interface in \ ``roleHierarchy``\  property.
      * - | (3)
-       - | Specify the Bean ID of handler class that implements \ ``org.springframework.security.access.expression.SecurityExpressionHandler``\  in \ ``expression-handler``\  element.
+       - | Specify a Bean for implementation class of \ ``org.springframework.security.access.expression.SecurityExpressionHandler``\  interface in \ ``ref``\  attribute of \ ``<sec:expression-handler>``\  tag.
 
 .. raw:: latex
 
