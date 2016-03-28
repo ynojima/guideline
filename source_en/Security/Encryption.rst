@@ -294,6 +294,10 @@ Encryption of character string
      * - | (2)
        - | Encrypt plain text by using \ ``encrypt``\  method.
 
+  .. note:: **Java support for AES which uses GCM**
+
+    AES using GCM can be used in Java SE8 and subsequent versions. For details, refer \ `JDK 8 security enhancement <http://docs.oracle.com/javase/jp/8/docs/technotes/guides/security/enhancements-8.html>`_\ .
+
 |
 
 Decryption of string
@@ -484,7 +488,6 @@ Preliminary preparation (Generation of key pairs using JCA)
             PrivateKey privateKey = keyPair.getPrivate();
 
             byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey);  // (4)
-            System.out.println(Base64.getEncoder().encodeToString(cipherBytes));
             String plainText = decryptByPrivateKey(cipherBytes, privateKey); // (5)
             System.out.println(plainText);
         } catch (NoSuchAlgorithmException e) {
@@ -513,6 +516,30 @@ Preliminary preparation (Generation of key pairs using JCA)
 
      * - | (5)
        - | Use secret key and perform decryption process. Processing details will be described later.
+
+  .. note:: **When the encrypted data is to be handled as string**
+
+    When encrypted data is to be handled as string like in external system linkage etc, Base64 encoding can be listed as one of the measures. \ ``java.util.Base64``\  of Java standard is used in case of subsequent versions of Java SE8. In the earlier versions, \ ``org.springframework.security.crypto.codec.Base64``\  of Spring Security is used.
+
+    A method used for Base64 encoding and decoding is explained using \ ``java.util.Base64``\  of Java standard.
+    
+   * Base64 encoding
+
+    .. code-block:: java
+
+            // omitted
+            byte[] cipherBytes = encryptByPublicKey("Hello World!", publicKey);  // Encryption process
+            String cipherString = Base64.getEncoder().encodeToString(cipherBytes);  // Convert encrypted text of byte array to string
+            // omitted
+
+   * Base64 decoding
+
+    .. code-block:: java
+
+            // omitted
+            byte[] cipherBytes = Base64.getDecoder().decode(cipherString); // Convert encrypted text of string to byte array
+            String plainText = decryptByPrivateKey(cipherBytes, privateKey); // Decryption process
+            // omitted
 
 |
 
