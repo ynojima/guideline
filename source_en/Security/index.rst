@@ -12,6 +12,7 @@ Security countermeasures for TERASOLUNA Server Framework for Java (5.x)
    XSS
    CSRF
    Encryption
+   SecureLoginDemo
 
 .. raw:: latex
 
