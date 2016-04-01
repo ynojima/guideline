@@ -7,7 +7,7 @@ CSRF Countermeasures
 
  .. contents:: Table of contents
     :local:
-    
+
 Overview
 --------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ Following methods can be used to attack if CSRF countermeasures are not implemen
 
     In OWASP\ [#fSpringSecurityCSRF1]_\ , \ `the method to use token pattern is recommended. <https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern>`_\
     
-      .. OWASP is an abbreviation of [#fSpringSecurityCSRF1] Open Web Application Security Project. It is a not-for-profit international organization dedicated to enable organizations to develop and maintain applications that can be trusted. It advocates measures such as effective approach etc. with respect to security.
+      .. [#fSpringSecurityCSRF1] OWASP is an abbreviation of Open Web Application Security Project. It is a not-for-profit international organization dedicated to enable organizations to develop and maintain applications that can be trusted. It advocates measures such as effective approach etc. with respect to security.
        https://www.owasp.org/index.php/Main_Page
 
 .. note:: **CSRF countermeasures at the time of login**
@@ -46,7 +46,7 @@ Following methods can be used to attack if CSRF countermeasures are not implemen
 
 
 CSRF countermeasures of Spring Security
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Spring Security issues a fixed token value (CSRF token) generated randomly for each session and sends the issued CSRF token as a request parameter (hidden field in the HTML form).
 Accordingly, a system to determine whether the request is from a normal Web page or from the Web page created by the attacker, is adopted.
@@ -57,7 +57,7 @@ Accordingly, a system to determine whether the request is from a normal Web page
     **CSRF countermeasures system of Spring Security**
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table:: 
+.. list-table::
     :header-rows: 1
     :widths: 10 90
 
@@ -104,10 +104,10 @@ In the default implementation of Spring Security, check CSRF token for the reque
 How to use
 --------------------------------------------------------------------------------
 
-Applying CSRF countermeasures function
+Applying CSRF countermeasures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-By using the ``RequestDataValueProcessor`` implementation class for CSRF token, the token can be automatically inserted as 'hidden' field using ``<form:form>`` tag of Spring tag library.
+By using the \ ``RequestDataValueProcessor``\ implementation class for CSRF token, the token can be automatically inserted as 'hidden' field using \ ``<form:form>``\ tag of Spring tag library.
 
 * Setting example of spring-mvc.xml
 
@@ -260,7 +260,7 @@ If you want to send a request using HTML form, output the CSRF token value as a 
 
 The hidden fields are output as shown below if \ ``<sec:csrfInput>``\  element provided by Spring Security is specified.
 CSRF token value is linked as a request parameter by displaying the hidden fields in the HTML form.
-By default, the name of the request parameter to link CSRF token value is \ `` _csrf`` \ .
+By default, the name of the request parameter to link CSRF token value is \ ``_csrf`` \ .
 
 * Output example of HTML
 
@@ -277,7 +277,7 @@ By default, the name of the request parameter to link CSRF token value is \ `` _
 
 .. warning:: **Points to be noted while using GET method**
 
-    When GET is used as the HTTP method, \ `` <sec: csrfInput> `` element should not be specified.
+    When GET is used as the HTTP method, \ ``<sec: csrfInput>``\ element should not be specified.
     If \ ``<sec:csrfInput>``\  element is specified, there is a high risk of CSRF token value being stolen since CSRF token value is included in the URL.
 
 .. _csrf_ajax-token-setting:
@@ -361,7 +361,7 @@ in the request header at the time of Ajax communication. (Implementation example
 Controlling transition destination in case of token check error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In order to control the transition destination in case of token check error, handle \ `` AccessDeniedException`` \  which is an exception that occurs in CSRF token check error and specify the transition destination corresponding to that exception.
+In order to control the transition destination in case of token check error, handle \ ``AccessDeniedException`` \  which is an exception that occurs in CSRF token check error and specify the transition destination corresponding to that exception.
 
 Exception that occurs at the time of CSRF token check error is as follows.
 
@@ -434,16 +434,16 @@ Define a Bean as shown below if you want to transit to an exclusive error page (
    * - Sr. No.
      - Description
    * - | (1)
-     - | Specify the Bean name for \ `` AccessDeniedHandler`` \  to control each Exception in ref attribute of \ ``<sec:access-denied-handler>``\  tag.
+     - | Specify the Bean name for \ ``AccessDeniedHandler`` \  to control each Exception in ref attribute of \ ``<sec:access-denied-handler>``\  tag.
        | If all the transition destinations in case of an error are on the same screen, the transition destination should be specified in ``error-page`` attribute.
        | Refer to \ :ref:`SpringSecurityAuthorizationOnError`\  when the exceptions are not handled by \ ``<sec:access-denied-handler>``\.
    * - | (2)
-     - | Using \ ``DelegatingAccessDeniedHandler`` \ , define the exception that occurred (\ `` AccessDeniedException`` \  subclass) and the exception handler (\ `` AccessDeniedHandler`` \  Implementation class).
+     - | Using \ ``DelegatingAccessDeniedHandler`` \ , define the exception that occurred (\ ``AccessDeniedException`` \  subclass) and the exception handler (\ ``AccessDeniedHandler`` \  Implementation class).
    * - | (3)
      - | Using the first argument of constructor, define the exception for which transition destination is to be specified separately (\ ``AccessDeniedException``\  subclass) and the corresponding exception handler (\ ``AccessDeniedHandler``\  implementation class) in Map format.
    * - | (4)
      - | Specify sub class of \ ``AccessDeniedException``\  in \ ``key``\ .
-       | Specify \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` which is an implementation class of \ ``AccessDeniedHandler``\  , as the \ `` value``.
+       | Specify \ ``org.springframework.security.web.access.AccessDeniedHandlerImpl`` which is an implementation class of \ ``AccessDeniedHandler``\  , as the \ ``value``.
        | Specify the view to be displayed in \ ``value``\  by specifying \ ``errorPage``\  in \ ``name``\  of \ ``property``\ .
        | Refer to :ref:`csrf_token-error-response` for the Exception to be mapped.
    * - | (5)
@@ -457,7 +457,7 @@ Define a Bean as shown below if you want to transit to an exclusive error page (
 
     When ":ref:`SpringSecuritySessionDetectInvalidSession`" process of session management function is enabled, implementation class of \ ``AccessDeniedHandler``\  interface to be linked with ":ref:`SpringSecuritySessionDetectInvalidSession`" process is used for \ ``MissingCsrfTokenException``\ .
 
-    Therefore, if \ `` MissingCsrfTokenException`` \  is thrown, redirect to path (\ ``invalid-session-url``\ ) specified while enabling ":ref:`SpringSecuritySessionDetectInvalidSession`" process.
+    Therefore, if \ ``MissingCsrfTokenException`` \  is thrown, redirect to path (\ ``invalid-session-url``\ ) specified while enabling ":ref:`SpringSecuritySessionDetectInvalidSession`" process.
 
 .. note::
 

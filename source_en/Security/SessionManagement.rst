@@ -462,7 +462,7 @@ By default this function is disabled. However, it can be enabled by using :ref:`
 
 This section introduces a method to use default implementation of Spring Security.
 HTTP session is used in the default implementation provided by Spring Security, however, the architecture also enables storing objects in other than HTTP session (Database or key-value store etc.).
-However, please note that the method introduced here is the ** Implementation method with the constraints of the Warning mentioned above **, during the application.
+However, please note that the method introduced here is the **Implementation method with the constraints of the Warning mentioned above**, during the application.
 
 .. Todo::
    The information about the implementation method that does not use in-memory will be added later.
@@ -472,7 +472,7 @@ However, please note that the method introduced here is the ** Implementation me
 Enabling session lifecycle detection
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-The function to control multiple login manages the session state for each user by using :ref:`Mechanism <SpringSecuritySessionManagementLifecycle> to detect session lifecycle (Generating and discarding session) `.
+The function to control multiple login manages the session state for each user by using :ref:`session lifecycle (Generating and discarding session) detection mechanism <SpringSecuritySessionManagementLifecycle>`.
 Therefore, while using multiple login control function, \ ``HttpSessionEventPublisher``\  class provided by Spring Security must be registered in Servlet Container.
 
 * Definition example of web.xml
