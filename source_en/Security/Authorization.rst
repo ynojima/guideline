@@ -26,7 +26,7 @@ An access policy for following 3 types of resources is defined in Spring Securit
 
 This section introduces an implementation example (definition example) wherein authorization process is applied to access "Web resource", "Java method" and "Screen fields of JSP" and explains the authorization function of Spring Security.
 
-.. For authorization function to access domain object [#fSpringSecurityAuthorization1], refer \ `Spring Security Reference -Domain Object Security (ACLs)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#domain-acls>`_\ .
+.. [#fSpringSecurityAuthorization1] For authorization function to access domain object , refer \ `Spring Security Reference -Domain Object Security (ACLs)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#domain-acls>`_\ .
 
 |
 
@@ -246,11 +246,11 @@ In the example below, access can be granted if both role and requested IP addres
   
      * - Operator
        - Description
-     * - | \ ``[Ž®1] and [Ž®2]``\ 
-       - | Return true when both expression 1 and expression 2 are true.
-     * - | \ ``[Ž®1] or [Ž®2]``\ 
+     * - | \ ``[expression-1] and [expression-2]``\ 
+       - | Return true when both expression-1 and expression-2 are true.
+     * - | \ ``[expression-1] or [expression-2]``\ 
        - | Return true when one of the expressions is true.
-     * - | \ ``![Ž®]``\ 
+     * - | \ ``![expression]``\ 
        - | Return false when expression is true and return true when expression is false.
 
 |
@@ -441,7 +441,6 @@ For main Expression that can be used, refer :ref:`SpringSecurityAuthorizationPol
 
 Authorization for the method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  .. code-block:: xml
 Spring Security performs authorization process for calling a method of Bean which is managed in DI container by using Spring AOP system.
 
 Authorization process for the method is provided by considering its use for calling a domain layer (service layer) method.

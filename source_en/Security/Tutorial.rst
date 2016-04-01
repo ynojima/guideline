@@ -1221,7 +1221,7 @@ Perform definitions related to Spring Security in \ ``spring-security.xml``\ .
     * - | (3)
       - Control logout related operations by using \ ``<sec:logout>``\  tag.
 
-        For usage method, refer to ":ref:`SpringSecurityAuthenticationLogout".
+        For usage method, refer to [:ref:`SpringSecurityAuthenticationLogout`].
     * - | (4)
       - Control action after access is denied using \ ``<sec:access-denied-handler>``\  tag.
 
