@@ -239,7 +239,7 @@ An option \ [#fSpringSecurityLinkageWithBrowser2]_\  can be specified in the att
 
     <sec:frame-options policy="SAMEORIGIN" />
 
-.. Refer http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-headers for the options which can be specified in each element of [#fSpringSecurityLinkageWithBrowser2].
+.. [#fSpringSecurityLinkageWithBrowser2] Refer http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-headers for the options which can be specified in each element.
 
 Output of custom header
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
