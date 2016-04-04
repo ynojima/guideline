@@ -1,4 +1,4 @@
-Session tutorial
+ï»¿Session tutorial
 ********************************************************************************
 
 
@@ -551,7 +551,7 @@ Consider how to handle the respective risks or whether to allow the risks regard
         
         * Change account information (Character string: 8, Date: 2): maximum 2.0K bytes
 
-        * Cart information (maximum 19 products~ (Character string: 3, numerical value: 3)): maximum 14.6K bytes
+        * Cart information (maximum 19 products x (Character string: 3, numerical value: 3)): maximum 14.6K bytes
         
         * Product search information (numerical value: 2): 32 bytes
         
@@ -722,56 +722,56 @@ Only the differences between the project fetched and the blank project are shown
 .. code-block:: console
 
     session-tutorial-init-domain
-        „¤„Ÿ„Ÿ src
-            „¤„Ÿ„Ÿ main
-                 „¥„Ÿ„Ÿ java
-              ?? „ ?? „¤„Ÿ„Ÿ com
-              ?? „ ??     „¤„Ÿ„Ÿ example
-              ?? „ ??         „¤„Ÿ„Ÿ session
-              ?? „ ??             „¤„Ÿ„Ÿ domain
-              ?? „ ??                 „¥„Ÿ„Ÿ model  ... (1)
-              ?? „ ??                 „   „¥„Ÿ„Ÿ Account.java  ... (2)
-              ?? „ ??                 „   „¥„Ÿ„Ÿ Cart.java  ... (3)
-              ?? „ ??                 „   „¥„Ÿ„Ÿ CartItem.java  ... (3)
-              ?? „ ??                 „   „¥„Ÿ„Ÿ Goods.java
-              ?? „ ??                 „   „¥„Ÿ„Ÿ Order.java  ... (4)
-              ?? „ ??                 „   „¤„Ÿ„Ÿ OrderLine.java  ... (4)
-              ?? „ ??                 „¥„Ÿ„Ÿ repository  ... (5)
-              ?? „ ??                 „   „¥„Ÿ„Ÿ account
-              ?? „ ??                 „   „   „¤„Ÿ„Ÿ AccountRepository.java
-              ?? „ ??                 „   „¥„Ÿ„Ÿ goods
-              ?? „ ??                 „   „   „¤„Ÿ„Ÿ GoodsRepository.java
-              ?? „ ??                 „   „¤„Ÿ„Ÿ order
-              ?? „ ??                 „       „¤„Ÿ„Ÿ OrderRepository.java
-              ?? „ ??                 „¤„Ÿ„Ÿ service  ... (6)
-              ?? „ ??                     „¥„Ÿ„Ÿ account
-              ?? „ ??                     „   „¤„Ÿ„Ÿ AccountService.java
-              ?? „ ??                     „¥„Ÿ„Ÿ goods
-              ?? „ ??                     „   „¤„Ÿ„Ÿ GoodsService.java
-              ?? „ ??                     „¥„Ÿ„Ÿ order
-              ?? „ ??                     „   „¥„Ÿ„Ÿ EmptyCartOrderException.java
-              ?? „ ??                     „   „¥„Ÿ„Ÿ InvalidCartOrderException.java
-              ?? „ ??                     „   „¤„Ÿ„Ÿ OrderService.java
-              ?? „ ??                     „¤„Ÿ„Ÿ userdetails
-              ?? „ ??                         „¥„Ÿ„Ÿ AccountDetails.java
-              ?? „ ??                         „¤„Ÿ„Ÿ AccountDetailsService.java
-              ?? „¤„Ÿ„Ÿ resources
-              ??   ?? „¥„Ÿ„Ÿ com
-              ??   ?? „   „¤„Ÿ„Ÿ example
-              ??   ?? „       „¤„Ÿ„Ÿ session
-              ??   ?? „           „¤„Ÿ„Ÿ domain
-              ??   ?? „               „¤„Ÿ„Ÿ repository  ... (7)
-              ??   ?? „                   „¥„Ÿ„Ÿ account
-              ??   ?? „                   „   „¤„Ÿ„Ÿ AccountRepository.xml
-              ??   ?? „                   „¥„Ÿ„Ÿ goods
-              ??   ?? „                   „   „¤„Ÿ„Ÿ GoodsRepository.xml
-              ??   ?? „                   „¤„Ÿ„Ÿ order
-              ??   ?? „                       „¤„Ÿ„Ÿ OrderRepository.xml
-              ??   ?? „¤„Ÿ„Ÿ META-INF
-              ??   ??   ?? „¥„Ÿ„Ÿ dozer
-              ??   ??   ?? „ ? „¤„Ÿ„Ÿ order-mapping.xml  ... (8)
-              ??   ??   ?? „¤„Ÿ„Ÿ spring
-              ??   ??   ??     „¤„Ÿ„Ÿ session-tutorial-init-codelist.xml  ... (9)
+        â””-- src
+            â””-- main
+                 â”œ-- java
+                 â”‚   â””-- com
+                 â”‚       â””-- example
+                 â”‚           â””-- session
+                 â”‚               â””-- domain
+                 â”‚                   â”œ-- model  ... (1)
+                 â”‚                   â”‚  â”œ-- Account.java  ... (2)
+                 â”‚                   â”‚  â”œ-- Cart.java  ... (3)
+                 â”‚                   â”‚  â”œ-- CartItem.java  ... (3)
+                 â”‚                   â”‚  â”œ-- Goods.java
+                 â”‚                   â”‚  â”œ-- Order.java  ... (4)
+                 â”‚                   â”‚  â””-- OrderLine.java  ... (4)
+                 â”‚                   â”œ-- repository  ... (5)
+                 â”‚                   â”‚  â”œ-- account
+                 â”‚                   â”‚  â”‚  â””-- AccountRepository.java
+                 â”‚                   â”‚  â”œ-- goods
+                 â”‚                   â”‚  â”‚  â””-- GoodsRepository.java
+                 â”‚                   â”‚  â””-- order
+                 â”‚                   â”‚      â””-- OrderRepository.java
+                 â”‚                   â””-- service  ... (6)
+                 â”‚                       â”œ-- account
+                 â”‚                       â”‚  â””-- AccountService.java
+                 â”‚                       â”œ-- goods
+                 â”‚                       â”‚  â””-- GoodsService.java
+                 â”‚                       â”œ-- order
+                 â”‚                       â”‚  â”œ-- EmptyCartOrderException.java
+                 â”‚                       â”‚  â”œ-- InvalidCartOrderException.java
+                 â”‚                       â”‚  â””-- OrderService.java
+                 â”‚                       â””-- userdetails
+                 â”‚                           â”œ-- AccountDetails.java
+                 â”‚                           â””-- AccountDetailsService.java
+                 â””-- resources
+                      â”œ-- com
+                      â”‚  â””-- example
+                      â”‚      â””-- session
+                      â”‚          â””-- domain
+                      â”‚              â””-- repository  ... (7)
+                      â”‚                  â”œ-- account
+                      â”‚                  â”‚  â””-- AccountRepository.xml
+                      â”‚                  â”œ-- goods
+                      â”‚                  â”‚  â””-- GoodsRepository.xml
+                      â”‚                  â””-- order
+                      â”‚                      â””-- OrderRepository.xml
+                      â””-- META-INF
+                           â”œ-- dozer
+                           â”‚  â””-- order-mapping.xml  ... (8)
+                           â””-- spring
+                               â””-- session-tutorial-init-codelist.xml  ... (9)
 
 
 
@@ -813,12 +813,12 @@ Only the differences between the project fetched and the blank project are shown
 .. code-block:: console
 
     session-tutorial-init-env
-        „¤„Ÿ„Ÿ src
-            „¤„Ÿ„Ÿ main
-                 „¤„Ÿ„Ÿ resources
-              ??  ?? „¤„Ÿ„Ÿ database  ... (1)
-              ??  ??     „¥„Ÿ„Ÿ H2-dataload.sql
-              ??  ??     „¤„Ÿ„Ÿ H2-schema.sql
+        â””-- src
+            â””-- main
+                 â””-- resources
+                     â””-- database  ... (1)
+                         â”œ-- H2-dataload.sql
+                         â””-- H2-schema.sql
 
 
 
@@ -836,58 +836,58 @@ Only the differences between the project fetched and the blank project are shown
 .. code-block:: console
 
     session-tutorial-init-web
-        „¤„Ÿ„Ÿ src
-            „¤„Ÿ„Ÿ main
-                 „¥„Ÿ„Ÿ java
-              ?? „ ?? „¤„Ÿ„Ÿ com
-              ?? „ ??     „¤„Ÿ„Ÿ example
-              ?? „ ??         „¤„Ÿ„Ÿ session
-              ?? „ ??             „¤„Ÿ„Ÿ app  ... (1)
-              ?? „ ??                 „¥„Ÿ„Ÿ account 
-              ?? „ ??                 „   „¥„Ÿ„Ÿ AccountCreateController.java 
-              ?? „ ??                 „   „¥„Ÿ„Ÿ AccountCreateForm.java 
-              ?? „ ??                 „   „¥„Ÿ„Ÿ IlleagalOperationException.java  
-              ?? „ ??                 „   „¤„Ÿ„Ÿ IlleagalOperationExceptionHandler.java
-              ?? „ ??                 „¥„Ÿ„Ÿ goods
-              ?? „ ??                 „   „¥„Ÿ„Ÿ GoodsController.java  
-              ?? „ ??                 „   „¤„Ÿ„Ÿ GoodsViewForm.java
-              ?? „ ??                 „¥„Ÿ„Ÿ login
-              ?? „ ??                 „   „¤„Ÿ„Ÿ LoginController.java
-              ?? „ ??                 „¤„Ÿ„Ÿ validation
-              ?? „ ??                     „¥„Ÿ„Ÿ Confirm.java
-              ?? „ ??                     „¤„Ÿ„Ÿ ConfirmValidator.java
-              ?? „¥„Ÿ„Ÿ resources
-              ?? „ ?? „¥„Ÿ„Ÿ i18n
-              ?? „ ?? „   „¤„Ÿ„Ÿ application-messages.properties  ... (2)
-              ?? „ ?? „¥„Ÿ„Ÿ META-INF
-              ?? „ ?? „  ? „¤„Ÿ„Ÿ spring  ... (3)
-              ?? „ ?? „ ??     „¥„Ÿ„Ÿ spring-mvc.xml
-              ?? „ ?? „ ??     „¤„Ÿ„Ÿ spring-security.xml
-              ?? „ ?? „¤„Ÿ„Ÿ ValidationMessages.properties  ... (2)
-              ?? „¤„Ÿ„Ÿ webapp
-              ??   ?? „¥„Ÿ„Ÿ resources  ... (4)
-              ??   ?? „   „¥„Ÿ„Ÿ app
-              ??   ?? „   „   „¤„Ÿ„Ÿ css
-              ??   ?? „   „       „¤„Ÿ„Ÿ styles.css
-              ??   ?? „   „¤„Ÿ„Ÿ vendor
-              ??   ?? „       „¤„Ÿ„Ÿ bootstrap-3.0.0
-              ??   ?? „           „¤„Ÿ„Ÿ css
-              ??   ?? „               „¤„Ÿ„Ÿ bootstrap.css
-              ??   ?? „¤„Ÿ„Ÿ WEB-INF
-              ??       ?? „¤„Ÿ„Ÿ views  ... (5)
-              ??       ??     „¥„Ÿ„Ÿ account
-              ??       ??     „   „¥„Ÿ„Ÿ createConfirm.jsp
-              ??       ??     „   „¥„Ÿ„Ÿ createFinish.jsp
-              ??       ??     „   „¤„Ÿ„Ÿ createForm.jsp
-              ??       ??     „¥„Ÿ„Ÿ common
-              ??       ??     „   „¥„Ÿ„Ÿ error
-              ??       ??     „   „   „¤„Ÿ„Ÿ illegalOperationError.jsp
-              ??       ??     „   „¤„Ÿ„Ÿ include.jsp
-              ??       ??     „¥„Ÿ„Ÿ goods
-              ??       ??     „   „¥„Ÿ„Ÿ showGoods.jsp
-              ??       ??     „   „¤„Ÿ„Ÿ showGoodsDetails.jsp
-              ??       ??     „¤„Ÿ„Ÿ login
-              ??       ??         „¤„Ÿ„Ÿ loginForm.jsp
+        â””-- src
+            â””-- main
+                 â”œ-- java
+                 â”‚   â””-- com
+                 â”‚       â””-- example
+                 â”‚           â””-- session
+                 â”‚               â””-- app  ... (1)
+                 â”‚                   â”œ-- account 
+                 â”‚                   â”‚  â”œ-- AccountCreateController.java 
+                 â”‚                   â”‚  â”œ-- AccountCreateForm.java 
+                 â”‚                   â”‚  â”œ-- IlleagalOperationException.java  
+                 â”‚                   â”‚  â””-- IlleagalOperationExceptionHandler.java
+                 â”‚                   â”œ-- goods
+                 â”‚                   â”‚  â”œ-- GoodsController.java  
+                 â”‚                   â”‚  â””-- GoodsViewForm.java
+                 â”‚                   â”œ-- login
+                 â”‚                   â”‚  â””-- LoginController.java
+                 â”‚                   â””-- validation
+                 â”‚                       â”œ-- Confirm.java
+                 â”‚                       â””-- ConfirmValidator.java
+                 â”œ-- resources
+                 â”‚   â”œ-- i18n
+                 â”‚   â”‚  â””-- application-messages.properties  ... (2)
+                 â”‚   â”œ-- META-INF
+                 â”‚   â”‚   â””-- spring  ... (3)
+                 â”‚   â”‚       â”œ-- spring-mvc.xml
+                 â”‚   â”‚       â””-- spring-security.xml
+                 â”‚   â””-- ValidationMessages.properties  ... (2)
+                 â””-- webapp
+                      â”œ-- resources  ... (4)
+                      â”‚  â”œ-- app
+                      â”‚  â”‚  â””-- css
+                      â”‚  â”‚      â””-- styles.css
+                      â”‚  â””-- vendor
+                      â”‚      â””-- bootstrap-3.0.0
+                      â”‚          â””-- css
+                      â”‚              â””-- bootstrap.css
+                      â””-- WEB-INF
+                          â””-- views  ... (5)
+                              â”œ-- account
+                              â”‚  â”œ-- createConfirm.jsp
+                              â”‚  â”œ-- createFinish.jsp
+                              â”‚  â””-- createForm.jsp
+                              â”œ-- common
+                              â”‚  â”œ-- error
+                              â”‚  â”‚  â””-- illegalOperationError.jsp
+                              â”‚  â””-- include.jsp
+                              â”œ-- goods
+                              â”‚  â”œ-- showGoods.jsp
+                              â”‚  â””-- showGoodsDetails.jsp
+                              â””-- login
+                                  â””-- loginForm.jsp
 
 
 .. tabularcolumns::  |p{0.20\linewidth}|p{0.80\linewidth}|
@@ -2975,7 +2975,7 @@ Create JSP to display the information after the confirmation of order.
                 <tr>
                     <td><label for="orderDate">order date</label></td>
                     <td><span id="orderDate"><fmt:formatDate
-                                value="${order.orderDate}" pattern="yyyy-MM-dd@hh:mm:ss" /></span></td>
+                                value="${order.orderDate}" pattern="yyyy-MM-ddã€€hh:mm:ss" /></span></td>
                 </tr>
             </table>
             <table>
