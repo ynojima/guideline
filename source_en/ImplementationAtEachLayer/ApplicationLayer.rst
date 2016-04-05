@@ -3412,6 +3412,8 @@ Implementing common logic
 
 |
 
+.. _controller-common-process:
+
 Implementing common logic to be executed before and after calling controller
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Here, common logic indicates processes which are required to be executed before and after execution the controller.
