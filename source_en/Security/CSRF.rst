@@ -379,7 +379,7 @@ Exception that occurs at the time of CSRF token check error is as follows.
 
 It is possible to set the transition destination for each exception by handling the exception mentioned above using \ ``DelegatingAccessDeniedHandler``\  class and assigning implementation class of  \ ``AccessDeniedHandler``\  interface respectively.
 
-Define a Bean as shown below if you want to transit to an exclusive error page (JSP) at the time of CSRF token check error. (The following definition example is an excerpt from a `blank project <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>` _ \ )
+Define a Bean as shown below if you want to transit to an exclusive error page (JSP) at the time of CSRF token check error. (The following definition example is an excerpt from a `blank project <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ )
 
 * Definition example of spring-security.xml
 
