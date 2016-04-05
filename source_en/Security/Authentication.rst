@@ -1,4 +1,6 @@
-﻿Authentication
+﻿.. _SpringSecurityAuthentication:
+
+Authentication
 ================================================================================
 
 .. only:: html
@@ -6,573 +8,1197 @@
  .. contents:: Table of contents
     :local:
     
+.. _SpringSecurityAuthenticationOverview:
+
 Overview
 --------------------------------------------------------------------------------
-| This chapter explains about Authentication functionality provided by Spring Security.
+This chapter explains about Authentication function provided by Spring Security.
 
-In Spring Security, user authentication can be implemented by just performing configuration file settings.
-DB authentication, LDAP authentication, CAS authentication, JAAS authentication, X509 authentication and Basic authentication are the authentication methods provided by Spring Security. However, only DB authentication is described in this guideline.
+Authentication process checks the validity of user using the application.
 
-.. tip::
-    For details of authentication types other than DB authentication, refer to the official document of each authentication method.
+The standard method to check the validity of a user is to register the users who can use the application in a data store and
+and verify the authentication information (user name, password etc) input by the user.
+Although a relational database is commonly used in a data store wherein user information is registered, directory service or external system etc are also used.
 
-  * \ `LDAP Authentication <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#ldap>`_\
-  * \ `CAS Authentication <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#cas>`_\
-  * \ `Java Authentication and Authorization Service (JAAS) Provider <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#jaas>`_\
-  * \ `X.509 Authentication <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#x509>`_\
-  * \ `Basic and Digest Authentication <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#basic>`_\
+Further, there are several methods which ask a user to input authentication information.
+Although a method wherein input form of HTML or a method wherein an authentication method of HTTP standard defined in RFC (Basic authentication or Digest authentication etc) are used in general,
+the methods like OpenID authentication or single sign-on authentication are also used.
 
-Login
+This section introduces an implementation example wherein the authentication is done by verifying authentication information input in HTML input form and user information stored in the relational database,
+and explains how to use authentication function of Spring Security.
+
+|
+
+Authentication process architecture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Flow of Spring Security login process is as follows:
+Spring Security performs authentication with the following flow.
 
-.. figure:: ./images/Authentication_Login_overview.png
-   :alt: Authentication(Login)
-   :width: 80%
-   :align: center
- 
-#. Authentication filter is activated on receiving the request specifying authentication.
-#. Authentication filter extracts username and password from the request and generates authentication information.
-   The  generated authentication information is used as a parameter to execute authentication process of authentication manager.
-#. Authentication manager executes authentication process of the specified authentication provider.
-   Authentication provider acquires user information from datasource (DB or LDAP) and performs user authentication such as password verification.
-   When authentication is successful, authentication information that holds the authenticated information is created and returned to the authentication manager.
-   When authentication fails, the authentication manager raises authentication failure exception.
-#. Authentication manager returns the received authentication information to authentication filter.
-#. Authentication filter stores the received authentication information (authenticated) in session.
-#. When authentication is successful, it initializes the session information before authentication and creates new session information.
-#. It redirects to the specified path of successful/failed  authentication and returns session ID to client.
+.. figure:: ./images_Authentication/AuthenticationArchitecture.png
+    :width: 100%
+
+    **Authentication process architecture**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Client specifies credentials (user name and password) for the path wherein authentication is performed and sends a request.
+    * - | (2)
+      - | Authentication Filter fetches credentials from the request and calls authentication process of \ ``AuthenticationManager``\  class.
+    * - | (3)
+      - | \ ``ProviderManager``\  (Implementation class of \ ``AuthenticationManager``\  used by default) delegates actual authentication process to implementation class of \ ``AuthenticationProvider``\  interface.
+
+|
+
+.. _SpringSecurityAuthenticationFilter:
+
+Authentication Filter
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Authentication Filter is a servlet filter which offers implementation for the authentication method.
+Primary authentication methods supported by Spring Security are as given below..
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **Main Authentication Filter offered by Spring Security**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Class Name
+      - Description
+    * - | \ ``UsernamePasswordAuthenticationFilter``\
+      - | Fetch credentials from HTTP request parameter in servlet filter class for form authentication.
+    * - | \ ``BasicAuthenticationFilter``\
+      - | Fetch credentials from authentication header of HTTP request in servlet filter class for Basic authentication.
+    * - | \ ``DigestAuthenticationFilter``\
+      - | Fetch credentials from authentication header of HTTP request in servlet filter class for Digest authentication.
+    * - | \ ``RememberMeAuthenticationFilter``\
+      - | Fetch credentials from Cookies of HTTP request in servlet filter class for Remember Me authentication.
+        | If Remember Me authentication is enabled, user stays logged in even if browser is closed and a session timeout has occurred.
+
+These servlet filters are one of the Authentication filters introduced in :ref:`SpringSecurityProcess`\.
+
+.. note::
+
+    When an authentication process not supported by Spring Security must be adopted,
+    it must be incorporated in Spring Security after creating a \ ``Authentication Filter``\  for adopting this authentication method.
+
+|
+
+AuthenticationManager
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``AuthenticationManager``\  is an interface for implementing the authentication process.
+In default implementation (\ ``ProviderManager``\ ) offered by Spring Security, a system is adopted wherein
+actual authentication process is delegated to \ ``AuthenticationProvider``\  and process results of authentication process performed by \ ``AuthenticationProvider``\  are handled.
+
+|
+
+AuthenticationProvider
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``AuthenticationProvider``\  is an interface which provides implementation of authentication process.
+A key \ ``AuthenticationProvider``\  implementation class offered by Spring Security is as given below.
+
+.. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+.. list-table:: **A key AuthenticationProvider offered by Spring Security**
+    :header-rows: 1
+    :widths: 25 75
+
+    * - Class Name
+      - Description
+    * - | \ ``DaoAuthenticationProvider``\
+      - | Implementation class which performs authentication process by checking user credentials and user status registered in the data store.
+        | Fetch credentials and user status required for checking, from the class which implements \ ``UserDetails``\  interface.
+
+.. note::
+
+    When an authentication process not offered by Spring Security must be adopted,
+    it must be incorporated in Spring Security after creating an \ ``AuthenticationProvider``\  for implementing authentication process.
+
+|
+
+.. _howtouse_springsecurity:
+
+How to use
+--------------------------------------------------------------------------------
+
+Bean definition example and implementation method required for using authentication function is explained.
+
+This section, as explained in :ref:`SpringSecurityAuthenticationOverview`\ ,
+explains a method to carry out authentication process by verifying credentials input in HTML input form and user information stored in the relational database.
+
+.. _form-login:
+
+Form authentication
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security performs form authentication as per the flow given below.
+
+.. figure:: ./images_Authentication/AuthenticationForm.png
+    :width: 100%
+
+    **Form authentication system**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Client sends credentials (user name and password) as request parameters for the path which carries out form authentication.
+    * - | (2)
+      - | \ ``UsernamePasswordAuthenticationFilter``\  class fetches credentials from request parameter and calls authentication process of \ ``AuthenticationManager``\ .
+    * - | (3)
+      - | \ ``UsernamePasswordAuthenticationFilter``\  class handles the authentication results returned from \ ``AuthenticationManager``\ .
+        | Call \ ``AuthenticationSuccessHandler``\  method when the authentication is successful, call \ ``AuthenticationFailureHandler``\  method when a failure occurs in the authentication and perform screen transition.
+
+|
+
+.. _form-login-usage:
+
+Applying form authentication
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Bean is defined as below when form authentication is used.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:http>
+        <sec:form-login />    <!-- (1) -->
+        <!-- omitted -->
+    </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+   :header-rows: 1
+   :widths: 10 90
+
+   * - Sr. No.
+     - Description
+   * - | (1)
+     - | Form authentication is enabled when \ ``<sec:form-login>``\  tag is defined.
+
+.. tip:: **About auto-config attribute**
+
+    An \ ``auto-config``\  attribute which specifies whether the settings for form authentication (\ ``<sec:form-login>``\  tag), Basic authentication (\ ``<sec:http-basic>``\  tag) and logout (\ ``<sec:logout>``\  tag) are performed automatically, is provided in \ ``<sec:http>``\ .
+    Default value is \ ``false``\  (not set automatically) and it is recommended to use default value even in the reference document of Spring Security.
+
+    Even in this guideline, a style wherein a tag is specified explicitly is recommended.
+
+     .. tabularcolumns:: |p{0.25\linewidth}|p{0.75\linewidth}|
+     .. list-table::
+         :header-rows: 1
+         :widths: 25 75
+
+         * - Element name
+           - Description
+         * - | ``<form-login>``\
+           - | Security Filter(\ ``UsernamePasswordAuthenticationFilter``\ ) which performs form authentication process is applied.
+         * - | \ ``<http-basic>``\
+           - | Security Filter(\ ``BasicAuthenticationFilter``\ ) which performs Basic authentication in conformance with RFC1945 is applied.
+             | For detailed usage method, refer \ `JavaDoc of BasicAuthenticationFilter <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/web/authentication/www/BasicAuthenticationFilter.html>`_\ .
+         * - | \ ``<logout>``\
+           - | Security Filter(\ ``LogoutFilter``\ ) which performs logout process is applied.
+             | For details of logout process, refer "\ :ref:`SpringSecurityAuthenticationLogout`\ ".
+
+    Further note that when ``auto-config``\  is not defined, form authentication (\ ``<sec:form-login>``\  tag) or Basic authentication (\ ``<sec:http-basic>``\  tag) must be defined.
+    This is required to meet the specification of Spring Security wherein a Bean must be defined for one or more Authentication Filters in a single \ ``SecurityFilterChain``\  (\ ``<sec:http>``\).
+
+.. _form-login-default-operation:
+
+Default operation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+If user account is accessed for \ ``"/login"``\  using GET method in the default operation of Spring Security, a default login form provided by Spring Security is displayed
+and when login button is clicked, \ ``"/login"``\  is accessed by POST method and authentication process is carried out.
+
+|
+
+.. _SpringSecurityAuthenticationLoginForm:
+
+Creating login form
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Although a login form for form authentication is provided in Spring Security as a default, it is rarely used as it is.
+Below, a method wherein an auto-created login form is applied in Spring Security is explained.
+
+At first, a JSP for displaying a login form is created.
+An implementation example wherein a login form is displayed after receiving a request in Spring MVC is given below.
+
+* How to create a JSP for displaying a login form (xxx-web/src/main/webapp/WEB-INF/views/login/loginForm.jsp)
+
+.. code-block:: jsp
+
+    <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+    <%-- omitted --%>
+    <div id="wrapper">
+        <h3>Login Screen</h3>
+        <%-- (1) --%>
+        <c:if test="${param.error}">
+            <t:messagesPanel messagesType="error"
+                messagesAttributeName="SPRING_SECURITY_LAST_EXCEPTION"/> <%-- (2) --%>
+        </c:if>
+        <form:form action="${pageContext.request.contextPath}/login" method="post"> <%-- (3) --%>
+            <table>
+                <tr>
+                    <td><label for="username">User Name</label></td>
+                    <td><input type="text" id="username" name="username"></td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password</label></td>
+                    <td><input type="password" id="password" name="password"></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><button>Login</button></td>
+                </tr>
+            </table>
+        </form:form>
+    </div>
+    <%-- omitted --%>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | An area to display authentication error.
+    * - | (2)
+      - | Output an exception message which is output at the time of authentication error.
+        | It is recommended to output by using \ ``<t:messagesPanel>``\  tag provided by a common library.
+        | For how to use \ ``<t:messagesPanel>``\  tag, refer "\ :doc:`../ArchitectureInDetail/MessageManagement`\ ".
+        | Note that, when an authentication error occurs, exception object is stored in the session or request scope with the attribute name \ ``"SPRING_SECURITY_LAST_EXCEPTION"``\ .
+    * - | (3)
+      - | Login form to enter user name and password.
+        | Send user name and password to request parameters \ ``username``\  and \ ``password``\  respectively.
+        | Also note that token value for CSRF measures is sent to request parameter by using \ ``<form:form>``\ .
+        | CSRF measures are explained in ":ref:`SpringSecurityCsrf`".
+
+|
+
+Next, login form thus created is applied to Spring Security.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:http>
+      <sec:form-login 
+          login-page="/login/loginForm"
+          login-processing-url="/login" 
+          authentication-failure-url="/login/loginForm?error" /> <!-- (1)(2)(3) -->
+      <sec:intercept-url pattern="/login/**" access="permitAll"/>  <!-- (4) -->
+      <sec:intercept-url pattern="/**" access="isAuthenticated()"/> <!-- (5) -->
+    </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify path to display login form in \ ``loginPage``\  attribute. 
+        | When an anonymous user accesses a Web resource for which authentication is required, the user is redirected to a path specified in the attribute and a login form is displayed.
+        | Here, a request is received by Spring MVC and a login form is displayed.
+        | For details, refer ":ref:`spring-security-authentication-mvc`".
+    * - | (2)
+      - | Specify path for performing authentication process in \ ``loginProcessingUrl``\  attribute.
+        | Although default path is also \ ``"/login"``\ , it should be explicitly specified.
+    * - | (3)
+      - | Specify the path for transition at the time of authentication failure in \ ``authentication-failure-url``\  attribute.
+    * - | (4)
+      - | Assign the rights enabling access to all users for the location under \ ``/login``\  path where login form is stored.
+        | For how to specify access policy for web resource, refer "\ :ref:`SpringSecurityAuthorization`\".
+    * - | (5)
+      - | Assign the access rights for web resource handled by the application.
+        | In the example above, only authenticated users are granted the rights to access location under root path of web application.
+        | For how to specify access policy for web resource, refer "\ :ref:`SpringSecurityAuthorization`\".
+
+.. note:: **Changes in Spring Security 4.0**
+
+    Default values of following configuration are changed from Spring Security version 4.0
+
+    * username-parameter
+    * password-parameter
+    * login-processing-url
+    * authentication-failure-url 
+
+|
+
+.. _SpringSecurityAuthenticationScreenFlowOnSuccess:
+
+Response when authentication is successful
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security offers \ ``AuthenticationSuccessHandler``\  interface and implementation class as the components
+to control the response when the authentication is successful.
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Implementation class of AuthenticationSuccessHandler**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Implementation class
+      - Description
+    * - | \ ``SavedRequestAwareAuthenticationSuccessHandler``\
+      - | Implementation class that redirects to a URL which the user have attempted to access prior to authentication.
+        | **Implementation class used by default.**
+    * - | \ ``SimpleUrlAuthenticationSuccessHandler``\
+      - | Implementation class which redirects or forwards to \ ``defaultTargetUrl``\ .
+
+Default operation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In the default operation of Spring Security, the request that was denied prior to authentication is saved in HTTP session
+and when the authentication is successful, the request which was denied access is restored and redirected.
+Page is displayed if the authenticated user has the access rights for redirected page, authentication error occurs if the user does not have the access rights.
+\ ``SavedRequestAwareAuthenticationSuccessHandler``\  class is used to carry out this operation.
+
+Since the transition destination after explicitly displaying login form and performing authentication is the root path of web application (\ ``"/"``\ ),
+as per default configuration of Spring Security, user is redirected to the root path of Web application when the authentication is successful.
+
+|
+
+.. _SpringSecurityAuthenticationScreenFlowOnFailure:
+
+Response when authentication fails
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security offers \ ``AuthenticationFailureHandler``\  interface and implementation class as the components
+to control the response when the authentication fails.
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Implementation class of AuthenticationFailureHandler**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Implementation class
+      - Description
+    * - | \ ``SimpleUrlAuthenticationFailureHandler``\
+      - | Implementation class which redirects or forwards to a specified path (\ ``defaultTargetUrl``\ ).
+    * - | \ ``ExceptionMappingAuthenticationFailureHandler``\
+      - | Implementation class which can map authentication exception and URL for transition.
+        | Since the exception class generated by Spring Security for each error cause vary, the transition destination can be changed for each error type if this implementation class is used.
+    * - | \ ``DelegatingAuthenticationFailureHandler``\
+      - | Implementation class which can map authentication exception and \ ``AuthenticationFailureHandler``\ . 
+        | Although it resembles \ ``ExceptionMappingAuthenticationFailureHandler``\ , a flexible behaviour can be supported by specifying \ ``AuthenticationFailureHandler``\  for each authentication exception.
+
+Default operation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In the default operation of Spring Security, user is redirected to a URL assigned with a query parameter \ ``"error"``\ in a path which displays login form.
+
+As an example, when the path to display login form is \ ``"/login"``\ , the user is redirected to \ ``"/login?error"``\ .
+  
+.. note:: **Variation in behaviour based on definition methods** 
+
+    The operation is carried out as given above when Java Config is used. However, if a Bean is defined by using XML, \ ``"error"``\  parameter is not assigned.
+    A path for transition must be explicitly specified in \ ``authentication-failure-url``\  attribute to carry out operation identical to Java Config.
+    This is a bug in the Spring Security and will be resolved in 4.0.4.RELEASE and subsequent versions.
+
+|
+
+DB authentication
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security performs DB authentication in the flow given below.
+
+.. figure:: ./images_Authentication/AuthenticationDatabase.png
+    :width: 100%
+
+    **DB authentication system**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Spring Security receives authentication request from the client and calls authentication process of \ ``DaoAuthenticationProvider``\ .
+    * - | (2)
+      - | \ ``DaoAuthenticationProvider``\  calls user information fetch process of \ ``UserDetailsService``\ .
+    * - | (3)
+      - | Implementation class of ``UserDetailsService``\  fetches user information from data store.
+    * - | (4)
+      - | Implementation class of ``UserDetailsService``\  generates \ ``UserDetails``\  from the user information fetched from data store.
+    * - | (5)
+      - | \ ``DaoAuthenticationProvider``\  verifies \ ``UserDetails``\  returned from \ ``UserDetailsService``\  and authentication information specified by client, and checks validity of user specified by client.
+
+
+.. note:: **DB authentication offered by Spring Security**
+
+    Spring Security offers an implementation class to fetch user information from relational database through JDBC.
+
+    * \ ``org.springframework.security.core.userdetails.User``\  (Implementation class of \ ``UserDetails``\ )
+    * \ ``org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl`` \  (Implementation class of \ ``UserDetailsService``\ )
+
+    Since these implementation classes only perform authentication processes of minimum level (password verification, determination of user validity), they are used as it is very rarely.
+    Hence, this guideline explains how to create implementation classes of \ ``UserDetails``\  and \ ``UserDetailsService``\ .
+
+|
+
+Creating UserDetails
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``UserDetails``\  is an interface which provides credentials (user name and password) and user status necessary in the authentication process and defines following methods.
+When \ ``DaoAuthenticationProvider``\  is used as \ ``AuthenticationProvider``\ , implementation class of \ ``UserDetails``\  is created in accordance with the requirements of application.
+
+*UserDetails interface*
+
+.. code-block:: java
+
+    public interface UserDetails extends Serializable {
+        String getUsername(); // (1)
+        String getPassword(); // (2)
+        boolean isEnabled(); // (3)
+        boolean isAccountNonLocked(); // (4)
+        boolean isAccountNonExpired(); // (5)
+        boolean isCredentialsNonExpired(); // (6)
+        Collection<? extends GrantedAuthority> getAuthorities(); // (7)
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.25\linewidth}|p{0.65\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 25 65
+
+    * - Sr. No.
+      - Method name
+      - Description
+    * - | (1)
+      - | \ ``getUsername``\
+      - | Return user name.
+    * - | (2)
+      - | \ ``getPassword``\
+      - | Return registered password.
+        | When the password returned by this method and the password specified by the client do not match, \ ``DaoAuthenticationProvider``\  throws \ ``BadCredentialsException``\ .
+    * - | (3)
+      - | \ ``isEnabled``\
+      - | Determine whether the user is valid. Return \ ``true``\  in case of valid user.
+        | When the user is invalid, \ ``DaoAuthenticationProvider``\  throws \ ``DisabledException``\ .
+    * - | (4)
+      - | \ ``isAccountNonLocked``\
+      - | Determine locked status of the account. When the account is not locked, return \ ``true``\ .
+        | When the account is locked, \ ``DaoAuthenticationProvider``\  throws \ ``LockedException``\ .
+    * - | (5)
+      - | \ ``isAccountNonExpired``\
+      - | Determine expiry status of the account. Return \ ``true``\  when the account is not expired.
+        | When the account is expired, \ ``DaoAuthenticationProvider``\  throws \ ``AccountExpiredException``\ .
+    * - | (6)
+      - | \ ``isCredentialsNonExpired``\
+      - | Determine expiry status of credentials. Return \ ``true``\  when the credentials are not expired.
+        | When the credentials are expired, \ ``DaoAuthenticationProvider``\  throws \ ``CredentialsExpiredException``\ .
+    * - | (7)
+      - | \ ``getAuthorities``\
+      - | Return list of rights assigned to the user.
+        | This method is used in the authorization process.
+
+.. note:: **Changing transition destination based on authentication exception**
+
+    When the user wants to change the screen transition for each exception thrown by \ ``DaoAuthenticationProvider``\ ,
+    \ ``ExceptionMappingAuthenticationFailureHandler``\  must be used as \ ``AuthenticationFailureHandler``\ .
+
+    As an example, when user wants to transit to password change screen in case of password expiry for the user, screen transition can be changed
+    by handling \ ``CredentialsExpiredException``\  by using \ ``ExceptionMappingAuthenticationFailureHandler``\ .
+    
+    For details, refer :ref:`SpringSecurityAuthenticationCustomizingScreenFlowOnFailure`\ .
+
+.. note:: **Credentials provided by Spring Security**
+
+    Although Spring Security provides an implementation class (\ ``org.springframework.security.core.userdetails.User``\ ) for retaining credentials (user name and password) and user status,
+    it can store only the information required for the authentication process.
+    Since the information of the user (name of the user etc) which is not used in the authentication process is frequently required in the general applications, \ ``User``\  class can rarely be used as it is.
+
+|
+
+Here, an implementation class of \ ``UserDetails``\  which retains account information is created.
+This example can also be implemented by inheriting \ ``User``\ . However, here an example wherein \ ``UserDetails``\  is implemented is introduced.
+
+* How to create implementation class of UserDetails
+
+
+.. code-block:: java
+
+    public class AccountUserDetails implements UserDetails { // (1)
+
+        private final Account account;
+        private final Collection<GrantedAuthority> authorities;
+
+        public AccountUserDetails(
+            Account account, Collection<GrantedAuthority> authorities) {
+            // (2)
+            this.account = account;
+            this.authorities = authorities;
+        }
+
+        // (3)
+        public String getPassword() {
+            return account.getPassword();
+        }
+        public String getUsername() {
+            return account.getUsername();
+        }
+        public boolean isEnabled() {
+            return account.isEnabled();
+        }
+        public Collection<GrantedAuthority> getAuthorities() {
+            return authorities;
+        }
+
+        // (4)
+        public boolean isAccountNonExpired() {
+            return true;
+        }
+        public boolean isAccountNonLocked() {
+            return true;
+        }
+        public boolean isCredentialsNonExpired() {
+            return true;
+        }
+
+        // (5)
+        public Account getAccount() {
+            return account;
+        }
+
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Create a class which implements \ ``UserDetails``\  interface.
+    * - | (2)
+      - | Retain user information and rights information in the property.
+    * - | (3)
+      - | Implement method defined in \ ``UserDetails``\  interface.
+    * - | (4)
+      - | Although the example of this sections does not implement check for, "Account locking", "Account expiry" and "Credentials expiry", these must be checked in accordance with the requirements.
+    * - | (5)
+      - | Provide a getter method to enable access to account information in the process after successful completion of authentication.
+
+|
+
+Spring Security provides \ ``User``\  class as an implementation class of \ ``UserDetails``\ .
+When you inherit a \ ``User``\  class, credentials and user status can be easily retained.
+
+* How to create UserDetails implementation class which inherits User class
+
+.. code-block:: java
+
+    public class AccountUserDetails extends User {
+
+        private final Account account;
+
+        public AccountUserDetails(Account account, boolean accountNonExpired,
+                boolean credentialsNonExpired, boolean accountNonLocked,
+                Collection<GrantedAuthority> authorities) {
+            super(account.getUsername(), account.getPassword(),
+                    account.isEnabled(), true, true, true, authorities);
+            this.account = account;
+        }
+
+        public Account getAccount() {
+            return account;
+        }
+    }
+
+|
+
+.. _SpringSecurityAuthenticationUserDetailsService:
+
+Creating UserDetailsService
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``UserDetailsService``\  is an interface to fetch credentials and user status required for authentication process
+from data store and defines following methods.
+When \ ``DaoAuthenticationProvider``\  is used as \ ``AuthenticationProvider``\ ,
+implementation class of \ ``UserDetailsService``\  is created in accordance with the requirements of the application.
+
+* UserDetailsService interface
+
+.. code-block:: java
+
+    public interface UserDetailsService {
+        UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+    }
+
+|
+
+Here, a service class is created to search account information from the database and
+generate an instance of \ ``UserDetails``\ .
+In this sample, account information is fetched by using \ ``SharedService``\ .
+For \ ``SharedService``\ , refer :ref:`service-label`\ .
+
+* How to create AccountSharedService interface
+
+.. code-block:: java
+
+    public interface AccountSharedService {
+        Account findOne(String username);
+    }
+
+* How to create implementation class of AccountSharedService
+
+.. code-block:: java
+
+    // (1)
+    @Service
+    @Transactional
+    public class AccountSharedServiceImpl implements AccountSharedService {
+        @Inject
+        AccountRepository accountRepository;
+
+        // (2)
+        @Override
+        public Account findOne(String username) {
+            Account account = accountRepository.findOneByUsername(username);
+            if (account == null) {
+                throw new ResourceNotFoundException("The given account is not found! username="
+                        + username);
+            }
+            return account;
+        }
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Create a class which implements \ ``AccountSharedService``\  interface and assign \ ``@Service``\ .
+        | In the example above, \ ``AccountSharedServiceImpl``\  is registered in DI container using component scan function.
+    * - |  (2)
+      - | Search account information from the database.
+        | When account information is not found, an exception of common library - \ ``ResourceNotFoundException``\  is thrown.
+        | For how to create a repository, refer ":doc:`Tutorial`".
+
+* How to create implementation class of UserDetailsService
+
+.. code-block:: java
+
+    // (1)
+    @Service
+    @Transactional
+    public class AccountUserDetailsService implements UserDetailsService {
+        @Inject
+        AccountSharedService accountSharedService;
+
+        public UserDetails loadUserByUsername(String username)
+                throws UsernameNotFoundException {
+
+            try {
+                Account account = accountSharedService.findOne(username);
+                // (2)
+                return new AccountUserDetails(account, getAuthorities(account));
+            } catch (ResourceNotFoundException e) {
+                // (3)
+                throw new UsernameNotFoundException("user not found", e);
+            }
+        }
+
+        // (4)
+        private Collection<GrantedAuthority> getAuthorities(Account account) {
+            if (account.isAdmin()) {
+                return AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
+            } else {
+                return AuthorityUtils.createAuthorityList("ROLE_USER");
+            }
+        }
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Create a class which implements \ ``UserDetailsService``\  interface and assign \ ``@Service``\ .
+        | In the example above, \ ``UserDetailsService``\  is registered in DI container using a component scan function.
+    * - | (2)
+      - | Fetch account information by using \ ``AccountSharedService``\ .
+        | When the account information is found, \ ``UserDetails``\  is generated.
+        | In the example above, user name, password and user validity status are fetched from account information.
+    * - | (3)
+      - | When the account information is not found, \ ``UsernameNotFoundException``\  is thrown.
+    * - | (4)
+      - | Generate information about the rights (role) retained by the user. The rights (role) generated here are used in the authorization process.
+
+.. note:: **Information of rights to be used in the authorization**
+
+    Authorization process of Spring Security handles the rights information starting with \ ``"ROLE_"``\ as a role.
+    Hence, when resource access is to be controlled by using role, \ ``"ROLE_"``\  must be assigned as a prefix to the rights information which is being handled as a role.
+
+.. note:: **Concealing authentication exception information**
+
+    In the default operation of Spring Security, error handling is performed after changing \ ``UsernameNotFoundException``\  to an exception called \ ``BadCredentialsException``\ .
+    \ ``BadCredentialsException``\  denotes an error in any field of the credentials specified by the client, specific error causes are not notified to the client.
+
+|
+
+.. _AuthenticationProviderConfiguration:
+
+Applying DB authentication
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When the authentication is to be performed by using \ ``UserDetailsService``\  thus created,
+\ ``UserDetailsService``\  thus created must be applied by enabling \ ``DaoAuthenticationProvider``\ .
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:authentication-manager> <!-- (1) -->
+        <sec:authentication-provider user-service-ref="accountUserDetailsService"> <!-- (2) -->
+            <sec:password-encoder ref="passwordEncoder" /> <!-- (3) -->
+        </sec:authentication-provider>
+    </sec:authentication-manager>
+
+    <bean id="passwordEncoder"
+        class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" /> <!-- (4) -->
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Define a Bean for \ ``AuthenticationManager``\ .
+    * - | (2)
+      - | Define ``<sec:authentication-provider>``\  element in the \ ``<sec:authentication-manager>``\  element.
+        | Specify a Bean of ``AccountUserDetailsService``\  created by ":ref:`SpringSecurityAuthenticationUserDetailsService`", in ``user-service-ref``\  attribute.
+        | Based on this definition, \ ``DaoAuthenticationProvider``\  of default setup is enabled.
+    * - | (3)
+      - | Specify a Bean of \ ``PasswordEncoder``\  to be used at the time of password verification.
+    * - | (4)
+      - | Define a Bean for \ ``PasswordEncoder``\  to be used at the time of password verification.
+        | In the example above, \ ``BCryptPasswordEncoder``\  is defined which performs password hashing by using BCrypt algorithm.
+        | For password hashing, refer ":ref:`SpringSecurityAuthenticationPasswordHashing`".
+
+|
+
+.. _SpringSecurityAuthenticationPasswordHashing:
+
+Password hashing
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When a password is stored in the database, password is not stored as it is and a hash value of the password is generally stored.
+
+
+Spring Security provides an interface and implementation class for password hashing
+and operates in coordination with the authentication function.
+
+There are 2 types of interfaces provided by Spring Security.
+
+* \ ``org.springframework.security.crypto.password.PasswordEncoder``\
+* \ ``org.springframework.security.authentication.encoding.PasswordEncoder``\
+
+Although both the interfaces include \ ``PasswordEncoder``\ , \ ``PasswordEncoder``\  of
+\ ``org.springframework.security.authentication.encoding``\  package is deprecated.
+
+When there are no specific constraints in the password hashing requirements, using the implementation class of \ ``PasswordEncoder``\  interface of
+\ ``org.springframework.security.crypto.password``\  package is recommended.
+
+.. note::
+
+    For how to use deprecated \ ``PasswordEncoder``\ , refer
+    ":ref:`AuthenticationHowToExtendUsingDeprecatedPasswordEncoder`".
+
+|
+
+*Definition of a method for org.springframework.security.crypto.password.PasswordEncoder*
+
+.. code-block:: java
+
+    public interface PasswordEncoder {
+        String encode(CharSequence rawPassword);
+        boolean matches(CharSequence rawPassword, String encodedPassword);
+    }
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.85\linewidth}|
+.. list-table:: **Method defined in PasswordEncoder**
+    :header-rows: 1
+    :widths: 15 85
+
+    * - Method name
+      - Description
+    * - | \ ``encode``\
+      - | A method for password hashing.
+        | It can be used for hashing of passwords which are stored in the data store during account registration process and password change process.
+    * - | \ ``matches``\
+      - | A method to verify plain text password and hashed password.
+        | This method can also be used in the authentication process of Spring Security and can also be used to verify current password and the password used earlier during password change process etc.
+
+|
+
+Spring Security offers following classes as the implementation class of \ ``PasswordEncoder``\  interface.
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Implementation class of PasswordEncoder**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Implementation class
+      - Description
+    * - | \ ``BCryptPasswordEncoder``\
+      - | Implementation class which performs password hashing and verification by using BCrypt algorithm.
+        | **When there are no specific constraints in password hashing requirement, using this class is recommended.**
+        | For details, refer \ `JavaDoc of BCryptPasswordEncoder <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html>`_\ .
+    * - | \ ``StandardPasswordEncoder``\
+      - | Implementation class which performs password hashing and verification by using SHA-256 algorithm.
+        | For details, refer \ `JavaDoc of StandardPasswordEncoder <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/crypto/password/StandardPasswordEncoder.html>`_\ .
+    * - | \ ``NoOpPasswordEncoder``\
+      - | Implementation class which does not perform hashing.
+        | It is a class used for testing and is not used in the actual application.
+
+This section explains how to use \ ``BCryptPasswordEncoder``\ that has been recommended by Spring Security.
+
+|
+
+BCryptPasswordEncoder
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+\ ``BCryptPasswordEncoder``\  is an implementation class which performs password hashing and password verification by using BCrypt algorithm.
+16 byte random numbers (\ ``java.security.SecureRandom``\ ) are used in :ref:`Salt<SpringSecurityAuthenticationPasswordHashSalt>`,
+:ref:`Stretching<SpringSecurityAuthenticationPasswordHashStength>` is done for 1024 (2 to the power of 10) times by default..
+
+* Definition example of applicationContext.xml
+
+.. code-block:: xml
+
+  <bean id="passwordEncoder"
+      class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" > <!-- (1) -->
+      <constructor-arg name="strength" value="11" /> <!-- (2) -->
+  </bean>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify \ ``BCryptPasswordEncoder``\  in passwordEncoder class.
+    * - | (2)
+      - | Specify number of rounds for stretching count of hashing in the argument of constructor.
+        | This argument can be omitted and the values that can be specified are in the range from \ ``4``\  to \ ``31``\ .
+        | Note that default value is \ ``10``\  when the argument value is not specified.
+        | The explanation is omitted in the guideline, however \ ``java.security.SecureRandom.SecureRandom``\  can also be specified as a constructor argument.
+
+.. warning:: **How to use SecureRandom**
+  
+    When \ ``SecureRandom``\  is to be used in Linux environment, a delay or timeout in the processing is likely to occur.
+    This event depends on the random number generator to be used and description is given in the Java Bug Database given below.
+  
+    * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721
+  
+    It has been fixed in the subsequent versions of b20 of JDK 7.
+  
+    * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6521844
+  
+    If this event occurs, it can be avoided by adding following configuration to system property of JVM.
+  
+    * ``-Djava.security.egd=file:/dev/./urandom``
+
+|
+
+\ ``PasswordEncoder``\  is used in the class which carries out a process by using \ ``BCryptPasswordEncoder``\, by injecting from DI container.
+
+.. code-block:: java
+
+    @Service
+    @Transactional
+    public class AccountServiceImpl implements AccountService {
+
+        @Inject
+        AccountRepository accountRepository;
+
+        @Inject
+        PasswordEncoder passwordEncoder; // (1)
+
+        public Account register(Account account, String rawPassword) {
+            // omitted
+            String encodedPassword = passwordEncoder.encode(rawPassword); // (2)
+            account.setPassword(encodedPassword);
+            // omitted
+            return accountRepository.save(account);
+        }
+
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Inject \ ``PasswordEncoder``\ .
+    * - | (2)
+      - | Call injected \ ``PasswordEncoder``\  method.
+        | Here, the password stored in the data store is hashed.
+
+.. _SpringSecurityAuthenticationPasswordHashSalt:
+
+.. note:: **Salt**
+
+    A salt is a string which is added to data targeted for hashing.
+    Since number of digits exceed the actual password length by assigning a salt to a password, password analysis using programs like rainbow crack become difficult.
+    Note that, **it is recommended to set different values of salt (random values) for each user.**
+    This is necessary because if identical salt value is used, the string (password) before hashing can be easily identified from the hash value.
+
+.. _SpringSecurityAuthenticationPasswordHashStength:
+
+.. note:: **Stretching**
+
+    Information related to stored password is repeatedly encrypted by iterating hash function calculation in order to
+    extend the time required for password analysis as a countermeasure against password brute force attack.
+    However, stretching frequency must be determined considering the system performance since stretching is likely to impact system performance.
+
+    In Spring Security, stretching is done for 1024 times (2 to the power of 10) by default, however this frequency can be changed by constructor argument (\ ``strength``\ ).
+    A value from 4 (16 times) to 31 (2, 147, 483, 648 times) can be specified in the \ ``strength``\ .
+    More the frequency of stretching, stronger the password. However, it is likely to impact performance due to higher complexity.
+
+|
+
+.. _SpringSecurityAuthenticationEvent:
+
+Handling authentication event
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security offers a system which links process results of authentication process with other components
+using an event notification system offered by Spring Security.
+
+If this system is used, following security requirements can be incorporated in the authentication function of Spring Security.
+
+* Save authentication history of successful and failed authentication in database or log.
+* Lock account if wrong password is entered in succession.
+
+Authentication event is notified as given below.
+
+.. figure:: ./images_Authentication/AuthenticationEventNotification.png
+    :width: 100%
+
+    **Event notification system**
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Spring Security authentication function passes authentication results (authentication information and authentication exception)
+        | in \ ``AuthenticationEventPublisher``\  and requests notification of authentication event.
+    * - | (2)
+      - | Default implementation class of \ ``AuthenticationEventPublisher``\  interface generates an instance of
+        | \ authentication event class corresponding to authentication results, passes to \ ``ApplicationEventPublisher``\  and requests event notification.
+    * - | (3)
+      - | Implementation class of \ ``ApplicationEventPublisher``\  interface notifies the event to implementation class of \ ``ApplicationListener``\  interface.
+    * - | (4)
+      - | \ ``ApplicationListenerMethodAdaptor``\, one of the implementation classes of ``ApplicationListener``\  calls a method
+        | assigned by \ ``@org.springframework.context.event.EventListener``\  and notifies an event.
+
+.. note:: **Memo**
+
+    Although it was necessary to receive the event by creating an implementation class of \ ``ApplicationListener``\ till Spring 4.1,
+    an event can be created in Spring 4.2 only by implementing a method which assigns \ ``@EventListener``\  to POJO.
+    Note that, even in subsequent versions of Spring 4.2, an event can be received by creating an implementation class of \ ``ApplicationListener``\  interface as earlier.
+
+Events used by Spring Security can be classified into 2 types - the events which notify successful authentication and the events which notify failure in authentication.
+Event class offered by Spring Security are explained below.
+
+|
+
+Authentication successful event
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+There are 3 main events which are notified by Spring Security at the time of successful authentication.
+These events are notified in the following order unless an error occurs in between.
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Event class which notifies that the authentication is successful**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Event class
+      - Description
+    * - \ ``AuthenticationSuccessEvent``\
+      - An event class to notify that the authentication process by \ ``AuthenticationProvider``\  is successful.
+        If this event is handled, it can be detected whether the client has specified correct information.
+        It must be noted that an error is likely to occur in the subsequent processes after handling this event.
+    * - \ ``SessionFixationProtectionEvent``\
+      - An event class to notify that session fixation attack countermeasure process (change process of session ID) is successful.
+        If this event is handled, session ID after the change can be detected.
+    * - \ ``InteractiveAuthenticationSuccessEvent``\
+      - An event class to notify that authentication process is entirely successful.
+        If this event is handled, it can be detected that the overall authentication process is successful except the screen transition.
+
+|
+
+Authentication failure event
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Main events which are notified by Spring Security at the time of authentication failure are as below.
+When authentication fails, any one of the events is notified.
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Event class which notifies that authentication has failed**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Event class
+      - Description
+    * - | \ ``AuthenticationFailureBadCredentialsEvent``\
+      - | Event class which notifies that \ ``BadCredentialsException``\  has occurred.
+    * - | \ ``AuthenticationFailureDisabledEvent``\
+      - | Event class which notifies that \ ``DisabledException``\  has occurred.
+    * - | \ ``AuthenticationFailureLockedEvent``\
+      - | Event class which notifies that \ ``LockedException``\  has occurred.
+    * - | \ ``AuthenticationFailureExpiredEvent``\
+      - | Event class which notifies that \ ``AccountExpiredException``\  has occurred.
+    * - | \ ``AuthenticationFailureCredentialsExpiredEvent``\
+      - | Event class which notifies that \ ``CredentialsExpiredException``\  has occurred.
+    * - | \ ``AuthenticationFailureServiceExceptionEvent``\
+      - | Event class which notifies that \ ``AuthenticationServiceException``\  has occurred.
+
+|
+
+Creating event listener
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When you want to carry out a process by receiving authentication event notification, a class implementing a method that assigns \ ``@EventListener``\  is created and registered in DI container.
+
+* Implementation example for event listener class
+
+.. code-block:: java
+
+    @Component
+    public class AuthenticationEventListeners {
+
+        private static final Logger log =
+                LoggerFactory.getLogger(AuthenticationEventListeners.class);
+
+    @EventListener // (1) 
+    public void handleBadCredentials( 
+        AuthenticationFailureBadCredentialsEvent event) { // (2) 
+        log.info("Bad credentials is detected. username : {}", event.getAuthentication().getName()); 
+        // omitted 
+    } 
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Create a method which assigns ``@EventListener``\  to a method.
+    * - | (2)
+      - | Specify an authentication event class which is to be handled in the method argument.
+
+The example above is an example wherein a class is created that handles \ ``AuthenticationFailureBadCredentialsEvent``\  that is notified when the client specified authentication information is incorrect.
+Other events can also be handled in the same manner.
+
+|
+
+.. _SpringSecurityAuthenticationLogout:
 
 Logout
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Flow of Spring Security logout process is as follows:
+Spring Security performs logout process as per the flow given below.
 
-.. figure:: ./images/Authentication_Logout_overview.png 
-   :alt: Authentication(Logout)
-   :width: 80%
-   :align: center
- 
+.. figure:: ./images_Authentication/AuthenticationLogout.png
+    :width: 100%
 
-#. Logout filter gets activated on receiving request for logout.
-#. It discards the session information.
-   It sets a response such that client cookie (Cookie in figure) is discarded.
-#. It redirects to the specified logout path.
+    **Logout process system**
 
-\
- .. note::
-  The session information that remains after logout can be used by a third party. Hence, in order to prevent such spoofing,
-  session information is discarded at the time of logout using \ ``org.springframework.security.web.session.ConcurrentSessionFilter``\ .
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Client sends a request to a path intended for logout process.
+    * - | (2)
+      - | \ ``LogoutFilter``\  calls \ ``LogoutHandler``\  method and performs actual logout process.
+    * - | (3)
+      - | \ ``LogoutFilter``\  calls \ ``LogoutSuccessHandler``\  method and performs screen transition.
 
 |
 
-How to use
---------------------------------------------------------------------------------
-| Settings to be performed in Spring Security configuration file so as to use authentication functionality, are as follows:
-| For basic settings, refer to \ :doc:`SpringSecurity`\ .
+A plurality of implementation classes of \ ``LogoutHandler``\  play respective roles as below.
 
-Setting \ ``<sec:http>``\  element
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| As shown in the following example, basic settings for authentication functionality of
-| Spring Security can be omitted by setting the \ ``auto-config``\  attribute of \ ``<http>``\  element in spring-security.xml to \ ``true``\ .
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Implementation class of main LogoutHandler**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Implementation class
+      - Description
+    * - | \ ``SecurityContextLogoutHandler``\
+      - | Class which clears authentication information of login user and cancels a session.
+    * - | \ ``CookieClearingLogoutHandler``\
+      - | Class which sends a response for deleting specific cookies.
+    * - | \ ``CsrfLogoutHandler``\
+      - | Class which deletes a token for CSRF countermeasure.
+
+Since \ ``LogoutHandler``\ automatically sets the class which supports bean definition offered by Spring Security, in \ ``LogoutFilter``\ ,
+there is no need for a developer to be specifically aware of the same.
+Note that, if :ref:`Remember Me authentication function<SpringSecurityAuthenticationRememberMe>` is enabled, implementation class of \ ``LogoutHandler``\  is also configured to delete the token for Remember Me authentication.
+
+|
+
+Applying logout process
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Define a bean as below for application of logout process.
+
+* Definition example of spring-security.xml
 
 .. code-block:: xml
 
-  <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:sec="http://www.springframework.org/schema/security"
-      xmlns:context="http://www.springframework.org/schema/context"
-      xsi:schemaLocation="http://www.springframework.org/schema/security
-          http://www.springframework.org/schema/security/spring-security.xsd
-          http://www.springframework.org/schema/beans
-          http://www.springframework.org/schema/beans/spring-beans.xsd
-          http://www.springframework.org/schema/context
-          http://www.springframework.org/schema/context/spring-context.xsd">
-      <sec:http auto-config="true" use-expressions="true">  <!-- (1) -->
-        <!-- omitted -->
-      </sec:http>
-  </beans>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | By setting \ ``auto-config="true"``\ ,
-       | it is enabled even if \ ``<form-login>``\ , \ ``<http-basic>``\  and \ ``<logout>``\  elements are not set.
-
-.. note::
-
-  \ ``<form-login>``\ , \ ``<http-basic>``\  and \ ``<logout>``\  elements are explained here.
-
-    .. tabularcolumns:: |p{0.15\linewidth}|p{0.85\linewidth}|
-    .. list-table::
-       :header-rows: 1
-       :widths: 15 85
-
-       * - Element name
-         - Description
-       * - | \ ``<form-login>``\ 
-         - | \ ``org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter``\  is enabled.
-           | UsernamePasswordAuthenticationFilter is the Filter that performs authentication by extracting username and password from the request at the time of POST method.
-           | For details, refer to \ :ref:`form-login`\ .
-       * - | \ ``<http-basic>``\ 
-         - | \ ``org.springframework.security.web.authentication.www.BasicAuthenticationFilter``\  is enabled.
-           | BasicAuthenticationFilter is the filter that executes Basic authentication process according to RFC1945.
-           | For details on how to use, refer to \ `BasicAuthenticationFilter JavaDoc <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/apidocs/org/springframework/security/web/authentication/www/BasicAuthenticationFilter.html>`_\ .
-       * - | \ ``<logout>``\ 
-         - | \ ``org.springframework.security.web.authentication.logout.LogoutFilter``\ ,
-           | \ ``org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler``\  is enabled.
-           | LogoutFilter is the Filter called at the time of Logout.
-           | \ ``org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices``\  (deleting Cookie) and,
-           | SecurityContextLogoutHandler(disabling  session) is called.
-           | For details, refer to \ :ref:`form-logout`\ .
-
-.. _form-login:
-
-Setting \ ``<sec:form-login>``\  element
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| How to set \ ``<sec:form-login>``\  element is described in this section.
-| 
-| Attributes of form-login element are as shown below.
-
-spring-security.xml
-
-.. code-block:: xml
-
-  <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:sec="http://www.springframework.org/schema/security"
-      xmlns:context="http://www.springframework.org/schema/context"
-      xsi:schemaLocation="http://www.springframework.org/schema/security
-          http://www.springframework.org/schema/security/spring-security.xsd
-          http://www.springframework.org/schema/beans
-          http://www.springframework.org/schema/beans/spring-beans.xsd
-          http://www.springframework.org/schema/context
-          http://www.springframework.org/schema/context/spring-context.xsd">
-    <sec:http auto-config="true" use-expressions="true">
-      <sec:form-login login-page="/login"
-          default-target-url="/"
-          login-processing-url="/authentication"
-          always-use-default-target="false"
-          authentication-failure-url="/login?error=true"
-          authentication-failure-handler-ref="authenticationFailureHandler"
-          authentication-success-handler-ref="authenticationSuccessHandler" /> <!-- Perform steps (1) - (7) in the specified attribute order-->
-    </sec:http>
-  </beans>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify the login form screen path in \ ``login-page``\  attribute.
-       | When not specified, "/spring_security_login" will be default path and Login screen provided by Spring Security is used.
-       | When an "Unauthenticated user" accesses a page that can only be accessed by an "Authenticated user", the unauthenticated user is redirected to this path.
-
-       | **This guideline recommends changing to a system specific value rather than using the default value "/spring_security_login", mentioned above.**\ In this example, "/login" is specified.
-   * - | (2)
-     - | In \ ``default-target-url``\  attribute, specify the destination path when authentication is successful. 
-       | When not specified, "/" will be the default path.
-
-       | When \ ``authentication-success-handler-ref``\  attribute is specified, this setting is not used.
-   * - | (3)
-     - | Specify the path for performing authentication process in \ ``login-processing-url``\  attribute. 
-       | When not specified, "j_spring_security_check" will be the default path.
-
-       | **This guideline recommends changing to a system specific value rather than using the default value  "j_spring_security_check", mentioned above.**\  In this example, "/authentication" is specified.
-   * - | (4)
-     - | In \ ``always-use-default-target``\  attribute, specify whether it should always transit to the path specified in \ ``default-target-url``\  after a successful login.
-       | When it is set as \ ``true``\ , it always transits to the path specified in \ ``default-target-url``\ .
-       | When it is set as \ ``false``\  (default), it transits either to the "path for displaying secure page which somebody has tried accessing before the login" or "path specified in \ ``default-target-url``\ ".
-
-       | When \ ``authentication-success-handler-ref``\  attribute is specified, this setting is not used. 
-   * - | (5)
-     - | In \ ``authentication-failure-url``\ , specify the destination when authentication fails.
-       | When not specified, the path specified in  \ ``login-page``\  attribute is applicable.
-
-       | When \ ``authentication-failure-handler-ref``\  attribute is specified, this setting is not used.
-   * - | (6)
-     - | Specify the handler class to be called in case of a failed authentication, in \ ``authentication-failure-handler-ref``\  attribute.
-       | For details, refer to \ :ref:`authentication-failure-handler-ref`\ .
-   * - | (7)
-     - | Specify the handler class to be called in case of a successful authentication, in \ ``authentication-success-handler-ref``\  attribute.
-
-For attributes other than those mentioned above, refer to \ `Spring Security Reference -The Security Namespace(<form-login>)- <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#nsa-form-login>`_\ .
-
-.. warning:: **Why it is not recommended to use Spring Security default values "/spring_security_login, /j_spring_security_check".**
-
-  If default value is used, the fact that the application is using Spring Security is revealed.
-  As a result, if any Spring Security related vulnerability is detected, there is a higher risk of receiving an attack due to the vulnerability.
-  In order to prevent these risks, it is recommended to avoid using default value.
-
-.. _form-login-JSP:
-
-Creating login form
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Create the login form to be used at the time of authentication in JSP.
-
-* src/main/webapp/WEB-INF/views/login.jsp
-
-  .. code-block:: jsp
-
-      <form:form action="${pageContext.request.contextPath}/authentication" method="post"><!-- (1) -->
-          <!-- omitted -->
-          <input type="text" id="username" name="j_username"><!-- (2) -->
-          <input type="password" id="password" name="j_password"><!-- (3) -->
-          <input type="submit" value="Login">
-      </form:form>
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - Sr. No.
-       - Description
-     * - | (1)
-       - | Specify the destination for performing authentication process, in the action attribute of form.
-         | /authentication specified in the login-processing-url, should be specified as the destination path.
-         | Authentication process is executed by accessing ${pageContext.request.contextPath}/authentication.
-         | "POST" should be specified as the HTTP method.
-     * - | (2)
-       - | Element handled as "User ID" in authentication process.
-         | Spring Security default value namely, "j_username", should be specified in the name attribute.
-     * - | (3)
-       - | Element handled as "Password" in authentication process.
-         | Spring Security default value namely, "j_password", should be specified in the name attribute.
-
-  Following code is added to display the authentication error message.
-
-  .. code-block:: jsp
-
-      <c:if test="${param.error}"><!-- (1) -->
-          <t:messagesPanel
-              messagesAttributeName="SPRING_SECURITY_LAST_EXCEPTION"/><!-- (2) -->
-      </c:if>
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - Sr. No.
-       - Description
-     * - | (1)
-       - | Determine the error message set in request parameter.
-         | Please note that the determination process needs to be changed according to 
-         | the value set in the authentication-failure-url attribute of form-login element or the value set in "defaultFailureUrl" of authentication error handler.
-         | This example is shown with the setting as authentication-failure-url="/login?error=true".
-     * - | (2)
-       - | Output the exception message that is to be output at the time of authentication error.
-         | It is recommended to output this message by specifying \ ``org.terasoluna.gfw.web.message.MessagesPanelTag``\  provided by common library.
-         | For details of "\ ``<t:messagesPanel>``\" tag, refer to \ :doc:`../ArchitectureInDetail/MessageManagement`\ .
-
-
- .. note:: **Settings required while accessing exception object of authentication error from JSP**
-
-    Exception object of authentication error is stored in session scope with the attribute name \ ``"SPRING_SECURITY_LAST_EXCEPTION"``\ .
-    \ ``session``\  attribute of JSP \ ``page``\  directive should be set to \ ``true``\  for accessing the object stored in session scope from JSP.
-
-    * ``src/main/webapp/WEB-INF/views/common/include.jsp``
-
-     .. code-block:: jsp
-
-        <%@ page session="true"%>
-
-    Default settings of blank project are such that session scope cannot be accessed from JSP.
-    This is to ensure that the session is not used easily.
-
-
-* spring-mvc.xml
-
-  Define the Controller that displays login form.
-
-  .. code-block:: xml
-
-    <mvc:view-controller path="/login" view-name="login" /><!-- (1) -->
-  
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - Sr. No.
-       - Description
-     * - | (1)
-       - | If "/login" is accessed, define the controller that returns only "login" as the view name. src/main/webapp/WEB-INF/views/login.jsp is output by \ ``InternalResourceViewResolver``\ .
-         | This simple controller need not be implemented in Java.
-         
-   
-  .. tip::
-   
-      Above settings are identical with next controller.
-      
-        .. code-block:: java
-        
-          @Controller
-          @RequestMapping("/login")
-          public class LoginController {
-          
-              @RequestMapping
-              public String index() {
-                  return "login";
-              }
-          }
-
-      If the Controller with a single method that returns only the view name is necessary, it is better to use \ ``<mvc:view-controller>``\  .
-
-
-Changing attribute name of login form
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"j_username" and "j_password" are the Spring Security default values. They can be changed to any value by using \ ``<form-login>``\  element settings.
-
-* spring-security.xml
-
-
-  Attributes of \ ``username``\  and \ ``password``\ 
-
-  .. code-block:: xml
-
-    <sec:http auto-config="true" use-expressions="true">
-      <sec:form-login
-          username-parameter="username"
-          password-parameter="password" /> <!-- Perform steps (1) and (2) in the specified attribute order -->
+  <sec:http>
       <!-- omitted -->
-    </sec:http>
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - Sr. No.
-       - Description
-     * - | (1)
-       - | In \ ``username-parameter``\  attribute, \ ``name``\  attribute of input field \ ``username``\  is changed to "username".
-     * - | (2)
-       - | In \ ``password-parameter``\  attribute, \ ``name``\  attribute of input field  \ ``password``\  is changed to "password".
-
-.. _AuthenticationProviderConfiguration:
-
-Setting authentication process
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Define \ ``AuthenticationProvider``\  and \ ``UserDetailsService``\  in order to set the authentication process in Spring Security.
-
-\ ``AuthenticationProvider``\  plays the following roles.
-
-* Returning authenticated user information in case of successful authentication
-* Throwing an exception in case of authentication failure.
-
-\ ``UserDetailsService``\  fetches authenticated user information from the persistence layer.
-
-These classes may each be used as default or may be used by extending individually.
-They may also be combined.
-
-
-\ ``AuthenticationProvider``\  class settings
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-| As \ ``AuthenticationProvider``\  implementation, how to use the provider, \ ``org.springframework.security.authentication.dao.DaoAuthenticationProvider``\  that performs DB authentication, is explained here.
-
-* spring-security.xml
-
-  .. code-block:: xml
-
-      <sec:authentication-manager><!-- (1) -->
-          <sec:authentication-provider user-service-ref="userDetailsService"><!-- (2) -->
-              <sec:password-encoder ref="passwordEncoder" /><!-- (3) -->
-          </sec:authentication-provider>
-      </sec:authentication-manager>
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - Sr. No.
-       - Description
-     * - | (1)
-       - | Define \ ``<sec:authentication-provider>``\  element in \ ``<sec:authentication-manager>``\  element. Authentication methods can be combined by specifying multiple elements. However it is not explained here.
-     * - | (2)
-       - | Define \ ``AuthenticationProvider``\  in \ ``<sec:authentication-provider>``\  element. \ ``DaoAuthenticationProvider``\  is enabled by default. To specify \ ``AuthenticationProvider``\  other than this, specify the Bean ID of target AuthenticationProvider, in \`ref attribute <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#nsa-authentication-provider>`_\ .
-         |
-         | Specify the Bean Id of \ ``UserDetailsService``\  that fetches authenticated user information, in \ ``user-service-ref``\  attribute. This setting is mandatory when using \ ``DaoAuthenticationProvider``\ .
-         | For details, refer to \ :ref:`userDetailsService`\ .
-     * - | (3)
-       - | Specify the Bean ID of the class that encodes the password entered from Form, at the time of password verification.
-         | When it is not specified, password is handled in "Plain Text". For details, refer to \ :doc:`PasswordHashing`\ .
-
-
-| If the requirement is to perform authentication by fetching data from persistence layer using only the "User ID" and "Password", this \ ``DaoAuthenticationProvider``\  may be used.
-| Which method is to be used to fetch data from persistence layer, is determined using the \ ``UserDetailsService``\  explained below.
-
-.. _userDetailsService:
-
-\ ``UserDetailsService``\  class settings
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Set the Bean specified in \ ``userDetailsService``\  property of \ ``AuthenticationProvider``\ .
-
-\ ``UserDetailsService``\  is the interface that includes the next method.
-
-.. code-block:: java
-
-  UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
-
-By executing this interface, authenticated user information can be fetched from any storage location.
-
-Here, \ ``org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl``\  that fetches user information from DB using JDBC, is explained.
-
-In order to use \ ``JdbcDaoImpl``\ , it is advisable to perform following Bean definitions in spring-security.xml.
-
-.. code-block:: xml
-
-  <!-- omitted -->
-
-  <bean id="userDetailsService"
-    class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
-    <property name="dataSource" ref="dataSource"/>
-  </bean>
-
-| It is assumed that \ ``JdbcDaoImpl``\  defines the default SQL for fetching authenticated user information and authorization information and provides tables corresponding to these. For definitions of assumed tables, refer to \ `Spring Security Reference -Security Database Schema- <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#appendix-schema>`_\ .
-| To fetch user information and authorization information from existing tables, the SQL to be executed should be modified according to existing tables.
-| Following 3 SQLs are used.
-
-*  \ `User information acquisition query <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/apidocs/constant-values.html#org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl.DEF_USERS_BY_USERNAME_QUERY>`_\ 
-
-  | By creating a table matching with the query that fetches user information, need of specifying the query to configuration file described later, is eliminated.
-  | Fields namely, "username", "password" and "enabled" are mandatory
-  | Also, by specifying the query to the configuration file described later and by assigning an alias to the query, there is no issue even if table name and column name do not match.
-  | For example, while setting the following SQL, "email" column can be used as "username" wherein, "enabled" field is always \ ``true``\ .
-
-  .. code-block:: sql
-
-    SELECT email AS username, pwd AS password, true AS enabled FROM customer WHERE email = ?
-
-  | "User ID" described earlier in \ :ref:`form-login-JSP`\ , is specified in query parameter.
-
-* \ `User authorities acquisition query <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/apidocs/constant-values.html#org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl.DEF_AUTHORITIES_BY_USERNAME_QUERY>`_\ 
-
-  | This query fetches authorization information for a user.
-
-* \ `Group authorities acquisition query <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/apidocs/constant-values.html#org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl.DEF_GROUP_AUTHORITIES_BY_USERNAME_QUERY>`_\ 
-
-  | This query fetches authorization information of the group, to which the user belongs. 'Group authorities' is disabled by default and is also out of this guideline's scope.
-
-| DB definition example and example of Spring Security configuration file are shown below.
-
-| Table definitions
-| Define the required table when implementing DB authentication process.
-| This table matches with the default query that fetches user information, mentioned earlier
-| Therefore, following are the definitions of the minimum necessary tables. (with tentative physical name)
-
-Table name: account
-
-.. tabularcolumns:: |p{0.15\linewidth}|p{0.15\linewidth}|p{0.10\linewidth}|p{0.60\linewidth}|
-.. list-table:: 
-   :header-rows: 1
-   :widths: 15 15 10 60
-
-   * - Logical name
-     - Physical name
-     - Type
-     - Description
-   * - User ID
-     - username
-     - String
-     - User ID for uniquely identifying the user.
-   * - Password
-     - password
-     - String
-     - User password. Stored in hashed status.
-   * - Enabled flag
-     - enabled
-     - Boolean value
-     - Flag indicating invalid user and valid user. The user set to "false" is an invalid user, thus results in throwing an authentication error.
-   * - Authority name
-     - authority
-     - String
-     - Not required when authorization functionality is unnecessary.
-
-Following is the example wherein, \ ``JdbcDaoImpl``\  is set through customization.
-
-.. code-block:: xml
-
-  <!-- omitted -->
-
-  <bean id="userDetailsService"
-    class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
-    <property name="rolePrefix" value="ROLE_" /><!-- (1) -->
-    <property name="dataSource" ref="dataSource" />
-    <property name="enableGroups" value="false" /><!-- (2) -->
-    <property name="usersByUsernameQuery"
-      value="SELECT username, password, enabled FROM account WHERE username = ?" /><!-- (3) -->
-    <property name="authoritiesByUsernameQuery"
-      value="SELECT username, authority FROM account WHERE username = ?" /><!-- (4) -->
-  </bean>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table:: 
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify the prefix of authorization name. When the authorization name stored on DB is "USER", this authenticated user object has the authorization name as "ROLE_USER".
-       | It is necessary to set the naming conventions and authorization functionality by combining them. For details of authorization functionality, refer to \ :doc:`Authorization`\ .
-   * - | (2)     
-     - | Specify this when the concept of "Group authorities" is to be used in authorization functionality.
-       | Not handled in this guideline.
-   * - | (3)
-     - | Set the query for fetching user information. Data should be fetched in the order, "User ID", "Password" and "Enabled flag".
-       | When authentication is not decided by "Enabled flag", SELECT result of "Enabled flag" is fixed to "true".
-       | The query that can uniquely acquire a user, should be described. When multiple records are fetched, the first record is used as user.
-   * - | (4)
-     - | Set the query that fetches user authority. Data should be acquired in the order, "User ID" and "Authority ID".
-       | When authorization functionality is not used, "Authority ID" can be any fixed value.
-
-.. note::
-    Authentication that cannot be implemented just by changing query, is necessary to be implemented by extending \ ``UserDetailsService``\ .
-    For extension methods, refer to \ :ref:`extendsuserdetailsservice`\ .
-
-How to use \ ``UserDetails``\  class
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-| How to use \ ``UserDetails``\  created by \ ``UserDetailsService``\  after successful authentication is explained.
-
-
-Using \ ``UserDetails``\  object in Java class
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-| After a successful authentication, \ ``UserDetails``\  class
-| is stored in \ ``org.springframework.security.core.context.SecurityContextHolder``\ .
-
-Example of fetching \ ``UserDetails``\  from \ ``SecurityContextHolder``\  is shown below.
-
-.. code-block:: java
-
-  public static String getUsername() {
-      Authentication authentication = SecurityContextHolder.getContext()
-              .getAuthentication(); // (1)
-      if (authentication != null) {
-          Object principal = authentication.getPrincipal(); // (2)
-          if (principal instanceof UserDetails) {
-              return ((UserDetails) principal).getUsername(); // (3)
-          }
-          return (String) principal.toString();
-      }
-      return null;
-  }
+      <sec:logout /> <!-- (1) -->
+      <!-- omitted -->
+  </sec:http>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -582,839 +1208,813 @@ Example of fetching \ ``UserDetails``\  from \ ``SecurityContextHolder``\  is sh
    * - Sr. No.
      - Description
    * - | (1)
-     - | Fetch \ ``org.springframework.security.core.Authentication``\  object from \ ``SecurityContextHolder``\ .
-   * - | (2)
-     - | Fetch \ ``UserDetails``\  object from \ ``Authentication``\  object.
-   * - | (3)
-     - | Fetch user name from \ ``UserDetails``\  object.
+     - | Logout process is enabled by defining \ ``<sec:logout>``\  tag.
+
+.. note:: **Changes in Spring Security 4.0**
+
+    Default values of following configuration changes from Spring Security 4.0 version.
+
+    * logout-url 
+
+.. tip:: **Delete Cookie**
+
+   Although description is omitted in the guideline, note that \ ``delete-cookies``\  attribute exists in \ ``<sec:logout>``\  tag for deleting Cookie specified at the time of logout.
+   However, it has been reported that a cookie is sometimes not deleted even after using this attribute.
+
+   For details, refer following JIRA of Spring Security.
+
+   * https://jira.spring.io/browse/SEC-2091
+
+Default operation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In the default operation of Spring Security, if a request is sent to the path \ ``"/logout"``\ , logout process is carried out.
+Logout process consists of "clearing authentication information of logged in user" and "cancelling a session".
+
+Further,
+
+* "Deleting token for CSRF measures" when CSRF measures are adopted
+* "Deleting token for Remember Me authentication" when Remember Me authentication function is used
+
+are also carried out.
+
+.. _SpringSecurityAuthenticationLogoutForm:
+
+* Implementation example of JSP for calling logout process
+
+.. code-block:: jsp
+
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+    <%-- omitted --%>
+    <form:form action="${pageContext.request.contextPath}/logout" method="post"> <%-- (1) --%>
+        <button>Logout</button>
+    </form:form>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Create a form for logout.
+        | Further, token value of CSRF measure is sent in request parameter by using \ ``<form:form>``\ .
+        | CSRF measures are explained in ":ref:`SpringSecurityCsrf`".
+
+.. note:: **Sending CSRF tokens**
+
+    If CSRF measures are enabled, tokens for CSRF measures must be sent by using POST method.
+
+|
+
+Response when logout is successful
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spring Security offers an interface \ ``LogoutSuccessHandler``\ and implementation class
+as the components to control response when the logout is successfully completed.
+
+.. tabularcolumns:: |p{0.35\linewidth}|p{0.65\linewidth}|
+.. list-table:: **Implementation class of AuthenticationFailureHandler**
+    :header-rows: 1
+    :widths: 35 65
+
+    * - Implementation class
+      - Description
+    * - | \ ``SimpleUrlLogoutSuccessHandler``\
+      - | Implementation class which redirects in the specified path (\ ``defaultTargetUrl``\ ).
 
 
-While the method for fetching \ ``UserDetails``\  object from \ ``SecurityContextHolder``\  is convenient as it can be used from anywhere by static method,
-it ends up increasing module coupling. Testing is also difficult to execute.
+Default operation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| \ ``UserDetails``\  object can be fetched using \ ``@AuthenticationPrincipal``\ .
-| To use \ ``@AuthenticationPrincipal``\ , it is necessary to set \ ``org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver``\  in \ ``<mvc:argument-resolvers>``\ .
+In default operation of Spring Security, user is redirected to a URL wherein a query parameter called \ ``"logout"``\ 
+is assigned to the path for displaying login form.
 
-- :file:`spring-mvc.xml`
-
-.. code-block:: xml
-   :emphasize-lines: 5-6
-
-    <mvc:annotation-driven>
-        <mvc:argument-resolvers>
-            <bean
-                class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
-            <bean
-                class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
-        </mvc:argument-resolvers>
-    </mvc:annotation-driven>
+As an example, when the path to display login form is \ ``"/login"``\ , the user is redirected to \ ``"/login?logout"``\ .
 
 
-As shown below, \ ``UserDetails``\  object can be fetched in Spring MVC Controller without using \ ``SecurityContextHolder``\ .
+|
+
+.. _SpringSecurityAuthenticationAccess:
+
+Accessing authentication information
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Authentication information of the authenticated user is stored in the session during default implementation of Spring Security.
+Authentication information stored in the session is stored in \ ``SecurityContextHolder``\  class by \ ``SecurityContextPersistenceFilter``\  class for each request and can be accessed from anywhere if it is in the same thread.
+
+A method wherein \ ``UserDetails``\  are fetched from authentication information and the information retained in the fetched \ ``UserDetails``\  is accessed.
+
+Access from Java
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+An audit log which records information like "When", "Who", "Which data" and "Type of access" is fetched in the general business application.
+"Who" for fulfilling these requirements can be fetched from authentication information.
+
+* Implementation example to access authentication information from Java
 
 .. code-block:: java
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String view(@AuthenticationPrincipal SampleUserDetails userDetails, // (1)
-            Model model) {
-        // get account object
-        Account account = userDetails.getAccount(); // (2)
-        model.addAttribute(account);
-        return "account/view";
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication(); // (1)
+    String userUuid = null;
+    if (authentication.getPrincipal() instanceof AccountUserDetails) {
+        AccountUserDetails userDetails =
+                AccountUserDetails.class.cast(authentication.getPrincipal()); // (2)
+        userUuid = userDetails.getAccount().getUserUuid(); // (3)
+    }
+    if (log.isInfoEnabled()) {
+        log.info("type:Audit\tuserUuid:{}\tresource:{}\tmethod:{}",
+                userUuid, httpRequest.getRequestURI(), httpRequest.getMethod());
     }
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-   :header-rows: 1
-   :widths: 10 90
+    :header-rows: 1
+    :widths: 10 90
 
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Fetch information of logged-in user using \ ``@AuthenticationPrincipal``\ .
-   * - | (2)
-     - | Fetch account information from \ ``SampleUserDetails``\ .
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Fetch authentication information (\ ``Authentication``\  object) from \ ``SecurityContextHolder``\ .
+    * - | (2)
+      - | Call \ ``Authentication#getPrincipal()``\  method and fetch \ ``UserDetails``\  object.
+        | When there is no authentication (anonymous user), note that a string indicating an anonymous user is returned.
+    * - | (3)
+      - | Fetch information required for processing from \ ``UserDetails``\ .
+        | Here, a value which uniquely identifies the user (UUID) is fetched.
 
-.. note::
+.. warning:: **Access and coupling of authentication information**
 
-    The type of argument attached with \ ``@AuthenticationPrincipal``\  annotation, needs to be a class that inherits \ ``UserDetails``\  type.
-    Usually, it is better to use \ ``UserDetails``\  inheritance class that is created using \ :ref:`extendsuserdetailsservice`\ .
+    In the default operation of Spring Security, since authentication information is stored in ThreadLocal variable, it can be accessed from anywhere if the thread is identical to a thread which receives request.
+    Although this system is convenient, it results in direct dependency of the class which requires authentication information on \ ``SecurityContextHolder``\  class. Hence, care must be taken since it reduces  coupling between components when not used correctly.
 
-    \ ``SampleUserDetails``\  class is a class created using \ :doc:`Tutorial`\ . For details, refer to \ :ref:`Tutorial_CreateAuthService`\ .
+    Spring Security also offers a system to maintain coupling between components by coordinating with Spring MVC function.
+    How to coordinate with Spring MVC is explained in ":ref:`SpringSecurityAuthenticationIntegrationWithSpringMVC`".
+    **This guideline recommends fetching authentication information by using coordination with Spring MVC.**
 
-\ **This method is recommended when accessing UserDetails object in Controller**\ .
+|
 
-.. note::
+Access from JSP
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-  It is recommended to use the \ ``UserDetails``\  object information fetched from Controller in Service class rather than using \ ``SecurityContextHolder``\ .
+User information of login user is displayed on the screen in general Web application.
+User information of login user while meeting these requirements can be fetched from authentication information.
 
-  \ ``SecurityContextHolder``\  should be used only in those methods where \ ``UserDetails``\  object is not passed as argument.
-
-Accessing \ ``UserDetails``\  in JSP
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-| Spring Security provides JSP taglib as a feature that enables using authentication information in JSP. Following declaration is necessary in order to use taglib.
+* Implementation example for accessing authentication information from JSP
 
 .. code-block:: jsp
 
-  <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
-
-.. note::
-
-  It is already set in WEB-INF/views/common/include.jsp when using \ `TERASOLUNA Server Framework for Java (5.x) template <https://github.com/terasolunaorg/terasoluna-gfw-web-blank>`_\ .
-
-| An example of using JSP for displaying authentication is as follows:
-
-.. code-block:: jsp
-
-  <sec:authentication property="principal.username" /><!-- (1) -->
+    <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+    <%-- omitted --%>
+    Welcome、
+    <sec:authentication property="principal.account.lastName"/> <%-- (1) --%>
+    San
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | \ ``Authentication``\  object can be accessed using \ ``<sec:authentication>`` \  tag and the property specified in \ ``property``\  attribute can be accessed. In this example, result of \ ``getPrincipal().getUsername()``\  is output.
-
-
-
-.. code-block:: jsp
-
-  <sec:authentication property="principal" var="userDetails" /> <!-- (1) -->
-
-  ${f:h(userDetails.username)} <!-- (2) -->
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Property specified in \ ``property``\  attribute can be stored in variable, by changing it to a  \ ``var``\  attribute name.
-   * - | (2)
-     - | \ ``UserDetails``\  can be accessed in JSP once it is stored in variable by step (1).
-
-.. note::
-
-  \ ``UserDetails``\  can also be fetched in Controller and added to \ ``Model``\ . However, it is advisable to use JSP tag when displaying it in JSP.
-
-
-.. note::
-  
-  \ ``UserDetails``\  created by \ ``JdbcDaoImpl``\  which is explained in :ref:`userDetailsService`\ , stores only the minimum required information such as "User ID" and "Authority".
-
-  When other information related to the user such as "User name" etc. is required to be displayed as screen fields, it is necessary to extend \ ``UserDetails``\  and  \ ``UserDetailsService``\ .
-  For extension methods, refer to \ :ref:`extendsuserdetailsservice`\ .
-
-
-.. _authentication(spring_security)_how_to_use_sessionmanagement:
-
-Session management in Spring Security
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| How to create session information at login and how to perform the settings when an exception occurs, is explained here.
-| Session management method can be customized by specifying \ ``<session-management>``\  tag.
-
-| Following is the configuration example of spring-security.xml
-
-
-.. code-block:: xml
-
-  <sec:http auto-config="true" create-session="ifRequired" ><!-- (1) -->
-    <!-- omitted -->
-    <sec:session-management
-      invalid-session-url="/"
-      session-authentication-error-url="/"
-      session-fixation-protection="migrateSession" /><!-- Steps (2) to (4) in the specified order of attribute -->
-    <!-- omitted -->
-  </sec:http>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify the policy for creating session in \ ``create-session``\  attribute of \ ``<http>``\  tag.
-       | Following values can be specified.
-
-       * | \ ``always``\ :
-         | Spring Security creates a new session in case there is no existing session and it reuses a session if it already exists.
-
-       * | \ ``ifRequired``\  : (default)
-         | Spring Security creates a session if required. It reuses the session instead of creating a new one, if it already exists.
-
-
-       * | \ ``never``\ :
-         | Spring Security does not create a session but reuses an existing session if any.
-
-       * | \ ``stateless``\ :
-         | Spring Security neither creates a session nor uses an existing one if any. As a result, authentication is required each time.
-   * - | (2)
-     - | Specify the transition path when an invalid session ID is requested (session time-out) in \ ``invalid-session-url``\  attribute.
-       | When not specified, a subsequent process is called without executing session existence check. 
-       | For details, refer to ":ref:`authentication_session-timeout`".
-   * - | (3)
-     - | When an exception occurs in \ ``org.springframework.security.web.authentication.session.SessionAuthenticationStrategy``\ , specify the transition path in \ ``session-authentication-error-url``\  attribute.
-       | When not specified, "401 Unauthorized" is set in response code and error response is sent.
-       |
-       | This setting is not used when authentication is performed using \ ``<form-login>``\  tag. An exception occurred in \ ``SessionAuthenticationStrategy``\  is handled according to the definition of \ ``authentication-failure-handler-ref``\  attribute or \ ``authentication-failure-url``\  attribute of \ ``<form-login>``\  tag.
-   * - | (4)
-     - | Specify the session management system of successful authentication in \ ``session-fixation-protection``\  attribute.
-       | Following values can be specified.
-
-       * | \ ``none``\ :
-         | It uses the session before login as it is.
-
-       * | \ ``migrateSession``\ : (default on container prior to Servlet 3.0)
-         | It discards the session before login and creates a new one. It inherits the session information before login.
-
-       * | \ ``changeSessionId``\ : (default on container on Servlet 3.1 and subsequent versions)
-         | It changes the session ID using \ ``javax.servlet.http.HttpServletRequest#changeSessionId()``\  method added from Servlet 3.1.
-
-       * | \ ``newSession``\ :
-         | It discards the session before login and creates a new one. It does not inherit the session information before login.
-
-       | The objective of this functionality is to prevent \ `Session fixation attack <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#ns-session-fixation>`_\  by allocating a new session ID for each login. Therefore, it is recommended to use this default setting unless there are other clear reasons for not using it.
-
-|
-
-.. _authentication_session-timeout:
-
-Detecting session time-out
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-When session time-out is to be detected, 
-it is advisable to specify the transition path when session time-out occurs, in \ ``invalid-session-url``\  attribute .
-
-When \ ``invalid-session-url``\  attribute is specified,
-the session existence check (existence check for requested session ID) is performed for all the requests that match with
-the path pattern specified in \ ``pattern``\  attribute of \ ``http``\  element.
-
-
-.. note::
-
-    When a path that detects session time-out and a path that does not detect session time-out are mixed, \ ``http``\  element needs to be defined multiple times.
-    When \ ``http``\  element is defined multiple times, care needs to be taken as the setting becomes redundant reducing maintainability.
-
-    When setting to detect session time-out becomes redundant, create a custom filter that can specify an applicable path or an exception path.
-    To create a custom filter, it is advisable to refer to or to use the following classes provided by Spring Security.
-
-    * | ``org.springframework.security.web.session.SessionManagementFilter``
-      | Process to perform session existence check (existence check of requested session ID) is implemented.
-
-    * | ``org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy``
-      | Process after detecting session time-out (invalid session ID) is implemented.
-      | By default, it is redirected to the path specified after the session is created.
-
-    * | ``org.springframework.security.web.util.matcher.RequestMatcher``
-      | It is an interface to determine whether it matches with the request and it can be used in the processes of determining an applicable path or an exception path.
-      | Some useful implementation classes have been provided in the same package.
-
-.. note::
-
-    When \ :doc:`CSRF`\  is performed by specifying \ ``<csrf>``\  element, sometimes the session time-out can be detected using "CSRF measures" functionality.
-
-    Following are the conditions for detecting session time-out using "CSRF measures" functionality.
-
-    * Destination to store CSRF token is HTTP session (default).
-    * CSRF token cannot be fetched from HTTP session.
-    * It is \ :ref:`Request for CSRF token check <csrf_default-add-token-method>`\ .
-
-    When session time-out is detected using "CSRF measures" functionality, any of the following operations is performed.
-
-    * When \ ``invalid-session-url``\  attribute is specified, it is redirected to the path specified in \ ``invalid-session-url``\  after the session is created.
-    * When \ ``invalid-session-url``\  attribute is not specified, it is handled according to the definition of \ ``org.springframework.security.web.access.AccessDeniedHandler``\  specified in  \ ``<access-denied-handler>``\  element.
-
-    Refer to ":ref:`csrf_spring-security-setting`" for the method to define \ ``AccessDeniedHandler``\ .
-
-|
-
-.. _authentication_control-user-samatime-session:
-
-Settings of Concurrent Session Control
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Spring Security provides (\ `Concurrent Session Control <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#concurrent-sessions>`_\ ) a functionality that controls the number of concurrent sessions that a user can log in to.
-| The user mentioned here is the authentication user object fetched by \ ``Authentication.getPrincipal()``\ .
-
-.. note::
-
-   This functionality is valid when single application server is configured, or, session replication is implemented using session server or cluster (i.e. all applications are using the same session area)
-   When multiple servers or multiple instances are configured leading to the existence of different session areas, a care should be taken as concurrent login cannot be controlled using this functionality.
-
-|
-
-|  For the control method when it exceeds the maximum number of sessions, following patterns are available. They should be suitably used as per business requirements.
-
-#. When a user exceeds the number of maximum sessions, the user having least usage is disabled. (after win)
-#. When a user exceeds the number of maximum sessions, new login request is not accepted.(first win)
-
-In both cases, following settings need to be added to web.xml, to enable this functionality.
-
-.. _HttpSessionEventPublisher-ref:
-
-.. code-block:: xml
-
-    <listener>
-      <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class><!-- (1) -->
-    </listener>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | When using Concurrent Session Control, it is necessary to define \ ``org.springframework.security.web.session.HttpSessionEventPublisher``\  in listener.
-
-.. _authentication_concurrency-control:
-
-Setting \ ``<sec:concurrency-control>``\  
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-When using Concurrent Session Control,
-specify \ `<sec:concurrency-control> <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#ns-concurrent-sessions>`_\  element as a child element of \ ``<sec:session-management>``\  element.
-
-.. code-block:: xml
-
-  <sec:http auto-config="true" >
-    <sec:session-management>
-        <sec:concurrency-control
-            error-if-maximum-exceeded="true"
-            max-sessions="2"
-            expired-url="/expiredSessionError.jsp" /><!-- Steps (1) to (3) in the specified order of attribute -->
-    </sec:session-management>
-  </sec:http>
-
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.20\linewidth}|p{0.30\linewidth}|p{0.10\linewidth}|p{0.30\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 20 30 10 30
-
-   * - Sr. No.
-     - Attribute name
-     - Description
-     - Default values
-     - Description of default values
-   * - | (1)
-     - | \ ``error-if-maximum-exceeded``\
-     - | Specify behavior if there is a login request in a state where it exceeds maximum number of sessions that a user can log in to.
-       | When set to \ ``true``\ , generate authentication error so that a new login is not accepted. (first win)
-     - | false
-     - | Login is possible, but a session which is not frequently used is invalidated (session with oldest last access time). When a request is sent by the client using invalidated session, it is transited to the URL specified in \ ``expired-url``\  attribute. (after win)
-   * - | (2)
-     - | \ ``max-sessions``\
-     - | Specify maximum number of sessions that a single user can log in to.
-       | When 2 is set, same user can login with 2 sessions.
-     - | 1
-     - | Default is 1 session only
-   * - | (3)
-     - | \ ``expired-url``\
-     - | URL to be transited to when a request is sent by the client using invalidated session.
-     - | None
-     - | A fixed message to notify that session is invalidated is sent as response.
-
-.. _authentication_session-authentication-strategy-ref:
-
-.. note::
-
-    When a filter (FORM_LOGIN_FILTER) for authentication is to be customized,
-    it is necessary to disable the following 2 \ ``SessionAuthenticationStrategy``\  classes, apart from specifying \ ``<sec:concurrency-control>``\  element.
-
-    * | ``org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy``
-      | A class to check number of sessions for each logged in user after successful authentication.
-
-    * | ``org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy``
-      | A class to register a session with successful authentication, in session management area.
-
-    In version 1.0.x.RELEASE dependent Spring Security 3.1, \ ``org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy``\  class is provided; however,
-    it is deprecated API from Spring Security 3.2.
-    When upgrading version from Spring Security 3.1 to Spring Security 3.2 or later versions, changes need to be made so that it can be used with combination of following classes.
-
-    * ``ConcurrentSessionControlAuthenticationStrategy`` (added in Spring Security 3.2)
-    * ``RegisterSessionAuthenticationStrategy`` (added in Spring Security 3.2)
-    * ``org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy``
-
-    For specific methods of definition,
-    refer to sample code of `Spring Security Reference -Web Application Security (Concurrency Control)- <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#concurrent-sessions>`_.
-
-|
-
-.. _authentication-failure-handler-ref:
-
-Setting the handler class in case of authentication error
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| By performing the settings for \ ``org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler``\  class in
-| \ ``authentication-failure-handler-ref``\  attribute of \ ``<sec:form-login>``\  element,
-| exception thrown at the time of authentication error and its corresponding destination, can be specified.
-| The specified destination is accessible to unauthenticated user.
-
-spring-security.xml
-
-.. code-block:: xml
-
-    <sec:http auto-config="true" use-expressions="true">
-      <sec:form-login login-page="/login"
-          authentication-failure-handler-ref="authenticationFailureHandler"
-          authentication-success-handler-ref="authenticationSuccessHandler" />
-    </sec:http>
-
-    <bean id="authenticationFailureHandler"
-    class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
-    <property name="defaultFailureUrl" value="/login/defaultError" /><!-- (1) -->
-      <property name="exceptionMappings"><!-- (2) -->
-        <props>
-          <prop key=
-            "org.springframework.security.authentication.BadCredentialsException"><!-- (3) -->
-              /login/badCredentials
-          </prop>
-          <prop key=
-            "org.springframework.security.core.userdetails.UsernameNotFoundException"><!-- (4) -->
-              /login/usernameNotFound
-          </prop>
-          <prop key=
-            "org.springframework.security.authentication.DisabledException"><!-- (5) -->
-              /login/disabled
-          </prop>
-          <prop key=
-            "org.springframework.security.authentication.ProviderNotFoundException"><!-- (6) -->
-              /login/providerNotFound
-          </prop>
-          <prop key=
-            "org.springframework.security.authentication.AuthenticationServiceException"><!-- (7) -->
-              /login/authenticationService
-          </prop>
-          <!-- omitted -->
-        </props>
-      </property>
-    </bean>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify the default destination path in case of an error.
-       | If an exception not defined in the \ ``exceptionMappings``\  property that will be described later occurs, it transits to the destination specified by this property.
-   * - | (2)
-     - | Specify the exceptions to be caught and their corresponding destinations in a list format.
-       | Set the exception class in key and destination in value.
-
-
-.. note::
-
-    If an exception defined into the \ ``exceptionMappings``\  property is occurred, the \ ``ExceptionMappingAuthenticationFailureHandler``\  redirects the request to the transition destination mapped to a occurred exception.
-    However a message generated by Spring Security does not display on the screen because the exception object is not stored in the session scope.
-
-    Therefore, the message shown on the error screen needs to be created at the processing of redirect destination(controller's method or view).
-
-    In addition, changing of following properties is ignored because the processing which refers those properties are not called in this case.
-
-    * ``useForward``
-    * ``allowSessionCreation``
-
-
-
-.. _SpringSecurity-Exception:
-
-A typical exception thrown by Spring Security is shown below.
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 25 65
-
-   * - Sr. No.
-     - Error type
-     - Description
-   * - | (3)
-     - \ ``BadCredentialsException``\ 
-     - It is thrown when authentication error occurs due to failure in password verification.
-   * - | (4)
-     - \ ``UsernameNotFoundException``\ 
-     - | It is thrown when authentication error occurs due to an invalid user ID (non-existent user ID).
-       | When specifying the class that inherits \ ``org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider``\  in authentication provider,
-       | if \ ``hideUserNotFoundExceptions``\  is not changed to \ ``false``\ , the above exception is changed to \ ``BadCredentialsException``\ .
-   * - | (5)
-     - \ ``DisabledException``\ 
-     - It is thrown when an authentication error occurs due to invalid user ID.
-   * - | (6)
-     - \ ``ProviderNotFoundException``\ 
-     - | It is thrown at the time of undetected error of authentication provider class.
-       | Exception occurs when authentication provider class is invalid due to reasons such as a setting error etc.
-   * - | (7)
-     - \ ``AuthenticationServiceException``\
-     - | It is thrown at the time of authentication service error.
-       | It is thrown when certain errors such as DB connection error etc. occur in authentication service.
-
-.. warning::
-
-  In this example, transition is made by handling \ ``UsernameNotFoundException``\ .
-  However, if the user is informed that user ID does not exist, presence and absence of specific IDs may be revealed, which is not desirable from the security perspective.
-  Therefore, it is recommended that the screen transition and notification message to the user is set such that it does not reveal type of exception.
-
-.. _form-logout:
-
-Setting \ ``<sec:logout>``\  element
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| How to set the \ ``<sec:logout>``\  element, is explained in this section.
-
-spring-security.xml
-
-.. code-block:: xml
-
-  <sec:http auto-config="true" use-expressions="true">
-    <!-- omitted -->
-    <sec:logout
-        logout-url="/logout"
-        logout-success-url="/"
-        invalidate-session="true"
-        delete-cookies="JSESSIONID"
-        success-handler-ref="logoutSuccessHandler"
-      /> <!-- Perform steps (1) to (5) in the specified attribute order -->
-    <!-- omitted -->
-  </sec:http>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify the path for executing logout process in \ ``logout-url``\  attribute.
-       | When not specified, "/j_spring_security_logout" will be default path.
-
-       | **In this guideline, it is recommended to change it to system specific value instead of using the above default value "/j_spring_security_logout".** In this example, "/logout" is specified.
-   * - | (2)
-     - | Specify the destination path after logout in \ ``logout-success-url``\  attribute.
-       | When not specified, "/" will be default path.
-
-       | If \ ``success-handler-ref``\  attribute is to be specified while this attribute is specified, error will occur during startup process.
-   * - | (3)
-     - | In \ ``invalidate-session``\  attribute, set whether to discard the session when logging out.
-       | By default, it is set to \ ``true``\ .
-       | In case of \ ``true``\ , the session is discarded at the time of logout.
-   * - | (4)
-     - | In \ ``delete-cookies``\  attribute, mention the cookie names to be deleted at the time of logout.
-       | When multiple cookies are mentioned, use "," to separate them.
-   * - | (5)
-     - | Specify the handler class to be called after a successful logout, in \ ``success-handler-ref``\  attribute.
-
-       | If \ ``logout-success-url``\  attribute is to be specified while this attribute is specified, error will occur during startup process.
-
-.. warning:: **Why it is not recommended to use Spring Security default value, "/j_spring_security_logout"**
-
-    If default value is used, the fact that the application is using Spring Security is revealed.
-    As a result, if any Spring Security related vulnerability is detected, there is a higher risk of receiving an attack due to the vulnerability.
-    In order to prevent these risks, it is recommended to avoid using default value.
-
-.. note::
-
-    CSRF token check is performed when  \ ``<sec:csrf>``\  explained in \ :doc:`./CSRF`\  is used. Therefore, \ **it is necessary to send logout request using POST as well as to send the CSRF token.**\ .
-    How to embed CSRF token is described below.
-
-    * \ :ref:`csrf_formformtag-use`\
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Use \ ``<sec:authentication>``\  tag offered by Spring Security and fetch authentication information (\ ``Authentication``\  object).
+        | Specify path for the property to be accessed in \ ``property``\  attribute.
+        | When a nested object is to be accessed, property name should be joined by \ ``"."``\ .
+
+.. tip:: **How to display authentication information**
+
+    Although the implementation example for displaying user information which contains authentication information is explained, it is possible to store value in any scope variable by combining \ ``var``\  attribute and \ ``scope``\  attribute.
+    When the display contents are to be changed according to the login user status, user information can be stored in the variable and display can be changed by using JSTL tag library etc.
+
+    In the example above, it can also be displayed as described below.
+    Since \ ``scope``\  attribute is omitted in this example, \ ``page``\  scope is applied.
 
         .. code-block:: jsp
-           :emphasize-lines: 1,4
 
-            <form:form method="POST"
-              action="${pageContext.request.contextPath}/logout">
-              <input type="submit" value="Logout" />
-            </form:form>
+            <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+            <%-- omitted --%>
+            <sec:authentication var="principal" property="principal"/>
+            <%-- omitted --%>
+            Welcome
+            ${f:h(principal.account.lastName)}
+            San
 
-        Following HTML is output in such cases. CSRF token is set as hidden.
+|
 
-        .. code-block:: html
+.. _SpringSecurityAuthenticationIntegrationWithSpringMVC:
 
-            <form id="command" action="/your-context-path/logout" method="POST">
-              <input type="submit" value="Logout" />
-              <input type="hidden" name="_csrf" value="5826038f-0a84-495b-a851-c363e501b73b" />
-            </form>
+Coordination between authentication process and Spring MVC
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    * \ :ref:`csrf_formtag-use`\
+Spring Security offers various components for coordinating with Spring MVC.
+How to use the components for coordinating with authentication process is explained.
 
-        .. code-block:: jsp
-           :emphasize-lines: 3
+Accessing authentication information
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-            <form  method="POST"
-              action="${pageContext.request.contextPath}/logout">
-              <sec:csrfInput/>
-              <input type="submit" value="Logout" />
-            </form>
+Spring Security offers \ ``AuthenticationPrincipalArgumentResolver``\  class as a component which delivers authentication information (\ ``UserDetails``\ ) to Spring MVC controller method.
+If \ ``AuthenticationPrincipalArgumentResolver``\  is used, \ ``UserDetails``\  interface or instance of its implementation class can be received as a method argument of controller resulting in enhanced coupling of components.
 
-        In this case as well, following HTML is output as before. CSRF token is set as hidden.
+\ ``AuthenticationPrincipalArgumentResolver``\  must be applied to Spring MVC first for receiving Authentication information (\ ``UserDetails``\ ) as a controller argument.
+Bean for applying \ ``AuthenticationPrincipalArgumentResolver``\  is as below.
+\ Note that \ ``AuthenticationPrincipalArgumentResolver``\  is already cong=figured in the `blank project <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ .
 
-        .. code-block:: html
-
-            <form  method="POST"
-              action="/your-context-path/logout">
-              <input type="hidden" name="_csrf" value="5826038f-0a84-495b-a851-c363e501b73b" />
-              <input type="submit" value="Logout" />
-            </form>
-
-
-Setting \ ``<sec:remember-me>``\  element
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-| "\ `Remember Me <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#remember-me>`_\  " functionality enhances convenience of the frequent users of the website and,
-| is the functionality that stores the login status.
-| This functionality stores login information in a cookie, if user has given permission, even after the browser is closed
-| and enables the user to login without re-entering the user name and password.
-
-| The attributes of \ ``<sec:remember-me>``\  elements are shown below.
-
-spring-security.xml
+* Definition example of spring-mvc.xml
 
 .. code-block:: xml
 
-  <sec:http auto-config="true" use-expressions="true">
-    <!-- omitted -->
-    <sec:remember-me key="terasoluna-tourreservation-km/ylnHv"
-            token-validity-seconds="#{30 * 24 * 60 * 60}" />  <!-- Perform steps (1) to (2) in the specified attribute order-->
-    <!-- omitted -->
-  </sec:http>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table:: 
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify the unique key that stores the cookie for Remember Me functionality in \ ``key``\  attribute.
-       | When not specified, it is recommended to specify it in cases where improvement in start-up time has been considered as the unique key is generated at the time of start-up.
-   * - | (2)
-     - | Specify the validity of the cookie for Remember Me functionality in seconds, in \ ``token-validity-seconds``\  attribute. In this example it is set as 30 days.
-       | When not specified, it is valid for 14 days by default.
-
-For attributes other than the above, refer to \ `Spring Security Reference -The Security Namespace(<remember-me>)- <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#nsa-remember-me>`_\ .
-
-Following flag that enables "Remember Me" functionality needs to be provided in login form.
-
-.. code-block:: jsp
-  :emphasize-lines: 7-9
-
-  <form method="post"
-    action="${pageContext.request.contextPath}/authentication">
-      <!-- omitted -->
-      <label for="_spring_security_remember_me">Remember Me : </label>
-      <input name="_spring_security_remember_me"
-        id="_spring_security_remember_me" type="checkbox"
-        checked="checked"> <!-- (1) -->
-      <input type="submit" value="LOGIN">
-      <!-- omitted -->
-  </form>
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <!-- omitted -->
+            <!-- (1) -->
+            <bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
+            <!-- omitted -->
+        </mvc:argument-resolvers>
+  </mvc:annotation-driven>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-   :header-rows: 1
-   :widths: 10 90
+    :header-rows: 1
+    :widths: 10 90
 
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | When requested as \ ``true``\, next authentication can be avoided
-       | by setting \ ``_spring_security_remember_me``\  in HTTP parameter.
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Apply \ ``AuthenticationPrincipalArgumentResolver``\  in Spring MVC as an implementation class of \ ``HandlerMethodArgumentResolver``\ .
+
+|
+
+Following method is created while receiving authentication information (\ ``UserDetails``\ ) by controller method.
+
+* How to create a method which receives authentication information (UserDetails)
+
+.. code-block:: java
+
+    @RequestMapping("account")
+    @Controller
+    public class AccountController {
+
+        public String view(
+                @AuthenticationPrincipal AccountUserDetails userDetails, // (1)
+                Model model) {
+            model.addAttribute(userDetails.getAccount());
+            return "profile";
+        }
+
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Declare an argument to receive authentication information (\ ``UserDetails``\ ) and specify \ ``@org.springframework.security.core.annotation.AuthenticationPrincipal``\  as an argument annotation.
+        | \ ``AuthenticationPrincipalArgumentResolver``\  configures authentication information (\ ``UserDetails``\ ) in the argument assigned by \ ``@AuthenticationPrincipal``\ .
+
+|
+
+.. _SpringSecurityAuthenticationHowToExtend:
 
 How to extend
 --------------------------------------------------------------------------------
 
-.. _extendsuserdetailsservice:
+The section describes customization points and extension methods offered by Spring Security.
 
-Extending \ ``UserDetailsService``\ 
+Spring Security offers a lot of customization points. Since it is not possible to introduce all the customization points here, we will focus on a few typical customization points here.
+
+|
+
+.. _SpringSecurityAuthenticationCustomizingForm:
+
+Customizing form authentication
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-| When information other than user ID and password needs to be fetched at the time of authentication,
 
-* \ ``org.springframework.security.core.userdetails.UserDetails``\ 
-* \ ``org.springframework.security.core.userdetails.userDetailsService``\ 
+Customization points of form authentication process are explained.
 
-need to be implemented.
-
-When attached information such as login user's name and division etc. need to be displayed at all times on screen header, fetching it for each request from DB hampers the efficiency.
-This extension is necessary to enable its access from \ ``SecurityContext``\  or \ ``<sec:authentication>``\  tags, by storing it in \ ``UserDetails``\  object.
-
-Extending \ ``UserDetails``\
+Changing authentication path
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Creating \ ``ReservationUserDetails``\  class that also stores customer information other than authentication information.
 
-.. code-block:: java
+In Spring Security, the path for carrying out authentication process is "\ ``"/login"``\ " by default, however
+it can be changed by defining a bean as below.
 
-  public class ReservationUserDetails extends User { // (1)
-      // omitted
+* Definition example of spring-security.xml
 
-      private final Customer customer; // (2)
+.. code-block:: xml
 
-      private static final List<? extends GrantedAuthority> DEFAULT_AUTHORITIES = Collections
-              .singletonList(new SimpleGrantedAuthority("ROLE_USER"));         // (3)
-
-      public ReservationUserDetails(Customer customer) {
-          super(customer.getCustomerCode(),
-                  customer.getCustomerPassword(), true, true, true, true, DEFAULT_AUTHORITIES); // (4)
-          this.customer = customer;
-      }
-
-      public Customer getCustomer() { // (5)
-          return customer;
-      }
-  }
+  <sec:http>
+    <sec:form-login login-processing-url="/authentication" /> <!-- (1) --> 
+    <!-- omitted -->
+  </sec:http>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - |  Inherit \ ``org.springframework.security.core.userdetails.User``\  class which is the default class of \ ``UserDetails``\ .
-   * - | (2)
-     - | Store the DomainObject class containing authentication information and customer information.
-   * - | (3)
-     - | Create authorization information using constructor of \ ``org.springframework.security.core.authority.SimpleGrantedAuthority``\ . Here the authority named "ROLE_USER" is provided.
-       |
-       | This is a simple implementation wherein the authorization information should essentially be fetched from another table in the DB.
-   * - | (4)
-     - | Set the user ID and password contained in DomainObject, in the constructor of super class.
-   * - | (5)
-     - | Method to access customer information via \ ``UserDetails``\ .
-
-.. note::
-
-  When the business requirement cannot be implemented just by inheriting \ ``User``\  class, \ ``UserDetails``\  interface may be implemented.
-
-Implementing an independent \ ``UserDetailsService``\
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| Create ReservationUserDetailsService class that implements \ ``UserDetailsService``\ .
-| In this example, customer information is fetched from DB by injecting  \ ``CustomerSharedService``\  class that implements the process to fetch \ ``Customer``\  object.
-
-.. code-block:: java
-
-  public class ReservationUserDetailsService implements UserDetailsService {
-      @Inject
-      CustomerSharedService customerSharedService;
-
-      @Override
-      public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-          Customer customer = customerSharedService.findOne(username);
-          // omitted
-          return new ReservationUserDetails(customer);
-      }
-
-  }
-
-How to use
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-How to use the created \ ``ReservationUserDetailsService``\  and \ ``ReservationUserDetails``\ , is described here.
-
-* spring-security.xml
-
-  .. code-block:: xml
-
-    <sec:authentication-manager>
-        <sec:authentication-provider user-service-ref="userDetailsService"><!-- (1) -->
-            <sec:password-encoder ref="passwordEncoder" />
-        </sec:authentication-provider>
-    </sec:authentication-manager>
-
-    <bean id="userDetailsService"
-        class="com.example.domain.service.userdetails.ReservationUserDetailsService"><!-- (2) -->
-    </bean>
-    <!-- omitted -->
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-     :header-rows: 1
-     :widths: 10 90
-
-     * - Sr. No.
-       - Description
-     * - | (1)
-       - | Define the Bean ID of \ ``ReservationUserDetailsService``\  in ref attribute.
-     * - | (2)
-       - | Perform Bean definition for \ ``ReservationUserDetailsService``\ .
-
-* JSP
-
-   Access \ ``Customer``\  object by using \ ``<sec:authentication>``\  tag.
-
-  .. code-block:: jsp
-
-     <sec:authentication property="principal.customer" var="customer"/><!-- (1) -->
-     ${f:h(customer.customerName)}<!-- (1) -->
-
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
     :header-rows: 1
     :widths: 10 90
 
     * - Sr. No.
       - Description
     * - | (1)
-      - |  \ ``Customer``\  object contained in \ ``ReservationUserDetails``\  is stored in variable.
+      - | Specify a path for carrying out authentication process in \ ``login-processing-url``\  attribute.
+
+.. note::
+
+    When path of authentication process is changed, request destination of :ref:`Login form <SpringSecurityAuthenticationLoginForm>` must be changed as well.
+
+|
+
+Change request parameter name which sends credentials
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In Spring Security, request parameters for sending credentials (user name and password) are "\ ``username``\ " and "\ ``password``\ " by default, however,
+these can be changed by defining a bean as shown below.
+
+* Definition example for spring-security.xml
+
+.. code-block:: xml
+
+  <sec:http>
+      <sec:form-login
+          username-parameter="uid"
+          password-parameter="pwd" /> <!-- (1) (2) -->
+      <!-- omitted -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify a request parameter name for user name in \ ``username-parameter``\  attribute.
     * - | (2)
-      - | Display the optional property of \ ``Customer``\  object stored in variable.
-        | For \ ``f:h()``\ , refer to \ :doc:`XSS`\ .
+      - | Specify a request parameter name for password in \ ``password-parameter``\  attribute.
 
-* Controller
+.. note::
 
-  .. code-block:: java
+    When request parameter name is changed, field name in :ref:`Login form <SpringSecurityAuthenticationLoginForm>` must also be changed.
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String view(@AuthenticationPrincipal ReservationUserDetails userDetails, Model model) {
-        // get Customer
-        Customer customer = userDetails.getCustomer(); // (1)
-        // omitted ...
+|
+
+Customising response when authentication is successful
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Customization points of response when authentication is successful are explained.
+
+Changing default transition destination
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Transition destination (default URL) after displaying login form on its own and by carrying out authentication process
+is the root path of Web application (\ ``"/"``\ ), however it can be changed by defining a bean as given below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+  <sec:http>
+      <sec:form-login default-target-url="/menu" /> <!-- (1) -->
+  </sec:http>
+
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify default path for transition in \ ``default-target-url``\  attribute when the authentication is successful.
+
+|
+
+Fixing transition destination
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In default operation of Spring Security, when a request for a page for which authentication is required is received during unauthenticated stage, the request thus received is temporarily stored in HTTP session and then transition is done to authentication page.
+Although request is restored and redirected when the authentication is successful, transition to the same screen can be assured by defining a bean as below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+  <sec:http>
+      <sec:form-login
+          default-target-url="/menu"
+          always-use-default-target="true" /> <!-- (1) -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify \ ``true``\ in \ ``always-use-default-target``\  attribute.
+
+|
+
+Applying AuthenticationSuccessHandler
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When the requirements are not met only by using the system wherein default operations provided by Spring Security are customised,
+implementation class of \ ``AuthenticationSuccessHandler``\  interface can be applied directly by defining a bean as given below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+  <bean id="authenticationSuccessHandler" class="com.example.app.security.handler.MyAuthenticationSuccessHandler"> <!-- (1) -->
+
+  <sec:http>
+      <sec:form-login authentication-success-handler-ref="authenticationSuccessHandler" /> <!-- (2) -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Define a bean for implementation class of \ ``AuthenticationSuccessHandler``\  interface.
+    * - | (2)
+      - | Specify \ ``authenticationSuccessHandler``\  defined in ``authentication-success-handler-ref``\  attribute.
+
+.. warning:: **Responsibility of AuthenticationSuccessHandler**
+
+    \ ``AuthenticationSuccessHandler``\  is an interface which performs processes for Web layer at the time of successful authentication (mainly processes related to screen transition).
+    Therefore, a process dependent on business rule (business logic) like clearing number of authentication failures should not be called through implementation class of this interface.
+
+    ":ref:`SpringSecurityAuthenticationEvent`" system introduced in earlier section should be used for calling the processes that are dependent on business rules.
+
+|
+
+.. _SpringSecurityAuthenticationCustomizingScreenFlowOnFailure:
+
+Customising response at the time of authentication failure
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Customization points for the response at the time of authentication failure are explained.
+
+Changing transition destination
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In default operation of Spring Security, the user is redirected to a URL wherein a query parameter \ ``"error"``\ is assigned to path for displaying login form, however
+it can be changed by defining a bean as given below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+  <sec:http>
+      <sec:form-login authentication-failure-url="/loginFailure" /> <!-- (1) -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr.No.
+      - Description
+    * - |  (1)
+      - | Specify a path for transition in \ ``authentication-failure-url``\  attribute at the time of authentication failure.
+
+|
+
+Applying AuthenticationFailureHandler
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When the requirements are not met only by using the system wherein default operations provided by Spring Security are customised,
+implementation class of \ ``AuthenticationFailureHandler``\  interface can be applied directly by defining a bean as below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+   <!-- (1) -->
+  <bean id="authenticationFailureHandler"
+      class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler" />
+      <property name="defaultFailureUrl" value="/login/systemError" /> <!-- (2) -->
+      <property name="exceptionMappings"> <!-- (3) -->
+          <props>
+              <prop key="org.springframework.security.authentication.BadCredentialsException"> <!-- (4) -->
+                  /login/badCredentials
+              </prop>
+              <prop key="org.springframework.security.core.userdetails.UsernameNotFoundException"> <!-- (5) -->
+                  /login/usernameNotFound
+              </prop>
+              <prop key="org.springframework.security.authentication.DisabledException"> <!-- (6) -->
+                  /login/disabled
+              </prop>
+              <!-- omitted -->
+          </props>
+      </property>
+  </bean>
+
+  <sec:http>
+      <sec:form-login authentication-failure-handler-ref="authenticationFailureHandler" /> <!-- (7) -->
+  </sec:http>
+
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 80
+
+    * - | Sr. No.
+      - | Description
+    * - | (1)
+      - | Define a bean for implementation class of \ ``AuthenticationFailureHandler``\  interface.
+    * - | (2)
+      - | Specify default transition destination URL in \ ``defaultFailureUrl``\  attribute.
+        | When the exceptions that do not match the definitions given in (4)~(6) below occur, move to transition destination of the configuration.
+    * - | (3)
+      - | Set implementation class of \ ``org.springframework.security.authentication.AuthenticationServiceException``\  handled in the \ ``exceptionMappings``\  property and transition destination at the time exception occurrence in \ ``Map``\  format.
+        | Set implementation class of \ ``org.springframework.security.authentication.AuthenticationServiceException``\  in key and set transition destination URL in value.
+    * - | (4)
+      - | \ ``BadCredentialsException``\ 
+        | It is thrown at the time of authentication error due to password verification failure.
+    * - | (5)
+      - | \ ``UsernameNotFoundException``\ 
+        | It is thrown at the time of authentication error due to invalid user ID (non-existent user ID).
+        | When ``org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider``\  specifies inherited class in
+        | the authentication provider, the exception changes to \ ``BadCredentialsException``\  if ``hideUserNotFoundExceptions``\  property is not changed to \ ``false``\ .
+    * - | (6)
+      - | \  ``DisabledException``\
+        | It is thrown at the time of authentication error due to invalid user ID.
+    * - | (7)
+      - | Set \ ``authenticationFailureHandler``\  in \ ``authentication-failure-handler-ref``\  attribute.
+
+.. note:: **Control during occurrence of exception**
+
+    When an exception defined in \ ``exceptionMappings``\  property occur, the user is redirected to transition destination mapped in the exception, however,
+    since exception object thus occurred is not stored in the session scope, error message generated by Spring Security cannot be displayed on the screen.
+
+    Therefore, error message displayed in the transition destination screen must be generated by the process for redirect (Controller or View process).
+
+    Further, it must be added that since the processes referring properties below are not called, operation does not undergo any change even after changing the setup value.
+
+    * ``useForward``
+    * ``allowSessionCreation``
+
+|
+
+Customising logout process
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Customization points for logout process are explained.
+
+Changing logout path
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+In Spring Security, default path which carries out logout process is "\ ``"/logout"``\ ", however
+it can be changed by defining a bean as given below.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+  <sec:http>
+      <!-- omitted -->
+      <sec:logout logout-url="/auth/logout" /> <!-- (1) -->
+      <!-- omitted -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Set \ ``logout-url``\  attribute and specify path to carry out logout process.
+
+.. note::
+
+    When logout path is changed, request destination of :ref:`logout form <SpringSecurityAuthenticationLogoutForm>` must be changed as well.
+
+.. tip:: **Behaviour during occurrence of system error**
+    When system error occurs, discontinuation of operations is likely.
+    If the operation is not to be continued after occurrence of system error, adopting following measures is recommended.
+    
+      * Clear session information when the system error occurs.
+      * Clear authentication information when the system error occurs
+    
+    An example wherein authentication information at the time of system exception occurrence is cleared using an exception handling function of common library is explained.
+    For details of exception handling function, refer "\ :doc:`../ArchitectureInDetail/ExceptionHandling`\ ".
+
+      .. code-block:: java
+
+        // (1)
+        public class LogoutSystemExceptionResolver extends SystemExceptionResolver {
+            // (2)
+            @Override
+            protected ModelAndView doResolveException(HttpServletRequest request,
+                    HttpServletResponse response, java.lang.Object handler,
+                    java.lang.Exception ex) {
+
+                // Carry out SystemExceptionResolver
+                ModelAndView resulut = super.doResolveException(request, response,
+                        handler, ex);
+
+                // Clear authentication information (2)
+                SecurityContextHolder.clearContext();
+
+                return resulut;
+            }
+        }
+
+      .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+      .. list-table::
+          :header-rows: 1
+          :widths: 10 90
+      
+          * - Sr. No.
+            - Description
+          * - | (1)
+            - | Extend \ ``org.terasoluna.gfw.web.exception.SystemExceptionResolver.SystemExceptionResolver``\ .
+          * - | (2)
+            - | \ Clear authentication information.
+
+    Further, the same requirement can also be met by clearing the session, besides using the method that clears authentication information.
+    Implement according to the project requirement.
+
+|
+
+.. _SpringSecurityLogoutCustomizingScreenFlowOnSuccess:
+
+Customising response when logout is successful
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Customization points for the response when logout process is successful is explained.
+
+Changing transition destination
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+  <sec:http>
+    <!-- omitted -->
+    <sec:logout logout-success-url="/logoutSuccess" /> <!-- (1) -->
+    <!-- omitted -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Set \ ``logout-success-url``\  attribute and specify path for the transition when the logout is successful.
+
+|
+
+Applying LogoutSuccessHandler
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+  
+  <!-- (1) -->
+  <bean id="logoutSuccessHandler" class="com.example.app.security.handler.MyLogoutSuccessHandler" /> 
+
+  <sec:http>
+      <!-- omitted -->
+      <sec:logout success-handler-ref="logoutSuccessHandler" /> <!-- (2) -->
+      <!-- omitted -->
+  </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Define a bean for implementation class of \ ``LogoutSuccessHandler``\  interface.
+    * - | (2)
+      - | Set \ ``LogoutSuccessHandler``\ in ``success-handler-ref``\  attribute.
+
+|
+
+.. _SpringSecurityAuthenticationCustomizingMessage:
+
+Customising error message
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When authentication fails, error message provided by Spring Security is displayed, however,
+the error message can be changed.
+
+For details of how to change the message, refer \ :doc:`../ArchitectureInDetail/MessageManagement`\ .
+
+Message during system error
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+When an unexpected error occurs (system error etc) during authentication process, \ ``InternalAuthenticationServiceException``\  exception is thrown.
+Since cause exception message is set in the message retained by \ ``InternalAuthenticationServiceException``\ , it should not be displayed as it is on the screen.
+
+For example, when a DB access error occurs while fetching user information from database, an exception message retained by \ ``SQLException``\  is displayed on the screen.
+The measures like handling \ ``InternalAuthenticationServiceException``\  by using \ ``ExceptionMappingAuthenticationFailureHandler``\  and
+transiting to the path for notifying occurrence of system error are necessary for not displaying exception message of system error on the screen.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <bean id="authenticationFailureHandler"
+        class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+        <property name="defaultFailureUrl" value="/login?error" />
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.security.authentication.InternalAuthenticationServiceException">
+                    /login?systemError
+                </prop>
+                <!-- omitted -->
+            </props>
+        </property>
+    </bean>
+
+  <sec:http>
+      <sec:form-login authentication-failure-handler-ref="authenticationFailureHandler" />
+  </sec:http>
+
+|
+
+Query parameter (\ ``systemError``\) is used for identifying occurrence of system error and transition is made to login form.
+When \ ``systemError``\  is specified in the query parameter, in the login form specified in the transition destination, a fixed error message is displayed instead of an authentication exception message.
+
+
+* Implementation example of login form
+
+.. code-block:: jsp
+
+    <c:choose>
+        <c:when test="${param.containsKey('error')}">
+            <span style="color: red;">
+                <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+            </span>
+        </c:when>
+        <c:when test="${param.containsKey('systemError')}">
+            <span style="color: red;">
+                System Error occurred.
+            </span>
+        </c:when>
+    </c:choose>
+
+.. note::
+
+    An implementation example for transiting to login form is introduced, however it is also possible to move to system error screen.
+
+|
+
+.. _SpringSecurityAuthenticationBeanValidation:
+
+Input check at the time of authentication
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A check is carried out in advance for obvious input error on the authentication page during reduction of load on DB server etc.
+In such a case, input check using Bean validation can also be carried out.
+
+Input check using Bean Validation
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+An example of input check using Bean Validation is explained below.
+For details of Bean Validation, refer \ :doc:`../ArchitectureInDetail/Validation`\ .
+
+* Implementation example of form class
+
+.. code-block:: java
+
+    public class LoginForm implements Serializable {
+
+        // omitted
+        @NotEmpty // (1)
+        private String username;
+
+        @NotEmpty // (1)
+        private String password;
+        // omitted
+
     }
 
-  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-  .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (1)
-      - | Fetch the logged-in \ ``Customer``\  object from \ ``ReservationUserDetails``\ .
-        | Perform business process by passing this object to Service class.
-
-.. note::
-
-  When customer information is changed, \ ``Customer``\  object contained in \ ``ReservationUserDetails``\  is not changed unless logout is carried out once.
-  
-  It is recommended not to store the information that may undergo frequent changes or the information which is changed by a user other than the login user (administrator etc.).
-
-|
-
-Extending \ ``AuthenticationProvider``\ 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-In case of business requirements that cannot be supported by Spring Security's \ `authentication provider <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/apidocs/org/springframework/security/authentication/AuthenticationProvider.html>`_\ ,
-it is necessary to create a class that implements \ ``org.springframework.security.authentication.AuthenticationProvider``\  interface.
-
-Here, the extended example of DB authentication using 3 parameters such as user name, password and \ **Company identifier (independent authentication parameter)**\  is given below.
-
-.. figure:: ./images/Authentication_HowToExtends_LoginForm.png
-   :alt: Authentication_HowToExtends_LoginForm
-   :width: 50%
-  
-To implement the above requirements, it is necessary to create a class given below.
-  
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
     :header-rows: 1
@@ -1423,33 +2023,121 @@ To implement the above requirements, it is necessary to create a class given bel
     * - Sr. No.
       - Description
     * - | (1)
-      - Implementation class of \ ``org.springframework.security.core.Authentication``\  interface to store user name, password and company identifier (independent authentication parameter).
+      - | In this example, \ ``username``\ and \ ``password``\  are mandatory respectively.
 
-        Here, it is created by inheriting \ ``org.springframework.security.authentication.UsernamePasswordAuthenticationToken``\  class.
+
+* Implementation example of controller class
+
+.. code-block:: java
+
+    @ModelAttribute
+    public LoginForm setupForm() { // (1)
+        return new LoginForm();
+    }
+
+    @RequestMapping(value = "login")
+    public String login(@Validated LoginForm form, BindingResult result) {
+        // omitted
+        if (result.hasErrors()) {
+            // omitted
+        }
+        return "forward:/authenticate"; // (2)
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Initialise \ ``LoginForm``\ .
     * - | (2)
-      - Implementation class of \ ``org.springframework.security.authentication.AuthenticationProvider``\  to perform DB authentication using user name, password and company identifier (independent authentication parameter).
+      - | **Forward** to path specified in \ ``login-processing-url``\  attribute of \ ``<sec:form-login>``\ element using "forward".
+        | For setup related to authentication, refer \ :ref:`SpringSecurityAuthenticationCustomizingForm`\ .
 
-        Here, it is created by inheriting \ ``org.springframework.security.authentication.dao.DaoAuthenticationProvider``\  class.
-    * - | (3)
-      - Servlet filter class to create \ ``Authentication``\  for fetching user name, password and company identifier (independent authentication parameter) from request parameter and passing them to \ ``AuthenticationManager``\  (\ ``AuthenticationProvider``\ ).
+In addition, authentication path is added to Spring Security servlet filter for Spring Security processing even during the transition using Forward.
 
-        Here, it is created by inheriting \ ``org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter``\  class.
+* Setup example of web.xml
 
-.. tip::
-	
-    Here, as the example considers addition of independent parameter as an authentication parameter, 
-    it is necessary to extend servlet filter class to generate \ ``Authentication``\  and implementation class of \ ``Authentication``\  interface.
+.. code-block:: xml
 
-    To authenticate only by user name and password, the authentication process can be extended
-    only by creating implementation class of \ ``AuthenticationProvider``\  interface.
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>
+            org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- (1) -->
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/authenticate</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>    
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify pattern for authentication by using Forward.
+        | Here \ ``"/authenticate"``\  is specified as an authentication path.
 
 |
 
-Extending \ ``UsernamePasswordAuthenticationToken``\ 
+Expansion of authentication process
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In case of authentication requirements which cannot be handled by \ `authentication provider <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/apidocs/org/springframework/security/authentication/AuthenticationProvider.html>`_\  offered by Spring Security,
+a class which implements \ ``org.springframework.security.authentication.AuthenticationProvider``\  interface must be created.
+
+Here, an expansion example for performing DB authentication by using 3 parameters - user name, password and \ **Company identifier (unique authentication parameter)**\ is shown below.
+
+.. figure:: ./images_Authentication/Authentication_HowToExtends_LoginForm.png
+   :alt: Authentication_HowToExtends_LoginForm
+   :width: 50%
+
+A class shown below must be created for implementing above requirements.
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | An implementation class of \ ``org.springframework.security.core.Authentication``\  interface which retains user name, password and company identifier.
+        | It is created by inheriting \ ``org.springframework.security.authentication.UsernamePasswordAuthenticationToken``\  class.
+    * - | (2)
+      - | An implementation class of \ ``org.springframework.security.authentication.AuthenticationProvider``\  which performs DB authentication by using user name, password and company identifier.
+        | It is created by inheriting \ ``org.springframework.security.authentication.dao.DaoAuthenticationProvider``\  class.
+    * - | (3)
+      - | An Authentication Filter class for generating \ ``Authentication``\  which is passed to \ ``AuthenticationManager``\ (\ ``AuthenticationProvider``\ ) by fetching user name, password and company identifier from request parameters.
+        | It is created by inheriting \ ``org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter``\  class.
+
+.. note::
+
+    Since a unique parameter is added as an parameter for authentication in this example,
+    implementation class of \ ``Authentication``\ interface and Authentication Filter class for generating \ ``Authentication``\  must be expanded.
+
+    When the authentication is to be performed only by user name and password, authentication process can be expanded only by creating implementation class of \ ``AuthenticationProvider``\  interface
+    
+
+|
+
+Creating an implementation class of Authentication interface
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Here, by inheriting \ ``UsernamePasswordAuthenticationToken``\  class, 
-create a class that stores company identifier (independent authentication parameter) in addition to user name and password.
+\ ``UsernamePasswordAuthenticationToken``\  class is inherited and a class that retains a company identifier (unique authentication parameter) besides user name and password is created.
 
 .. code-block:: java
 
@@ -1466,7 +2154,6 @@ create a class that stores company identifier (independent authentication parame
         public CompanyIdUsernamePasswordAuthenticationToken(
                 Object principal, Object credentials, String companyId) {
             super(principal, credentials);
-
             this.companyId = companyId;
         }
 
@@ -1492,20 +2179,19 @@ create a class that stores company identifier (independent authentication parame
    * - Sr. No.
      - Description
    * - | (1)
-     - Create a field to store company identifier.
+     - | Create a field that retains a company identifier.
    * - | (2)
-     - Create a constructor to be used while creating instances for storing the information (information specified in request parameter) before authentication.
+     - | Create a constructor to be used while creating an instance which retains information prior to authentication (information specified by request parameter).
    * - | (3)
-     - | Create a constructor to be used while creating instances for storing the authenticated information.
-       | Authentication completion status is reached by passing authorization information to the constructor argument of parent class.
+     - | Create a constructor to be used while creating an instance which retains authenticated information.
+       | Authenticated state is reached by passing authorization information to the argument of parent class constructor.
 
 |
 
-Extending \ ``DaoAuthenticationProvide``\ 
+Creating an implementation class of AuthenticationProvider interface
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Here, by inheriting \ ``DaoAuthenticationProvider``\  class, 
-create a class that performs DB authentication using user name, password and company identifier.
+\ ``DaoAuthenticationProvider``\  class is inherited and a class which performs DB authentication by using user name, password and company identifier is created.
 
 .. code-block:: java
 
@@ -1525,10 +2211,9 @@ create a class that performs DB authentication using user name, password and com
 
             // (2)
             CompanyIdUsernamePasswordAuthenticationToken companyIdUsernamePasswordAuthentication =
-                (CompanyIdUsernamePasswordAuthenticationToken) authentication;
+                    (CompanyIdUsernamePasswordAuthenticationToken) authentication;
             String requestedCompanyId = companyIdUsernamePasswordAuthentication.getCompanyId();
-            String companyId = ((SampleUserDetails) userDetails)
-                    .getAccount().getCompanyId();
+            String companyId = ((SampleUserDetails) userDetails).getAccount().getCompanyId();
             if (!companyId.equals(requestedCompanyId)) {
                 throw new BadCredentialsException(messages.getMessage(
                         "AbstractUserDetailsAuthenticationProvider.badCredentials",
@@ -1556,7 +2241,6 @@ create a class that performs DB authentication using user name, password and com
 
     }
 
-
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
    :header-rows: 1
@@ -1565,34 +2249,32 @@ create a class that performs DB authentication using user name, password and com
    * - Sr. No.
      - Description
    * - | (1)
-     - Call parent class method and execute check process provided by Spring Security.
-
-       Password authentication is performed at this time.
+     - | Call parent class method and implement check process provided by Spring Security.
+       | This process also includes password authentication process.
    * - | (2)
-     - When password authentication is successful, validate company identifier (independent authentication parameter).
-
-       In the above example, it is checked whether requested company identifier matches with the company identifier stored in the table.
+     - | When password authentication is successful, check validity of company identifier (unique authentication parameter).
+       | In the example above, it is checked whether the requested company identifier and the company identifier retained in the table are identical.
    * - | (3)
-     - When password authentication and independent authentication is successful, create and return authenticated \ ``CompanyIdUsernamePasswordAuthenticationToken``\ .
+     - | When password authentication and unique authentication process are successful, \ ``CompanyIdUsernamePasswordAuthenticationToken``\ is created in an authenticated state and then returned.
    * - | (4)
-     - When \ ``Authentication``\ that can be casted is specified in \ ``CompanyIdUsernamePasswordAuthenticationToken``\ ,
-       perform the authentication process using this class.
+     - | When castable \ ``Authentication``\  is specified in \ ``CompanyIdUsernamePasswordAuthenticationToken``\ , perform authentication process by using this class.
 
-.. tip::
+.. note::
 
-    User existence check, user status check (check for invalid users, locked users, validity expired users, etc.),
-    are performed as processes of parent class before the \ ``additionalAuthenticationChecks``\  method is called.
+    User existence check, user status check (checks for invalid user, locked user, expired user etc) are carried out as
+    processes of parent class before calling \ ``additionalAuthenticationChecks``\  method.
 
 |
 
 .. _authentication_custom_usernamepasswordauthenticationfilter:
 
-Extending \ ``UsernamePasswordAuthenticationFilter``\ 
+Creating Authentication Filter
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Here, by inheriting \ ``UsernamePasswordAuthenticationFilter``\  class, 
-create a servlet filter class to pass the authentication information (user name, password, company identifier) to \ ``AuthenticationProvider``\ .
 
-Implementation of \ ``attemptAuthentication``\  method is customized by copying \ ``UsernamePasswordAuthenticationFilter``\ class method.
+\ ``UsernamePasswordAuthenticationFilter``\  class is inherited and
+an Authentication Filter class is created for passing authentication information (user name, password and company identifier) to \ ``AuthenticationProvider``\ .
+
+\ ``attemptAuthentication``\  method implementation is customised by copying method of \ ``UsernamePasswordAuthenticationFilter``\  class.
 
 .. code-block:: java
 
@@ -1633,7 +2315,7 @@ Implementation of \ ``attemptAuthentication``\  method is customized by copying 
 
         // (3)
         protected String obtainCompanyId(HttpServletRequest request) {
-            return request.getParameter("companyid");
+            return request.getParameter("companyId");
         }
     }
 
@@ -1645,37 +2327,58 @@ Implementation of \ ``attemptAuthentication``\  method is customized by copying 
    * - Sr. No.
      - Description
    * - | (1)
-     - Create an instance of \ ``CompanyIdUsernamePasswordAuthenticationToken``\  from authentication information (user name, password, company identifier) fetched from request parameter.
+     - | Generate an instance of \ ``CompanyIdUsernamePasswordAuthenticationToken``\  from the authentication information fetched from request parameter (user name, password, company identifier).
    * - | (2)
-     - Call \ ``authenticate``\  method of \ ``org.springframework.security.authentication.AuthenticationManager``\  by specifying 
-       authentication information (\ ``CompanyIdUsernamePasswordAuthenticationToken``\  instances) specified in request parameter.
-
-       If \ ``AuthenticationManager``\  method is called, authentication process of \ ``AuthenticationProvider``\  is called.
+     - | Specify authentication information specified by request parameter (\ ``CompanyIdUsernamePasswordAuthenticationToken``\  instance) and call \ ``authenticate``\  method of \ ``org.springframework.security.authentication.AuthenticationManager``\ .
+       | 
+       | If \ ``AuthenticationManager``\  method is called, \ ``AuthenticationProvider``\  authentication process gets called.
    * - | (3)
-     - Company identifier is fetched from the request parameter called \ ``"companyid"``\ .
-
-.. note:: **Authentication information input check**
-
-    Sometimes, a check needs to be performed in advance for the obvious input errors that occur due to load reduction on DB server.
-    In such cases, input check process can be performed by extending \ ``UsernamePasswordAuthenticationFilter``\ , similar to
-    \ :ref:`authentication_custom_usernamepasswordauthenticationfilter`\ .
-
-    Input check is not performed in the above mentioned example. 
-
-.. todo::
-
-    Input check of authentication information can also be performed using Bean Validation by handling the request in Controller class.
-
-    Input check method using Bean Validation will be added later.
+     - | Company identifier is fetched by using request parameter \ ``"companyId"``\ .
 
 |
 
-Application of extended authentication process
+Modifying login form
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Apply the DB authentication function using user name, password, company identifier (independent authentication parameter) in Spring Security.
+Company identifier is added for login form (JSP) created by \ :ref:`SpringSecurityAuthenticationLoginForm`\ .
 
-``spring-security.xml``
+.. code-block:: jsp
+
+    <form:form action="${pageContext.request.contextPath}/login" method="post">
+        <!-- omitted -->
+            <tr>
+                <td><label for="username">User Name</label></td>
+                <td><input type="text" id="username" name="username"></td>
+            </tr>
+            <tr>
+                <td><label for="companyId">Company Id</label></td>
+                <td><input type="text" id="companyId" name="companyId"></td> <!-- (1) -->
+            </tr>
+            <tr>
+                <td><label for="password">Password</label></td>
+                <td><input type="password" id="password" name="password"></td>
+            </tr>
+        <!-- omitted -->
+    </form:form>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify \ ``"companyId"``\  in input field name of company identifier.
+
+|
+
+Applying expanded authentication process
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+DB authentication process which use user name, password and company identifier (unique authentication parameter) are applied in Spring Security.
+
+* Definition example of spring-security.xml
 
 .. code-block:: xml
 
@@ -1683,16 +2386,13 @@ Apply the DB authentication function using user name, password, company identifi
 
     <!-- (1) -->
     <sec:http
-        auto-config="false"
-        use-expressions="true"
         entry-point-ref="loginUrlAuthenticationEntryPoint">
 
         <!-- omitted -->
 
         <!-- (2) -->
         <sec:custom-filter
-            position="FORM_LOGIN_FILTER"
-            ref="companyIdUsernamePasswordAuthenticationFilter" />
+            position="FORM_LOGIN_FILTER" ref="companyIdUsernamePasswordAuthenticationFilter" />
 
         <!-- omitted -->
 
@@ -1700,8 +2400,7 @@ Apply the DB authentication function using user name, password, company identifi
 
         <sec:logout
             logout-url="/logout"
-            logout-success-url="/login"
-            delete-cookies="JSESSIONID" />
+            logout-success-url="/login" />
 
         <!-- omitted -->
 
@@ -1781,73 +2480,317 @@ Apply the DB authentication function using user name, password, company identifi
     * - Sr. No.
       - Description
     * - | (1)
-      - To replace "FORM_LOGIN_FILTER" using \ ``custom-filter``\ element, it is necessary to perform the following settings in attributes of \ ``http``\  element.
+      - | When \ ``"FORM_LOGIN_FILTER"``\  is to be changed by using \ ``<sec:custom-filter>``\  tag of (2), following settings must be applied to \ ``<sec:http>``\  tag attribute.
 
-        * Since it is not possible to use auto configuration, either set \ ``auto-config="false"``\  or delete \ ``auto-config``\  attribute.
-        * Since it is not possible to use \ ``form-login``\  element, explicitly specify \ ``AuthenticationEntryPoint``\  to be used by using \ ``entry-point-ref``\  attribute.
+        * Since auto-configuration cannot be used, \ ``auto-config="false"``\  is specified or \ ``auto-config``\  attribute is deleted.
+        * Since \ ``<sec:form-login>``\  tag cannot be used, \ ``AuthenticationEntryPoint``\  is specified explicitly by using \ ``entry-point-ref``\  attribute.
+
     * - | (2)
-      - Replace "FORM_LOGIN_FILTER" by using \ ``custom-filter``\  element.
-
-        Specify \ ``"FORM_LOGIN_FILTER"``\  in \ ``position``\  attribute of \ ``custom-filter``\  element, and specify servlet filter bean ID extended in \ ``ref``\  attribute.
+      - | Use \ ``<sec:custom-filter>``\  tag and change \ ``"FORM_LOGIN_FILTER"``\ .
+        | 
+        | Specify \ ``"FORM_LOGIN_FILTER"``\  in \ ``position``\  attribute of \ ``<sec:custom-filter>``\  tag and specify a bean for Authentication Filter expanded in \ ``ref``\  attribute.
     * - | (3)
-      - Define bean of \ ``AuthenticationEntryPoint``\  to be specified in \ ``entry-point-ref``\  attributes of \ ``http``\ element.
-
-        Here, bean of \ ``org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint``\  class used while specifying \ ``form-login``\  element, is defined.
+      - | Specify a bean of \ ``AuthenticationEntryPoint``\ used in \ ``entry-point-ref``\  attribute of \ ``<sec:http>``\  tag.
+        | 
+        | Here, a bean of \ ``org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint``\  class used while specifying \ ``<sec:form-login>``\  tag is specified.
     * - | (4)
-      - Define bean of servlet filter to be used as "FORM_LOGIN_FILTER".
-
-        Here, bean of extended servlet filter class (\ ``CompanyIdUsernamePasswordAuthenticationFilter``\ ) is defined.
+      - | Define a bean of Authentication Filter class used as \ ``"FORM_LOGIN_FILTER"``\ .
+        | 
+        | Here, a bean of expanded Authentication Filter class (\ ``CompanyIdUsernamePasswordAuthenticationFilter``\ ) is defined.
     * - | (5)
-      - Specify \ ``RequestMatcher``\  instance for detecting request to perform authentication process, in \ ``requiresAuthenticationRequestMatcher``\  property.
-
-        Here, if there is a request in \ ``/authentication``\  path, authentication process is performed.
-        This is similar to specifying \ ``"/authentication"``\  in \ ``login-processing-url``\  attribute of \ ``form-login``\  element.
+      - | Specify \ ``RequestMatcher``\  instance for detecting a request performing authentication process, in \ ``requiresAuthenticationRequestMatcher``\  property.
+        | 
+        | It is configured to perform authentication process when a request is raised in the \ ``"/authentication"``\  path.
+        | This is similar to specifying \ ``"/authentication"``\  in \ ``login-processing-url``\  attribute of \ ``<sec:form-login>``\  tag.
     * - | (6)
-      - Specify the value which was set in \ ``alias``\  attribute of \ ``authentication-manager``\  element, in \ ``authenticationManager``\  property.
-
-        If \ ``alias``\  attribute of \ ``authentication-manager``\ element is specified,
-        it is possible to inject dependency (DI) of \ ``AuthenticationManager``\  bean generated by Spring Security, to other bean.
+      - | Specify a value set in \ ``alias``\  attribute of \ ``<sec:authentication-manager>``\  tag, in \ ``authenticationManager``\  property.
+        | 
+        | If \ ``alias``\  attribute of \ ``<sec:authentication-manager>``\  tag is specified,
+        | a bean of \ ``AuthenticationManager``\  generated by Spring Security can be used for DI of another bean.
     * - | (6')
-      - Set extended \ ``AuthenticationProvider``\  (\ ``CompanyIdUsernamePasswordAuthenticationProvider``\ ) to \ ``AuthenticationManager``\  generated by Spring Security.
+      - | Set expanded \ ``AuthenticationProvider``\ (\ ``CompanyIdUsernamePasswordAuthenticationProvider``\ ) for \ ``AuthenticationManager``\  generated by Spring Security.
     * - | (7)
-      - Specify bean of component (\ ``SessionAuthenticationStrategy``\ ) to control the session handling at the time of successful authentication, in \ ``sessionAuthenticationStrategy``\  property.
-
+      - | Specify a bean of component (\ ``SessionAuthenticationStrategy``\ ) that controls handling of a session during successful authentication in \ ``sessionAuthenticationStrategy``\  property.
+        | 
     * - | (7')
-      - Define bean of component (\ ``SessionAuthenticationStrategy``\ ) to control the session handling at the time of successful authentication.
-
-        Here, the following features provided by Spring Security are enabled.
+      - | Define a bean of component (\ ``SessionAuthenticationStrategy``\ ) that controls handling of a session during successful authentication.
+        | 
+        | Here,
+         
+        * A component to recreate CSRF token (\ ``CsrfAuthenticationStrategy``\ )
+        * A component to generate a new session for preventing session fixation attack (\ ``SessionFixationProtectionStrategy``\ )
         
-        * Component to re-create CSRF token (\ ``CsrfAuthenticationStrategy``\ )
-        * Component to generate new session to prevent session fixation attack (\ ``SessionFixationProtectionStrategy``\ )
-
+        | offered by Spring Security are enabled.
     * - | (8)
-      - | Specify handler class, called at the time of authentication failure, in \ ``authenticationFailureHandler``\ .
+      - | Specify a handler class in \ ``authenticationFailureHandler``\  property which is called at the time of authentication failure.
     * - | (9)
-      - | Specify handler class, called at the time of successful authentication, in \ ``authenticationSuccessHandler``\ .
+      - | Specify a handler class in \ ``authenticationSuccessHandler``\  property which is called at the time of successful authentication.
 
-.. note::
+.. note:: **Regarding auto-config**
 
-    When \ ``auto-config="false"``\  is specified, \ ``<sec:http-basic>``\  element and \ ``<sec:logout>``\  element will not be enabled if not defined explicitly.
+    When Basic authentication process and logout process are to be enabled by specifying \ ``auto-config="false"``\  or by omitting specification, \ ``<sec:http-basic>``\  tag and \ ``<sec:logout>``\  tag must be defined explicitly.
 
 |
 
-Creating login form
+.. _AuthenticationHowToExtendUsingDeprecatedPasswordEncoder:
+
+Using PasswordEncoder of deprecated package
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Based on security requirements, it is likely that the implementation is not possible using the class which implements \ ``PasswordEncoder``\  described earlier.
+In particular, when it is necessary to follow hashing requirements used in the existing account information, it may not meet the requirements of \ ``PasswordEncoder``\  described earlier.
+
+Basically, existing hashing requirements are as given below.
+
+* Algorithm is SHA-512.
+* Stretching frequency is 1000.
+* Salt is stored in the account table column and it must be passed from outside of \ ``PasswordEncoder``\ .
+
+In such a case, implementation class of \ ``org.springframework.security.authentication.encoding.PasswordEncoder``\  interface must be used to meet requirements
+instead of implementation class of \ ``org.springframework.security.crypto.password.PasswordEncoder``\  interface.
+
+.. warning::
+
+    In Spring Security 3.1.4 and earlier versions, a class that implements \ ``org.springframework.security.authentication.encoding.PasswordEncoder``\
+    was used in the hashing, however, it is deprecated in the 3.1.4 and subsequent versions.
+
+|
+
+Using ShaPasswordEncoder
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Here, add company identifier for the screen (JSP), introduced in \ :ref:`form-login-JSP`\ .
+This guideline explains the use of \ ``PasswordEncoder``\ of deprecated package using an example of \ ``ShaPasswordEncoder``\ .
+
+When the hashing requirements are as below, requirements can be met by using \ ``ShaPasswordEncoder``\ .
+
+* Algorithm is SHA-512
+* Stretching frequency is 1000
+
+|
+
+First, define a bean for \ ``ShaPasswordEncoder``\ .
+
+* Definition example of applicationContext.xml
+
+.. code-block:: xml
+  
+    <bean id ="passwordEncoder"
+        class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"> <!-- (1) -->
+        <constructor-arg value="512" /> <!-- (2) -->
+        <property name="iterations" value="1000" /> <!-- (3) -->
+    </bean>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+  
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Define a bean for \ ``org.springframework.security.authentication.encoding.ShaPasswordEncoder``\ .
+    * - | (2)
+      - | Specify type of SHA algorithm.
+        | The values that can be specified are "\ ``1``\ , \ ``256``\ , \ ``384``\ , \ ``512``\ ".
+        | Value is "\ ``1``\ " when it is not specified.
+    * - | (3)
+      - | Specify stretching frequency at the time of hashing.
+        | Value is 1 when it is not specified.
+
+|
+
+Next, \ ``ShaPasswordEncoder``\  is applied to authentication process (\ ``DaoAuthenticationProvider``\ ) of Spring Security.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+  
+    <bean id="authenticationProvider"
+        class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <!-- omitted -->
+        <property name="saltSource" ref="saltSource" /> <!-- (1) -->
+        <property name="userDetailsService" ref="userDetailsService" />
+        <property name="passwordEncoder" ref="passwordEncoder" /> <!-- (2) -->
+    </bean>
+  
+    <bean id="saltSource"
+        class="org.springframework.security.authentication.dao.ReflectionSaltSource"> <!-- (3) -->
+        <property name="userPropertyToUse" value="username" /> <!-- (4) -->
+    </bean>
+  
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+  
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify a bean for implementation class of \ ``org.springframework.security.authentication.dao.SaltSource``\  in \ ``saltSource``\  property.
+        | \ ``SaltSource``\  is an interface that fetches salt from \ ``UserDetails``\ .
+    * - | (2)
+      - | Specify a bean for implementation class of \ ``org.springframework.security.authentication.encoding.PasswordEncoder``\  interface in \ ``passwordEncoder``\  property.
+        | In the example above, a bean for \ ``ShaPasswordEncoder``\  is specified.
+    * - | (3)
+      - | Define a bean for \ ``SaltSource``\ .
+        | In the example above, a class (\ ``ReflectionSaltSource``\ ) that fetches salt from \ ``UserDetails``\  property using reflection, is used.
+    * - | (4)
+      - | Specify \ ``UserDetails``\  property where salt is stored.
+        | In the example above, a value of \ ``username``\  property of \ ``UserDetails``\  is used as a salt.
+
+|
+
+When deprecated \ ``PasswordEncoder``\  is to be used in the process of application, \ ``PasswordEncoder``\  is used after injection.
+
+* Implementation example of Java class
+
+.. code-block:: java
+  
+    @Inject
+    PasswordEncoder passwordEncoder;
+  
+    public String register(Customer customer, String rawPassword, String userSalt) {
+        // omitted
+        String password = passwordEncoder.encodePassword(rawPassword, userSalt); // (1)
+        customer.setPassword(password);
+        // omitted
+    }
+  
+    public boolean matches(Customer customer, String rawPassword, String userSalt) {
+        return passwordEncoder.isPasswordValid(customer.getPassword(), rawPassword, userSalt); // (2)
+    }
+  
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+  
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | When password is to be hashed, use \ ``encodePassword``\  method.
+        | Specify password, salt string in the method argument, in a sequence.
+    * - | (2)
+      - | When the password is to be verified, use \ ``isPasswordValid``\  method.
+        | Specify hashed password, plain text password and salt string in the method argument, in a sequence.
+
+|
+
+Appendix
+--------------------------------------------------------------------------------
+
+.. _spring-security-authentication-mvc:
+
+Receive a request by Spring MVC and display login form
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+A method wherein a request is received by Spring MVC and login form is displayed is explained.
+
+* Definition example of spring-mvc.xml
+
+Definition example of Controller which displays login form.
+
+.. code-block:: java
+
+    @Controller
+    @RequestMapping("/login")
+    public class LoginController { // (1)
+
+        @RequestMapping
+        public String index() {
+            return "login";
+        }
+    }
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Return "login" as view name. src/main/webapp/WEB-INF/views/login.jsp is output by \ ``InternalResourceViewResolver``\
+
+As per this example, it is also possible to substitute by using \ ``<mvc:view-controller>``\  in case of a controller with only one method which simply returns only the view name.
+
+* Definition example of Controller using \ ``<mvc:view-controller>``\ .
+
+.. code-block:: xml
+
+    <mvc:view-controller path="/login" view-name="login" /><!-- (1) -->
+
+|
+
+.. _SpringSecurityAuthenticationRememberMe:
+
+Using Remember Me authentication
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+"\ `Remember Me authentication <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#remember-me>`_\ " is one of the functions to enhance
+the user experience who frequently access Websites, and retains logged in state of a user for a little longer than normal lifecycle.
+If this function is used, the user can login again without entering user name and password by using a Token for Remember Me authentication retained by a Cookie,
+even when the browser is closed or session has timed-out.
+Note that, this function is enabled only when the user has authorised retaining the logged in state.
+
+Spring Security supports "Remember Me authentication of `Hash-Based Token <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#remember-me-hash-token>`_ method and `Persistent Token <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#remember-me-persistent-token>`_ method.
+Hash-Based Token method is used as a default.
+
+|
+
+When Remember Me authentication is to be used, \ ``<sec:remember-me>``\  tag is added.
+
+* Definition example of spring-security.xml
+
+.. code-block:: xml
+
+    <sec:http>
+        <!-- omitted -->
+        <sec:remember-me key="terasoluna-tourreservation-km/ylnHv"
+            token-validity-seconds="#{30 * 24 * 60 * 60}" />  <!-- (1) (2) -->
+        <!-- omitted -->
+    </sec:http>
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Specify a key value in \ ``key``\  attribute for identifying an application that generates a Token for Remember Me authentication.
+        | When key value is not specified, a unique value is generated every time an application starts.
+        | Note that, when a key value retained by Hash-Based Token and a key value retained by server vary, it is handled as an invalid Token.
+        | In other words, when a Hash-Based Token generated before restarting an application is to be handled as a valid Token, \ ``key``\  attribute must be specified.
+    * - | (2)
+      - | Specify validity period of Token for Remember Me authentication in seconds, in the \ ``token-validity-seconds``\  attribute.
+        | When it is not specified, the validity period is 14 days by default.
+        | In the example above, 30 days has been set as a validity period.
+
+For attributes other than above, refer \ `Spring Security Reference -The Security Namespace (<remember-me>) - <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#nsa-remember-me>`_\ .
+
+.. note:: **Changes in Spring Security 4.0**
+
+    Default value of following settings is changed from Spring Security 4.0 version
+
+    * remember-me-parameter
+    * remember-me-cookie
+
+|
+
+A flag (checkbox field) to specify use of "Remember Me authentication" function  is provided in the login form.
+
+* Implementation example of JSP of login form
 
 .. code-block:: jsp
-    :emphasize-lines: 5-6
 
-    <form:form action="${pageContext.request.contextPath}/authentication" method="post">
-        <!-- omitted -->
-        <span>User Id</span><br>
-        <input type="text" id="username" name="j_username"><br>
-        <span>Company Id</span><br>
-        <input type="text" id="companyid" name="companyid"><br>  <!-- (1) -->
-        <span>Password</span><br>
-        <input type="password" id="password" name="j_password"><br>
-        <!-- omitted -->
+    <form:form action="${pageContext.request.contextPath}/login" method="post">
+            <!-- omitted -->
+            <tr>
+                <td><label for="remember-me">Remember Me : </label></td>
+                <td><input name="remember-me" id="remember-me" type="checkbox" checked="checked"></td> <!-- (1) -->
+            </tr>
+            <!-- omitted -->
     </form:form>
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -1858,150 +2801,8 @@ Here, add company identifier for the screen (JSP), introduced in \ :ref:`form-lo
     * - Sr. No.
       - Description
     * - | (1)
-      - | Specify \ ``"companyid"``\  in the input field name of company identifier. 
-
-|
-
-Appendix
---------------------------------------------------------------------------------
-
-Authentication Success handler for which destination can be specified
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In case of authentication using Spring Security, user is transited to the following two paths if authentication is successful.
-
-* Path described in bean definition file (\ ``spring-security.xml``\ ) (path specified in \ ``default-target-url``\  attribute of \ ``<form-login>``\  element)
-* Path for displaying "Secure page for which authentication is necessary" which is accessed before the login.
-
-In common library, in addition to the functionality provided by Spring Security, 
-a class (\ ``org.terasoluna.gfw.security.web.redirect.RedirectAuthenticationHandler``\ ) is provided which can specify the destination path in request parameter.
-
-\ ``RedirectAuthenticationHandler``\  is a class, created for implementing the mechanism given below.
-
-* For performing login for page display
-* For specifying destination page after login at JSP side (source JSP)
-
-.. figure:: ./images/Authentication_Appendix_ScreenFlow.png
-   :alt: Authentication_Appendix_Screen_Flow
-   :width: 70%
-   :align: center
-
-   **Picture - Screen_Flow**
-
-| Example of using \ ``RedirectAuthenticationHandler``\  is shown below.
-
-**Description example of source screen JSP**
-
-.. code-block:: jsp
-
-  <form:form action="${pageContext.request.contextPath}/login" method="get">
-      <!-- omitted -->
-    <input type="hidden" name="redirectTo"
-      value="${pageContext.request.contextPath}/reservetour/read?
-      ${f:query(reserveTourForm)}&page.page=${f:h(param['page.page'])}
-      &page.size=${f:h(param['page.size'])}" />  <!-- (1) -->
-  </form:form>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table:: 
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | As hidden field, set the "URL of destination page after successful login".
-       | Specify "\ ``redirectTo``\  " as hidden field name (request parameter name).
-       | 
-       | Field name (request parameter name) should match with \ ``targetUrlParameter``\   property value of \ ``RedirectAuthenticationHandler``\ .
-
-**Description example of login screen JSP**
-
-.. code-block:: jsp
-
-  <form:form action="${pageContext.request.contextPath}/authentication" method="post">
-       <!-- omitted -->
-       <input type="submit"
-         value="Login">
-       <input type="hidden" name="redirectTo" value="${f:h(param.redirectTo)}" />  <!-- (1) -->
-       <!-- omitted -->
-  </form:form>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table:: 
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | As hidden field, set the "URL of destination page after successful login", passed by request parameter from source screen.
-       | Specify "\ ``redirectTo``\  " as hidden field name (request parameter name).
-       | 
-       | Field name (request parameter name) should match with \ ``targetUrlParameter``\  property value of \ ``RedirectAuthenticationHandler``\ .
-
-**Spring Security configuration file**
-
-.. code-block:: xml
-
-  <sec:http auto-config="true">
-      <!-- omitted -->
-      <!-- (1) -->
-      <sec:form-login
-          login-page="/login"
-          login-processing-url="/authentication"
-          authentication-failure-handler-ref="authenticationFailureHandler"
-          authentication-success-handler-ref="authenticationSuccessHandler" />
-      <!-- omitted -->
-  </sec:http>
-
-  <!-- (2) -->
-  <bean id="authenticationSuccessHandler"
-      class="org.terasoluna.gfw.security.web.redirect.RedirectAuthenticationHandler">
-  </bean>
-
-  <!-- (3) -->
-  <bean id="authenticationFailureHandler"
-      class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
-      <property name="defaultFailureUrl" value="/login?error=true"/> <!-- (4) -->
-      <property name="useForward" value="true"/> <!-- (5) -->
-  </bean>
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Specify BeanId of \ ``authentication-failure-handler-ref``\  (handler setting at the time of authentication error) and \ ``authentication-success-handler-ref``\  (handler setting in case of successful authentication).
-   * - | (2)
-     - | Define \ ``org.terasoluna.gfw.security.web.redirect.RedirectAuthenticationHandler``\ as a bean referred from \ ``authentication-success-handler-ref``\ .
-   * - | (3)
-     - | Define \ ``org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler``\  as a bean referred from \ ``authentication-failure-handler-ref``\ .
-   * - | (4)
-     - | Specify destination path at the time of authentication failure.
-       | In above example, login screen path and the query (\ ``error=true``\ ) to indicate transition after authentication error, is set.
-   * - | (5)
-     - | **To use this functionality, useForward should be set to true.**
-       | By setting it to \ ``true``\ , Forward is used instead of Redirect, at the time of transiting to the screen (login screen) which would be displayed in case of authentication failure.
-
-       | This is because "URL of destination page after successful login" needs to be included in the request parameter of authentication request.
-       | By using Redirect, if authentication error screen is displayed, "URL of destination page after successful login" cannot be inherited from request parameter. Hence, it is not possible to transit to the specified screen even after login is successful.
-       | To avoid this, it is necessary to ensure that "URL of destination page after successful login" is inherited from request parameter using Forward.
-
-.. tip::
-
-  Measures against Open Redirector vulnerability are implemented in \ ``RedirectAuthenticationHandler``\ .
-  Therefore, user cannot transit to external sites such as "http://google.com".
-  In order to transit to an external site, it is necessary to create a class that implements \ ``org.springframework.security.web.RedirectStrategy``\ ,
-  and it is to be injected to \ ``targetUrlParameterRedirectStrategy``\  property of \ ``RedirectAuthenticationHandler``\ .
-  
-  As a precaution while extending, it is necessary to have a structure that does not pose any problems even if \ ``redirectTo``\ value is tampered with.
-  For example, the measures given below can be considered.
-  
-  * Specifying the ID of page number etc. instead of directly specifying the destination URL and redirecting to the URL corresponding to that ID.
-  * Checking the destination URL, and redirecting only the URL that matches with white list.
+      - | Add a flag (checkbox field) for specifying whether "Remember Me authentication" function is used and specify \ ``remember_me``\  in the field name (request parameter name).
+        | If authentication process is carried out after ticking the checkbox, "Remember Me authentication" function is applied for subsequent requests.
 
 .. raw:: latex
 

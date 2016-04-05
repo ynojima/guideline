@@ -1159,7 +1159,7 @@ How to use transaction token check in View (JSP)
 
  .. note::
     
-    If \ ``<form:form>``\  tag is used, the parameters necessary for CSRF token check are also automatically embedded. Refer to \ :ref:`csrf_formformtag-use`\  for the parameters necessary for CSRF token check.
+    If \ ``<form:form>``\  tag is used, the parameters necessary for CSRF token check are also automatically embedded. Refer to \ :ref:`csrf_htmlformtag-use`\  for the parameters necessary for CSRF token check.
 
  .. note::
     
@@ -1520,7 +1520,7 @@ This is an example of Internet Explorer 11.
 There is no problem because the double submit itself is prevented.
 
 In \ :doc:`blank projects <../ImplementationAtEachLayer/CreateWebApplicationProject>`\  after 5.0.0.RELEASE,
-it is configured so that the cache is disabled by \ :ref:`Spring Security <SpringSecurityAppendixSecHeaders>`\ .
+it is configured so that the cache is disabled by \ :ref:`Spring Security <SpringSecurityLinkageWithBrowser>`\ .
 
 If showing the transaction error screen is preferred instead of the screen above,
 excluding \ ``<sec:cache-control />``\  is required.
