@@ -54,6 +54,13 @@ Overview
   CSRF token check is the check that verifies an invalid update request from a different site and throws an error.
   To check and enforce users to maintain the order (series of business flows), refer \ :ref:`double-submit_transactiontokencheck`\ .
 
+.. warning:: **CSRF measures at the time of the multi-part request (file upload)**
+
+    About CSRF measures during file upload, \ :ref:`file upload Servlet Filter setting <file-upload_setting_servlet_filter>`\ should be followed.
+
+
+
+
 |
 
 How to use
