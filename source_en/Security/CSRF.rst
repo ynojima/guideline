@@ -43,6 +43,9 @@ Following methods can be used to attack if CSRF countermeasures are not implemen
     CSRF countermeasures should be implemented not only for the login request but also for the login process.
     If CSRF countermeasures are not implemented for login process, user is forced to login using the account created by the attacker even before the user realizes it and there is a possibility of the operation history of login being stolen.
 
+.. warning:: **CSRF measures at the time of the multi-part request (file upload)**
+
+    About CSRF measures during file upload, \ :ref:`file upload Servlet Filter setting <file-upload_setting_servlet_filter>`\ should be followed.
 
 
 CSRF countermeasures of Spring Security
