@@ -280,6 +280,8 @@ Perform the following settings to enable upload functionality of Servlet 3.0.
 
         When the files uploaded as application are to be saved as temporary files, they should be output to a directory other than the directory specified in \ ``<location>``\  element.
 
+.. _file-upload_setting_servlet_filter:
+
 Servlet Filter settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 The operation when the maximum size allowed in file upload exceeds the limit at the time of multipart/form-data request, varies depending on the application server. \ ``MultipartException``\  generated when maximum size exceeds the limit depending on the application server is likely to be not detected and exception handling settings described later will be invalid.
@@ -315,12 +317,17 @@ The operation when the maximum size allowed in file upload exceeds the limit at 
      - | Specify the URL pattern for applying \ ``MultipartFilter``\ .
      
 
- .. warning::
- 
-    **MultipartFilter needs to be defined before the Servlet Filter that accesses request parameters.**
-    
-    When security measures are to be carried out using Spring Security, it should be defined before ``springSecurityFilterChain``.
+ .. warning:: **Precautions while using Spring Security**
+
+    When security countermeasures are to be carried out by using Spring Security, they should be defined prior to \ ``springSecurityFilterChain``\. 
     Further, when request parameters are accessed by a project-specific Servlet Filter, MultipartFilter should be defined before that Servlet Filter.
+
+    However, when defined before \ ``springSecurityFilterChain``\ , unauthenticated or unauthorized users may be allowed to upload the file (create temporary file).
+    Although a method to avoid this operation has been given in \ `Spring Security Reference -Cross Site Request Forgery (CSRF)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#csrf-include-csrf-token-in-action>`_\ , it is not recommended to be applied in this guideline since it poses a security risk. 
+
+ .. warning:: **Precautions when maximum size limit for file upload is exceeded**
+
+   When allowable size limit for file upload has been exceeded, an 'Over the size limit" error may get detected before fetching a CSRF token in some of the application servers like WebLogic and CSRF token check is not performed.
 
  .. note:: **Default calling of MultipartResolver**
     
@@ -1801,7 +1808,7 @@ Perform the following settings when using Commons FileUpload.
      - | When using Commons FileUpload, an upload function of Servlet 3.0 should be disabled.
        | If \ ``<multipart-config>``\  element is present in \ ``DispatcherServlet``\  definition, make sure to delete the same. 
    * - | (2)
-     - | When using Commons Fileupload, \ ``MultipartFilter``\  should be defined to enable \ :ref:`CSRF measures <csrf_use-multipart-filter>`\ .
+     - | When using Commons Fileupload, \ ``MultipartFilter``\  must be defined to enable security countermeasures which use Spring Security.
        | \ ``MultipartFilter``\ mapping should be defined before defining springSecurityFilterChain (Servlet Filter of Spring Security).
 
 .. tip::
