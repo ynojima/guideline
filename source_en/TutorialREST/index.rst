@@ -660,12 +660,14 @@ Definition of Spring Security for REST API
         <!-- (1) -->
         <sec:http
             pattern="/api/v1/**"
-            auto-config="true"
             create-session="stateless">
+            <sec:http-basic />
             <sec:csrf disabled="true"/>
         </sec:http>
 
-        <sec:http auto-config="true">
+        <sec:http>
+            <sec:form-login />
+            <sec:logout />
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />
