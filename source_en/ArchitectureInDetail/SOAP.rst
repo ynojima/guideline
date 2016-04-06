@@ -749,13 +749,9 @@ A configuration example of Spring Security carrying out Basic authentication for
 .. code-block:: xml
 
     <sec:http pattern="/ws/**"
-              auto-config="true"
-              use-expressions="true"
               create-session="stateless">
-       <sec:headers />
-       <sec:csrf disabled="true">
-       <!-- (1) -->
-       <sec:http-basic />
+       <sec:csrf disabled="true" />
+       <sec:http-basic />  <!-- (1) -->
     </sec:http>
 
     <!-- (2) -->
@@ -853,11 +849,9 @@ A configuration example of Spring Security carrying out Basic authentication for
 
     <!-- (1) -->
     <sec:http pattern="/ws/**"
-        auto-config="true"
-        use-expressions="true"
         create-session="stateless">
-        <sec:headers />
-        <sec:csrf disabled="true">
+        <sec:http-basic />
+        <sec:csrf disabled="true" />
     </sec:http>
 
 .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
