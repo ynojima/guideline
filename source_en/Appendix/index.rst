@@ -5,6 +5,7 @@ Appendix
 .. toctree::
    :maxdepth: 2
 
+   ../TutorialSession/index
    ../TutorialREST/index
    CreateProjectFromBlank
    TagLibAndELFunctions
