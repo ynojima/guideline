@@ -116,7 +116,7 @@ settings.xml file needs be created in the home directory of local development en
 
 .. note::
 
-  Additionally, also refer to: `Configuring Maven to Use a Single Nexus Group / Documentation Sonatype.com <http://www.sonatype.com/books/nexus-book/reference/maven-sect-single-group.html>`_
+  Additionally, also refer to: `Configuring Maven to Use a Single Repository Group / Documentation Sonatype.com <http://books.sonatype.com/nexus-book/reference/config-maven.html>`_
 
 mvn deploy how to
 --------------------------------------------------------------------------------
