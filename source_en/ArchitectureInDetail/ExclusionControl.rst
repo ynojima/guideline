@@ -584,7 +584,7 @@ Exclusive control using pessimistic locking
 .. note:: **When using JPA (Hibernate)**
 
      Although the method of fetching a pessimistic lock varies for each database, such differences are absorbed by JPA (Hibernate).
-     Refer to `Hibernate Developer Guide <http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html_single/#d5e233>`_ for RDBMS that supports Hibernate.
+     Refer to `Hibernate Developer Guide <http://docs.jboss.org/hibernate/orm/4.3/devguide/en-US/html_single/#d5e233>`_ for RDBMS that supports Hibernate.
 
 Exclusive control with pessimistic locking is used when it is applicable to any of the 3 cases given below.
 
