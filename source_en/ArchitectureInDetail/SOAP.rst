@@ -1538,7 +1538,7 @@ Define \ ``org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean``\  gene
 
         .. Note:: **Specify other than URL of WSDL file to wsdlDocumentResource**
 
-            In the example above, it is assumed that SOAP server publishes WSDL file. A static file can be specified as well by using \ ``classpath:``\  or \ ``file:``\  prefix. Refer \ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-resourceloader>`_\  for strings that can be specified.
+            In the example above, it is assumed that SOAP server publishes WSDL file. A static file can be specified as well by using \ ``classpath:``\  or \ ``file:``\  prefix. Refer \ `Spring Framework Reference Documentation -Resources(The ResourceLoader)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/resources.html#resources-resourceloader>`_\  for strings that can be specified.
 
 
 .. Note:: **Overwriting end point address**
