@@ -69,7 +69,7 @@ Create project using `archetype:generate <http://maven.apache.org/archetype/mave
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-multi-web-blank-mybatis3-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.1.0.RELEASE^
      -DgroupId=com.example.todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -120,7 +120,7 @@ If the project creation successes, following type of log will be printed.
 
     (... omit)
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-multi-web-blank-mybatis3-archetype:5.0.1.RELEASE
+    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-multi-web-blank-mybatis3-archetype:5.1.0.RELEASE
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.example.todo
     [INFO] Parameter: artifactId, Value: todo
@@ -1678,7 +1678,7 @@ Module that manages the SQL file to initialize the database is explained.
       - Directory for storing the database initialization SQL files.
 
         It is an empty directory at the time of creation.
-        For how to create, Refer `Sample application of initdb project <https://github.com/terasolunaorg/terasoluna-tourreservation-mybatis3/tree/master/terasoluna-tourreservation-initdb/src/sqls>`_.
+        For how to create, Refer `Sample application of initdb project <https://github.com/terasolunaorg/terasoluna-tourreservation-mybatis3/tree/master/terasoluna-tourreservation-initdb/src/main/sqls>`_.
 
 .. note::
 
@@ -1781,8 +1781,8 @@ The hierarchical structure of the project indicated below which is created in Ma
         The project created in Maven Archetype has become a multi-module configuration,
         parent project and each sub-module have a cross-reference relationship.
 
-        In the project created in version 5.0.1.RELEASE Maven Archetype,
-        [org.terasoluna.gfw:terasoluna-gfw-parent:5.0.1.RELEASE] is specified as a parent project.
+        In the project created in version 5.1.0.RELEASE Maven Archetype,
+        [org.terasoluna.gfw:terasoluna-gfw-parent:5.1.0.RELEASE] is specified as a parent project.
     * - | (2)
       - TERASOLUNA Server Framework for Java (5.x) Parent project.
 
