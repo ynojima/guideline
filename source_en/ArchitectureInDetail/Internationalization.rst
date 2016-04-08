@@ -37,6 +37,11 @@ The image of switching locale is as follows:
 
     For internationalization of Codelist, refer to :doc:`Codelist`.
 
+.. note::
+
+    When the error screen is to be internationalised, transition to error screen is performed by using MVC Controller of Spring.
+    If a direct transition to error screen is performed without Spring MVC, it may happen that the message is not output in intended language.
+
 .. tip::
 
     The most commonly known abbreviation of internationalization is i18n.
@@ -350,7 +355,11 @@ If saving the locale in the server side, use the  \ ``SessionLocaleResolver``\ .
         | id attribute of bean tag should be set as "localeResolver".
         | By performing these settings, \ ``SessionLocaleResolver``\  will be used at the \ ``LocaleChangeInterceptor``\ .
     * - | (2)
-      - | When locale is not specified in request parameter, locale specified in \ ``defaultLocale``\  property is enabled. In this case, the value fetched in \ ``HttpServletRequest#getLocale``\  is considered.
+      - | Specify Locale in \ ``defaultLocale``\  property. When Locale cannot be fetched from the session, setup value of \ ``value``\  becomes valid.
+
+        .. note::
+
+         When \ ``defaultLocale``\  property is omitted, Locale set in the user terminal (browser) becomes valid.
 
 |
 
@@ -380,7 +389,12 @@ If saving the locale in the client side, use the  \ ``CookieLocaleResolver``\ .
         | id attribute of bean tag should be set as "localeResolver".
         | By performing these settings, \ ``CookieLocaleResolver``\  will be used at the \ ``LocaleChangeInterceptor``\ .
     * - | (2)
-      - | When locale is not specified, locale specified in \ ``defaultLocale``\  property is enabled. In this case, the value fetched in \ ``HttpServletRequest#getLocale``\  is considered.
+      - | Specify Locale in \ ``defaultLocale``\  property. When Locale cannot be fetched from Cookie, setup value of \ ``value``\  becomes valid.
+
+        .. note::
+
+         When \ ``defaultLocale``\  property is omitted, Locale configured in the user terminal (browser) becomes valid.
+
     * - | (3)
       - | The value specified in \ ``cookieName``\  property is used as cookie name. If not specified, the value of \ ``org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE``\ is used as default. **It is recommended to change not to tell the user explicitly Spring Framework is used.**
 

@@ -54,6 +54,13 @@ Overview
   CSRF token check is the check that verifies an invalid update request from a different site and throws an error.
   To check and enforce users to maintain the order (series of business flows), refer \ :ref:`double-submit_transactiontokencheck`\ .
 
+.. warning:: **CSRF measures at the time of the multi-part request (file upload)**
+
+    About CSRF measures during file upload, \ :ref:`file upload Servlet Filter setting <file-upload_setting_servlet_filter>`\ should be followed.
+
+
+
+
 |
 
 How to use
@@ -124,7 +131,7 @@ The locations where additional settings are required, are highlighted.
    * - | (1)
      - | Spring Security's CSRF token check functionality can be used by defining \ ``<sec:csrf>``\  element in \ ``<sec:http>``\  element.
        | For HTTP methods that are checked by default, refer to \ :ref:`Here <csrf_default-add-token-method>`\ .
-       | For details, refer to \ `Spring Security Reference Document <http://docs.spring.io/spring-security/site/docs/3.2.7.RELEASE/reference/htmlsingle/#csrf-configure>`_\ .
+       | For details, refer to \ `Spring Security Reference Document <http://docs.spring.io/spring-security/site/docs/3.2.9.RELEASE/reference/htmlsingle/#csrf-configure>`_\ .
    * - | (2)
      - | Define Handler that changes the view to be displayed according to each type of exception when the exception inheriting \ ``AccessDeniedException``\  occurs.
        | It is possible to display all the exceptions on the same screen by specifying the destination jsp in ``error-page`` attribute.

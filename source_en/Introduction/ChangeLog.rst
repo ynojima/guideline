@@ -9,6 +9,131 @@ Change Log
     * - Modified on
       - Modified locations
       - Modification details
+    * - 2016-02-24
+      - \-
+      - 5.0.2 RELEASE version published
+
+        * For details of change contents, refer \ `5.0.2 Issue List <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A5.0.2+is%3Aclosed>`_\ .
+    * -
+      - General
+      - Correction of errors in the guideline (typo mistakes and simple description errors)
+
+        Description details modified
+
+        * For details of modification, refer \ `5.0.2 Issue list (improvement) <https://github.com/terasolunaorg/guideline/issues?q=milestone%3A5.0.2+label%3Aimprovement+is%3Aclosed>`_\ .
+
+    * -
+      - :doc:`index`
+      - Description details added
+
+        * Description related to operation verification environment of the details described in the guideline added
+
+    * -
+      - :doc:`../Overview/FrameworkStack`
+      - OSS version to be used (Spring IO Platform version) updated
+
+        * Spring IO Platform version updated in 1.1.5.RELEASE
+        * Spring Framework version updated in 4.1.9.RELEASE
+        * Spring Security version updated in 3.2.9.RELEASE
+
+        OSS version to be used along with Spring IO Platform version update is updated
+
+        * OSS version to be used updated. For update details, refer \ `version 5.0.2 migration guide <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-5.0.2_ja#step-1-update-dependency-libraries>`_\ .
+
+    * -
+
+      - :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
+      - Description details modified
+
+        * A method wherein SQL is executed by using \ ``SQL Maven Plugin``\  is added (\ `guideline#1428 <https://github.com/terasolunaorg/guideline/issues/1428>`_\ ) 
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - Description details added
+
+        *  Precautions for \ ``Log4jdbcProxyDataSource``\  overhead added (\ `guideline#1471 <https://github.com/terasolunaorg/guideline/issues/1471>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - Description details corresponding to MyBatis 3.3 added
+
+        * "Changed the default at the time of delayed reading to \ ``JAVASSIST``\ " added (\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessJpa`
+      - Bug correction for the guideline
+
+        *  Utility which use Like condition modified appropriately (\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Validation`
+      - Description details modified
+
+        * Added that "Index position of attribute value" for input validation error message is in alphabetical order" (\ `guideline#1296 <https://github.com/terasolunaorg/guideline/issues/1296>`_\ ) 
+
+    * -
+      - :doc:`../ArchitectureInDetail/Logging`
+      - Description details modified
+
+        * Description where \ ``ServiceLoader``\  mechanism is used in Logback setting, is added (\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Internationalization`
+      - Description details modified
+
+        *  Description for appropriately reflecting locale in JSP is added (\ `guideline#1439 <https://github.com/terasolunaorg/guideline/issues/1439>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Codelist`
+      - Description details added
+
+        *  Description which recommends a pattern wherein \ ``JdbcTemplate``\  is specified in JdbcCodeList, is added (\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileUpload`
+      - Description details modified
+
+        * Basic flow of uploading process and its description modified to description which use \ ``MultipartFilter``\  of Spring (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
+        * "A method which sends CSRF token by query parameter" deleted due to issues like security issues, variation in the operation according to AP server etc.
+          Precaution - "when allowable size for file upload exceeds, CSRF token check is not carried out appropriately in some AP servers" added (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileDownload`
+      - Description details modified
+
+        * Source example which use \ ``com.lowagie:itext:4.2.1``\  modified to the format which use \ ``com.lowagie:itext:2.1.7``\ for specification change in iText (\ `guideline#1310 <https://github.com/terasolunaorg/guideline/issues/1310>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/REST`  
+      - Description details modified
+
+        * Added creation of ObjectMapper which use \ ``Jackson2ObjectMapperFactoryBean``\  (\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )  
+        *  Modified to a format wherein MyBatis3 is considered as a prerequisite in the implementation of domain layer of REST API application (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )  
+
+    * -
+      - :doc:`../Security/Tutorial`  
+      - Bug correction in the guideline
+
+        * Corrected places in the source code where logout was not possible (\ `guideline#1300 <https://github.com/terasolunaorg/guideline/issues/1300>`_\ )  
+
+    * -
+      - :doc:`../Security/Authentication`  
+      - Description details modified
+
+        * \ ``RedirectAuthenticationHandler``\ package corrected (\ `guideline#1482 <https://github.com/terasolunaorg/guideline/issues/1482>`_\ )  
+
+    * -
+      - :doc:`../Security/PasswordHashing`  
+      - Bug correction in the guideline
+
+        * VM argument which resolves delay issues associated with SecureRandom is corrected for errors (\ `guideline#1502 <https://github.com/terasolunaorg/guideline/issues/1502>`_\ )  
+
+    * -
+      - :doc:`../Security/CSRF`  
+      - Description details modified
+
+        * Items related to multi-part request moved in :doc:`../ArchitectureInDetail/FileUpload` (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )  
+
     * - 2015-08-05
       - \-
       - Released "5.0.1 RELEASE" version
