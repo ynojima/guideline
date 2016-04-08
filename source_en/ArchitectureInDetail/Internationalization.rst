@@ -300,8 +300,8 @@ If switching the locale using the request parameter, use the \ ``LocaleChangeInt
     :header-rows: 1
     :widths: 10 90
 
-    * - | 項番
-      - | 説明
+    * - | Sr. No.
+      - | Description
     * - | (1)
       - | Define ``org.springframework.web.servlet.i18n.LocaleChangeInterceptor`` in interceptor of Spring MVC.
 
