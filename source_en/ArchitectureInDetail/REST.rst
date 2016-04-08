@@ -234,7 +234,7 @@ REST API implementation sample
     Aim of the tutorial is to emphasize the saying "Practice makes one perfect". Prior to detailed explanation, the user can gain the experience of actually practicing RESTful Web Service development using TERASOLUNA Server Framework for Java (5.x), with the help of this tutorial.
     When this firsthand experience of RESTful Web Service development is followed by reading the detailed explanation, the user gains a deeper understanding of the development.
     
-    Especially when the user does not have any experience of RESTful Web Service development, it is recommended to follow a process in the order namely,  "Tutorial practice" --> "Detailed explanation of architecture, design and development (described in subsequent sections) --> "Tutorial revision (Re-practice)".
+    Especially when the user does not have any experience of RESTful Web Service development, it is recommended to follow a process in the order namely,  "Tutorial practice" --> "Detailed explanation of architecture, design and development (described in subsequent sections)" --> "Tutorial revision (Re-practice)".
 
 |
 
