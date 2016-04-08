@@ -1,7 +1,7 @@
-TERASOLUNA Server Framework for Java (5.x)の機能詳細
+Architecture in Detail - TERASOLUNA Server Framework for Java (5.x)
 ================================================================================
 
-本ガイドラインで想定しているアーキテクチャについて説明する。
+The architecture adopted in this guideline is explained in detail here.
 
 .. toctree::
    :maxdepth: 1
