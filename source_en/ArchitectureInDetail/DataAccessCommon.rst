@@ -77,10 +77,10 @@ JDBC datasource provided by Application Server
         | Refer to \ `Apache Tomcat 7 User Guide (JNDI Datasource HOW-TO) <http://tomcat.apache.org/tomcat-7.0-doc/jndi-datasource-examples-howto.html>`_\  (Apache Commons DBCP).
     * - 3.
       - Oracle WebLogic Server 12c
-      - Refer to \ `Oracle WebLogic Server Product Documentation <http://docs.oracle.com/middleware/1213/wls/INTRO/jdbc.htm>`_\ .
+      - Refer to \ `Oracle WebLogic Server Product Documentation <http://docs.oracle.com/middleware/1221/wls/INTRO/jdbc.htm>`_\ .
     * - 4.
       - IBM WebSphere Application Server Version 8.5
-      - Refer to \ `WebSphere Application Server Online information center <http://pic.dhe.ibm.com/infocenter/wasinfo/v8r5/index.jsp?topic=%2Fcom.ibm.websphere.nd.doc%2Fae%2Ftdat_ccrtpds.html>`_\ .
+      - Refer to \ `WebSphere Application Server Online information center <http://www.ibm.com/support/knowledgecenter/SSEQTP_8.5.5/com.ibm.websphere.wlp.doc/ae/twlp_dep_configuring_ds.html?lang=en>`_\ .
     * - 5.
       - JBoss Enterprise Application Platform 6.4
       - Refer to \ `JBoss Enterprise Application Platform Product Documentation <https://access.redhat.com/documentation/en-US/JBoss_Enterprise_Application_Platform/6.4/html/Administration_and_Configuration_Guide/chap-Datasource_Management.html>`_\ .
@@ -367,7 +367,7 @@ Settings when using DataSource for which Bean is defined
         | For more details about settings, refer to \ `DBCP Configuration <http://commons.apache.org/proper/commons-dbcp/configuration.html>`_\ .
     * - | (8)
       - | In the example, values are specified directly; however, for fields where configuration values change with the environment, actual configuration values should be specified in properties file using Placeholder(${...}).
-        | For Placeholder, refer to \ ``PropertyPlaceholderConfigurer``\  of \ `Spring Reference Document <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/beans.html#beans-factory-extension-factory-postprocessors>`_\ .
+        | For Placeholder, refer to \ ``PropertyPlaceholderConfigurer``\  of \ `Spring Reference Document <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/beans.html#beans-factory-extension-factory-postprocessors>`_\ .
 
 
 Settings to enable transaction management
@@ -392,7 +392,8 @@ JDBC debug log settings
 
  .. warning::
 
-    **This is a debug setting; hence it should not be performed in case of applications that are to be released in performance test environment or production environment.**
+    **When Log4jdbcProxyDataSource offered by log4jdbc-remix is used, substantial overheads are likely to occur even if the log level is set in the configuration other than debug.**
+    **Therefore, it is recommended to use this setting for debugging, and connect to database without passing through Log4jdbcProxyDataSource while its release during performance test enviroment and commercial environment.**
 
 
 Settings related to datasource provided by log4jdbc

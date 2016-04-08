@@ -234,7 +234,7 @@ REST API implementation sample
     Aim of the tutorial is to emphasize the saying "Practice makes one perfect". Prior to detailed explanation, the user can gain the experience of actually practicing RESTful Web Service development using TERASOLUNA Server Framework for Java (5.x), with the help of this tutorial.
     When this firsthand experience of RESTful Web Service development is followed by reading the detailed explanation, the user gains a deeper understanding of the development.
     
-    Especially when the user does not have any experience of RESTful Web Service development, it is recommended to follow a process in the order namely,  "Tutorial practice" --> "Detailed explanation of architecture, design and development (described in subsequent sections) --> "Tutorial revision (Re-practice)".
+    Especially when the user does not have any experience of RESTful Web Service development, it is recommended to follow a process in the order namely,  "Tutorial practice" --> "Detailed explanation of architecture, design and development (described in subsequent sections)" --> "Tutorial revision (Re-practice)".
 
 |
 
@@ -1653,7 +1653,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
 - :file:`spring-mvc-rest.xml`
 
  .. code-block:: xml
-    :emphasize-lines: 22, 30-32, 39-41, 44-47, 51, 61, 65
+    :emphasize-lines: 22, 32-34, 39-41, 44-47, 51, 61, 65
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans" 
@@ -1682,16 +1682,16 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
     
         <bean id="jsonMessageConverter"
             class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-            <property name="objectMapper">
-                <bean id="objectMapper" class="com.fasterxml.jackson.datatype.joda.JodaMapper">
-                    <!-- (2) -->
-                    <property name="dateFormat">
-                        <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
-                    </property>
-                </bean>
-            </property>
+            <property name="objectMapper" ref="objectMapper" />
         </bean>
     
+        <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+            <!-- (2) -->
+            <property name="dateFormat">
+                <bean class="com.fasterxml.jackson.databind.util.StdDateFormat" />
+            </property>
+        </bean>
+
         <!-- Register components of Spring MVC. -->
         <!-- (3) -->
          <mvc:annotation-driven>
@@ -1743,6 +1743,7 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
         | For the details of fetching a value from property file, refer to ":doc:`PropertyManagement`".
     * - | (2)
       - | Add the settings for handling the JSON date field format as extended ISO-8601 format.
+        | Also, when JSR-310 Date and Time API or Joda Time class is to be used as a property of JavaBean which represents a resource (Resource class), "\ :ref:`RESTAppendixUsingJSR310_JodaTime`\ " must be carried out.
     * - | (3)
       - | Perform bean registration for the Spring MVC framework component necessary for providing RESTful Web Service.
         | JSON can be used as a resource format by performing these settings.
@@ -1763,6 +1764,36 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
     * - | (7)
       - | Specify AOP definition to output the exception handled by Spring MVC framework to a log.
         | Refer to \ :doc:`ExceptionHandling`\  for \ ``HandlerExceptionResolverLoggingInterceptor``\ .
+
+.. note:: **How to define a Bean for ObjectMapper**
+
+    When a Bean is to be defined for \ ``com.fasterxml.jackson.databind.ObjectMapper``\  of Jackson,
+    \ ``Jackson2ObjectMapperFactoryBean``\  provided by Spring should be used.
+    If \ ``Jackson2ObjectMapperFactoryBean``\  is used, extension module for JSR-310 Date and Time API or Joda Time can be auto-registered.
+    Further, \ ``ObjectMapper``\  configuration which is difficult to represent in Bean definition file of XML can be easily configured as well.
+
+    Also, when style is to be changed from directly defining a Bean for \ ``ObjectMapper``\  to using \ ``Jackson2ObjectMapperFactoryBean``\ ,
+    it should be noted that default value for the following configuration differs from the default value of Jackson (disabled).
+
+    * `MapperFeature#DEFAULT_VIEW_INCLUSION <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/MapperFeature.html?is-external=true#DEFAULT_VIEW_INCLUSION>`_\
+    * `DeserializationFeature#FAIL_ON_UNKNOWN_PROPERTIES <http://fasterxml.github.io/jackson-databind/javadoc/2.6/com/fasterxml/jackson/databind/DeserializationFeature.html?is-external=true#FAIL_ON_UNKNOWN_PROPERTIES>`_\
+
+    When \ ``ObjectMapper``\  operation and default Jackson operation are to be matched, the configuration above is enabled using \ ``featuresToEnable``\  property.
+
+     .. code-block:: xml
+
+        <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+            <!-- ... -->
+            <property name="featuresToEnable">
+                <array>
+                    <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+                    <util:constant static-field="com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES"/>
+                </array>
+            </property>
+        </bean>
+
+    For \ ``Jackson2ObjectMapperFactoryBean``\  details, refer `JavaDoc of Jackson2ObjectMapperFactoryBean <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/http/converter/json/Jackson2ObjectMapperFactoryBean.html>`_\ .
+
 
 .. _REST_note_changed_jackson_version:
 
@@ -1788,9 +1819,9 @@ Settings for activating the Spring MVC components necessary for RESTful Web Serv
 
     * Deprecated List
 
-     * http://fasterxml.github.io/jackson-core/javadoc/2.4/deprecated-list.html
-     * http://fasterxml.github.io/jackson-databind/javadoc/2.4/deprecated-list.html
-     * http://fasterxml.github.io/jackson-annotations/javadoc/2.4/deprecated-list.html
+     * http://fasterxml.github.io/jackson-core/javadoc/2.6/deprecated-list.html
+     * http://fasterxml.github.io/jackson-databind/javadoc/2.6/deprecated-list.html
+     * http://fasterxml.github.io/jackson-annotations/javadoc/2.6/deprecated-list.html
 
 |
 
@@ -2458,7 +2489,7 @@ Creating Controller class
 
     Due to \ ``@RestController``\  annotation, it is not necessary to assign \ ``@ResponseBody``\  annotation to each method of Controller.
     Hence, it is possible to create Controller for REST API in a simple way.
-    For details about \ ``@RestController``\  annotation refer to: \ `Here <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/web/bind/annotation/RestController.html>`_\ .
+    For details about \ ``@RestController``\  annotation refer to: \ `Here <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/web/bind/annotation/RestController.html>`_\ .
 
     An example to create a Controller for REST API by combining \ ``@Controller``\  annotation and \ ``@ResponseBody``\  annotation in a conventional way is given below.
 
@@ -4345,19 +4376,22 @@ Implementing the Controller that sends error response
 Create a controller that sends the error response for the error notified to Servlet Container.
 
  .. code-block:: java
-    :emphasize-lines: 14-17, 19-20, 22-27, 31, 34
+    :emphasize-lines: 17-20, 22-23, 25, 28, 33-35, 36, 40, 42, 45
 
     package org.terasoluna.examples.rest.api.common.error;
+    
+    import java.util.HashMap;
+    import java.util.Map;
     
     import javax.inject.Inject;
     import javax.servlet.RequestDispatcher;
     
     import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.RequestParam;
-    import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.bind.annotation.RestController;
+    import org.springframework.web.context.request.RequestAttributes;
     import org.springframework.web.context.request.WebRequest;
 
     // (1)
@@ -4369,18 +4403,26 @@ Create a controller that sends the error response for the error notified to Serv
         ApiErrorCreator apiErrorCreator; // (2)
     
         // (3)
+        private final Map<HttpStatus, String> errorCodeMap = new HashMap<HttpStatus, String>();
+    
+        // (4)
+        public ApiErrorPageController() {
+            errorCodeMap.put(HttpStatus.NOT_FOUND, "e.ex.fw.5001");
+        }
+    
+        // (5)
         @RequestMapping
-        public ResponseEntity<ApiError> handleErrorPage(
-                @RequestParam("errorCode") String errorCode, // (4)
-                WebRequest request) {
-            // (5)
+        public ResponseEntity<ApiError> handleErrorPage(WebRequest request) {
+            // (6)
             HttpStatus httpStatus = HttpStatus.valueOf((Integer) request
                     .getAttribute(RequestDispatcher.ERROR_STATUS_CODE,
                             RequestAttributes.SCOPE_REQUEST));
-            // (6)
+            // (7)
+            String errorCode = errorCodeMap.get(httpStatus);
+            // (8)
             ApiError apiError = apiErrorCreator.createApiError(request, errorCode,
                     httpStatus.getReasonPhrase());
-            // (7)
+            // (9)
             return ResponseEntity.status(httpStatus).body(apiError);
         }
     
@@ -4399,17 +4441,21 @@ Create a controller that sends the error response for the error notified to Serv
     * - | (2)
       - | Inject a class that creates error information.
     * - | (3)
+      - | Create \ ``Map``\  for mapping HTTP status code and error code.
+    * - | (4)
+      - | Register mapping of HTTP status code and error code.
+    * - | (5)
       - | Create a handler method that sends error response.
         | Above example is implemented on considering only the case wherein, error page is handled by using a response code (\ ``<error-code>``\ ).
         | Therefore, separate consideration is required for the case where an error page that is handled by using exception type (\ ``<exception-type>``\ ) is to be processed using this method.
-    * - | (4)
-      - | Receive the error code as request parameter.
-    * - | (5)
-      - | Fetch the status code stored in request scope.
     * - | (6)
-      - | Generate error information corresponding to the error code received in request parameter.
+      - | Fetch status code stored in request scope.
     * - | (7)
-      - | Send the error information fetched in (5) and (6) as a response.
+      - | Fetch error code corresponding to status code thus fetched.
+    * - | (8)
+      - | Generate error information corresponding to error codes thus fetched.
+    * - | (9)
+      - | Return the error information generated in (8).
 
 | 
 
@@ -4439,7 +4485,7 @@ Settings for handling an error that is notified to Servlet Container are explain
     <!-- (1) -->
     <error-page>
         <error-code>404</error-code>
-        <location>/api/v1/error?errorCode=e.ex.fw.5001</location>
+        <location>/api/v1/error</location>
     </error-page>
 
     <!-- (2) -->
@@ -4465,7 +4511,7 @@ Settings for handling an error that is notified to Servlet Container are explain
       - Description
     * - | (1)
       - | Add error page definition for response code if required.
-        | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\`` ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error?errorCode=e.ex.fw.5001``\ " is called and error response is sent.
+        | In the above example, when  error \ ``"404 Not Found"``\  occurs, Controller (\`` ApiErrorPageController``\ ) that is mapped in request "\ ``/api/v1/error``\ " is called and error response is sent.
     * - | (2)
       - | Add definition for handling a fatal error.
         | When a fatal error occurs, it is recommended to respond with the static JSON provided in advance, as double failure may occur during the process that creates response information.
@@ -4474,6 +4520,11 @@ Settings for handling an error that is notified to Servlet Container are explain
       - | Specify MIME type of json.
         | When multi byte characters are included in the JSON file created in (2), junk characters may be displayed at client side if \ ``charset=UTF-8``\  is not specified.
         | When there are no multi byte characters in the JSON file, this setting is not mandatory. However, it is always safe to incorporate this setting.
+
+ .. note::
+    
+    In `Servlet specification, <http://download.oracle.com/otn-pub/jcp/servlet-3_1-fr-spec/servlet-3_1-final.pdf#page=128>`_\ , the behaviour wherein a path is specified which assigns query parameters in \ ``<location>``\  of \ ``<error-page>``\  is not defined. Hence, behaviour is likely to change according to AP server.
+    Accordingly, it is not recommended to transfer information to transition destination at the time of error using a query parameter.
 
 |
 
@@ -4563,10 +4614,450 @@ Cache control for resource
 
 |
 
+
+.. _RESTHowToExtend:
+
+How to extend
+--------------------------------------------------------------------------------
+
+
+
+.. _RESTAppendixJsonview:
+
+Output control for response using @JsonView
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+| Properties within the resource object can be grouped by using \ ``@JsonView``\ .
+| Spring Framework implements this function by supporting Jackson function.
+| For details, refer \ `JacksonJsonViews <http://wiki.fasterxml.com/JacksonJsonViews>`_\ .
+
+| The properties those belong to the specified group alone can be output by specifying the group in Controller.
+| 1 property may also belong to multiple groups.
+|
+| Example of implementation when Member resource is handled in 2 formats of 'Overview' and 'Details' is as follows.
+| 'Overview format' outputs the main item of Member resource and 'Details format' outputs all items of Member resource.
+
+* :file:`MemberResource.java`
+
+ .. code-block:: java
+
+    package org.terasoluna.examples.rest.api.member;
+    
+    import java.io.Serializable;
+    
+    import org.joda.time.DateTime;
+    import org.joda.time.LocalDate;
+
+    import com.fasterxml.jackson.annotation.JsonView;
+    
+    public class MemberResource implements Serializable {
+    
+        private static final long serialVersionUID = 1L;
+
+        // (1)
+        interface Summary {
+        }
+
+        // (2)
+        interface Detail {
+        }
+
+        // (3)
+        @JsonView({Summary.class, Detail.class})
+        private String memberId;
+
+        @JsonView({Summary.class, Detail.class})
+        private String firstName;
+
+        @JsonView({Summary.class, Detail.class})
+        private String lastName;
+
+        // (4)
+        @JsonView(Detail.class)
+        private String genderCode;
+
+        @JsonView(Detail.class)
+        private LocalDate dateOfBirth;
+
+        @JsonView(Detail.class)
+        private String emailAddress;
+
+        @JsonView(Detail.class)
+        private String telephoneNumber;
+
+        @JsonView(Detail.class)
+        private String zipCode;
+
+        @JsonView(Detail.class)
+        private String address;
+
+        // (5)
+        private DateTime createdAt;
+
+        private DateTime lastModifiedAt;
+
+        // omitted setter and getter
+    
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | A marker interface to specify the group which controls the output is defined.
+        | A group to be specified at the time of overview output is defined in the above example.
+    * - | (2)
+      - | A marker interface to specify the group which controls the output is defined.
+        | A group to be specified at the time of details output is defined in the above example.
+    * - | (3)
+      - | The items to be output in multiple groups can be assigned to multiple groups by setting arguments to an array and passing multiple marker interfaces.
+        | Since the items in the above example are to be assigned to both the groups, overview and details, 2 marker interfaces are set as arguments.
+    * - | (4)
+      - | The items to be output in single group can be assigned to the corresponding group 
+        | by setting the marker interface to argument.
+        | Since there is 1 element in this case, it is not necessary to set it in the array.
+        | Since the items in the above example are to be assigned only to the details group, 1 marker interface is set to an argument.
+    * - | (5)
+      - | \ ``@JsonView``\  is not set in the items those do not belong to the group.
+        | It can be changed whether the items those do not belong to the group are to be output, according to the settings.
+        | Method of setting is described later.
+
+|
+
+
+* :file:`MemberRestController.java`
+
+ .. code-block:: java
+
+    package org.terasoluna.examples.rest.api.member;
+    
+    import java.util.ArrayList;
+    import java.util.List;
+    
+    import javax.inject.Inject;
+    
+    import org.dozer.Mapper;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.web.bind.annotation.PathVariable;
+    import org.springframework.web.bind.annotation.RequestBody;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RequestMethod;
+    import org.springframework.web.bind.annotation.ResponseStatus;
+    import org.springframework.web.bind.annotation.RestController;
+    import org.terasoluna.examples.rest.domain.model.Member;
+    import org.terasoluna.examples.rest.domain.service.member.MemberService;
+    
+    import com.fasterxml.jackson.annotation.JsonView;
+    
+    @RequestMapping("members")
+    @RestController
+    public class MemberRestController {
+    
+        @Inject
+        MemberService memberService;
+    
+        @Inject
+        Mapper beanMapper;
+        
+        // (1)
+        @JsonView(Summary.class)
+        @RequestMapping(value = "{memberId}", params = "format=summary", method = RequestMethod.GET)
+        @ResponseStatus(HttpStatus.OK)
+        public MemberResource getMemberSummary(@PathVariable("memberId") String memberId) {
+
+            Member member = memberService.getMember(memberId);
+
+            MemberResource responseResource = beanMapper.map(member,
+                    MemberResource.class);
+
+            return responseResource;
+        }
+        
+        // (2)
+        @JsonView(Detail.class)
+        @RequestMapping(value = "{memberId}", params = "format=detail", method = RequestMethod.GET)
+        @ResponseStatus(HttpStatus.OK)
+        public MemberResource getMemberDetail(@PathVariable("memberId") String memberId) {
+
+            Member member = memberService.getMember(memberId);
+
+            MemberResource responseResource = beanMapper.map(member,
+                    MemberResource.class);
+
+            return responseResource;
+        }
+    }
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Attach \ ``@JsonView``\  and set the marker interface for the group to be output.
+        | Set \ ``Summary``\  marker interface in the method that outputs the overview.
+    * - | (2)
+      - | Set \ ``Detail``\  marker interface in the method that outputs the details.
+
+
+|
+
+| Properties those belong to the group specified in Controller alone are displayed in the body that is output.
+| The output example is as follows.
+
+* Summary
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith",
+      "createdAt" : "2014-03-14T11:02:41.477Z",
+      "lastModifiedAt" : "2014-03-14T11:02:41.477Z"
+    }
+
+
+|
+
+* Detail
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith",
+      "genderCode" : "1",
+      "dateOfBirth" : "2013-03-14",
+      "emailAddress" : "user1394794959984@test.com",
+      "telephoneNumber" : "09012345678",
+      "zipCode" : "1710051",
+      "address" : "Tokyo",
+      "createdAt" : "2014-03-14T11:02:41.477Z",
+      "lastModifiedAt" : "2014-03-14T11:02:41.477Z"
+    }
+
+
+|
+
+| Properties without \ ``@JsonView``\  attached are output if \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  setting is enabled and are not output if disabled.
+| \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  is enabled in the above output example.
+| Set as follows when \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  is enabled.
+
+ .. code-block:: xml
+ 
+   <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+       <!-- ... -->
+       
+       <!-- (1) -->
+       <property name="featuresToEnable">
+           <array>
+               <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+           </array>
+       </property>
+   </bean>
+
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Setting is enabled by defining \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  in \ ``featuresToEnable``\  element.
+    
+
+|
+
+
+| Set as follows when \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  is to be disabled.
+
+ .. code-block:: xml
+ 
+   <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+       <!-- ... -->
+       
+       <!-- (1) -->
+       <property name="featuresToDisable">
+           <array>
+               <util:constant static-field="com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION"/>
+           </array>
+       </property>
+   </bean>
+
+ .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+ .. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - Sr. No.
+      - Description
+    * - | (1)
+      - | Setting is disabled by defining \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  in \ ``featuresToDisable``\  element.
+    
+
+| When \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  is disabled, contents of output in the earlier output example are changed as follows.
+
+* Summary
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith"
+    }
+
+
+|
+
+* Detail
+
+ .. code-block:: java
+
+    {
+      "memberId" : "M000000001",
+      "firstName" : "John",
+      "lastName" : "Smith",
+      "genderCode" : "1",
+      "dateOfBirth" : "2013-03-14",
+      "emailAddress" : "user1394794959984@test.com",
+      "telephoneNumber" : "09012345678",
+      "zipCode" : "1710051",
+      "address" : "Tokyo"
+    }
+
+|
+    
+    
+.. warning::
+ 
+    You need to be careful since the default value when \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  is not specified, varies according to the setting method for \ ``ObjectMapper``\ .
+    It is also mentioned in \ :ref:`RESTHowToUseApplicationSettingsOfSpringMVC`\  that the default value becomes valid if the direct Bean definition is applied for the method to define Bean for \ ``ObjectMapper``\ . If \ ``Jackson2ObjectMapperFactoryBean``\  is used, the default value becomes invalid. For explicitly carrying out settings, it is recommended to include \ ``MapperFeature.DEFAULT_VIEW_INCLUSION``\  specification for setting with either of the styles.
+    
+
+
+    
+.. note::
+  \ ``@JsonView``\  is created using the following 2 functions. These are the functions those can be used when the common processes before and after object mapping are to be implemented in the process methods to which \ ``@RequestMapping``\  in the Controller is added.
+  
+  * \ ``org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice``\ 
+  * \ ``org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice``\
+
+  \ ``@ControllerAdvice``\  can be applied by adding it to the implementation class of these interfaces. Refer \ :ref:`application_layer_controller_advice`\  for the details of \ ``@ControllerAdvice``\ .
+  
+  \ ``RequestBodyAdvice``\  can implement the following method.
+
+
+  * :file:`org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice`
+
+   .. tabularcolumns:: |p{0.10\linewidth}|p{0.20\linewidth}|p{0.70\linewidth}|
+   .. list-table::
+      :header-rows: 1
+      :widths: 10 20 70
+
+      * - Sr. No.
+        - Method name
+        - Overview
+      * - | (1)
+        - | supports
+        - | Determine whether this Advice is applied to the request sent. It is applied if \ ``true``\ .
+      * - | (2)
+        - | handleEmptyBody
+        - | It is called before the contents of request body are reflected in the object used in Controller and when the body is empty.
+      * - | (3)
+        - | beforeBodyRead
+        - | It is called before the contents of request body are reflected in the object used in Controller.
+      * - | (4)
+        - | afterBodyRead
+        - | It is called after the contents of request body are reflected in the object used in Controller.
+
+  When it is not required to describe the processes with all above timings, they can be easily implemented by inheriting \ ``org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter``\  implemented with the above methods except supports not performing any action and overriding only the necessary portion.
+
+
+
+
+  \ ``ResponseBodyAdvice``\  can implement the following method.
+
+  * :file:`org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice`
+
+   .. tabularcolumns:: |p{0.10\linewidth}|p{0.20\linewidth}|p{0.70\linewidth}|
+   .. list-table::
+      :header-rows: 1
+      :widths: 10 20 70
+
+      * - Sr. No.
+        - Method name
+        - Overview
+      * - | (1)
+        - | supports
+        - | Determine whether this Advice is applied to the request sent. It is applied if \ ``true``\ .
+      * - | (2)
+        - | beforeBodyWrite
+        - | It is called before reflecting the return value in the response after the process in Controller is completed.
+
+|
+
+
 .. _RESTAppendix:
 
 Appendix
 --------------------------------------------------------------------------------
+
+.. _RESTAppendixUsingJSR310_JodaTime:
+
+Configuration while using JSR-310 Date and Time API / Joda Time
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When JSR-310 Date and Time API or Joda Time class is to be used as a property of JavaBean which represents a resource (Resource class),
+an extension module provided by Jackson in \ ``pom.xml``\  is added to dependent library.
+
+**When JSR-310 Date and Time API class is used**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+**When Joda Time class is used**
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>org.terasoluna.gfw</groupId>
+        <artifactId>terasoluna-gfw-jodatime</artifactId>
+    </dependency>
+
+or
+
+.. code-block:: xml
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-joda</artifactId>
+    </dependency>
+
+.. note::
+
+    Besides above, extension modules (\ ``jackson-datatype-xxx``\ ) for handling
+
+    * \ ``java.nio.file.Path``\  added from Java SE 7
+    * \ ``java.util.Optional``\  added from Java SE 8
+    * Objects that are set as Proxy by using Lazy Load function of Hibernate ORM
+
+    are provided by another Jackson.
+
+|
 
 .. _RESTAppendixSettingsOfDeployInSameWarFileRestAndClientApplication:
 
@@ -4855,7 +5346,7 @@ Implementation for each resource
         | In the above example, \ ``UriComponentsBuilder``\  class method is called to build URI set in link information and URI to access to one's resource is added to resource.
         |
         | \ ``ServletUriComponentsBuilder``\  instances passed as method argument of Controller are initiated based on the information of \ ``<servlet-mapping>``\  element described in web.xml. It is not resource dependent.
-        | By using `URI Template Patterns <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates>`_\  ,etc. provided in Spring Framework,
+        | By using `URI Template Patterns <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates>`_\  ,etc. provided in Spring Framework,
         | an URI can be built based on the request information. Thus, a generic build process which is independent of a resource, can be implemented.
         | 
         | In the above example, when GET is done for \ ``http://example.com/api/v1/members/M000000001``\ , built URI is same as the requested URI \ ``(http://example.com/api/v1/members/M000000001)``\ .
@@ -4976,7 +5467,7 @@ Implementation for each resource
         | \ ``buildAndExpand``\  method is called and an URI of created resource is built by binding the ID of created resource.
         | 
         | \ ``ServletUriComponentsBuilder``\  instances passed as method argument of Controller are initiated based on the information of \ ``<servlet-mapping>``\  element described in web.xml. It is not resource dependent.
-        | By using `URI Template Patterns <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates>`_\  ,etc. provided by Spring Framework,
+        | By using `URI Template Patterns <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/mvc.html#mvc-ann-requestmapping-uri-templates>`_\  ,etc. provided by Spring Framework,
         | an URI can be built based on the request information. Thus, a generic build process which is independent of a resource, can be implemented.
         | 
         | For example, if POST method is used for \ ``http://example.com/api/v1/members``\ , the built URI will be "requested URI + \ ``"/"``\  + ID of created resource".
@@ -5237,23 +5728,16 @@ prevented for RESTful Web Service requests.
     <!-- (1) -->
     <sec:http
         pattern="/api/v1/**"
-        auto-config="true"
-        use-expressions="true"
         create-session="stateless">
-        <sec:headers />
+        <sec:http-basic />
+        <sec:csrf disabled="true"/>
     </sec:http>
 
-    <sec:http auto-config="true" use-expressions="true">
-        <sec:headers>
-            <sec:cache-control />
-            <sec:content-type-options />
-            <sec:hsts />
-            <sec:frame-options />
-            <sec:xss-protection />
-        </sec:headers>
-        <sec:csrf />
+    <sec:http>
         <sec:access-denied-handler ref="accessDeniedHandler"/>
         <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
+        <sec:form-login/>
+        <sec:logout/>
         <sec:session-management />
     </sec:http>
 
@@ -5272,7 +5756,7 @@ prevented for RESTful Web Service requests.
        | In the above example, request path starting with \ ``/api/v1/``\  is handled as the REST API request path.
        | Further, session is no longer used in Spring Security process by setting \ ``create-session``\  attribute to \ ``stateless``\ .
        |
-       | \ ``<sec: csrf>``\  element is not specified to disable the CSRF measures.
+       | Specify \ ``disabled="true"``\  in \ ``<sec:csrf>``\  element for invalidating CSRF countermeasures.
 
 |
 

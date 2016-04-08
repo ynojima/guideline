@@ -550,7 +550,7 @@ Creation of spring-mvc-rest.xml
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
             <mvc:message-converters register-defaults="false">
                 <!-- (1) -->
@@ -660,21 +660,14 @@ Definition of Spring Security for REST API
         <!-- (1) -->
         <sec:http
             pattern="/api/v1/**"
-            auto-config="true"
-            use-expressions="true"
             create-session="stateless">
-            <sec:headers />
+            <sec:http-basic />
+            <sec:csrf disabled="true"/>
         </sec:http>
 
-        <sec:http auto-config="true" use-expressions="true">
-            <sec:headers>
-                <sec:cache-control />
-                <sec:content-type-options />
-                <sec:hsts />
-                <sec:frame-options />
-                <sec:xss-protection />
-            </sec:headers>
-            <sec:csrf />
+        <sec:http>
+            <sec:form-login />
+            <sec:logout />
             <sec:access-denied-handler ref="accessDeniedHandler"/>
             <sec:custom-filter ref="userIdMDCPutFilter" after="ANONYMOUS_FILTER"/>
             <sec:session-management />
@@ -732,6 +725,8 @@ Definition of Spring Security for REST API
        | Specify the URL pattern of the REST API request path at \ ``pattern`` \ attribute of the \ ``<sec:http>`` \ element.
        | In this tutorial, request path starts with \ ``/api/v1/`` \ is considered as a REST API request.
        | Furthermore, session is no longer used in the processing of Spring Security by specifying \ ``stateless`` \ at \ ``create-session`` \ attribute.
+       | 
+       | Specify \ ``disabled="true"``\  in \ ``<sec:csrf>``\  element for invalidating CSRF countermeasures.
 
 |
 

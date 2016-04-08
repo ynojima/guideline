@@ -749,3 +749,55 @@ Access {contextPath}/calendar/month?year=2012&month=12 to display the calendar b
 
    \newpage
 
+Appendix
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Japanese calendar operation before Java8
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+| The class called ``java.time.chrono.JapaneseDate`` is offered in Java8 for Japanese calendar operation however it is possible to deal with the Japanese calendar by ``java.util.Calendar`` class in older Java version.
+| Specifically, it is necessary to specify the following ``java.util.Locale`` in the ``java.util.Calendar`` class and ``java.text.DateFormat`` class.
+
+.. code-block:: java
+
+   Locale locale = new Locale("ja", "JP", "JP");
+
+| Below, it shows an example of the Japanese calendar display using the ``Calendar`` class.
+
+.. code-block:: java
+
+   Locale locale = new Locale("ja", "JP", "JP");
+   Calendar cal = Calendar.getInstance(locale); // Ex, 2015-06-05
+   String format1 = "Gy.MM.dd";
+   String format2 = "GGGGyy/MM/dd";
+
+   DateFormat df1 = new SimpleDateFormat(format1, locale);
+   DateFormat df2 = new SimpleDateFormat(format2, locale);
+
+   df1.format(cal.getTime()); // "H27.06.05"
+   df2.format(cal.getTime()); // "平成27/06/05"
+
+| Similarly, it can also perform parsing the string.
+
+.. code-block:: java
+
+   Locale locale = new Locale("ja", "JP", "JP");
+   String format1 = "Gy.MM.dd";
+   String format2 = "GGGGyy/MM/dd";
+   
+   DateFormat df1 = new SimpleDateFormat(format1, locale);
+   DateFormat df2 = new SimpleDateFormat(format2, locale);
+   
+   Calendar cal1 = Calendar.getInstance(locale);
+   Calendar cal2 = Calendar.getInstance(locale);
+
+   cal1.setTime(df1.parse("H27.06.05"));
+   cal2.setTime(df2.parse("平成27/06/05"));
+
+|
+
+    .. note::
+
+        | The ``java.util.JapaneseImperialCalendar`` object corresponding to the Japanese calendar is created by specifying the ``new Locale("ja", "JP", "JP")`` into the ``getInstance`` method.
+        | If you specify the other, ``java.util.GregorianCalendar`` object gets created therefore it should be noted.
+

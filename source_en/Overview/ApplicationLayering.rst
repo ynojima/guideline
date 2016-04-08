@@ -174,7 +174,7 @@ Domain Object is the Entity that represents an object which indicates 1 record o
     Domain Model is defined as \ `Item having state and behavior <http://martinfowler.com/eaaCatalog/domainModel.html>`_\.
     We will not be touching such models in detail.
   
-    In this guideline, \ `Rich domain model <http://domaindrivendesign.org>`_\  proposed by Eric Evans is also not included.
+    In this guideline, \ `Rich domain model <http://dddcommunity.org/>`_\  proposed by Eric Evans is also not included.
     However, it is mentioned here for classification.
 
 |
@@ -246,6 +246,8 @@ O/R Mapper used for implementation of Repository.
   It is more correct to classify MyBatis and Spring JDBC as "SQL Mapper" and not "O/R Mapper"; however, in this guideline it is treated as "O/R Mapper".
 
 |
+
+.. _application-layering_Integration-System-Connector:
 
 Integration System Connector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

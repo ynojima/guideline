@@ -65,7 +65,7 @@ Input validation is classified into single item check and correlation item check
    * - Correlation item check
      - | Check comparing multiple fields
      - | Password and confirm password check
-     - | Bean Validation or Validation class implementing `org.springframework.validation.Validator <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/validation.html#validator>`_\
+     - | Bean Validation or Validation class implementing `org.springframework.validation.Validator <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/validation.html#validator>`_\
        | interface
 
 
@@ -604,7 +604,7 @@ An example of error message is shown when the following CSS class is applied.
 
 .. note:: **About @GroupSequence annotation**
 
-   A mechanism of \ `@GroupSequence annotation <http://docs.jboss.org/hibernate/validator/5.1/reference/en-US/html/chapter-groups.html#section-default-group-class>`_\  is provided to control the check sequence;
+   A mechanism of \ `@GroupSequence annotation <http://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/ch05.html#section-default-group-class>`_\  is provided to control the check sequence;
    however, add a note that this mechanism is not to control the output order of error message as operations given below are performed.
 
    * When an error occurs, checking for subsequent groups is not executed.
@@ -2084,7 +2084,7 @@ Method to change error messages of input validation is explained.
 Error messages of Bean Validation in Spring MVC are resolved in the following order.
 
 #. | If there is any message which matches with the rule, among the messages defined in \ ``org.springframework.context.MessageSource``\ , then it is to be used as error message (Spring rule).
-   | For default rules of Spring, refer to "`JavaDoc of DefaultMessageCodesResolver <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html>`_ of DefaultMessageCodesResolver".
+   | For default rules of Spring, refer to "`JavaDoc of DefaultMessageCodesResolver <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html>`_ of DefaultMessageCodesResolver".
 #. If message cannot be found as mentioned in step 1, then error message is acquired from the \ ``message``\  attribute of the annotation. (Bean Validation rule)
 
   #. When the value of \ ``message``\  attribute is not in "{message key}" format, use that text as error message.
@@ -2313,7 +2313,7 @@ Error messages are changed as follows.
             Latter is created when \ ``false``\  is specified in \ ``inclusive``\  attribute of \ ``@DecimalMax``\  annotation.
 
             For handling of EL expressions in Bean Validation refer to:
-            \ `Hibernate Validator Reference Guide(Interpolation with message expressions) <http://docs.jboss.org/hibernate/validator/5.1/reference/en-US/html/chapter-message-interpolation.html#section-interpolation-with-message-expressions>`_\ .
+            \ `Hibernate Validator Reference Guide(Interpolation with message expressions) <http://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/ch04.html#section-interpolation-with-message-expressions>`_\ .
 
 
 .. _Validation_message_in_application_messages:
@@ -2360,7 +2360,7 @@ For example, index positions of \ ``@Size``\  are as follow:
 * \ ``{1}``\  : value of \ ``max``\  attribute
 * \ ``{2}``\  : value of \ ``min``\  attribute
 
-For specification details, refer to \ `JavaDoc of SpringValidatorAdapter <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/validation/beanvalidation/SpringValidatorAdapter.html#getArgumentsForConstraint-java.lang.String-java.lang.String-javax.validation.metadata.ConstraintDescriptor->`_\.
+For specification details, refer to \ `JavaDoc of SpringValidatorAdapter <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/validation/beanvalidation/SpringValidatorAdapter.html#getArgumentsForConstraint-java.lang.String-java.lang.String-javax.validation.metadata.ConstraintDescriptor->`_\.
 
 Error messages are changed as follows.
 
@@ -2370,7 +2370,7 @@ Error messages are changed as follows.
 
 .. note::
 
-  \ `There are other formats <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html>`_\  as well for the message key format of application-messages.properties;
+  \ `There are other formats <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html>`_\  as well for the message key format of application-messages.properties;
   however, if it is used with the purpose of overwriting some default messages, it should be in \ ``[annotation name].[form attribute name].[property name]``\  format.
 
 |
@@ -2647,7 +2647,7 @@ Implementation example is shown below.
 
     If multiple rules are set in a single annotation, their AND condition forms the composite annotation.
     In Hibernate Validator, \ ``@ConstraintComposition``\  annotation is provided to implement OR condition.
-    Refer to \ `Hibernate Validator document <http://docs.jboss.org/hibernate/validator/5.1/reference/en-US/html/validator-specifics.html#section-boolean-constraint-composition>`_\  for details.
+    Refer to \ `Hibernate Validator document <http://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/ch11.html#section-boolean-constraint-composition>`_\  for details.
 
 .. _Validation_implement_new_constraint:
 
@@ -3562,7 +3562,7 @@ Appendix
 Input validation rules provided by Hibernate Validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 | Hibernate Validator provides additional validation annotations, in addition to the annotations defined in Bean Validation.
-| Refer to \ `Here <http://docs.jboss.org/hibernate/validator/5.1/reference/en-US/html/chapter-bean-constraints.html#section-builtin-constraints>`_\ for the annotation list that can be used for validation.
+| Refer to \ `Here <http://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/ch02.html#section-builtin-constraints>`_\ for the annotation list that can be used for validation.
 
 .. _Validation_jsr303_doc:
 
@@ -3720,7 +3720,7 @@ Hibernate Validator check rules
 
 All the major annotations(\ ``org.hibernate.validator.constraints.*``\ ) of Hibernate Validator are shown below.
 
-Refer to \ `Hibernate Validator specifications <http://docs.jboss.org/hibernate/validator/5.1/reference/en-US/html/chapter-bean-constraints.html#validator-defineconstraints-hv-constraints>`_\  for details.
+Refer to \ `Hibernate Validator specifications <http://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/ch02.html#validator-defineconstraints-hv-constraints>`_\  for details.
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
@@ -3870,10 +3870,31 @@ Annotation provided by \ `terasoluna-gfw-common <https://github.com/terasolunaor
       - Refer \ :ref:`@ExistInCodeList <codelist-validate>`\ 
 
 
+terasoluna-gfw-codepoints check rules
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Annotation (\ ``org.terasoluna.gfw.common.codepoints.*``\ ) offered by \ `terasoluna-gfw-codepoints <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-codepoints>`_\  is shown below. Further, \ ``terasoluna-gfw-codepoints``\  can be used in 5.1.0.RELEASE and subsequent versions.
+
+.. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 15 30 30 25
+
+    * - Annotation
+      - Target type
+      - Description
+      - Usage example
+    * - \ ``@ConsistOf``\
+      - | Implementation class of \ ``CharSequence``\ 
+        | (\ ``String``\, \ ``StringBuilder``\  etc)
+      - Verify whether all the character strings to be checked are included in the specified code point set.
+      - Refer \ :ref:`@ConsistOf <StringProcessingHowToUseCodePointsValidator>`\ 
+
+
 terasoluna-gfw-validator check rules
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Annotation provided by \ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\  (\ ``org.terasoluna.gfw.common.validator.constraints.*``\ ) is shown below.
+Annotation (\ ``org.terasoluna.gfw.common.validator.constraints.*``\ ) offered by \ `terasoluna-gfw-validator <https://github.com/terasolunaorg/terasoluna-gfw/tree/master/terasoluna-gfw-validator>`_\  is shown below. Further, \ ``terasoluna-gfw-validator``\ can be used in 5.1.0.RELEASE and subsequent versions.
 
 .. tabularcolumns:: |p{0.15\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|p{0.25\linewidth}|
 .. list-table::
@@ -4033,7 +4054,7 @@ How to apply check rules of common library
 
 Apply check rules of common library using the procedure below.
 
-Add a dependent library. \ ``terasoluna-gfw-validator``\  can be used in version 5.1.0.RELEASE.
+Add a dependent library for the rules that are to be used. An example for how to add \ ``terasoluna-gfw-validator``\  is shown below.
 
 .. code-block:: xml
 
@@ -4043,10 +4064,6 @@ Add a dependent library. \ ``terasoluna-gfw-validator``\  can be used in version
             <artifactId>terasoluna-gfw-validator</artifactId>
         </dependency>
     </dependencies>
-
-.. note::
-
-    When \ ``@ExistInCodeList``\  is used, add \ ``terasoluna-gfw-common``\  as a dependent library.
 
 Next, a message definition corresponding to annotation is added to :file:`ValidationMessages.properties`  as explained in \ :ref:`Validation_message_in_validationmessages`\ .
 
@@ -4263,7 +4280,7 @@ Error message gets changed as shown below.
 
 .. tip::
 
-  Refer to \ `Javadoc of DefaultMessageCodesResolver <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html>`_\  for the details of message key rules.
+  Refer to \ `Javadoc of DefaultMessageCodesResolver <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html>`_\  for the details of message key rules.
 
 .. _Validation_string_trimmer_editor:
 

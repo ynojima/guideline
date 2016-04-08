@@ -123,7 +123,7 @@ latexpdfja:
 	@echo "Running LaTeX files through platex and dvipdfmx..."
 	@echo "add uplatex to documentclass for Unicode proc"
 	@echo "building pdf index needs twice uplatex command"
-	cd build/latex; \
+	cd ${BUILDDIR}/latex; \
 	sed -i -e 's/\\documentclass\[/\\documentclass\[uplatex,/g' TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
 	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
 	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
@@ -136,7 +136,7 @@ latexpdfen:
 	@echo "add uplatex to documentclass for Unicode proc"
 	@echo "building pdf index needs twice uplatex command"
 	sh $(REPLACE_SHELL) $(BUILDDIR)/latex/*.tex
-	cd build/latex; \
+	cd ${BUILDDIR}/latex; \
 	sed -i -e 's/\\documentclass\[/\\documentclass\[uplatex,/g' TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
 	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \
 	uplatex TERASOLUNAServerFrameworkForJavaDevelopmentGuideline.tex; \

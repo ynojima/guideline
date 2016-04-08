@@ -12,23 +12,23 @@ Overview
 
 | This chapter explains how to upload files.
 
-| Files are uploaded using the File Upload functionality supported by Servlet3.0 and classes provided by Spring Web.
+| Files are uploaded using the File Upload functionality supported by Servlet 3.0 and classes provided by Spring Web.
 
  .. note::
 
-    In this chapter, File Upload functionality supported by Servlet3.0 is used; hence, Servlet version 3.0 or above is a prerequisite here.
+    In this chapter, File Upload functionality supported by Servlet 3.0 is used; hence, Servlet version 3.0 or above is a prerequisite here.
 
  .. note::
 
-    File Upload functionality of Servlet 3.0 may likely result into garbling of multi byte characters of file names or request parameters on some application servesr.
+    File Upload functionality of Servlet 3.0 may likely result into garbling of multi byte characters of file names or request parameters on some application server.
 
-    In case of using an application server, wherein problems are likely to occur, using Commons FileUpload can help in avoiding such problems.
+    When the Application Server wherein problems are likely to occur is to be used, using Commons FileUpload can help in avoiding such problems.
     For settings to use Commons FileUpload, refer to ":ref:`file-upload_usage_commons_fileupload`". 
 
-    At the time of version 5.0.1.RELEASE, application servers where this problem is confirmed are as follows:
+    Application server for which a occurrence of problem is confirmed at the time of version 5.0.1.RELEASE is as given below.
 
-    * WebLogic 12c
-    * JBoss EAP 6
+    * WebLogic 12.1.3
+    * JBoss EAP 6.4.0.GA
 
  .. warning::
  
@@ -36,10 +36,11 @@ Overview
     Hence ensure that there are no such vulnerabilities in the application server to be used.
     
     In case of using Tomcat, it is necessary to use version 7.0.52 or above for series 7.0, and version 8.0.3 or above for series 8.0.
+    A file upload function of Servlet 3.0 should be used since problems do not occur while using Tomcat 7/8 as an Application Server.
 
 Basic flow of upload process
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Basic flow of uploading files using File Upload functionality supported by Servlet3.0, and classes of Spring Web, is as shown below.
+Basic flow of uploading files using File Upload functionality supported by Servlet 3.0, and classes of Spring Web, is as shown below.
 
  .. figure:: ./images/file-upload-overview_basicflow.png
    :alt: Screen image of single file upload.
@@ -55,30 +56,32 @@ Basic flow of uploading files using File Upload functionality supported by Servl
    * - | (1)
      - | Select and upload the target files.
    * - | (2)
-     - | Servlet container receives \ ``multipart/form-data``\  request and calls \ ``org.springframework.web.servlet.DispatcherServlet``\ .
+     - | Servlet container receives \ ``multipart/form-data``\  request and calls \ ``org.springframework.web.multipart.support.MultipartFilter``\ .
    * - | (3)
-     - | \ ``DispatcherServlet``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet3.0 in Spring MVC.
+     - | \ ``MultipartFilter``\  calls the method of \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  to enable File Upload functionality of Servlet 3.0 in Spring MVC.
        | \ ``StandardServletMultipartResolver``\  generates ``org.springframework.web.multipart.MultipartFile`` object that wraps the API (``javax.servlet.http.Part``) introduced through Servlet 3.0.
    * - | (4)
-     - | \ ``DispatcherServlet``\  calls the handler method of Controller.
-       | \ ``DispatcherServlet``\  object created in step (3) binds to the Controller argument or form object.
+     - | Apply a filter chain in \ ``DispatcherServlet``\  from \ ``MultipartFilter``\ .
    * - | (5)
-     - | Controller calls the method of \ ``MultipartFile``\  object and fetches the contents and meta information (file name etc.) of uploaded file.
+     - | \ ``DispatcherServlet``\  calls handler method of Controller.
+       | \ ``MultipartFile``\  object generated in (3) is bound to Controller argument or form object.
    * - | (6)
-     - | \ ``MultipartFile``\  calls the method of \ ``Part``\  object introduced through Servlet3.0, fetches the contents and meta information (file name etc.) of the uploaded file and returns the same to the Controller.
+     - | Controller calls a method of \ ``MultipartFile``\  object and fetch contents of uploaded file and meta information (file name etc.).
    * - | (7)
+     - | \ ``MultipartFile``\  calls a method of \ ``Part``\  object introduced from Servlet 3.0, fetches contents of uploaded file and meta information (file name etc.) and returns to Controller.
+   * - | (8)
      - | Controller calls the Service method and executes upload process.
        | It passes the contents and meta information (file name etc.) of the file retrieved from \ ``MultipartFile``\  object as an argument of Service method.
-   * - | (8)
-     - | Service stores the contents and meta information (file name etc.) of the uploaded file in the file or database.
    * - | (9)
-     - | \ ``DispatcherServlet``\  calls \ ``StandardServletMultipartResolver``\  and deletes the temporary file used by File Upload functionality of Servlet3.0.
+     - | Service stores contents of uploaded file and meta information (file name etc.) in the file or database.
    * - | (10)
-     - | \ ``StandardServletMultipartResolver``\  calls the method of \ ``Part``\  object introduced through Servlet3.0 and deletes the temporary file saved on disk.
+     - | \ ``MultipartFilter``\  calls \ ``StandardServletMultipartResolver``\  and deletes temporary file used by file upload function of Servlet 3.0.
+   * - | (11)
+     - | \ ``StandardServletMultipartResolver``\  calls a method of \ ``Part``\  object introducted from Servlet 3.0 and deletes the temporary file stored in the disc.
 
  .. note::
 
-    Controller performs the process for \ ``MultipartFile``\  object of Spring Web; hence implementation which is dependent on the File Upload API provided by Servlet3.0 can be excluded.
+    Controller performs the process for \ ``MultipartFile``\  object of Spring Web; hence implementation which is dependent on the File Upload API provided by Servlet 3.0 can be excluded.
 
 
 About classes provided by Spring Web
@@ -102,8 +105,8 @@ Classes provided by Spring Web for uploading a file are as follows:
      - | org.springframework.web.multipart.support.
        | StandardMultipartHttpServletRequest$
        | StandardMultipartFile
-     - | \ ``MultipartFile``\  class of File Upload functionality introduced through Servlet3.0. 
-       | Process is delegated to the \ ``Part``\  object introduced through Servlet3.0.
+     - | \ ``MultipartFile``\  class of File Upload functionality introduced through Servlet 3.0. 
+       | Process is delegated to the \ ``Part``\  object introduced through Servlet 3.0.
    * - 3.
      - | org.springframework.web.multipart.
        | MultipartResolver
@@ -112,17 +115,17 @@ Classes provided by Spring Web for uploading a file are as follows:
    * - 4.
      - | org.springframework.web.multipart.support.
        | StandardServletMultipartResolver
-     - | \ ``MultipartResolver``\  class for File Upload functionality introduced through Servlet3.0.
+     - | \ ``MultipartResolver``\  class for File Upload functionality introduced through Servlet 3.0.
    * - 5.
      - | org.springframework.web.multipart.support.
        | MultipartFilter
-     - | Class that enables fetching of request parameters in Servlet Filter process, at the time of multipart/form-data request.
-       | If this class is not used, request parameters cannot be fetched in Servlet Filter; hence CSRF Token Check functionality provided by Spring Security does not work correctly.
-       | To be more precise, as CSRF token cannot be fetched, it always throws CSRF token error leading to file upload failure.
+     - | A class which generates MultipartFile by calling a class which implements MultipartResolver from DI container, at the time of multipart/form-data request.
+       | If this class is not used, a request parameter cannot be fetched in Servlet Filter process when maximum size allowed in file upload exceeds the limit.
+       | Therefore, it is recommended to use MultipartFilter in this guideline.
 
  .. tip::
 
-    In this guideline, it is a prerequisite to use File Upload functionality implemented from Servlet 3.0. However, Spring Web also provides an \ `implementation class for "Apache Commons FileUpload" <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-multipart-resolver-commons>`_\ .
+    In this guideline, it is a prerequisite to use File Upload functionality implemented from Servlet 3.0. However, Spring Web also provides an \ `implementation class for "Apache Commons FileUpload" <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/mvc.html#mvc-multipart-resolver-commons>`_\ .
     The difference in implementation of upload processes is absorbed by \ ``MultipartResolver``\  and \ ``MultipartFile``\  objects; hence it does not affect Controller implementation.
 
 |
@@ -135,9 +138,9 @@ How to use
 Application settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Settings to enable Servlet3.0 upload functionality 
+Settings to enable Servlet 3.0 upload functionality 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to enable upload functionality of Servlet3.0.
+Perform the following settings to enable upload functionality of Servlet 3.0.
 
 - :file:`web.xml`
 
@@ -173,7 +176,7 @@ Perform the following settings to enable upload functionality of Servlet3.0.
    * - Sr. No.
      - Description
    * - | (1)
-     - | Specify the XSD file of Servlet3.0 or above in \ ``xsi:schemaLocation``\  attribute of \ ``<web-app>``\  element.
+     - | Specify the XSD file of Servlet 3.0 or above in \ ``xsi:schemaLocation``\  attribute of \ ``<web-app>``\  element.
    * - | (2)
      - | Specify version  ``3.0`` or above in the \ ``version``\  attribute of \ ``<web-app>``\  element.
    * - | (3)
@@ -277,9 +280,14 @@ Perform the following settings to enable upload functionality of Servlet3.0.
 
         When the files uploaded as application are to be saved as temporary files, they should be output to a directory other than the directory specified in \ ``<location>``\  element.
 
-Settings to enable fetching of request parameters in Servlet Filter processing
+.. _file-upload_setting_servlet_filter:
+
+Servlet Filter settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to fetch request parameters in Servlet Filter processing at the time of multipart/form-data request.
+The operation when the maximum size allowed in file upload exceeds the limit at the time of multipart/form-data request, varies depending on the application server. \ ``MultipartException``\  generated when maximum size exceeds the limit depending on the application server is likely to be not detected and exception handling settings described later will be invalid.
+
+| Since this operation can be evaded by setting \ ``MiltipartFilter``\ , \ ``MiltipartFilter``\  setting is described as a prerequisite in this guideline.
+| Setting example is given below.
 
 - :file:`web.xml`
 
@@ -309,39 +317,23 @@ Perform the following settings to fetch request parameters in Servlet Filter pro
      - | Specify the URL pattern for applying \ ``MultipartFilter``\ .
      
 
- .. warning::
- 
-    **MultipartFilter needs to be defined before the Servlet Filter that accesses request parameters.**
-    
-    When security measures are to be carried out using Spring Security, it should be defined before ``springSecurityFilterChain``.
+ .. warning:: **Precautions while using Spring Security**
+
+    When security countermeasures are to be carried out by using Spring Security, they should be defined prior to \ ``springSecurityFilterChain``\. 
     Further, when request parameters are accessed by a project-specific Servlet Filter, MultipartFilter should be defined before that Servlet Filter.
+
+    However, when defined before \ ``springSecurityFilterChain``\ , unauthenticated or unauthorized users may be allowed to upload the file (create temporary file).
+    Although a method to avoid this operation has been given in \ `Spring Security Reference -Cross Site Request Forgery (CSRF)- <http://docs.spring.io/spring-security/site/docs/4.0.3.RELEASE/reference/htmlsingle/#csrf-include-csrf-token-in-action>`_\ , it is not recommended to be applied in this guideline since it poses a security risk. 
+
+ .. warning:: **Precautions when maximum size limit for file upload is exceeded**
+
+   When allowable size limit for file upload has been exceeded, an 'Over the size limit" error may get detected before fetching a CSRF token in some of the application servers like WebLogic and CSRF token check is not performed.
+
+ .. note:: **Default calling of MultipartResolver**
     
-
-
-Settings to link Spring MVC with upload functionality of Servlet3.0
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-Perform the following settings to link Spring MVC with Servlet3.0 upload functionality.
-
-- :file:`spring-mvc.xml`
-
- .. code-block:: xml
-
-    <bean id="multipartResolver"
-        class="org.springframework.web.multipart.support.StandardServletMultipartResolver"> <!-- (1) -->
-    </bean>
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-   :header-rows: 1
-   :widths: 10 90
-
-   * - Sr. No.
-     - Description
-   * - | (1)
-     - | Define a bean for \ ``StandardServletMultipartResolver``\  which is a MultipartResolver for Servlet3.0.
-       | BeanID should be \ ``"multipartResolver"``\ .
-       |
-       | By performing these settings, the uploaded file can be treated as \ ``org.springframework.web.multipart.MultipartFile``\  and received as a Controller argument and form object property.
+    If \ ``MultipartFilter``\  is used,
+    \ ``org.springframework.web.multipart.support.StandardServletMultipartResolver``\  is called by default.
+    \ ``StandardServletMultipartResolver``\  should be able to generates uploaded file as \ ``org.springframework.web.multipart.MultipartFile``\  and receive as property of Controller argument and form object.
 
 
 Settings for exception handling
@@ -703,7 +695,7 @@ Implementing Controller
  .. note:: **About MultipartFile**
 
     Methods to operate the uploaded file are provided in MultipartFile.
-    For details on using each method, refer to \ `JavaDoc of MultipartFile class <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/web/multipart/MultipartFile.html>`_\ .
+    For details on using each method, refer to \ `JavaDoc of MultipartFile class <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/web/multipart/MultipartFile.html>`_\ .
 
 .. _fileupload_validator:
 
@@ -1484,7 +1476,7 @@ Housekeeping of unnecessary files at the time of temporary upload
     A mechanism should be provided to delete unnecessary files as the disk may run out of space if such files are left to pile up.
 
 This guideline explains about deleting unnecessary files using the "Task Scheduler" functionality provided by Spring Framework.
-For details on "Task Scheduler", refer to the \ `official website "Task Execution and Scheduling" <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/scheduling.html>`_\ .
+For details on "Task Scheduler", refer to the \ `official website "Task Execution and Scheduling" <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/scheduling.html>`_\ .
 
  .. note::
 
@@ -1634,7 +1626,7 @@ Carry out bean registration and task schedule settings for the POJO class that d
      * ``0 0 * * * *`` : Executed in 0 minute every hour.
      * ``0 0 9-17 * * MON-FRI`` : Executed in 0 minute every hour from 9:00~17:00 on weekdays.
 
-    For details on specified value of cron, refer to \ `CronSequenceGenerator - JavaDoc <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html>`_\ .
+    For details on specified value of cron, refer to \ `CronSequenceGenerator - JavaDoc <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html>`_\ .
 
     Execution time should be fetched from external properties as it may differ depending on the environment in which the application is to be deployed.
     For details on external properties, refer to \ :doc:`PropertyManagement`\ .
@@ -1694,14 +1686,14 @@ File upload using Commons FileUpload
 If File Upload functionality of Servlet 3.0 is only used partially on Application Server, 
 it may likely result into garbling of multi byte characters of file names or request parameters.
 
-For example: If File Upload functionality of Servlet 3.0 is used on WebLogic (verification version 12.1.3),
+For example: If File Upload functionality of Servlet 3.0 is used on WebLogic 12.1.3,
 it has been confirmed that multi byte characters of fields to be sent along with file are garbled.
-Although it seems that there is a problem at the Application Server side,
-it is not possible to send the file and multi byte characters simultaneously unless the said problem is fixed.
+Note that it has been corrected in WebLogic 12.2.1.
 
-This problem can be avoided using Commons FileUpload.
+**This problem can be avoided using Commons FileUpload.
 Therefore, this guideline describes about file upload using Commons FileUpload
-as a temporary measure till the application server gets modified.
+as a temporary measure for the specific environment where problems are likely to occur.
+Using Commons FileUpload is not recommended where problems are not likely.**
 
 Perform the following settings when using Commons FileUpload.
 
@@ -1765,7 +1757,7 @@ Perform the following settings when using Commons FileUpload.
    * - | (2)
      - | Set maximum size allowed in file upload.
        | In case of Commons FileUpload, it should be noted that the maximum value is the entire size of request including header.
-       | Moreover, **as the default value is -1 (unlimited), make sure to set a value.** For other properties, refer to \ `JavaDoc <http://docs.spring.io/spring-framework/docs/4.1.7.RELEASE/javadoc-api/org/springframework/web/multipart/commons/CommonsMultipartResolver.html>`_\ .
+       | Moreover, **as the default value is -1 (unlimited), make sure to set a value.** For other properties, refer to \ `JavaDoc <http://docs.spring.io/spring-framework/docs/4.2.4.RELEASE/javadoc-api/org/springframework/web/multipart/commons/CommonsMultipartResolver.html>`_\ .
 
 .. warning::
 
@@ -1816,7 +1808,7 @@ Perform the following settings when using Commons FileUpload.
      - | When using Commons FileUpload, an upload function of Servlet 3.0 should be disabled.
        | If \ ``<multipart-config>``\  element is present in \ ``DispatcherServlet``\  definition, make sure to delete the same. 
    * - | (2)
-     - | When using Commons Fileupload, \ ``MultipartFilter``\  should be defined to enable \ :ref:`CSRF measures <csrf_use-multipart-filter>`\ .
+     - | When using Commons Fileupload, \ ``MultipartFilter``\  must be defined to enable security countermeasures which use Spring Security.
        | \ ``MultipartFilter``\ mapping should be defined before defining springSecurityFilterChain (Servlet Filter of Spring Security).
 
 .. tip::

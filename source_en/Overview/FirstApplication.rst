@@ -24,15 +24,15 @@ The description of this chapter has been verified on the following environment. 
     * - OS
       - Windows 7
     * - JVM
-      - Java 1.7
+      - `Java <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ 1.8
     * - IDE
-      - Spring Tool Suite 3.6.3.RELEASE (Hereafter referred as [STS])
+      - `Spring Tool Suite <http://spring.io/tools/sts/all>`_ 3.6.4.RELEASE (Hereafter referred as [STS])
     * - Build Tool
-      - Apache Maven 3.2.5 (Hereafter referred as [Maven])
+      - `Apache Maven <http://maven.apache.org/download.cgi>`_ 3.3.9 (Hereafter referred as [Maven])
     * - Application Server
-      - Pivotal tc Server Developer Edition v3.0 (Hereafter referred as [tc Server])
+      - `Pivotal tc Server <https://network.pivotal.io/products/pivotal-tcserver>`_ Developer Edition v3.1 (enclosed in STS)
     * - Web Browser
-      - Google Chrome 39.0.2171.99 m
+      - `Google Chrome <https://www.google.co.jp/chrome/browser/desktop/index.html>`_ 46.0.2490.80 m
 
 .. note::
 
@@ -50,7 +50,7 @@ Create project using `mvn archetype:generate` on internet.
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.1.0.RELEASE^
      -DgroupId=com.example.helloworld^
      -DartifactId=helloworld^
      -Dversion=1.0.0-SNAPSHOT
@@ -63,7 +63,7 @@ Here, created a project on Windows environment.
     More?  -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
     More?  -DarchetypeGroupId=org.terasoluna.gfw.blank^
     More?  -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype^
-    More?  -DarchetypeVersion=5.0.1.RELEASE^
+    More?  -DarchetypeVersion=5.1.0.RELEASE^
     More?  -DgroupId=com.example.helloworld^
     More?  -DartifactId=helloworld^
     More?  -Dversion=1.0.0-SNAPSHOT
@@ -81,7 +81,7 @@ Here, created a project on Windows environment.
     [INFO] Generating project in Batch mode
     [INFO] Archetype repository missing. Using the one from [org.terasoluna.gfw.blank:terasoluna-gfw-web-blank-archetype:1.0.0.RELEASE -> http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases] found in catalog http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases
     [INFO] ----------------------------------------------------------------------------
-    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-web-blank-archetype:5.0.1.RELEASE
+    [INFO] Using following parameters for creating project from Archetype: terasoluna-gfw-web-blank-archetype:5.1.0.RELEASE
     [INFO] ----------------------------------------------------------------------------
     [INFO] Parameter: groupId, Value: com.example.helloworld
     [INFO] Parameter: artifactId, Value: helloworld
@@ -144,7 +144,7 @@ To understand the configuration of Spring MVC, the generated Spring MVC configur
                 <bean
                     class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
                 <bean
-                    class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver" />
+                    class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver" />
             </mvc:argument-resolvers>
         </mvc:annotation-driven>
 
@@ -254,7 +254,7 @@ To understand the configuration of Spring MVC, the generated Spring MVC configur
    * - Sr. No.
      - Description
    * - | (1)
-     - Default settings of Spring MVC are configured by defining \ ``<mvc:annotation-driven>``\. Refer to the official website `Enabling the MVC Java Config or the MVC XML Namespace <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-enable>`_ for default configuration of Spring framework.
+     - Default settings of Spring MVC are configured by defining \ ``<mvc:annotation-driven>``\. Refer to the official website `Enabling the MVC Java Config or the MVC XML Namespace <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/mvc.html#mvc-config-enable>`_ for default configuration of Spring framework.
    * - | (2)
      - Define the package which will be target of searching components used in Spring MVC.
    * - | (3)
@@ -556,7 +556,7 @@ Create input screen (src/main/webapp/WEB-INF/views/echo/index.jsp).
      - Description
    * - | (1)
      - | HTML form is constructed using tag library. Specify the name of form object created by Controller in ``modelAttribute`` attribute.
-       | Refer `here <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/view.html#view-jsp-formtaglib-formtag>`_  for tag library.
+       | Refer `here <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/view.html#view-jsp-formtaglib-formtag>`_  for tag library.
 
 .. note::
 

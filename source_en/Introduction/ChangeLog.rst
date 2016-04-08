@@ -9,6 +9,291 @@ Change Log
     * - Modified on
       - Modified locations
       - Modification details
+    * - 2016-02-24
+      - \-
+      - 5.1.0 RELEASE version published
+
+        * For details of change contents, refer \ `5.1.0 Issue List <https://github.com/terasolunaorg/guideline/issues?q=is%3Aissue+milestone%3A5.1.0+is%3Aclosed>`_\ .
+    * -
+      - General
+      - Correction of errors in the guideline (typo mistakes and simple description errors)
+
+        Description details modified
+
+        * For details of modification, refer \ `5.1.0 Issue list (improvement) <https://github.com/terasolunaorg/guideline/issues?q=milestone%3A5.1.0+label%3Aimprovement+is%3Aclosed>`_\ .
+
+    * -
+      - :doc:`index`
+      - Description details added
+
+        * Description related to operation verification environment of the details described in the guideline added
+
+    * -
+      - :doc:`../Overview/FrameworkStack`
+      - OSS version to be used (Spring IO Platform version) updated
+
+        * Spring IO Platform version updated in 2.0.1.RELEASE
+        * Spring Framework version updated in 4.2.4.RELEASE
+        * Spring Security version updated in 4.0.3.RELEASE
+
+        OSS version to be used along with Spring IO Platform version update is updated
+
+        * OSS version to be used updated. For update details, refer \ `version 5.1.0 migration guide <https://github.com/terasolunaorg/terasoluna-gfw/wiki/Migration-Guide-5.1.0_ja#step-1-update-dependency-libraries>`_\ .
+
+        New project added
+
+        * Descriptions for \ ``terasoluna-gfw-string``\ , \ ``terasoluna-gfw-codepoints``\ , \ ``terasoluna-gfw-validator``\ , \ ``terasoluna-gfw-web-jsp``\  projects added.
+
+        New function of common library added
+
+        \ ``terasoluna-gfw-string``\ 
+         * Half width to full width conversion
+
+        \ ``terasoluna-gfw-codepoints``\
+         * Codepoint check
+         * Bean Validation constraint annotation for code point check
+
+        \ ``terasoluna-gfw-validator``\
+         * Bean Validation constraint annotation for byte length check
+         * Bean Validation constraint annotation for field value comparison correlation check
+
+    * -
+      - :doc:`../Overview/FirstApplication`
+      - Description details modified
+
+        *  Modification of sample source corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+         * \ ``AuthenticationPrincipalArgumentResolver``\  package changed
+
+    * -
+      - :doc:`../TutorialTodo/index`
+      - Modifications corresponding to Spring Security 4
+
+        *  Modification of source corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+         * \ ``AuthenticationPrincipalArgumentResolver``\  package changed
+         * Since the specification is true by default, \ ``<use-expressions="true">``\  deleted from sample source
+
+    * -
+      - :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
+      - Modification of description details
+
+        *  A method wherein mvn command is used in the offline environment is added (\ `guideline#1197 <https://github.com/terasolunaorg/guideline/issues/1197>`_\ )
+
+    * -
+      - :doc:`../ImplementationAtEachLayer/ApplicationLayer`
+      - Description details modified
+
+        *  A method to create a request URL using EL function is added (\ `guideline#632 <https://github.com/terasolunaorg/guideline/issues/632>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - Description details added
+
+        *  Precautions for \ ``Log4jdbcProxyDataSource``\  overhead added (\ `guideline#1471 <https://github.com/terasolunaorg/guideline/issues/1471>`_\ )
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - Description details corresponding to MyBatis 3.3 added
+
+        * Setup method of \ ``defaultFetchSize``\  added (\ `guideline#965 <https://github.com/terasolunaorg/guideline/issues/965>`_\ )
+        * "Changed the default at the time of delayed reading to \ ``JAVASSIST``\" added (\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
+        * Sample code which assigns Genrics to \ ``ResultHandler``\  modified (\ `guideline#1384 <https://github.com/terasolunaorg/guideline/issues/1384>`_\ )
+        * Source example which use newly added \ ``@Flush``\  annotation, and precautions added (\ `guideline#915 <https://github.com/terasolunaorg/guideline/issues/915>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/DataAccessJpa`
+      - Bug correction for the guideline
+
+        *  Utility which use Like condition modified appropriately (\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
+        *  Incorrect implementation of true value in JPQL corrected (\ `guideline#1525 <https://github.com/terasolunaorg/guideline/issues/1525>`_\ )
+        *  Incorrect implementation of pagination corrected (\ `guideline#1463 <https://github.com/terasolunaorg/guideline/issues/1463>`_\ )
+        *  Incorrect implementation of sample code corrected which implements \ ``DateTimeProvider``\  (\ `guideline#1327 <https://github.com/terasolunaorg/guideline/issues/1327>`_\ )
+        *  Incorrect implementation in Factory class for generating an instance of implementation class for common Repository interface corrected (\ `guideline#1327 <https://github.com/terasolunaorg/guideline/issues/1327>`_\ )
+
+        Description details modified
+
+        *  Default value of \ ``hibernate.hbm2ddl.auto``\  corrected (\ `guideline#1282 <https://github.com/terasolunaorg/guideline/issues/1282>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Validation`
+      - Description details modified
+
+        *  Description for MethodValidation added (\ `guideline#708 <https://github.com/terasolunaorg/guideline/issues/708>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Logging`
+      - Description details modified
+
+        * Description where \ ``ServiceLoader``\  mechanism is used in Logback setting, is added (\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
+        * Sample source corresponding to Spring Security 4 modified (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+         * Since the specification is true by default, \ ``<use-expressions="true">``\  deleted from the sample source
+
+    * -
+      - :doc:`../ArchitectureInDetail/SessionManagement`
+      - Description details modified
+
+        *  Description of session scope reference which use SpEL expression is added (\ `guideline#1306 <https://github.com/terasolunaorg/guideline/issues/1306>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Internationalization`
+      - Description details modified
+
+        *  Description for appropriately reflecting locale in JSP is added (\ `guideline#1439 <https://github.com/terasolunaorg/guideline/issues/1439>`_\ )
+        *  Description of \ ``defaultLocale``\  of \ ``SessionLocalResolver``\  corrected (\ `guideline#686 <https://github.com/terasolunaorg/guideline/issues/686>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Codelist`
+      - Description details added
+
+        *  Description which recommends a pattern wherein \ ``JdbcTemplate``\  is specified in JdbcCodeList, is added (\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/REST`
+      - Description details modified
+
+        *  Creation of ObjectMapper which use \ ``Jackson2ObjectMapperFactoryBean``\  added (\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )
+        *  Modified to a format where MyBatis3 is used as a prerequisite in the implementation of domain layer of REST API application (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/RestClient`
+      - Added new
+
+        *  REST client (HTTP client) added (\ `guideline#1307 <https://github.com/terasolunaorg/guideline/issues/1307>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/SOAP`
+      - Added new
+
+        *  SOAP Web Service (Server / Client) added (\ `guideline#1340 <https://github.com/terasolunaorg/guideline/issues/1340>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileUpload`
+      - Description details modified
+
+        * Basic flow of uploading process and its description modified to description which use \ ``MultipartFilter``\  of Spring (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
+        * "A method which sends CSRF token by query parameter" deleted due to issues like security issues, variation in the operation according to AP server etc.
+          Precaution - "when allowable size for file upload exceeds, CSRF token check is not carried out appropriately in some AP servers" added (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
+
+    * -
+      - :doc:`../ArchitectureInDetail/FileDownload`
+      - Description details corresponding to Spring Framework4.2 added
+
+        *  \ ``AbstractXlsxView``\  which manages xlsx format, is added (\ `guideline#996 <https://github.com/terasolunaorg/guideline/issues/996>`_\ )
+
+        Description details modified
+
+        * Source example which use \ ``com.lowagie:itext:4.2.1``\  modified to a format which uses \ ``com.lowagie:itext:2.1.7``\  for the specification change of the iText
+
+    * -
+      - :doc:`../ArchitectureInDetail/Email`
+      - Added new
+
+        *  E-mail sending (SMTP) added (\ `guideline#1165 <https://github.com/terasolunaorg/guideline/issues/1165>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Utilities/DateAndTime`
+      - Added new
+
+        *  Date and time operation (JSR-310 Date and Time API) added (\ `guideline#1450 <https://github.com/terasolunaorg/guideline/issues/1450>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Utilities/JodaTime`
+      - Description details added and modified
+
+        *  The object of sample code which handles the date that does not use Timezone modified to \ ``LocalDate``\  (\ `guideline#1283 <https://github.com/terasolunaorg/guideline/issues/1283>`_\ )
+        *  A method to handle Japanese calendar in Java8 and earlier versions is added (\ `guideline#1450 <https://github.com/terasolunaorg/guideline/issues/1450>`_\ )
+
+    * -
+      - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - Added new
+
+        *  String processing added (\ `guideline#1451 <https://github.com/terasolunaorg/guideline/issues/1451>`_\ )
+
+    * -
+      - :doc:`../Security/index`
+      - Configuration review
+
+        * \ ``Password hashing``\ moved in :doc:`../Security/Authentication`
+        * Session management items are separated as :doc:`../Security/SessionManagement` from :doc:`../Security/Authentication`
+
+    * -
+      - :doc:`../Security/SpringSecurity`
+      - Modify corresponding to Spring Security 4
+
+        * Restructuring overall description
+
+         *  \ ``spring-security-test``\  introduction
+         *  Since the specification is true by default, \ ``<use-expressions="true">``\  deleted from sample source
+         * Description related to \ ``RedirectAuthenticationHandler``\ deprecation deleted
+
+    * -
+      - :doc:`../Security/Tutorial`
+      - Modified corresponding to Spring Security 4
+
+        * Modified tutorial source to a format corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+    * -
+      - :doc:`../Security/Authentication`
+      - Modified corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+        * Restructuring of overall description
+
+         * Deleted \ ``auto-config="true"``\
+         * Authentication event listener modified to \ ``@org.springframework.context.event.EventListener``\
+         * Modified \ ``AuthenticationPrincipal``\  package
+         * Since prefix is assigned by default, \ ``ROLE_``\  prefix deleted from sample source
+
+    * -
+      - :doc:`../Security/Authorization`
+      - Modified corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+        * Restructuring of overall description
+
+         *  Since the prefix is assigned by default, \ ``ROLE_``\  prefix deleted from sample source
+         *  Since the specification is true by default, \ ``<use-expressions="true">``\  deleted from sample source
+         *  Definition example of \ ``@PreAuthorize``\  added
+
+    * -
+      - :doc:`../Security/CSRF`
+      - Modified corresponding to Spring Security 4
+
+        * Restructuring of overall description
+
+         * CSRF invalidation settings modified \ ``<sec:csrf disabled="true"/>``\
+
+        * Description details modified
+
+         * Items related to multi-part request moved to :doc:`../ArchitectureInDetail/FileUpload` (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+
+    * -
+      - :doc:`../Security/Encryption`
+      - Added new
+
+        * Encryption guidelines added (\ `guideline#1106 <https://github.com/terasolunaorg/guideline/issues/1106>`_\ )
+
+    * -
+      - :doc:`../Security/SecureLoginDemo`
+      - Added new
+
+        *  Typical implementation example of security requirements added (\ `guideline#1604 <https://github.com/terasolunaorg/guideline/issues/1604>`_\ )
+
+    * -
+      - :doc:`../TutorialSession/index`
+      - Added new
+
+        *  Session tutorial added (\ `guideline#1599 <https://github.com/terasolunaorg/guideline/issues/1599>`_\ )
+
+    * -
+      - :doc:`../TutorialREST/index`
+      - Modified corresponding to Spring Security 4
+
+        *  Modified source corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
+
+         * CSRF invalidation settings modified \ ``<sec:csrf disabled="true"/>``\
+         * Since the specification is true by default, \ ``<use-expressions="true">``\  deleted from sample source
+
     * - 2015-08-05
       - \-
       - Released "5.0.1 RELEASE" version
@@ -466,7 +751,6 @@ Change Log
         * :doc:`../ArchitectureInDetail/Utilities/Dozer`
         * :doc:`../Security/SpringSecurity`
         * :doc:`../Security/Authentication`
-        * :doc:`../Security/PasswordHashing`
         * :doc:`../Security/Authorization`
         * :doc:`../Security/CSRF`
         * :doc:`../Appendix/CreateProjectFromBlank`
@@ -478,24 +762,24 @@ Change Log
     * - 2014-08-27
       - \-
       - Released "1.0.1 RELEASE" version
-        
+
         Refer to \ `Issue list of 1.0.1 <https://github.com/terasolunaorg/guideline/issues?labels=&milestone=1&state=closed>`_\  for details.
-    * - 
+    * -
       - Overall modifications
       - Fixed guideline bugs (corrected typos, mistakes in description etc.)
 
         Refer to \ `Issue list of 1.0.1 (bug & clerical error) <https://github.com/terasolunaorg/guideline/issues?labels=bug&milestone=1&state=closed>`_\  for details.
-    * - 
+    * -
       - Japanese version
       - Added Japanese version of the following.
-      
+
         * :doc:`CriteriaBasedMapping`
         * :doc:`../ArchitectureInDetail/REST`
         * :doc:`Tutorial (Todo Application for REST)<../TutorialREST/index>`
-    * - 
+    * -
       - English version
       - Added English version of the following.
-      
+
         * :doc:`index`
         * :doc:`../Overview/index`
         * :doc:`../TutorialTodo/index`
@@ -506,48 +790,60 @@ Change Log
         * :doc:`../ArchitectureInDetail/Utilities/JodaTime`
         * :doc:`../Security/XSS`
         * :doc:`../Appendix/ReferenceBooks`
-    * - 
+    * -
       - :doc:`../Overview/FrameworkStack`
       - Updated the OSS version in accordance with bug fixes.
-      
+
         * GroupId (\ ``org.springframework``\  ) updated to 3.2.10.RELEASE from 3.2.4.RELEASE
         * GroupId (\ ``org.springframework.data``\  )/ArtifactId(\ ``spring-data-commons``\  ) updated to 1.6.4.RELEASE from 1.6.1.RELEASE
         * GroupId (\ ``org.springframework.data``\  )/ArtifactId(\ ``spring-data-jpa``\  ) updated to 1.4.3.RELEASE from 1.4.1.RELEASE
         * GroupId (\ ``org.aspectj``\  ) updated to 1.7.4 from 1.7.3
         * Deleted GroupId (\ ``javax.transaction``\  )/ArtifactId(\ ``jta``\  )
-    * - 
+    * -
       - :doc:`../ImplementationAtEachLayer/ApplicationLayer`
       - Added a warning about `CVE-2014-1904 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-1904>`_\  (XSS Vulnerability of \ ``action``\  attribute in \ ``<form:form>``\  tag)
-    * - 
+    * -
       - Japanese version
-      
+
         :doc:`../ArchitectureInDetail/MessageManagement`
       - Added description about bug fix
-      
+
         * Fixed bugs of \ ``<t:messagesPanel>``\  tag of common library (\ `terasoluna-gfw#10 <https://github.com/terasolunaorg/terasoluna-gfw/issues/10>`_\ )
-    * - 
+    * -
       - Japanese version
-      
+
         :doc:`../ArchitectureInDetail/Pagination`
       - Updated description about bug fix
-      
+
         * Fixed bugs of \ ``<t:pagination>``\  tag of common library (\ `terasoluna-gfw#12 <https://github.com/terasolunaorg/terasoluna-gfw/issues/12>`_\  )
         * Fixed bugs of Spring Data Commons (\ `terasoluna-gfw#22 <https://github.com/terasolunaorg/terasoluna-gfw/issues/22>`_\  )
-    * - 
+    * -
       - Japanese version
-      
+
         :doc:`../ArchitectureInDetail/Ajax`
       - Updated description of countermeasures against XXE Injection
-    * - 
+    * -
       - Japanese version
-      
+
         :doc:`../ArchitectureInDetail/FileUpload`
       - Added a warning about `CVE-2014-0050 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0050>`_\  (File Upload Vulnerability)
-      
+
         Fixed guideline bugs.
-        
-        * Added how to handle \ ``MultipartException``\  using error-page functionality of servlet container, because your application can't handle \ ``MultipartException``\  using \ ``SystemExceptionResolver``\  when used \ ``MultipartFilter``\  .
-          Refer to \ `Issue of guideline#59 <https://github.com/terasolunaorg/guideline/issues/59>`_\  for details.
+
+        * Added how to handle \ ``MultipartException``\  using error-page functionality of servlet container, because your application can't handle \ ``MultipartException``\  using \ ``SystemExceptionResolver``\  when used \ ``MultipartFilter``\ . Refer to \ `Issue of guideline#59 <https://github.com/terasolunaorg/guideline/issues/59>`_\  for details.
+    * -
+      - Japanese version
+      - Change how to create following projects to be carried out from \ ``mvn archetype:generate``\
+
+        * :doc:`../Overview/FirstApplication`
+        * :doc:`../TutorialTodo/index`
+        * :doc:`../TutorialTodo/index`
+    * -
+      - Japanese version
+      - Minor modifications in how to create following Maven archetype
+
+        * :doc:`../Security/Tutorial`
+        * :doc:`../Appendix/CreateProjectFromBlank`
     * - 2013-12-17
       - Japanese version
       - Released "1.0.0 Public Review" version
