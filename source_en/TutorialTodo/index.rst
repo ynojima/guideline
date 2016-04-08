@@ -219,7 +219,7 @@ This is a procedure to create a blank project using the Windows command prompt.
          -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases\
          -DarchetypeGroupId=org.terasoluna.gfw.blank\
          -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype\
-         -DarchetypeVersion=5.0.1.RELEASE\
+         -DarchetypeVersion=5.0.2.RELEASE\
          -DgroupId=todo\
          -DartifactId=todo\
          -Dversion=1.0.0-SNAPSHOT
@@ -240,7 +240,7 @@ run the following command to create O/R Mapper independent blank project in comm
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.0.2.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -259,7 +259,7 @@ run the following command to create a blank project for the MyBatis3. This way t
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-mybatis3-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.0.2.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -278,7 +278,7 @@ run the following command to create a blank project for the JPA. This way to cre
      -DarchetypeCatalog=http://repo.terasoluna.org/nexus/content/repositories/terasoluna-gfw-releases^
      -DarchetypeGroupId=org.terasoluna.gfw.blank^
      -DarchetypeArtifactId=terasoluna-gfw-web-blank-jpa-archetype^
-     -DarchetypeVersion=5.0.1.RELEASE^
+     -DarchetypeVersion=5.0.2.RELEASE^
      -DgroupId=todo^
      -DartifactId=todo^
      -Dversion=1.0.0-SNAPSHOT
@@ -4140,7 +4140,7 @@ The Spring MVC related definitions are done in \ :file:`spring-mvc.xml`\.
        | If \ ``styles.css`` \ is not stored anywhere, 404 error is returned.
 
        | Here, cache period (3600 seconds = 60 minutes) of static resources is set in \ ``cache-period`` \ attribute.
-       | \ ``cache-period="3600"`` \ is also correct, however, in order to demonstrate that it is 60 minutes, it is better to write as \ ``cache-period="#{60 * 60}"`` \ which uses `SpEL <http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_.
+       | \ ``cache-period="3600"`` \ is also correct, however, in order to demonstrate that it is 60 minutes, it is better to write as \ ``cache-period="#{60 * 60}"`` \ which uses `SpEL <http://docs.spring.io/spring/docs/4.1.9.RELEASE/spring-framework-reference/html/expressions.html#expressions-beandef-xml-based>`_.
    * - | (5)
      - | Set interceptor that outputs trace log of controller processing. 
        | Set so that it excludes the path under\ ``/resources`` \ from mapping.
