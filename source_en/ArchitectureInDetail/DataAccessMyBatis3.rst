@@ -456,10 +456,10 @@ pom.xml settings
         <dependency>
             <groupId>org.terasoluna.gfw</groupId>
             <artifactId>terasoluna-gfw-mybatis3</artifactId>
-            <version>5.0.1.RELEASE</version>
+            <version>5.1.0.RELEASE</version>
         </dependency>
         
-    In the above example, 5.0.1.RELEASE is specified. However, version used in the project should be specified.
+    In the above example, 5.1.0.RELEASE is specified. However, version used in the project should be specified.
 
 |
 
@@ -3220,7 +3220,7 @@ In the example below, H2 Database is used as the database.
 
     * `Oracle 12c <http://docs.oracle.com/database/121/SQLRF/statements_9014.htm>`_
     * `DB2 10.5 <http://www-01.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.sql.ref.doc/doc/r0000970.html>`_
-    * `PostgreSQL 9.3 <http://www.postgresql.org/docs/9.3/static/sql-insert.html>`_
+    * `PostgreSQL 9.4 <http://www.postgresql.org/docs/9.4/static/sql-insert.html>`_
     * `MySQL 5.7 <http://dev.mysql.com/doc/refman/5.7/en/insert.html>`_
 
 |
@@ -6605,7 +6605,7 @@ This mechanism is effective when building an application that can support multip
  .. tip::
 
     In the above example, \ ``UUID_GENERATE_V4()``\  is called as the UUID generation function for PostgreSQL.
-    However, this function belongs to a sub-module called `uuid-ossp <http://www.postgresql.org/docs/9.3/static/uuid-ossp.html>`_\.
+    However, this function belongs to a sub-module called `uuid-ossp <http://www.postgresql.org/docs/9.4/static/uuid-ossp.html>`_\.
 
     When this function is to be used, uuid-ossp module should be enabled.
 

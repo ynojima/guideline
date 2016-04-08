@@ -194,10 +194,10 @@ A configuration example while using a mail session offered by application server
       - | Refer \ `Apache Tomcat 8 User Guide(JNDI Resources HOW-TO) <http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions>`_\  (JavaMail Sessions).
     * - 2.
       - Oracle WebLogic Server 12c
-      - Refer \ `Oracle WebLogic Server 12.1.3.0 Documentation <http://docs.oracle.com/middleware/1213/wls/WLACH/taskhelp/mail/CreateMailSessions.html>`_\ .
+      - Refer \ `Oracle WebLogic Server 12.2.1.0 Documentation <http://docs.oracle.com/middleware/1221/wls/WLACH/taskhelp/mail/CreateMailSessions.html>`_\ .
     * - 3.
       - IBM WebSphere Application Server Version 8.5
-      - Refer \ `WebSphere Application Server Version 8.5.5 documentation <http://www-01.ibm.com/support/knowledgecenter/SSEQTP_8.5.5/com.ibm.websphere.base.doc/ae/tmai_jcmp.html>`_\ .
+      - Refer \ `WebSphere Application Server Version 8.5.5 documentation <https://www.ibm.com/support/knowledgecenter/SSD28V_8.5.5/com.ibm.websphere.wlp.core.doc/ae/twlp_admin_javamail.html?lang=en>`_\ .
     * - 4.
       - Red Hat JBoss Enterprise Application Platform Version 6.4
       - Refer \ `Product Documentation <https://access.redhat.com/documentation/en-US/JBoss_Enterprise_Application_Platform/6.4/html/Administration_and_Configuration_Guide/chap-Mail_subsystem.html>`_\ .
@@ -763,18 +763,18 @@ The exception class that inherits \ ``MailException``\  and occurrence condition
       - Exception class
       - Occurrence conditions
     * - 1.
-      - `MailAuthenticationException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailAuthenticationException.html>`_
+      - `MailAuthenticationException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailAuthenticationException.html>`_
       - | Occurs during authentication failure.
     * - 2.
-      - `MailParseException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailParseException.html>`_
+      - `MailParseException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailParseException.html>`_
       - | Occurs when an invalid value is set in the properties of email message.
     * - 3.
-      - `MailPreparationException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailPreparationException.html>`_
+      - `MailPreparationException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailPreparationException.html>`_
       - | Occurs if an unexpected error occurs while creating an email message.
           Unexpected errors, for example, are the errors that occur in the template library.
         | Exceptions occurring in \ ``MimeMessagePreparator``\  are wrapped in \ ``MailPreparationException``\  and thrown.
     * - 4.
-      - `MailSendException <http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/mail/MailSendException.html>`_
+      - `MailSendException <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/mail/MailSendException.html>`_
       - | Occurs when an error occurs while sending an email.
 
 .. note::
@@ -860,7 +860,7 @@ In this guideline, a method that uses \ `FreeMarker <http://freemarker.org/>`_\ 
 
     .. note::
 
-       Refer to \ `JavaDoc of FreeMarkerConfigurationFactoryBean <http://docs.spring.io/spring/docs/4.1.7.RELEASE/javadoc-api/org/springframework/ui/freemarker/FreeMarkerConfigurationFactoryBean.html>`_\  for the setup other than mentioned above.
+       Refer to \ `JavaDoc of FreeMarkerConfigurationFactoryBean <http://docs.spring.io/spring/docs/4.2.4.RELEASE/javadoc-api/org/springframework/ui/freemarker/FreeMarkerConfigurationFactoryBean.html>`_\  for the setup other than mentioned above.
        Also, refer \ `FreeMarker Manual (Programmer's Guide / The Configuration) <http://freemarker.org/docs/pgui_config.html>`_\  for setup of FreeMarker itself.
 
 * Create a template file for email text.
