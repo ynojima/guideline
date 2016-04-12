@@ -189,20 +189,6 @@ How to use
     共通ライブラリが提供しているデフォルトのペア定義で変換要件が満たせない場合は、独自のペア定義を登録した\ ``FullHalfConverter``\ オブジェクトを作成すればよい。
     具体的な作成方法については、:ref:`StringOperationsHowToUseCustomFullHalfConverter` を参照されたい。
 
-.. note::
-
-    共通ライブラリが提供するorg.terasoluna.gfw.common.fullhalf.FullHalfConverterクラスを使う場合は、
-    以下の通り依存ライブラリを追加する。
-
-     .. code-block:: xml
-
-       <dependencies>
-           <dependency>
-               <groupId>org.terasoluna.gfw</groupId>
-               <artifactId>terasoluna-gfw-string</artifactId>
-           </dependency>
-       </dependencies>
-
 
 全角文字列に変換
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -397,6 +383,21 @@ How to use
 
 
 |
+
+共通ライブラリの適用方法
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+| 共通ライブラリが提供するorg.terasoluna.gfw.common.fullhalf.FullHalfConverterクラスを使う場合は、
+| 以下の通り依存ライブラリを追加する。
+
+.. code-block:: xml
+
+   <dependencies>
+       <dependency>
+           <groupId>org.terasoluna.gfw</groupId>
+           <artifactId>terasoluna-gfw-string</artifactId>
+       </dependency>
+   </dependencies>
 
 .. _StringProcessingHowToUseCodePoints:
 
