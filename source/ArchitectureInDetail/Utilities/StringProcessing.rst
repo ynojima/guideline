@@ -384,6 +384,21 @@ How to use
 
 |
 
+共通ライブラリの適用方法
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+| 共通ライブラリが提供する\ ``org.terasoluna.gfw.common.fullhalf.FullHalfConverter``\ クラス等を使う場合は、
+| 以下の通り依存ライブラリを追加する。
+
+.. code-block:: xml
+
+   <dependencies>
+       <dependency>
+           <groupId>org.terasoluna.gfw</groupId>
+           <artifactId>terasoluna-gfw-string</artifactId>
+       </dependency>
+   </dependencies>
+
 .. _StringProcessingHowToUseCodePoints:
 
 コードポイント集合チェック(文字種チェック)
