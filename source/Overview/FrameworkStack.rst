@@ -608,72 +608,106 @@ version 5.1.0.RELEASEで利用するOSSの一覧を以下に示す。
 
 \ `共通ライブラリ <https://github.com/terasolunaorg/terasoluna-gfw>`_\ は、TERASOLUNA Server Framework for Java (5.x)が含むSpring Ecosystem や、その他依存ライブラリでは足りない+αな機能を提供するライブラリである。
 基本的には、このライブラリがなくてもTERASOLUNA Server Framework for Java (5.x)によるアプリケーション開発は可能であるが、"あると便利"な存在である。
+また、提供している2種類の \ `マルチプロジェクト構成のブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\ および \ `シングルプロジェクト構成のブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-blank>`_\ の共通ライブラリの設定状況は以下の通りである。
 
 .. tabularcolumns:: |p{0.05\linewidth}|p{0.30\linewidth}|p{0.45\linewidth}|p{0.20\linewidth}|
 .. list-table::
     :header-rows: 1
-    :widths: 5 30 45 20
+    :widths: 5 22 45 10 15 17
 
     * - 項番
       - プロジェクト名
       - 概要
       - Javaソースコード有無
+      - マルチプロジェクト構成のブランクプロジェクト
+      - シングルプロジェクト構成のブランクプロジェクト
     * - \ (1)
       - terasoluna-gfw-common
       - Webに依存しない汎用的に使用できる機能と依存関係定義を提供する。
       - 有
+      - 設定済
+      - 無
     * - \ (2)
       - terasoluna-gfw-string
       - 文字列処理に関連する機能を提供する。(5.1.0から追加)
       - 有
+      - 無
+      - 無
     * - \ (3)
       - terasoluna-gfw-codepoints
       - 対象の文字列を構成するコードポイントがコードポイント集合に含まれることをチェックする機能を提供する。(5.1.0から追加)
       - 有
+      - 無
+      - 無
     * - \ (4)
       - terasoluna-gfw-validator
       - 汎用的なBean Validationの制約アノテーションを追加して提供する。(5.1.0から追加)
       - 有
+      - 無
+      - 無
     * - \ (5)
       - terasoluna-gfw-jodatime
       - Joda Timeに依存する機能と依存関係定義を提供する。(5.0.0から追加)
       - 有
+      - 設定済
+      - 設定済
     * - \ (6)
       - terasoluna-gfw-web
       - Webアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。Viewに依存しない機能や依存関係定義を集約している。
       - 有
+      - 無
+      - 無
     * - \ (7)
       - terasoluna-gfw-web-jsp
       - ViewにJSPを採用するWebアプリケーションを作成する場合に使用する機能と依存関係定義を提供する。
       - 有
+      - 設定済
+      - 設定済
     * - \ (8)
       - terasoluna-gfw-mybatis3
       - MyBatis3を使用する場合の依存関係定義を提供する。
       - 無
+      - 設定済*1
+      - 設定済*1
     * - \ (9)
       - terasoluna-gfw-jpa
       - JPAを使用する場合の依存関係定義を提供する。
       - 無
+      - 設定済*2
+      - 設定済*2
     * - \ (10)
       - terasoluna-gfw-security-core
       - Spring Securityを使用する場合の依存関係定義(Web以外)を提供する。
+      - 無
+      - 設定済
       - 無
     * - \ (11)
       - terasoluna-gfw-security-web
       - Spring Securityを使用する場合の依存関係定義(Web関連)とSpring Securityの拡張部品を提供する。
       - 有
+      - 設定済
+      - 設定済
     * - \ (12)
       - terasoluna-gfw-recommended-dependencies
       - Webに依存しない推奨ライブラリへの依存関係定義を提供する。
       - 無
+      - 設定済
+      - 設定済
     * - \ (13)
       - terasoluna-gfw-recommended-web-dependencies
       - Webに依存する推奨ライブラリへの依存関係定義を提供する。
       - 無
+      - 設定済
+      - 設定済
     * - \ (14)
       - terasoluna-gfw-parent
       - 依存ライブラリの管理とビルド用プラグインの推奨設定を提供する。
       - 無
+      - 設定済
+      - 設定済
+
+#. | データアクセスに、MyBatis3を使用する場合に設定される共通ライブラリ
+#. | データアクセスに、JPAを使用する場合に設定される共通ライブラリ
 
 Javaソースコードを含まないものは、ライブラリの依存関係のみ定義しているプロジェクトである。
 
