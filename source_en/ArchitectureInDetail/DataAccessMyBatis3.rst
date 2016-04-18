@@ -859,7 +859,7 @@ Mapping settings of NULL value and JDBC type
 | This issue can be resolved by the JDBC driver by configuring \ ``null``\  value and specifying a recognizable JDBC type.
 
 | When setting \ ``null``\  value, if an error accompanied by following stack traces occurs, mapping of \ ``null``\  value and JDBC type becomes necessary.
-| By default, a generic JDBC type called \ ``OTHER``\  is specified in MyBatis3. However, however an error may occur in JDBC driver due to \ ``OTHER``\.
+| By default, a generic JDBC type called \ ``OTHER``\  is specified in MyBatis3. However, an error may occur in JDBC driver due to \ ``OTHER``\.
 
  .. code-block:: guess
     :emphasize-lines: 1
