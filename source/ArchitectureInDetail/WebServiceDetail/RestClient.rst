@@ -1913,7 +1913,7 @@ HTTP Proxyサーバの設定方法
 HTTP Proxyサーバの指定方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-HTTP Proxyサーバの接続先の指定は、RestTemplateに対して、HttpComponentsClientHttpRequestFactoryを使用し指定する。
+HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を使用し指定する。
 
 例として、接続先をプロパティファイルに設定した場合を示す。
 
@@ -1977,19 +1977,19 @@ HTTP Proxyサーバの接続先の指定は、RestTemplateに対して、HttpCom
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``org.apache.http.impl.client.HttpClientBuilder``\ を使用し、HttpClientの設定を行う。
+      - | \ ``org.apache.http.impl.client.HttpClientBuilder``\ を使用し、\ ``org.apache.http.client.HttpClient``\ の設定を行う。
     * - | (2)
-      - | HttpClientBuilderの\ ``proxy``\ プロパティに、\ HTTP Proxyサーバの設定を行った\ ``org.apache.http.HttpHost``\ を設定する。
+      - | \ ``HttpClientBuilder``\ の\ ``proxy``\ プロパティに、\ HTTP Proxyサーバの設定を行った\ ``org.apache.http.HttpHost``\ を設定する。
     * - | (3)
-      - | HttpHostのコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として設定する。
+      - | \ ``HttpHost``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として設定する。
     * - | (4)
-      - | HttpHostのコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として設定する。
+      - | \ ``HttpHost``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として設定する。
     * - | (5)
-      - | RestTemplateのBean定義を行う。
+      - | \ ``RestTemplate``\ のBean定義を行う。
     * - | (6)
-      - | RestTemplateのコンストラクタの引数に、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を設定する。
+      - | \ ``RestTemplate``\ のコンストラクタの引数に、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を設定する。
     * - | (7)
-      - | HttpComponentsClientHttpRequestFactoryのコンストラクタの引数に、HttpClientBuilderから生成したHttpClientオブジェクトを設定する。
+      - | \ ``HttpComponentsClientHttpRequestFactory``\ のコンストラクタの引数に、\ ``HttpClientBuilder``\ から生成した\ ``HttpClient``\ オブジェクトを設定する。
 
 
 HTTP Proxyサーバの資格情報の指定方法
@@ -2079,19 +2079,19 @@ HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパス
     * - | (1)
       - | \ ``org.apache.http.impl.client.BasicCredentialsProvider``\ のBean定義を行う。
     * - | (2)
-      - | BasicCredentialsProviderに \ ``setCredentials``\ メソッドを使用し、HTTP Proxyサーバの資格情報の設定を行う。
+      - | \ ``BasicCredentialsProvider``\ に \ ``setCredentials``\ メソッドを使用し、HTTP Proxyサーバの資格情報の設定を行う。
         | この設定を複数行うことで、複数のHTTP Proxyサーバの資格情報の設定を行うことができる。
     * - | (3)
       - | \ ``org.apache.http.auth.AuthScope`` \ を使用し資格情報のスコープを設定する。この例は、HTTP Proxyサーバのホスト名とポート番号を指定したものである。その他の設定方法については、\ `AuthScope (Apache HttpClient API) <https://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/org/apache/http/auth/AuthScope.html>`_\ を参照されたい。
     * - | (4)
-      - | AuthScopeのコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として設定する。
+      - | \ ``AuthScope``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として設定する。
     * - | (5)
-      - | AuthScopeのコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として設定する。
+      - | \ ``AuthScope``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として設定する。
     * - | (6)
       - | \ ``org.apache.http.auth.UsernamePasswordCredentials`` \ を使用し資格情報を設定する。
     * - | (7)
-      - | UsernamePasswordCredentialsのコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyUserName``\ の値をHTTP Proxyサーバのユーザ名として設定する。
+      - | \ ``UsernamePasswordCredentials``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyUserName``\ の値をHTTP Proxyサーバのユーザ名として設定する。
     * - | (8)
-      - | UsernamePasswordCredentialsのコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPassword``\ の値をHTTP Proxyサーバのパスワードとして設定する。
+      - | \ ``UsernamePasswordCredentials``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPassword``\ の値をHTTP Proxyサーバのパスワードとして設定する。
     * - | (9)
-      - | HttpClientBuilderの\ ``defaultCredentialsProvider``\ プロパティに、BasicCredentialsProviderを設定する。
+      - | \ ``HttpClientBuilder``\ の\ ``defaultCredentialsProvider``\ プロパティに、\ ``BasicCredentialsProvider``\ を設定する。
