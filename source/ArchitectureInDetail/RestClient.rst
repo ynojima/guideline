@@ -1908,7 +1908,12 @@ Appendix
 HTTP Proxyサーバの設定方法
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-サーバへアクセスする際にHTTP Proxyサーバを経由する必要がある場合は、以下のような設定が必要となる。
+サーバへアクセスする際にHTTP Proxyサーバを経由する必要がある場合は、システムプロパティやJVM起動引数、または\ ``RestTemplate``\ の\ ``RequestFactory``\ プロパティにHTTP Proxyサーバの設定が必要となる。
+
+システムプロパティやJVM起動引数に設定した場合、アプリケーション全体に影響を与えてしまうため、\ ``RestTemplate``\ 毎にHTTP Proxyサーバの設定を行うことのできる\ ``RequestFactory``\ プロパティに設定を行う例を紹介する。
+また、\ ``RequestFactory``\ プロパティには、HTTP Proxyサーバの資格情報が不要な場合、\ ``RestTemplate``\ でデフォルトで使用されている\ ``SimpleClientHttpRequestFactory``\ を使用することもできるが、
+例では、資格情報が必要な場合に使用することができる\ ``HttpComponentsClientHttpRequestFactory``\ と、その内部で使用する\ ``Apache HTTP Client``\ を使用する方法を紹介する。
+
 
 HTTP Proxyサーバの指定方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1985,7 +1990,7 @@ HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して�
     * - | (5)
       - | \ ``RestTemplate``\ のBean定義を行う。
     * - | (6)
-      - | \ ``RestTemplate``\ のコンストラクタの引数に、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を設定する。
+      - | \ ``RestTemplate``\ のコンストラクタの引数に、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を設定することで、コンストラクタ内で、\ ``RequestFactory``\ プロパティに設定される。
     * - | (7)
       - | \ ``HttpComponentsClientHttpRequestFactory``\ のコンストラクタの引数に、\ ``HttpClientBuilder``\ から生成した\ ``HttpClient``\ オブジェクトを設定する。
 
