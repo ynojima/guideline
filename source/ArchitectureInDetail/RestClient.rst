@@ -1915,8 +1915,6 @@ HTTP Proxyサーバの指定方法
 
 HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を使用し指定する。
 
-例として、接続先をプロパティファイルに設定した場合を示す。
-
 **プロパティファイル**
 
 .. code-block:: properties
@@ -1996,8 +1994,6 @@ HTTP Proxyサーバの資格情報の指定方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパスワード)が必要な場合は、\ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を使用し資格情報を設定する。
-
-例として、資格情報をプロパティファイルに設定した場合を示す。
 
 **プロパティファイル**
 
