@@ -235,7 +235,7 @@ When not specified, all supported HTTP methods are mapped.
 
 Mapping by request parameter
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| In case of following definition, if the URL ``sample/hello?form`` is accessed, then ``hello()`` method is executed. 
+| In case of following definition, if the URL ``"sample/hello?form"`` is accessed, then ``hello()`` method is executed. 
 | When request is sent as a POST request, request parameters may exist in request body even if they do not exist in URL.
 
  .. code-block:: java
@@ -837,7 +837,7 @@ Moreover, since input values of form had been sent as hidden fields, input value
     In order to implement back button functionality, setting ``onclick="javascript:history.back()"`` is also one of the ways.
     Both the methods differ in the following ways. Appropriate method must be selected as per requirement.
 
-    * Behavior when "Back button on browser" is clicked.
+    * Behavior when Back button on browser is clicked.
     * Behavior when page having Back button is accessed and Back button is clicked.
     * History of browser
 
@@ -1803,7 +1803,7 @@ Example of definition when \ ``<bean>``\  element is to be used
      - When View name ``"sample/hello"`` is the return value of handler method, ``"/WEB-INF/views/sample/hello.jsp"`` is called and HTML is sent as response.
 
 .. note::
-    HTML output is generated using JSP in the above example, however, even if HTML is generated using other template engine such as Velocity, FreeMarker, return value of handler method will be ``"sample/hello``. 
+    HTML output is generated using JSP in the above example, however, even if HTML is generated using other template engine such as Velocity, FreeMarker, return value of handler method will be ``"sample/hello"``. 
     ``ViewResolver`` takes care of task to determine which template engine is to be used.
 
 |
