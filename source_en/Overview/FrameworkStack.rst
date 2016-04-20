@@ -626,7 +626,7 @@ With the default settings, provided two blank projects, \ `Blank project of mult
       - Provide general-purpose functionalities and dependency definitions irrespective of Web.
       - Yes
       - Yes
-      - No
+      - Yes
     * - \ (2)
       - terasoluna-gfw-string
       - Provide function related to string processing. (Add from 5.1.0)
