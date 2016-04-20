@@ -235,7 +235,7 @@ HTTPメソッドでマッピング
 
 リクエストパラメータでマッピング
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| 下記の定義の場合、 ``sample/hello?form`` というURLにアクセスすると、helloメソッドが実行される。
+| 下記の定義の場合、 ``"sample/hello?form"`` というURLにアクセスすると、helloメソッドが実行される。
 | POSTでリクエストする場合は、リクエストパラメータはURLになくてもリクエストBODYに存在していればよい。
 
  .. code-block:: java
@@ -841,7 +841,7 @@ Backボタンを押下するとPOSTメソッドでHTTPパラメータが送信�
     戻るボタンの実現方法には、ボタンの属性に ``onclick="javascript:history.back()"`` を設定する方法もある。
     両者では以下が異なり、要件に応じて選択する必要がある。
 
-    * "ブラウザの戻るボタン"を押した場合の挙動
+    * ブラウザの戻るボタンを押した場合の挙動
     * 戻るボタンがあるページに直接アクセスして戻るボタンを押した場合の挙動
     * ブラウザの履歴
 
@@ -1808,7 +1808,7 @@ HTMLを応答する
      - ハンドラメソッドの返り値として ``"sample/hello"`` というView名を返却した場合、 ``"/WEB-INF/views/sample/hello.jsp"`` が呼び出されてHTMLが応答される。
 
 .. note::
-    上記の例ではJSPを使ってHTMLを生成しているが、VelocityやFreeMarkerなど他のテンプレートエンジンを使用してHTMLを生成する場合でも、ハンドラメソッドの返り値は ``"sample/hello`` のままでよい。
+    上記の例ではJSPを使ってHTMLを生成しているが、VelocityやFreeMarkerなど他のテンプレートエンジンを使用してHTMLを生成する場合でも、ハンドラメソッドの返り値は ``"sample/hello"`` のままでよい。
     使用するテンプレートエンジンでの差分は ``ViewResolver`` によって解決される。
 
 |
@@ -2828,7 +2828,7 @@ JSTLのJSPタグライブラリから提供されている ``<c:out>`` タグを
  .. code-block:: jsp
     :emphasize-lines: 1
 
-    Message : <c:out value=${helloBean.message}" /> <%-- (1) --%>
+    Message : <c:out value="${helloBean.message}" /> <%-- (1) --%>
 
  .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
  .. list-table::
