@@ -680,7 +680,7 @@ version 5.1.0.RELEASEで利用するOSSの一覧を以下に示す。
       - Spring Securityを使用する場合の依存関係定義(Web以外)を提供する。
       - 無
       - 有
-      - 無
+      - 有
     * - \ (11)
       - terasoluna-gfw-security-web
       - Spring Securityを使用する場合の依存関係定義(Web関連)とSpring Securityの拡張部品を提供する。

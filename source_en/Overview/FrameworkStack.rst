@@ -680,7 +680,7 @@ With the default settings, provided two blank projects, \ `Blank project of mult
       - Provide dependency definitions for using Spring Security (other than Web).
       - No
       - Yes
-      - No
+      - Yes
     * - \ (11)
       - terasoluna-gfw-security-web
       - Provide dependency definitions for using Spring Security (related to Web) and extended classes of Spring Security.
