@@ -312,12 +312,12 @@ Next, login form thus created is applied to Spring Security.
     * - Sr. No.
       - Description
     * - | (1)
-      - | Specify path to display login form in \ ``loginPage``\  attribute. 
+      - | Specify path to display login form in \ ``login-page``\  attribute. 
         | When an anonymous user accesses a Web resource for which authentication is required, the user is redirected to a path specified in the attribute and a login form is displayed.
         | Here, a request is received by Spring MVC and a login form is displayed.
         | For details, refer ":ref:`spring-security-authentication-mvc`".
     * - | (2)
-      - | Specify path for performing authentication process in \ ``loginProcessingUrl``\  attribute.
+      - | Specify path for performing authentication process in \ ``login-processing-url``\  attribute.
         | Although default path is also \ ``"/login"``\ , it should be explicitly specified.
     * - | (3)
       - | Specify the path for transition at the time of authentication failure in \ ``authentication-failure-url``\  attribute.
