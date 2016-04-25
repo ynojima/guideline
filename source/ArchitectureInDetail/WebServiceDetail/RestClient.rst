@@ -1920,6 +1920,29 @@ HTTP Proxyサーバの指定方法
 
 HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を使用し指定する。
 
+**pom.xml**
+
+.. code-block:: xml
+
+    <!-- (1) -->
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+    </dependency>
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``HttpComponentsClientHttpRequestFactory``\ 内で使用する\ ``Apache HTTP Client``\ を使用するために、\ ``Apache HttpComponents Client``\ を :file:`pom.xml` の依存ライブラリに追加する。
+        | なお、\ ``Apache HttpComponents Client``\ のバージョンは、 Spring IO Platform にて管理されているため、ここで\ ``Apache HttpComponents Client``\ のバージョンを定義する必要はない。
+
+
 **Bean定義ファイル**
 
 .. code-block:: xml
@@ -1970,20 +1993,6 @@ HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して�
       - | \ ``RestTemplate``\ のコンストラクタの引数に、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を設定することで、コンストラクタ内で、\ ``RequestFactory``\ プロパティに設定される。
     * - | (7)
       - | \ ``HttpComponentsClientHttpRequestFactory``\ のコンストラクタの引数に、\ ``HttpClientBuilder``\ から生成した\ ``HttpClient``\ オブジェクトを設定する。
-
-
-\ ``HttpClient``\ および  \ ``HttpClientBuilder``\ を使用するためには、Apache HttpComponents HttpClient のライブラリが必要となる。
-以下を \ :file:`pom.xml`\ に追加し、Apache HttpComponents HttpClient を依存ライブラリに追加する。
-なお、Apache HttpComponents HttpClient のバージョンは、 Spring IO Platform にて管理されているため、ここでApache HttpComponents HttpClient のバージョンを定義する必要はない。
-
-* :file:`pom.xml`
-
- .. code-block:: xml
-
-    <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-    </dependency>
 
 
 HTTP Proxyサーバの資格情報の指定方法
