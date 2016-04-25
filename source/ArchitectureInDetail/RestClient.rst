@@ -1920,29 +1920,6 @@ HTTP Proxyサーバの指定方法
 
 HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を使用し指定する。
 
-**プロパティファイル**
-
-.. code-block:: properties
-
-    # Proxy Server Host(Host Name or IP) (1)
-    rscl.http.proxyHost=localhost
-    # Proxy Server Port Number (2)
-    rscl.http.proxyPort=8888
-
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | プロパティファイルのキー\ ``rscl.http.proxyHost``\ にHTTP Proxyサーバのホスト名またはIPアドレスを設定する。
-    * - | (2)
-      - | プロパティファイルのキー\ ``rscl.http.proxyPort``\ にHTTP Proxyサーバのポート番号を設定する。
-
-
 **Bean定義ファイル**
 
 .. code-block:: xml
@@ -2013,29 +1990,6 @@ HTTP Proxyサーバの資格情報の指定方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパスワード)が必要な場合は、\ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を使用し資格情報を設定する。
-
-**プロパティファイル**
-
-.. code-block:: properties
-
-    # Proxy Server User Name (1)
-    rscl.http.proxyUserName=userName
-    # Proxy Server Password (2)
-    rscl.http.proxyPassword=password
-
-
-.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
-.. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | プロパティファイルのキー\ ``rscl.http.proxyUserName``\ にHTTP Proxyサーバのユーザ名を設定する。
-    * - | (2)
-      - | プロパティファイルのキー\ ``rscl.http.proxyPassword``\ にHTTP Proxyサーバのパスワードを設定する。
-
 
 **Bean定義ファイル**
 
