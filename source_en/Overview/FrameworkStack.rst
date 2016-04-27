@@ -708,7 +708,7 @@ With the default settings, provided two blank projects, \ `Blank project of mult
 
 #. | With the default settings of Common Library, when MyBatis3 is used for data access.
 #. | With the default settings of Common Library, when JPA is used for data access.
-#. | terasoluna-gfw-parent is not built-in as a depencdency, but parent.
+#. | terasoluna-gfw-parent is not built-in as a <depencdency>, but a <parent>.
 
 The project which does not contain the Java source code, only defines library dependencies.
 
