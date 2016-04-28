@@ -2000,34 +2000,99 @@ HTTP Proxyサーバの資格情報の指定方法
 
 HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパスワード)が必要な場合は、\ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を使用し資格情報を設定する。
 
+**FactoryBeanクラス**
+
+.. code-block:: java
+
+    import org.apache.http.auth.AuthScope;
+    import org.apache.http.auth.UsernamePasswordCredentials;
+    import org.apache.http.impl.client.BasicCredentialsProvider;
+    import org.springframework.beans.factory.FactoryBean;
+    import org.springframework.beans.factory.annotation.Value;
+
+    // (1)
+    public class BasicCredentialsProviderFactoryBean implements FactoryBean<BasicCredentialsProvider> {
+
+        // (2)
+        @Value("${rscl.http.proxyHost}")
+        String host;
+
+        // (3)
+        @Value("${rscl.http.proxyPort}")
+        int port;
+
+        // (4)
+        @Value("${rscl.http.proxyUserName}")
+        String userName;
+
+        // (5)
+        @Value("${rscl.http.proxyPassword}")
+        String password;
+
+        @Override
+        public BasicCredentialsProvider getObject() throws Exception {
+
+            // (6)
+            AuthScope authScope = new AuthScope(this.host, this.port);
+
+            // (7)
+            UsernamePasswordCredentials usernamePasswordCredentials =
+                    new UsernamePasswordCredentials(this.userName, this.password);
+
+            // (8)
+            BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(authScope, usernamePasswordCredentials);
+
+            return credentialsProvider;
+        }
+
+        @Override
+        public Class<?> getObjectType() {
+            return BasicCredentialsProvider.class;
+        }
+
+        @Override
+        public boolean isSingleton() {
+            return true;
+        }
+    }
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``org.springframework.beans.factory.FactoryBean``\ を実装した\ ``BasicCredentialsProviderFactoryBean``\ クラスを定義する。
+        | Beanの型に\ ``BasicCredentialsProvider``\ を設定する。
+    * - | (2)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として、インスタンス変数に設定する。
+    * - | (3)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として、インスタンス変数に設定する。
+    * - | (4)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyUserName``\ の値をHTTP Proxyサーバのユーザ名として、インスタンス変数に設定する。
+    * - | (5)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyPassword``\ の値をHTTP Proxyサーバのパスワードとして、インスタンス変数に設定する。
+    * - | (6)
+      - | \ ``org.apache.http.auth.AuthScope`` \ を作成し資格情報のスコープを設定する。この例は、HTTP Proxyサーバのホスト名とポート番号を指定したものである。その他の設定方法については、\ `AuthScope (Apache HttpClient API) <https://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/org/apache/http/auth/AuthScope.html>`_\ を参照されたい。
+    * - | (7)
+      - | \ ``org.apache.http.auth.UsernamePasswordCredentials`` \ を作成し資格情報を設定する。
+    * - | (8)
+      - | \ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を作成し、\ ``setCredentials``\ メソッドを使用し、資格情報のスコープと資格情報を設定する。
+
+
 **Bean定義ファイル**
 
 .. code-block:: xml
 
-    <!-- (1) -->
-    <bean id="proxyCredentialsProvider" class="org.apache.http.impl.client.BasicCredentialsProvider" />
-    <!-- (2) -->
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetObject" ref="proxyCredentialsProvider" />
-        <property name="targetMethod" value="setCredentials" />
-        <property name="arguments" >
-            <list>
-                <!-- (3) -->
-                <bean class="org.apache.http.auth.AuthScope">
-                    <constructor-arg index="0" value="${rscl.http.proxyHost}" />    <!-- (4) -->
-                    <constructor-arg index="1" value="${rscl.http.proxyPort}" />    <!-- (5) -->
-                </bean>
-                <!-- (6) -->
-                <bean class="org.apache.http.auth.UsernamePasswordCredentials">
-                    <constructor-arg index="0" value="${rscl.http.proxyUserName}" />    <!-- (7) -->
-                    <constructor-arg index="1" value="${rscl.http.proxyPassword}" />    <!-- (8) -->
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <bean id="proxyHttpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
-        <property name="defaultCredentialsProvider" ref="proxyCredentialsProvider" />   <!-- (9) -->
+        <!-- (1) -->
+        <property name="defaultCredentialsProvider">
+            <bean class="com.example.restclient.BasicCredentialsProviderFactoryBean" />
+        </property>
         <property name="proxy">
             <bean id="proxyHost" class="org.apache.http.HttpHost">
                 <constructor-arg index="0" value="${rscl.http.proxyHost}" />
@@ -2055,21 +2120,5 @@ HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパス
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``org.apache.http.impl.client.BasicCredentialsProvider``\ のBean定義を行う。
-    * - | (2)
-      - | \ ``BasicCredentialsProvider``\ に \ ``setCredentials``\ メソッドを使用し、HTTP Proxyサーバの資格情報の設定を行う。
-        | この設定を複数行うことで、複数のHTTP Proxyサーバの資格情報の設定を行うことができる。
-    * - | (3)
-      - | \ ``org.apache.http.auth.AuthScope`` \ を使用し資格情報のスコープを設定する。この例は、HTTP Proxyサーバのホスト名とポート番号を指定したものである。その他の設定方法については、\ `AuthScope (Apache HttpClient API) <https://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/org/apache/http/auth/AuthScope.html>`_\ を参照されたい。
-    * - | (4)
-      - | \ ``AuthScope``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として設定する。
-    * - | (5)
-      - | \ ``AuthScope``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として設定する。
-    * - | (6)
-      - | \ ``org.apache.http.auth.UsernamePasswordCredentials`` \ を使用し資格情報を設定する。
-    * - | (7)
-      - | \ ``UsernamePasswordCredentials``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyUserName``\ の値をHTTP Proxyサーバのユーザ名として設定する。
-    * - | (8)
-      - | \ ``UsernamePasswordCredentials``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPassword``\ の値をHTTP Proxyサーバのパスワードとして設定する。
-    * - | (9)
       - | \ ``HttpClientBuilder``\ の\ ``defaultCredentialsProvider``\ プロパティに、\ ``BasicCredentialsProvider``\ を設定する。
+        | \ ``BasicCredentialsProvider``\ は、\ ``FactoryBean``\ を実装した\ ``BasicCredentialsProviderFactoryBean``\ を使用しBeanを作成する。
