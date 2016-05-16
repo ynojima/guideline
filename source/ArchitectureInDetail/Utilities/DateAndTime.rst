@@ -12,7 +12,7 @@
 Overview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| 本ガイドラインでは、``java.util.Date`` , ``java.util.Calender`` に比べて、
+| 本ガイドラインでは、``java.util.Date`` , ``java.util.Calendar`` に比べて、
 | 様々な日時計算が提供されている JSR-310 Date and Time API の使用を推奨する。
 
     .. note::

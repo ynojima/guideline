@@ -12,7 +12,7 @@ Date Operations (Joda Time)
 Overview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| The API of ``java.util.Date`` , ``java.util.Calender`` class is poorly built to perform complex date calculations.
+| The API of ``java.util.Date`` , ``java.util.Calendar`` class is poorly built to perform complex date calculations.
 | This guideline recommends the usage of Joda Time which provides quality replacement for the Java Date and Time classes.
 
 | In Joda Time, date is expressed using ``org.joda.time.DateTime`` , ``org.joda.time.LocalDate`` , or ``org.joda.time.LocalTime`` object instead of ``java.util.Date``.
@@ -578,7 +578,7 @@ For other Joda-Time tags, refer to `Joda Time JSP tags User guide <http://joda-t
 Example (display of calendar)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Using Spring MVC, sample for displaying a month wise calender, is shown below.
+Using Spring MVC, sample for displaying a month wise calendar, is shown below.
 
 .. tabularcolumns:: |p{0.33\linewidth}|p{0.33\linewidth}|p{0.33\linewidth}|
 .. list-table::
@@ -617,16 +617,16 @@ The controller is implemented as follows:
             LocalDate lastDayOfMonth = firstDayOfMonth.dayOfMonth()
                     .withMaximumValue();
 
-            LocalDate firstDayOfCalender = firstDayOfMonth.dayOfWeek()
+            LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek()
                     .withMinimumValue();
-            LocalDate lastDayOfCalender = lastDayOfMonth.dayOfWeek()
+            LocalDate lastDayOfCalendar = lastDayOfMonth.dayOfWeek()
                     .withMaximumValue();
 
             List<List<LocalDate>> calendar = new ArrayList<List<LocalDate>>();
             List<LocalDate> weekList = null;
             for (int i = 0; i < 100; i++) {
-                LocalDate d = firstDayOfCalender.plusDays(i);
-                if (d.isAfter(lastDayOfCalender)) {
+                LocalDate d = firstDayOfCalendar.plusDays(i);
+                if (d.isAfter(lastDayOfCalendar)) {
                     break;
                 }
 

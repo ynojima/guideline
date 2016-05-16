@@ -13,7 +13,7 @@ Overview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | This guideline recommends the use of JSR-310 Date and Time API which offers various date and time calculations,
-| as against ``java.util.Date`` and ``java.util.Calender``.
+| as against ``java.util.Date`` and ``java.util.Calendar``.
 
     .. note::
 

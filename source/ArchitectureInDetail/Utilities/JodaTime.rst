@@ -12,7 +12,7 @@
 Overview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| ``java.util.Date`` 、 ``java.util.Calender`` クラスのAPIは、非常に貧弱であるため、複雑な日付計算ができない。
+| ``java.util.Date`` 、 ``java.util.Calendar`` クラスのAPIは、非常に貧弱であるため、複雑な日付計算ができない。
 | 本ガイドラインでは、日付計算が強力なJoda Timeの使用を推奨している。
 
 | Joda Timeでは、 ``java.util.Date`` の代わりに、 ``org.joda.time.DateTime`` 、 ``org.joda.time.LocalDate`` や ``org.joda.time.LocalTime`` オブジェクトを用いて日付を表現する。
@@ -641,16 +641,16 @@ Spring MVCを使って、月単位のカレンダーを表示するサンプル�
             LocalDate lastDayOfMonth = firstDayOfMonth.dayOfMonth()
                     .withMaximumValue();
 
-            LocalDate firstDayOfCalender = firstDayOfMonth.dayOfWeek()
+            LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek()
                     .withMinimumValue();
-            LocalDate lastDayOfCalender = lastDayOfMonth.dayOfWeek()
+            LocalDate lastDayOfCalendar = lastDayOfMonth.dayOfWeek()
                     .withMaximumValue();
 
             List<List<LocalDate>> calendar = new ArrayList<List<LocalDate>>();
             List<LocalDate> weekList = null;
             for (int i = 0; i < 100; i++) {
-                LocalDate d = firstDayOfCalender.plusDays(i);
-                if (d.isAfter(lastDayOfCalender)) {
+                LocalDate d = firstDayOfCalendar.plusDays(i);
+                if (d.isAfter(lastDayOfCalendar)) {
                     break;
                 }
 
