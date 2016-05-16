@@ -1070,7 +1070,7 @@ Right click on the Package Explorer, select -> [New] -> [Class] -> [New Java Cla
 
 and click [Finish] after entering above information.
 
-Created Interface stored in the following directory.
+Created class stored in the following directory.
 
 .. figure:: ./images/image064.png
 
@@ -1268,7 +1268,7 @@ and click [Finish] after entering above information.
 
     **It should be noted that the higher level package is different from the domain layer.**
 
-Created Interface stored in the following directory.
+Created class stored in the following directory.
 
 .. figure:: ./images/image065.png
 
@@ -1337,7 +1337,7 @@ Right click on the Package Explorer, select -> [New] -> [Class] -> [New Java Cla
 
 and click [Finish] after entering above information.
 
-Created Interface stored in the following directory.
+Created class stored in the following directory.
 
 .. figure:: ./images/image066.png
 
