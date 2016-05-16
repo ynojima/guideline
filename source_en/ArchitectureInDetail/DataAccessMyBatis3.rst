@@ -814,7 +814,7 @@ MyBatis3 provides following three modes to execute SQL.
 
         
 
-        However, when \ ``BATCH``\  mode is used, MyBatis behavior operates in \ ``SIMPLE``\ mode or in a mode different from ``SIMPLE``\  mode.
+        However, when \ ``BATCH``\  mode is used, MyBatis behavior operates in \ ``SIMPLE``\  mode or in a mode different from ``SIMPLE``\  mode.
         Refer to ":ref:`DataAccessMyBatis3HowToExtendExecutorTypeBatchNotes`" for basic differences and precautions.
 
 |
@@ -5021,7 +5021,7 @@ How to implement the TypeHandler for mapping CLOB in \ ``java.io.Reader``\ is gi
 Implementing TypeHandler for Joda-Time
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-| MyBatis3 does not support Joda-time classes (\ ``org.joda.time.DateTime``\ , ``org.joda.time.LocalDateTime``\ , \ ``org.joda.time.LocalDate``\ etc.).
+| MyBatis3 does not support Joda-time classes (\ ``org.joda.time.DateTime``\ , ``org.joda.time.LocalDateTime``\ , \ ``org.joda.time.LocalDate``\  etc.).
 | Hence, when Joda-Time class is used in the field of Entity class, it is necessary to provide a TypeHandler for Joda-Time.
 
 How to implement a TypeHandler for mapping ``org.joda.time.DateTime``\  and \ ``java.sql.Timestamp``\  is shown below.
@@ -5314,7 +5314,7 @@ How to implement a process wherein the search results are downloaded as CSV data
 
  .. warning:: **Precautions while using ResultHandler**
 
-    When \ ``ResultHandler``\ is used, following two points should be considered.
+    When \ ``ResultHandler``\  is used, following two points should be considered.
 
     * MyBatis3 provides a mechanism wherein the search results are stored in local cache and global binary cache to improve the efficiency of search process. However, the data returned from the method which uses \ ``ResultHandler``\  as an argument, is not cached.
     * When \ ``ResultHandler``\  is used for the statement that maps data of multiple rows in a single Java object by using manual mapping, an object in the incomplete state (the status of related Entity object prior to mapping) can be passed.
@@ -6543,7 +6543,7 @@ This mechanism is effective when building an application that can support multip
 
  .. note::
 
-    In this guideline, it is recommended to use a method to map the product name of database and database ID, by specifying \ ``properties``\ property
+    In this guideline, it is recommended to use a method to map the product name of database and database ID, by specifying \ ``properties``\  property
     
 
     This is due to possible change in the product name of database fetched from JDBC driver, based on the JDBC version.
@@ -8046,7 +8046,7 @@ In MyBatis3, availability of "Lazy Load" can be specified in the 2 locations giv
 
  .. warning::
 
-    When \ ``select``\  attribute of \ ``association``\  element or \ ``collection``\ element is used in "\ ``false``\ : "Eager Load"" state, 
+    When \ ``select``\  attribute of \ ``association``\  element or \ ``collection``\  element is used in "\ ``false``\ : "Eager Load"" state, 
     exercise caution as SQL is executed at the time of mapping.
 
 
