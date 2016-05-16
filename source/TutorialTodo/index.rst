@@ -1069,7 +1069,7 @@ Package Explorer上で右クリック -> New -> Class を選択し、「New Java
 
 を入力して「Finish」する。
 
-作成したインタフェースは以下のディレクトリに格納される。
+作成したクラスは以下のディレクトリに格納される。
 
 .. figure:: ./images/image064.png
 
@@ -1267,7 +1267,7 @@ Package Explorer上で右クリック -> New -> Class を選択し、「New Java
 
     **上位パッケージがドメイン層と異なるので注意すること。**
 
-作成したインタフェースは以下のディレクトリに格納される。
+作成したクラスは以下のディレクトリに格納される。
 
 .. figure:: ./images/image065.png
 
@@ -1336,7 +1336,7 @@ Package Explorer上で右クリック -> New -> Class を選択し、「New Java
 
 を入力して「Finish」する。
 
-作成したインタフェースは以下のディレクトリに格納される。
+作成したクラスは以下のディレクトリに格納される。
 
 .. figure:: ./images/image066.png
 
