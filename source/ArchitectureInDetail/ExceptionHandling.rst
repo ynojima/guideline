@@ -1562,7 +1562,7 @@ Spring MVCの、デフォルトの例外ハンドリング機能によって行�
 
     @ExceptionHandler(BusinessException.class) // (1)
     @ResponseStatus(HttpStatus.CONFLICT) // (2)
-    public ModelAndView handdleBusinessException(BusinessException e) {
+    public ModelAndView handleBusinessException(BusinessException e) {
         ExtendedModelMap modelMap = new ExtendedModelMap();                 // (3)
         modelMap.addAttribute(e.getResultMessages());                       // (4)
         String viewName = top(modelMap);                                    // (5)
