@@ -42,7 +42,7 @@ MyBatis3を使用する場合、アプリケーション開発者は、
 の作成を行う。
 
 | 以下に、Repositoryインタフェースとマッピングファイルの作成例を示す。
-| MyBatis3の使用方法の詳細は、\ :doc:`../ArchitectureInDetail/DataAccessMyBatis3`\ を参照されたい。
+| MyBatis3の使用方法の詳細は、\ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`\ を参照されたい。
 
 - Repositoryインタフェース(Mapperインタフェース)の作成例
 
@@ -140,11 +140,11 @@ JPAを使ってRepositoryを実装
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | リレーショナルデータベースとの永続APIとして、JPAを使う場合、Spring Data JPAの\ ``org.springframework.data.jpa.repository.JpaRepository``\ を使用すると、非常に簡単にRepositoryを作成することが出来る。
-| Spring Data JPAの使用方法の詳細は、\ :doc:`../ArchitectureInDetail/DataAccessJpa`\ を参照されたい。
+| Spring Data JPAの使用方法の詳細は、\ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\ を参照されたい。
 
 | Spring Data JPAを使った場合、基本的なCRUD操作は、JpaRepositoryを継承したインタフェースを作成するだけでよい。つまり、基本的には、RepositoryImplは不要である。
 | ただし、動的なクエリ(JPQL)を発行する必要がある場合は、RepositoryImplが必要となる。
-| Spring Data JPA使用時のRepositoryImplの実装については、\ :doc:`../ArchitectureInDetail/DataAccessJpa`\ を参照されたい。
+| Spring Data JPA使用時のRepositoryImplの実装については、\ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\ を参照されたい。
 
 - TodoRepository.java
 

@@ -19,13 +19,13 @@
      - 関連するガイドライン
    * - A1
      - `Injection <https://www.owasp.org/index.php/Top_10_2013-A1-Injection>`_ SQL Injection
-     - * \ :doc:`../ArchitectureInDetail/DataAccessMyBatis3`\
-       * \ :doc:`../ArchitectureInDetail/DataAccessJpa`\
+     - * \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`\
+       * \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\
 
        (クエリにパラメータを埋め込む場合は、バインド変数を使用する旨を記載)
    * - A1
      - `Injection <https://www.owasp.org/index.php/Top_10_2013-A1-Injection>`_ XXE(XML External Entity) Injection
-     - * \ :doc:`../ArchitectureInDetail/Ajax`\ 
+     - * \ :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`\ 
    * - A2
      - `Broken Authentication and Session Management <https://www.owasp.org/index.php/Top_10_2013-A2-Broken_Authentication_and_Session_Management>`_
      - * \ :doc:`../Security/Authentication`\ 
@@ -38,11 +38,11 @@
      - 特に言及なし
    * - A5
      - `Security Misconfiguration <https://www.owasp.org/index.php/Top_10_2013-A5-Security_Misconfiguration>`_
-     - * \ :doc:`../ArchitectureInDetail/Logging`\ (ログのメッセージ内容に言及)
+     - * \ :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`\ (ログのメッセージ内容に言及)
        * \ :ref:`exception-handling-how-to-use-codingpoint-jsp-exceptioncode-label`\ (システム例外時に出力するメッセージ内容に言及)
    * - A6
      - `Sensitive Data Exposure <https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure>`_
-     - * \ :doc:`../ArchitectureInDetail/PropertyManagement`\ 
+     - * \ :doc:`../ArchitectureInDetail/GeneralFuncDetail/PropertyManagement`\ 
        * \ :ref:`SpringSecurityAuthenticationPasswordHashing`\  (パスワードハッシュにのみ言及)
    * - A7
      - `Missing Function Level Access Control <https://www.owasp.org/index.php/Top_10_2013-A7-Missing_Function_Level_Access_Control>`_

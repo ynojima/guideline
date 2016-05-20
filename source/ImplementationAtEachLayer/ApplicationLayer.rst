@@ -13,7 +13,7 @@
 
    Ajaxの開発やREST APIの開発で必要となる実装についての説明は以下のページを参照されたい。
 
-   - :doc:`../ArchitectureInDetail/Ajax`
+   - :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
 
 |
 
@@ -283,7 +283,7 @@ HTTPメソッドでマッピング
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 主にREST APIやAjax向けのリクエストをマッピングする際に使用するため、詳細は以下のページを参照されたい。
 
-- :doc:`../ArchitectureInDetail/Ajax`
+- :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
 
 
 .. _controller-mapping-contenttype-label:
@@ -292,7 +292,7 @@ Content-Typeヘッダでマッピング
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 主にREST APIやAjax向けのリクエストをマッピングする際に使用するため、詳細は以下のページを参照されたい。
 
-- :doc:`../ArchitectureInDetail/Ajax`
+- :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
 
 
 .. _controller-mapping-accept-label:
@@ -301,7 +301,7 @@ Acceptヘッダでマッピング
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 主にREST APIやAjax向けのリクエストをマッピングする際に使用するため、詳細は以下のページを参照されたい。
 
-- :doc:`../ArchitectureInDetail/Ajax`
+- :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
 
 |
 |
@@ -854,7 +854,7 @@ Backボタンを押下するとPOSTメソッドでHTTPパラメータが送信�
 | フォームの入力内容を登録する場合は、POSTで登録対象のデータ(hiddenパラメータ)を送信させる。
 | 新規作成リクエストはこの処理のメインリクエストになるので、HTTPパラメータによる振り分けは行っていない。
 | この処理ではデータベースの状態を変更するので、二重送信によって新規作成処理が複数回実行されないように制御する必要がある。
-| そのため、この処理が終了した後はView(画面)を直接表示するのではなく、次の画面(新規作成完了画面)へリダイレクトしている。このパターンをPOST-Redirect-GET(PRG)パターンと呼ぶ。  :abbr:`PRG (Post-Redirect-Get)` パターンの詳細については :doc:`../ArchitectureInDetail/DoubleSubmitProtection` を参照されたい。
+| そのため、この処理が終了した後はView(画面)を直接表示するのではなく、次の画面(新規作成完了画面)へリダイレクトしている。このパターンをPOST-Redirect-GET(PRG)パターンと呼ぶ。  :abbr:`PRG (Post-Redirect-Get)` パターンの詳細については :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection` を参照されたい。
 
  .. code-block:: java
     :emphasize-lines: 1,7
@@ -886,7 +886,7 @@ Backボタンを押下するとPOSTメソッドでHTTPパラメータが送信�
 .. warning::
     PRGパターンとすることで、ブラウザのF5ボタン押下時のリロードによる二重送信を防ぐ事はできるが、二重送信の対策としてはとしては十分ではない。
     二重送信の対策としては、共通部品として提供しているTransactionTokenCheckを行う必要がある。
-    TransactionTokenCheckの詳細については :doc:`../ArchitectureInDetail/DoubleSubmitProtection` を参照されたい。
+    TransactionTokenCheckの詳細については :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection` を参照されたい。
 
 |
 
@@ -1385,7 +1385,7 @@ URLのパスから値を取得する
 フォームオブジェクト引数に\ ``@Validated``\ アノテーションを付け、
 フォームオブジェクト引数の直後に\ ``org.springframework.validation.BindingResult``\ (以降\ ``BindingResult``\ と呼ぶ) を引数に指定する。
 
-入力チェックの詳細については、 :doc:`../ArchitectureInDetail/Validation` を参照されたい。
+入力チェックの詳細については、 :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation` を参照されたい。
 
 フォームオブジェクトクラスのフィールドに入力チェックで必要となるアノテーションを付加する。
 
@@ -1684,7 +1684,7 @@ Cookieに値を書き込む
 | 一覧検索を行うリクエストでは、ページネーション情報が必要となる。
 | ``org.springframework.data.domain.Pageable``\ (以降\ ``Pageable``\ と呼ぶ) オブジェクトをハンドラメソッドの引数に取ることで、ページネーション情報(ページ数、取得件数)を容易に扱うことができる。
 
- 詳細については :doc:`../ArchitectureInDetail/Pagination` を参照すること。
+ 詳細については :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination` を参照すること。
 
 |
 
@@ -1697,7 +1697,7 @@ Cookieに値を書き込む
 - フォームオブジェクトに\ ``MultipartFile``\のプロパティを用意する。
 - \ ``@RequestParam``\ アノテーションを付与して\ ``org.springframework.web.multipart.MultipartFile``\ をハンドラメソッドの引数とする。
 
-詳細については :doc:`../ArchitectureInDetail/FileUpload` を参照されたい。
+詳細については :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload` を参照されたい。
 
 |
 
@@ -1708,7 +1708,7 @@ Cookieに値を書き込む
 \ ``Model``\ オブジェクト又は\ ``RedirectAttributes``\ オブジェクトをハンドラメソッドの引数として受け取り、
 \ ``ResultMessages``\ オブジェクトを追加することで処理の結果メッセージを表示できる。
 
-詳細については :doc:`../ArchitectureInDetail/MessageManagement` を参照されたい。
+詳細については :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement` を参照されたい。
 
 |
 |
@@ -1737,7 +1737,7 @@ HTMLを応答する
 | JSPを使ってHTMLを生成する場合の\ ``ViewResolver``\ は、基本的には\ ``UrlBasedViewResolver``\ の継承クラス(\ ``InternalViewResolver``\ や \ ``TilesViewResolver``\ 等)となる。
 
 | 以下では、JSP用の\ ``InternalViewResolver``\ を使用する場合の例を記載するが、画面レイアウトがテンプレート化されている場合は\ ``TilesViewResolver``\ を使用することを推奨する。
-| \ ``TilesViewResolver``\ の使用方法については、 :doc:`../ArchitectureInDetail/TilesLayout` を参照されたい。
+| \ ``TilesViewResolver``\ の使用方法については、 :doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout` を参照されたい。
 
 - spring-mvc.xml
 
@@ -1822,7 +1822,7 @@ HTMLを応答する
 | ハンドラメソッドでは、ダウンロード対象となるデータを \ ``Model``\ に追加し、ダウンロード処理を行うViewのView名を返却する。
 
 | View名からViewを解決する方法としては、個別のViewResolverを作成する方法もあるが、ここではSpring Frameworkから提供されている\ ``BeanNameViewResolver``\ を使用する。
-| ダウンロード処理の詳細については、 :doc:`../ArchitectureInDetail/FileDownload` を参照されたい。
+| ダウンロード処理の詳細については、 :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload` を参照されたい。
 
 - spring-mvc.xml
 
@@ -1954,7 +1954,7 @@ Controllerで実装すべき処理を以下に4つ示す。
 入力値の相関チェック
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | 入力値に対する相関チェックは、\ ``org.springframework.validation.Validator``\ インタフェースを実装したValidationクラス、もしくは、Bean Validationで検証を行う。
-| 相関チェックの実装の詳細については、:doc:`../ArchitectureInDetail/Validation` を参照されたい。
+| 相関チェックの実装の詳細については、:doc:`../ArchitectureInDetail/WebApplicationDetail/Validation` を参照されたい。
 
 | 相関チェックの実装自体はControllerのハンドラメソッドで行うことはないが、相関チェックを行う\ ``Validator``\ を\ ``org.springframework.web.bind.WebDataBinder``\ に追加する必要がある。
 
@@ -2115,7 +2115,7 @@ Controllerで実装すべき処理を以下に4つ示す。
 
  .. note::
     Helperクラスに処理を委譲する以外の方法として、Bean変換機能を使用する方法がある。
-    Bean変換機能の詳細は、:doc:`../ArchitectureInDetail/Utilities/Dozer` を参照されたい。
+    Bean変換機能の詳細は、:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer` を参照されたい。
 
 |
 
@@ -2206,7 +2206,7 @@ Controllerで実装すべき処理を以下に4つ示す。
 
  .. note::
     Helperクラスに処理を委譲する以外の方法として、Bean変換機能を使用する方法がある。
-    Bean変換機能の詳細は、:doc:`../ArchitectureInDetail/Utilities/Dozer` を参照されたい。
+    Bean変換機能の詳細は、:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer` を参照されたい。
 
 |
 |
@@ -2416,7 +2416,7 @@ Controller単位の型変換
 入力チェック用のアノテーションの指定
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 フォームオブジェクトのバリデーションは、Bean Validationを使用して行うため、フィールドの制約条件を示すアノテーションを指定する必要がある。
-入力チェックの詳細は、:doc:`../ArchitectureInDetail/Validation` を参照されたい。
+入力チェックの詳細は、:doc:`../ArchitectureInDetail/WebApplicationDetail/Validation` を参照されたい。
 
 |
 
@@ -2700,7 +2700,7 @@ JSPの実装
      - - `<http://download.oracle.com/otndocs/jcp/jstl-1.2-mrel2-eval-oth-JSpec/>`_\
    * - 4.
      - Common library's tags & el functions
-     - - 本ガイドラインの「:doc:`../Appendix/TagLibAndELFunctions`」
+     - - 本ガイドラインの「:doc:`../ArchitectureInDetail/WebApplicationDetail/TagLibAndELFunctions`」
 
  .. warning::
 
@@ -2903,7 +2903,7 @@ JSTLのJSPタグライブラリから提供されている ``<fmt:formatDate>`` 
 
 .. note::
     日時オブジェクトの型として、Joda Timeから提供されている ``org.joda.time.DateTime`` などを利用する場合は、Jada Timeから提供されているJSPタグライブラリを使用すること。
-    Joda Timeの詳細は、 :doc:`../ArchitectureInDetail/Utilities/JodaTime` を参照されたい。
+    Joda Timeの詳細は、 :doc:`../ArchitectureInDetail/GeneralFuncDetail/JodaTime` を参照されたい。
 
 
 |
@@ -3104,7 +3104,7 @@ Spring Frameworkから提供されている ``<form:form>`` タグを使用し�
 入力チェックエラーの内容を表示する場合、Spring Frameworkから提供されているJSPタグライブラリを使用する。
 
 | Spring Frameworkから提供されている ``<form:errors>`` タグを使用して表示する。
-| 詳細は、 :doc:`../ArchitectureInDetail/Validation` を参照されたい。
+| 詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation` を参照されたい。
 
  .. code-block:: jsp
     :emphasize-lines: 3
@@ -3133,7 +3133,7 @@ Spring Frameworkから提供されている ``<form:form>`` タグを使用し�
 処理結果を通知するメッセージを表示する場合、共通部品から提供しているJSPタグライブラリを使用する。
 
 | 共通部品から提供している ``<t:messagesPanel>`` タグを使用する。
-| 詳細は、 :doc:`../ArchitectureInDetail/MessageManagement` を参照されたい。
+| 詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement` を参照されたい。
 
  .. code-block:: jsp
     :emphasize-lines: 3
@@ -3162,7 +3162,7 @@ Spring Frameworkから提供されている ``<form:form>`` タグを使用し�
 共通部品から提供されているコードリストを表示する場合は、Spring Frameworkから提供されているJSPタグライブラリを使用する。
 
 | JSPからコードリストを参照する場合は、 ``java.util.Map`` インタフェースと同じ方法で参照することができる。
-| 詳細は、 :doc:`../ArchitectureInDetail/Codelist` を参照されたい。
+| 詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist` を参照されたい。
 
 コードリストをセレクトボックスに表示する。
 
@@ -3213,7 +3213,7 @@ Spring Frameworkから提供されている ``<form:form>`` タグを使用し�
 | ただし、国際化の必要がある場合はSpring Frameworkから提供されているJSPタグライブラリを使用して、プロパティファイルから取得した値を表示する。
 
 | Spring Frameworkから提供されている ``<spring:message>`` タグを使用して表示する。
-| 詳細は、 :doc:`../ArchitectureInDetail/Internationalization` を参照されたい。
+| 詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/Internationalization` を参照されたい。
 
 - properties
 
@@ -3363,7 +3363,7 @@ JSTLのJSPタグライブラリから提供されている ``<c:forEach>`` を�
 一覧表示を行う画面にてページネーション用のリンクを表示する場合は、共通部品から提供しているJSPタグライブラリを使用する。
 
 共通部品から提供している ``<t:pagination>`` を使用してページネーション用のリンクを表示する。
-詳細は、 :doc:`../ArchitectureInDetail/Pagination` を参照されたい。
+詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination` を参照されたい。
 
 
 |
@@ -4006,7 +4006,7 @@ HandlerMethodArgumentResolverを実装してControllerの引数として受け�
 --------------------------------------------------------------------------------
 送信ボタンの複数回押下や完了画面の再読み込み(F5ボタンによる再読み込み)などで、 同じ処理が複数回実行されてしまう可能性があるため、二重送信を防止するための対策は必ず行うこと。
 
-対策を行わない場合に発生する問題点や対策方法の詳細は、 :doc:`../ArchitectureInDetail/DoubleSubmitProtection` を参照されたい。
+対策を行わない場合に発生する問題点や対策方法の詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection` を参照されたい。
 
 |
 
@@ -4017,7 +4017,7 @@ HandlerMethodArgumentResolverを実装してControllerの引数として受け�
 | 入力フォームが複数の画面にわかれている場合は、 一連の画面遷移を行うリクエストでモデル（フォームオブジェクトやドメインオブジェクトなど）を共有できるため、 \ ``@SessionAttributes``\ アノテーションの利用を検討すること。
 | ただし、セッションを使用する際の注意点があるので、そちらを確認した上で\ ``@SessionAttributes``\ アノテーションの利用有無を判断すること。
 
-セッションの利用指針及びセッション使用時の実装方法の詳細は、 :doc:`../ArchitectureInDetail/SessionManagement` を参照されたい。
+セッションの利用指針及びセッション使用時の実装方法の詳細は、 :doc:`../ArchitectureInDetail/WebApplicationDetail/SessionManagement` を参照されたい。
 
 .. raw:: latex
 

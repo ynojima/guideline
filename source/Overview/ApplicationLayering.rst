@@ -85,7 +85,7 @@ Spring MVCでは、\ ``View``\ クラスが該当する。
 
     REST APIやAjax向けのリクエストでJSONやXML形式の出力を行う場合は、\ ``HttpMessageConverter``\ クラスが\ ``View``\の役割を担う。
 
-    詳細は、「:doc:`../ArchitectureInDetail/REST`」を参照されたい。
+    詳細は、「:doc:`../ArchitectureInDetail/WebServiceDetail/REST`」を参照されたい。
 
 |
 
@@ -113,14 +113,14 @@ Spring MVCでは、Formオブジェクトは、リクエストパラメータを
     Controller内のソースコードをシンプルな状態に保つこと推奨する。
 
     * Helperクラスを作成して変換処理を委譲する
-    * :doc:`Dozer <../ArchitectureInDetail/Utilities/Dozer>` を使用する
+    * :doc:`Dozer <../ArchitectureInDetail/GeneralFuncDetail/Dozer>` を使用する
 
 .. tip::
 
     REST APIやAjax向けのリクエストでJSONやXML形式の入力を受ける場合は、\ ``Resource``\ クラスが\ ``Form``\の役割を担う。
     また、JSONやXML形式の入力データを\ ``Resource``\ クラスに変換する役割は、\ ``HttpMessageConverter``\ クラスが担う。
 
-    詳細は、「:doc:`../ArchitectureInDetail/REST`」を参照されたい。
+    詳細は、「:doc:`../ArchitectureInDetail/WebServiceDetail/REST`」を参照されたい。
 
 |
 
@@ -697,8 +697,6 @@ Repositoryを作成することにより、永続化技術を隠蔽できたり�
   
     この点を考慮しない場合は、環境ごとに設定ファイルの内容を行いビルドしなおすという作業が入る。
   
-    環境依存に関するファイルを別プロジェクトにする意義については、\ :doc:`../Appendix/EnvironmentIndependency`\ を参照されたい。
-
 .. raw:: latex
 
    \newpage

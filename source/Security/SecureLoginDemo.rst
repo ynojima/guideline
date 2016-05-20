@@ -25,7 +25,7 @@
 
 * :doc:`../ImplementationAtEachLayer/index` の内容を理解していること
 * :doc:`./SpringSecurity`, :doc:`./Authentication`, :doc:`./Authorization` の内容を理解していること
-* :doc:`./Tutorial` を実施済みのこと
+* :doc:`../Tutorial/TutorialSecurity` を実施済みのこと
 
 .. _app-description-sec:
 
@@ -125,7 +125,7 @@
 機能
 --------------------------------------------------------------------------------
 
-本アプリケーションは、:doc:`./Tutorial` で作成したアプリケーションに加え、以下の機能を持つ。
+本アプリケーションは、:doc:`../Tutorial/TutorialSecurity` で作成したアプリケーションに加え、以下の機能を持つ。
 
 .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
 .. list-table::
@@ -1027,7 +1027,7 @@ ER図
 
 実装方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| パスワード変更時等にユーザが指定したパスワードの品質を検査するためには、 :doc:`../ArchitectureInDetail/Validation` の機能を利用することができる。本アプリケーションではBean Validationを用いてパスワードの品質を検査する。
+| パスワード変更時等にユーザが指定したパスワードの品質を検査するためには、 :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation` の機能を利用することができる。本アプリケーションではBean Validationを用いてパスワードの品質を検査する。
 | パスワードの品質として求められる要件はアプリケーションによって異なり、多岐に渡る。
 | そこで、パスワード入力チェック用のライブラリとして `Passay <http://www.passay.org/>`_ を利用し、必要なBean Validationのアノテーションを作成する。
 | Passayではパスワード入力チェックで一般的に使用される機能の多くを提供しており、提供されていない機能についても標準機能を拡張することで容易に実装することができる。
@@ -3481,7 +3481,7 @@ ER図
 * パスワード再発行画面のURLのメール送付
 
   パスワード再発行用の認証情報からパスワード再発行画面のURLを作成し、メール送付する処理の実装を以下に示す。
-  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/Email` を参照。
+  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/ExternalSystemDetail/Email` を参照。
 
   .. code-block:: java
 
