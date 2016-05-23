@@ -1,4 +1,4 @@
-Message linkage function
+Message linkage
 ================================================================================
 
 .. toctree::
