@@ -9,6 +9,12 @@ Change Log
     * - Modified on
       - Modified locations
       - Modification details
+    * - 2016-99-99
+      - \
+      - Review the chapters across the board
+      
+        * For details of change contents, refer \ `Optimize the order of chapters and sections #1683 <https://github.com/terasolunaorg/guideline/issues/1683>`_\
+      
     * - 2016-02-24
       - \-
       - 5.1.0 RELEASE version published
@@ -66,7 +72,7 @@ Change Log
          * \ ``AuthenticationPrincipalArgumentResolver``\  package changed
 
     * -
-      - :doc:`../TutorialTodo/index`
+      - :doc:`../Tutorial/TutorialTodo`
       - Modifications corresponding to Spring Security 4
 
         *  Modification of source corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
@@ -87,12 +93,12 @@ Change Log
         *  A method to create a request URL using EL function is added (\ `guideline#632 <https://github.com/terasolunaorg/guideline/issues/632>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`
       - Description details added
 
         *  Precautions for \ ``Log4jdbcProxyDataSource``\  overhead added (\ `guideline#1471 <https://github.com/terasolunaorg/guideline/issues/1471>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`
       - Description details corresponding to MyBatis 3.3 added
 
         * Setup method of \ ``defaultFetchSize``\  added (\ `guideline#965 <https://github.com/terasolunaorg/guideline/issues/965>`_\ )
@@ -101,7 +107,7 @@ Change Log
         * Source example which use newly added \ ``@Flush``\  annotation, and precautions added (\ `guideline#915 <https://github.com/terasolunaorg/guideline/issues/915>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessJpa`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`
       - Bug correction for the guideline
 
         *  Utility which use Like condition modified appropriately (\ `guideline#1464 <https://github.com/terasolunaorg/guideline/issues/1464>`_\ )
@@ -115,13 +121,13 @@ Change Log
         *  Default value of \ ``hibernate.hbm2ddl.auto``\  corrected (\ `guideline#1282 <https://github.com/terasolunaorg/guideline/issues/1282>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Validation`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
       - Description details modified
 
         *  Description for MethodValidation added (\ `guideline#708 <https://github.com/terasolunaorg/guideline/issues/708>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Logging`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
       - Description details modified
 
         * Description where \ ``ServiceLoader``\  mechanism is used in Logback setting, is added (\ `guideline#1275 <https://github.com/terasolunaorg/guideline/issues/1275>`_\ )
@@ -130,45 +136,45 @@ Change Log
          * Since the specification is true by default, \ ``<use-expressions="true">``\  deleted from the sample source
 
     * -
-      - :doc:`../ArchitectureInDetail/SessionManagement`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/SessionManagement`
       - Description details modified
 
         *  Description of session scope reference which use SpEL expression is added (\ `guideline#1306 <https://github.com/terasolunaorg/guideline/issues/1306>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Internationalization`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Internationalization`
       - Description details modified
 
         *  Description for appropriately reflecting locale in JSP is added (\ `guideline#1439 <https://github.com/terasolunaorg/guideline/issues/1439>`_\ )
         *  Description of \ ``defaultLocale``\  of \ ``SessionLocalResolver``\  corrected (\ `guideline#686 <https://github.com/terasolunaorg/guideline/issues/686>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Codelist`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - Description details added
 
         *  Description which recommends a pattern wherein \ ``JdbcTemplate``\  is specified in JdbcCodeList, is added (\ `guideline#501 <https://github.com/terasolunaorg/guideline/issues/501>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/REST`
+      - :doc:`../ArchitectureInDetail/WebServiceDetail/REST`
       - Description details modified
 
         *  Creation of ObjectMapper which use \ ``Jackson2ObjectMapperFactoryBean``\  added (\ `guideline#1022 <https://github.com/terasolunaorg/guideline/issues/1022>`_\ )
         *  Modified to a format where MyBatis3 is used as a prerequisite in the implementation of domain layer of REST API application (\ `guideline#1323 <https://github.com/terasolunaorg/guideline/issues/1323>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/RestClient`
+      - :doc:`../ArchitectureInDetail/WebServiceDetail/RestClient`
       - Added new
 
         *  REST client (HTTP client) added (\ `guideline#1307 <https://github.com/terasolunaorg/guideline/issues/1307>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/SOAP`
+      - :doc:`../ArchitectureInDetail/WebServiceDetail/SOAP`
       - Added new
 
         *  SOAP Web Service (Server / Client) added (\ `guideline#1340 <https://github.com/terasolunaorg/guideline/issues/1340>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/FileUpload`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload`
       - Description details modified
 
         * Basic flow of uploading process and its description modified to description which use \ ``MultipartFilter``\  of Spring (\ `guideline#193 <https://github.com/terasolunaorg/guideline/issues/193>`_\ )
@@ -177,7 +183,7 @@ Change Log
 
 
     * -
-      - :doc:`../ArchitectureInDetail/FileDownload`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`
       - Description details corresponding to Spring Framework4.2 added
 
         *  \ ``AbstractXlsxView``\  which manages xlsx format, is added (\ `guideline#996 <https://github.com/terasolunaorg/guideline/issues/996>`_\ )
@@ -187,26 +193,26 @@ Change Log
         * Source example which use \ ``com.lowagie:itext:4.2.1``\  modified to a format which uses \ ``com.lowagie:itext:2.1.7``\  for the specification change of the iText
 
     * -
-      - :doc:`../ArchitectureInDetail/Email`
+      - :doc:`../ArchitectureInDetail/ExternalSystemDetail/Email`
       - Added new
 
         *  E-mail sending (SMTP) added (\ `guideline#1165 <https://github.com/terasolunaorg/guideline/issues/1165>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Utilities/DateAndTime`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/DateAndTime`
       - Added new
 
         *  Date and time operation (JSR-310 Date and Time API) added (\ `guideline#1450 <https://github.com/terasolunaorg/guideline/issues/1450>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Utilities/JodaTime`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/JodaTime`
       - Description details added and modified
 
         *  The object of sample code which handles the date that does not use Timezone modified to \ ``LocalDate``\  (\ `guideline#1283 <https://github.com/terasolunaorg/guideline/issues/1283>`_\ )
         *  A method to handle Japanese calendar in Java8 and earlier versions is added (\ `guideline#1450 <https://github.com/terasolunaorg/guideline/issues/1450>`_\ )
 
     * -
-      - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/StringProcessing`
       - Added new
 
         *  String processing added (\ `guideline#1451 <https://github.com/terasolunaorg/guideline/issues/1451>`_\ )
@@ -229,7 +235,7 @@ Change Log
          * Description related to \ ``RedirectAuthenticationHandler``\ deprecation deleted
 
     * -
-      - :doc:`../Security/Tutorial`
+      - :doc:`../Tutorial/TutorialSecurity`
       - Modified corresponding to Spring Security 4
 
         * Modified tutorial source to a format corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
@@ -265,7 +271,7 @@ Change Log
 
         * Description details modified
 
-         * Items related to multi-part request moved to :doc:`../ArchitectureInDetail/FileUpload` (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
+         * Items related to multi-part request moved to :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload` (\ `guideline#1602 <https://github.com/terasolunaorg/guideline/issues/1602>`_\ )
 
     * -
       - :doc:`../Security/Encryption`
@@ -280,13 +286,13 @@ Change Log
         *  Typical implementation example of security requirements added (\ `guideline#1604 <https://github.com/terasolunaorg/guideline/issues/1604>`_\ )
 
     * -
-      - :doc:`../TutorialSession/index`
+      - :doc:`../Tutorial/TutorialSession`
       - Added new
 
         *  Session tutorial added (\ `guideline#1599 <https://github.com/terasolunaorg/guideline/issues/1599>`_\ )
 
     * -
-      - :doc:`../TutorialREST/index`
+      - :doc:`../Tutorial/TutorialREST`
       - Modified corresponding to Spring Security 4
 
         *  Modified source corresponding to Spring Security 4 (\ `guideline#1519 <https://github.com/terasolunaorg/guideline/issues/1519>`_\ )
@@ -341,44 +347,44 @@ Change Log
 
         * Added how to build a war file (\ `guideline#1146 <https://github.com/terasolunaorg/guideline/issues/1146>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`
       - Added the description
 
         * Added the description of \ ``DataSource``\  switching functionality (\ `guideline#1071 <https://github.com/terasolunaorg/guideline/issues/1071>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`
       - Fixed the guideline bug
 
         * Modified the description about timing of batch execution (\ `guideline#903 <https://github.com/terasolunaorg/guideline/issues/903>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/Logging`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
       - Improved the description
 
         * Added the description about \ ``additivity``\  attribute of \ ``<logger>``\  tag (\ `guideline#977 <https://github.com/terasolunaorg/guideline/issues/977>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/SessionManagement`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/SessionManagement`
       - Improved the description
 
         * Modified the description about how to define a session scope bean (\ `guideline#1082 <https://github.com/terasolunaorg/guideline/issues/1082>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection`
       - Added the description
 
         * Added the description about the transaction token check in case that response cache is disabled (\ `guideline#1260 <https://github.com/terasolunaorg/guideline/issues/1260>`_\ )
     * -
-      - :doc:`../ArchitectureInDetail/Codelist`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - Added the description
 
         * Added how to display a code name (\ `guideline#1109 <https://github.com/terasolunaorg/guideline/issues/1109>`_\ )
     * -
-      - | :doc:`../ArchitectureInDetail/Ajax`
-        | :doc:`../ArchitectureInDetail/REST`
+      - | :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
+        | :doc:`../ArchitectureInDetail/WebServiceDetail/REST`
       - Added the warning about \ `CVE-2015-3192 <http://pivotal.io/security/cve-2015-3192>`_\ (XML security vulnerability)
 
         * Added the warning at the time of the StAX(Streaming API for XML) use (\ `guideline#1211 <https://github.com/terasolunaorg/guideline/issues/1211>`_\ )
     * -
-      - | :doc:`../ArchitectureInDetail/Pagination`
-        | :doc:`../Appendix/TagLibAndELFunctions`
+      - | :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination`
+        | :doc:`../ArchitectureInDetail/WebApplicationDetail/TagLibAndELFunctions`
       - Modified in accordance with bug fixes of common library
 
         * Modified the description about \ ``f:query``\  specification , in accordance with bug fixes of common library (\ `terasoluna-gfw#297 <https://github.com/terasolunaorg/terasoluna-gfw/issues/297>`_\ ) (\ `guideline#1244 <https://github.com/terasolunaorg/guideline/issues/1244>`_\ )
@@ -393,11 +399,6 @@ Change Log
       - Fixed the guideline bug
 
         * Modified the setting example for the \ ``access``\  attribute of \ ``<sec:authorize>``\  tag (JSP tag library) (\ `guideline#1003 <https://github.com/terasolunaorg/guideline/issues/1003>`_\ )
-    * -
-      - :doc:`../Appendix/EnvironmentIndependency`
-      - Added the description
-
-        * Added how to apply the external classpath(alternative functionality of \ ``VirtualWebappLoader``\  of Tomcat7) at the time of Tomcat8 use (\ `guideline#1081 <https://github.com/terasolunaorg/guideline/issues/1081>`_\ )
     * - 2015-06-12
       - Overall modifications
       - Released English version of "5.0.0 RELEASE"
@@ -419,8 +420,8 @@ Change Log
         Added new
 
         * :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
-        * :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
-        * :doc:`../Appendix/TagLibAndELFunctions`
+        * :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/TagLibAndELFunctions`
         * :doc:`../Appendix/Lombok`
 
         Updated in accordance with version 5.0.0 
@@ -448,7 +449,7 @@ Change Log
         * Fixed translation bugs related to domain layer and other layers.
           For modification details, refer to \ `guideline#364 issue <https://github.com/terasolunaorg/guideline/issues/364>`_\ .
     * -
-      - :doc:`../TutorialTodo/index`
+      - :doc:`../Tutorial/TutorialTodo`
       - Updated in accordance with version 5.0.0
 
         * Use of Spring Framework 4.1.
@@ -487,7 +488,7 @@ Change Log
         * Added description about \ ``<mvc:view-resolvers>``\ .
           For modification details, refer to \ `guideline#609 issue <https://github.com/terasolunaorg/guideline/issues/609>`_\ .
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessCommon`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`
       - Modified in accordance with bug fixes of common library
 
         * Added description about handling double byte wild card characters (\ ``％``\ , \ ``＿``\)\ , in accordance with bug fixes of common library (\ `terasoluna-gfw#78 <https://github.com/terasolunaorg/terasoluna-gfw/issues/78>`_\ ).
@@ -502,12 +503,12 @@ Change Log
 
         * Changed the sample code and its description to use component for Apache Commons DBCP 2.0.
     * -
-      - :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`
       - Added new
 
         * Added method to implement an infrastructure layer using MyBatis3 as O/R Mapper.
     * -
-      - :doc:`../ArchitectureInDetail/ExclusionControl`
+      - :doc:`../ArchitectureInDetail/DataAccessDetail/ExclusionControl`
       - Fixed guideline bugs
 
         * Modified the sample code of optimistic locking of long transactions (processing when records cannot be fetched).
@@ -522,7 +523,7 @@ Change Log
 
         * Added methods to implement exclusive control when using MyBatis3.
     * -
-      - :doc:`../ArchitectureInDetail/Validation`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
       - Fixed guideline bugs
 
         * Modified the description of \ ``@GroupSequence``\ .
@@ -545,7 +546,7 @@ Change Log
         * Described about deprecated API from Bean Validation 1.1.
         * Added description about a bug related to \ ``ValidationMessages.properties``\  of Hibernate Validator 5.1.x (\ `HV-881 <https://hibernate.atlassian.net/browse/HV-881>`_\ ) and methods to prevent the same.
     * -
-      - :doc:`../ArchitectureInDetail/ExceptionHandling`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
       - Added description
 
         * Added a description that simple error page is likely to be displayed in Internet Explorer when an error having size lesser than 513 bytes is sent as response.
@@ -556,19 +557,19 @@ Change Log
         * Removed the description about the problem where pessimistic locking error of JPA (Hibernate implementation) is not converted into \ ``PessimisticLockingFailureException``\  of Spring Framework.
           This problem is resolved in \ `SPR-10815 <https://jira.spring.io/browse/SPR-10815>`_\  (Spring Framework 4.0 and later versions).
     * -
-      - :doc:`../ArchitectureInDetail/SessionManagement`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/SessionManagement`
       - Modified in accordance with Spring Security 3.2
 
         * Removed the description about a problem where CSRF token error occurs (\ `SEC-2422 <https://jira.springsource.org/browse/SEC-2422>`_\  ) instead of session time out at the time of POST request.
           A mechanism to detect session time out is included in formal version of Spring Security 3.2, hence the problem is resolved.
     * -
-      - :doc:`../ArchitectureInDetail/MessageManagement`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`
       - Reflected changes of common library
 
         * Added description about newly added message type (warning) and deprecated messages types (warn), in accordance with the improvement of common library (\ `terasoluna-gfw#24 <https://github.com/terasolunaorg/terasoluna-gfw/issues/24>`_\ ).
           For modification details, refer to \ `guideline#74 issue <https://github.com/terasolunaorg/guideline/issues/74>`_\ .
     * -
-      - :doc:`../ArchitectureInDetail/Pagination`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination`
       - Reflected changes of common library
 
         * Changed description of page link in active state, in accordance with the improvement of common library (\ `terasoluna-gfw#13 <https://github.com/terasolunaorg/terasoluna-gfw/issues/13>`_\ ).
@@ -580,7 +581,7 @@ Change Log
 
         * Added notes for the classes where API specifications (\ ``Page``\  interface, etc.) are changed due to version upgrade.
     * -
-      - :doc:`../ArchitectureInDetail/Codelist`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - Modified in accordance with bug fixes of common library
 
         * Added notes about version upgrade and changing message key of \ ``ExistInCodeList``\  in accordance with bug fixes of common library (\ `terasoluna-gfw#16 <https://github.com/terasolunaorg/terasoluna-gfw/issues/16>`_\ ).
@@ -592,7 +593,7 @@ Change Log
 
         * Added a method to use \ ``EnumCodeList``\  class in accordance with addition of common library functions (\ `terasoluna-gfw#25 <https://github.com/terasolunaorg/terasoluna-gfw/issues/25>`_\ ).
     * -
-      - :doc:`../ArchitectureInDetail/Ajax`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
       - Modified in accordance with Spring Security 3.2
 
         * Changed the sample code for CSRF measures (method to create \ ``<meta>``\  tag for CSRF measures).
@@ -601,7 +602,7 @@ Change Log
 
         * Changed the sample code and description to use components for Jackson 2.4.
     * -
-      - :doc:`../ArchitectureInDetail/REST`
+      - :doc:`../ArchitectureInDetail/WebServiceDetail/REST`
       - Improvement in description
 
         * Improve the method to build an URL to be set in location header and hypermedia link.
@@ -621,7 +622,7 @@ Change Log
 
         * Added notes for the classes where API specifications (\ ``Page``\   interface, etc.) are changed due to version upgrade.
     * -
-      - :doc:`../ArchitectureInDetail/FileUpload`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload`
       - Fixed guideline bugs
 
         * Modified version of Apache Commons FileUpload with resolved \ `CVE-2014-0050 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0050>`_\  (File Upload vulnerabilities).
@@ -632,13 +633,13 @@ Change Log
         * File upload function of Servlet 3 has a problem of garbled characters on a part of application server. Therefore, added a method to use Apache Commons FileUpload as a measure to prevent this event.
           For added contents, refer to \ `guideline#778 issue <https://github.com/terasolunaorg/guideline/issues/778>`_\ .
     * -
-      - :doc:`../ArchitectureInDetail/SystemDate`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/SystemDate`
       - Reflected changes of common library
 
         * Changed document structure, package name and class name in accordance with the improvement of common library (\ `terasoluna-gfw#224 <https://github.com/terasolunaorg/terasoluna-gfw/issues/224>`_\ ).
           For modification details, refer to \ `guideline#701 issue <https://github.com/terasolunaorg/guideline/issues/701>`_\ .
     * -
-      - :doc:`../ArchitectureInDetail/TilesLayout`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout`
       - Modified in accordance with Tiles 3.0
 
         * Changed the example of settings and description to use component for Tiles 3.0.
@@ -648,7 +649,7 @@ Change Log
         * Added description about \ ``<mvc:view-resolvers>``\ , \ ``<mvc:tiles>``\ , \ ``<mvc:definitions>``\ .
           For modification details, refer to \ `guideline#609 issue <https://github.com/terasolunaorg/guideline/issues/609>`_\ .
     * -
-      - :doc:`../ArchitectureInDetail/Utilities/JodaTime`
+      - :doc:`../ArchitectureInDetail/GeneralFuncDetail/JodaTime`
       - Added description
 
         * Added method to use \ ``LocalDateTime``\ .
@@ -663,7 +664,7 @@ Change Log
 
         * Added "Settings to create secure HTTP header" in appendix.
     * -
-      - :doc:`../Security/Tutorial`
+      - :doc:`../Tutorial/TutorialSecurity`
       - Updated in accordance with version 5.0.0
 
         * Made changes so as to use MyBatis3 as infrastructure layer.
@@ -700,10 +701,10 @@ Change Log
 
         * Changed description about the condition where CSRF token is output as hidden, when \ ``<form:form>``\  is used.
     * -
-      - :doc:`../TutorialREST/index`
+      - :doc:`../Tutorial/TutorialREST`
       - Improved the description
 
-        * Changed to the contents that do not depend on specific infrastructure layer (O/R Mapper), by adding REST API in the project created in \ :doc:`../TutorialTodo/index`\ .
+        * Changed to the contents that do not depend on specific infrastructure layer (O/R Mapper), by adding REST API in the project created in \ :doc:`../Tutorial/TutorialTodo`\ .
           For modification details, refer to \ `guideline#325 issue <https://github.com/terasolunaorg/guideline/issues/325>`_\ .
 
         Updated in accordance with version 5.0.0
@@ -712,13 +713,7 @@ Change Log
         * Applied Spring Security 3.2.
         * Applied Jackson 2.4.
     * -
-      - :doc:`../Appendix/CreateProjectFromBlank`
-      - Improved the description
-
-        * Supported method to create a project having multi project structure.
-        * Updated the method to create a project having single project structure.
-    * -
-      - :doc:`../Appendix/TagLibAndELFunctions`
+      - :doc:`../ArchitectureInDetail/WebApplicationDetail/TagLibAndELFunctions`
       - Added new
 
         * Added description about EL functions and JSP tag libraries provided by common libraries.
@@ -732,31 +727,28 @@ Change Log
       - Added English version of the following.
 
         * :doc:`../ImplementationAtEachLayer/CreateWebApplicationProject`
-        * :doc:`../ArchitectureInDetail/DataAccessCommon`
-        * :doc:`../ArchitectureInDetail/DataAccessJpa`
-        * :doc:`../ArchitectureInDetail/DataAccessMyBatis3`
-        * :doc:`../ArchitectureInDetail/ExclusionControl`
-        * :doc:`../ArchitectureInDetail/Logging`
-        * :doc:`../ArchitectureInDetail/PropertyManagement`
-        * :doc:`../ArchitectureInDetail/Pagination`
-        * :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
-        * :doc:`../ArchitectureInDetail/Internationalization`
-        * :doc:`../ArchitectureInDetail/Codelist`
-        * :doc:`../ArchitectureInDetail/Ajax`
-        * :doc:`../ArchitectureInDetail/REST`
-        * :doc:`../ArchitectureInDetail/FileUpload`
-        * :doc:`../ArchitectureInDetail/FileDownload`
-        * :doc:`../ArchitectureInDetail/TilesLayout`
-        * :doc:`../ArchitectureInDetail/SystemDate`
-        * :doc:`../ArchitectureInDetail/Utilities/Dozer`
+        * :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`
+        * :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`
+        * :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`
+        * :doc:`../ArchitectureInDetail/DataAccessDetail/ExclusionControl`
+        * :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
+        * :doc:`../ArchitectureInDetail/GeneralFuncDetail/PropertyManagement`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/Internationalization`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
+        * :doc:`../ArchitectureInDetail/WebServiceDetail/REST`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout`
+        * :doc:`../ArchitectureInDetail/GeneralFuncDetail/SystemDate`
+        * :doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer`
         * :doc:`../Security/SpringSecurity`
         * :doc:`../Security/Authentication`
         * :doc:`../Security/Authorization`
         * :doc:`../Security/CSRF`
-        * :doc:`../Appendix/CreateProjectFromBlank`
         * :doc:`../Appendix/Nexus`
-        * :doc:`../Appendix/EnvironmentIndependency`
-        * :doc:`../Appendix/ProjectStructureStandard`
         * :doc:`../Appendix/Lombok`
         * :doc:`../Appendix/SpringComprehensionCheck`
     * - 2014-08-27
@@ -774,20 +766,20 @@ Change Log
       - Added Japanese version of the following.
 
         * :doc:`CriteriaBasedMapping`
-        * :doc:`../ArchitectureInDetail/REST`
-        * :doc:`Tutorial (Todo Application for REST)<../TutorialREST/index>`
+        * :doc:`../ArchitectureInDetail/WebServiceDetail/REST`
+        * :doc:`Tutorial (Todo Application for REST)<../Tutorial/TutorialREST>`
     * -
       - English version
       - Added English version of the following.
 
         * :doc:`index`
         * :doc:`../Overview/index`
-        * :doc:`../TutorialTodo/index`
+        * :doc:`../Tutorial/TutorialTodo`
         * :doc:`../ImplementationAtEachLayer/index`
-        * :doc:`../ArchitectureInDetail/Validation`
-        * :doc:`../ArchitectureInDetail/ExceptionHandling`
-        * :doc:`../ArchitectureInDetail/MessageManagement`
-        * :doc:`../ArchitectureInDetail/Utilities/JodaTime`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
+        * :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`
+        * :doc:`../ArchitectureInDetail/GeneralFuncDetail/JodaTime`
         * :doc:`../Security/XSS`
         * :doc:`../Appendix/ReferenceBooks`
     * -
@@ -805,14 +797,14 @@ Change Log
     * -
       - Japanese version
 
-        :doc:`../ArchitectureInDetail/MessageManagement`
+        :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`
       - Added description about bug fix
 
         * Fixed bugs of \ ``<t:messagesPanel>``\  tag of common library (\ `terasoluna-gfw#10 <https://github.com/terasolunaorg/terasoluna-gfw/issues/10>`_\ )
     * -
       - Japanese version
 
-        :doc:`../ArchitectureInDetail/Pagination`
+        :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination`
       - Updated description about bug fix
 
         * Fixed bugs of \ ``<t:pagination>``\  tag of common library (\ `terasoluna-gfw#12 <https://github.com/terasolunaorg/terasoluna-gfw/issues/12>`_\  )
@@ -820,12 +812,12 @@ Change Log
     * -
       - Japanese version
 
-        :doc:`../ArchitectureInDetail/Ajax`
+        :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`
       - Updated description of countermeasures against XXE Injection
     * -
       - Japanese version
 
-        :doc:`../ArchitectureInDetail/FileUpload`
+        :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload`
       - Added a warning about `CVE-2014-0050 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0050>`_\  (File Upload Vulnerability)
 
         Fixed guideline bugs.
@@ -836,14 +828,13 @@ Change Log
       - Change how to create following projects to be carried out from \ ``mvn archetype:generate``\
 
         * :doc:`../Overview/FirstApplication`
-        * :doc:`../TutorialTodo/index`
-        * :doc:`../TutorialTodo/index`
+        * :doc:`../Tutorial/TutorialTodo`
+        * :doc:`../Tutorial/TutorialTodo`
     * -
       - Japanese version
       - Minor modifications in how to create following Maven archetype
 
-        * :doc:`../Security/Tutorial`
-        * :doc:`../Appendix/CreateProjectFromBlank`
+        * :doc:`../Tutorial/TutorialSecurity`
     * - 2013-12-17
       - Japanese version
       - Released "1.0.0 Public Review" version

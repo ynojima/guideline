@@ -25,7 +25,7 @@ Target Readers
 
 * Must understand the contents of :doc:`../ImplementationAtEachLayer/index`
 * Must understand the contents of :doc:`./SpringSecurity`, :doc:`./Authentication`, :doc:`./Authorization`
-* Must complete implementation of :doc:`./Tutorial`
+* Must complete implementation of :doc:`../Tutorial/TutorialSecurity`
 
 .. _app-description-sec:
 
@@ -125,7 +125,7 @@ The list of security requirements fulfilled by the application is shown below. T
 Functions
 --------------------------------------------------------------------------------
 
-The application consists of following functions in addition to the application created in :doc:`./Tutorial`.
+The application consists of following functions in addition to the application created in :doc:`../Tutorial/TutorialSecurity`.
 
 .. tabularcolumns:: |p{0.30\linewidth}|p{0.70\linewidth}|
 .. list-table::
@@ -1027,7 +1027,7 @@ Working image
 
 Implementation method
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-| :doc:`../ArchitectureInDetail/Validation` function can be used to verify the strength of the password specified by the user at the time of password change. In this application, the strength of the password is verified by using Bean Validation.
+| :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation` function can be used to verify the strength of the password specified by the user at the time of password change. In this application, the strength of the password is verified by using Bean Validation.
 | Requirements for password strength are wide-ranging and differ depending on the application.
 | Use `Passay <http://www.passay.org/>`_ as the library for password validation and create the required Bean Validation annotation.
 | Many functions that are commonly used in password validation have been provided in Passay. The functions that have not been provided can also be easily implemented by extending the standard functions.
@@ -3481,7 +3481,7 @@ The code implemented according to the above implementation method is described s
 * Send a mail for URL of password reissue screen
 
   The implementation of the process to create URL of password reissue screen from the authentication information for password reissue screen and send it by e-mail is shown below.
-  Refer to :doc:`../ArchitectureInDetail/Email` for more information about how to add dependent libraries and how to fetch an e-mail session.
+  Refer to :doc:`../ArchitectureInDetail/ExternalSystemDetail/Email` for more information about how to add dependent libraries and how to fetch an e-mail session.
 
   .. code-block:: java
 

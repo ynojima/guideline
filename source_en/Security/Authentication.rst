@@ -279,7 +279,7 @@ An implementation example wherein a login form is displayed after receiving a re
     * - | (2)
       - | Output an exception message which is output at the time of authentication error.
         | It is recommended to output by using \ ``<t:messagesPanel>``\  tag provided by a common library.
-        | For how to use \ ``<t:messagesPanel>``\  tag, refer "\ :doc:`../ArchitectureInDetail/MessageManagement`\ ".
+        | For how to use \ ``<t:messagesPanel>``\  tag, refer "\ :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`\ ".
         | Note that, when an authentication error occurs, exception object is stored in the session or request scope with the attribute name \ ``"SPRING_SECURITY_LAST_EXCEPTION"``\ .
     * - | (3)
       - | Login form to enter user name and password.
@@ -695,7 +695,7 @@ For \ ``SharedService``\ , refer :ref:`service-label`\ .
     * - |  (2)
       - | Search account information from the database.
         | When account information is not found, an exception of common library - \ ``ResourceNotFoundException``\  is thrown.
-        | For how to create a repository, refer ":doc:`Tutorial`".
+        | For how to create a repository, refer ":doc:`../Tutorial/TutorialSecurity`".
 
 * How to create implementation class of UserDetailsService
 
@@ -1813,7 +1813,7 @@ it can be changed by defining a bean as given below.
       * Clear authentication information when the system error occurs
     
     An example wherein authentication information at the time of system exception occurrence is cleared using an exception handling function of common library is explained.
-    For details of exception handling function, refer "\ :doc:`../ArchitectureInDetail/ExceptionHandling`\ ".
+    For details of exception handling function, refer "\ :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`\ ".
 
       .. code-block:: java
 
@@ -1923,7 +1923,7 @@ Customising error message
 When authentication fails, error message provided by Spring Security is displayed, however,
 the error message can be changed.
 
-For details of how to change the message, refer \ :doc:`../ArchitectureInDetail/MessageManagement`\ .
+For details of how to change the message, refer \ :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`\ .
 
 Message during system error
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1997,7 +1997,7 @@ Input check using Bean Validation
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 An example of input check using Bean Validation is explained below.
-For details of Bean Validation, refer \ :doc:`../ArchitectureInDetail/Validation`\ .
+For details of Bean Validation, refer \ :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`\ .
 
 * Implementation example of form class
 

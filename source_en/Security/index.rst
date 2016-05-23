@@ -1,11 +1,10 @@
-Security countermeasures for TERASOLUNA Server Framework for Java (5.x)
+Security countermeasures
 ================================================================================
 
 .. toctree::
    :maxdepth: 1
 
    SpringSecurity
-   Tutorial
    Authentication
    Authorization
    SessionManagement

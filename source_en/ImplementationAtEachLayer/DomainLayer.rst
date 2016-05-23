@@ -786,7 +786,165 @@ Regarding interface and base classes to limit signature of method
 \
 
 | Appendix has a sample of creating interface and base classes to limit the signature.
-| Refer to \ :ref:`domainlayer_appendix_blogic`\  for details.
+
+ .. note:: **Sample of implementation of interface and base classes to limit signature**
+
+	- Interface to limit signature
+	
+	 .. code-block:: java
+		
+	    // (1)
+	    public interface BLogic<I, O> {
+	      O execute(I input);
+	    }
+
+	 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+	 .. list-table::
+	    :header-rows: 1
+	    :widths: 10 90
+	
+	    * - Sr. No.
+	      - Description
+	    * - | (1)
+	      - | Interface to limit signature of implementation method of business logic.
+	        | In the above example, it is defined as generic type of input (I) and output (O) information having one method (execute) for executing business logic.
+	        | In this guideline, the above interface is called BLogic interface.
+	
+	- Controller
+
+	.. code-block:: java
+
+	    // (2)
+	    @Inject
+	    XxxBLogic<XxxInput, XxxOutput> xxxBLogic;
+
+	    public String reserve(XxxForm form, RedirectAttributes redirectAttributes) {
+
+	        XxxInput input = new XxxInput();
+	        // omitted
+		
+	        // (3)
+	        XxxOutput output = xxxBlogic.execute(input);
+		
+	        // omitted
+
+	        redirectAttributes.addFlashAttribute(output.getTourReservation());
+	        return "redirect:/xxx?complete";
+	    }
+
+	 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+	 .. list-table::
+	    :header-rows: 1
+	    :widths: 10 90
+
+	    * - Sr. No.
+	      - Description
+	    * - | (2)
+	      - | Controller injects calling BLogic interface.
+		* - | (3)
+	      - | Controller calls execute method of BLogic interface and executes business logic.
+
+	To standardize process flow of business logic when a fixed common process is included in Service, base classes are created to limit signature of method.
+
+	- Base classes to limit signature
+
+	 .. code-block:: java
+
+
+	    public abstract class AbstractBLogic<I, O> implements BLogic<I, O> {
+
+	        public O execute(I input){
+	          try{
+
+	              // omitted
+
+	              // (4)
+	              preExecute(input);
+
+	              // (5)
+	              O output = doExecute(input);
+
+	              // omitted
+
+	              return output;
+	          } finally {
+	              // omitted
+	          }
+
+        }
+
+	        protected abstract void preExecute(I input);
+
+	        protected abstract O doExecute(I input);
+
+	    }
+
+
+	 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+	 .. list-table::
+	    :header-rows: 1
+	    :widths: 10 90
+
+	    * - Sr. No.
+	      - Description
+	    * - | (4)
+	      - | Call the method to perform pre-processing before executing business logic from base classes.
+	        | In the preExecute method, business rules are checked.
+	    * - | (5)
+	      - | Call the method executing business logic from the base classes.
+
+
+	Sample of extending base classes to limit signature is shown below.
+
+
+	- BLogic class (Service)
+
+	 .. code-block:: java
+
+	    public class XxxBLogic extends AbstractBLogic<XxxInput, XxxOutput> {
+
+	        // (6)
+	        protected void preExecute(XxxInput input) {
+
+	            // omitted
+	            Tour tour = tourRepository.findOne(input.getTourId());
+	            Date reservationLimitDate = tour.reservationLimitDate();
+	            if(input.getReservationDate().after(reservationLimitDate)){
+	                throw new BusinessException(ResultMessages.error().add("e.xx.xx.0001"));
+	            }
+
+	        }
+
+	        // (7)
+	        protected XxxOutput doExecute(XxxInput input) {
+	            TourReservation tourReservation = new TourReservation();
+
+	            // omitted
+
+	            tourReservationRepository.save(tourReservation);
+	            XxxOutput output = new XxxOutput();
+	            output.setTourReservation(tourReservation);
+
+	            // omitted
+	            return output;
+	        }
+
+	    }
+
+
+	 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+	 .. list-table::
+	    :header-rows: 1
+	    :widths: 10 90
+
+	    * - Sr. No.
+	      - Description
+	    * - | (6)
+	      - | Implement pre-process before executing business logic.
+	        | Business rules are checked.
+	    * - | (7)
+	      - | Implement business logic.
+	        | Logic is implemented to satisfy business rules.
 
 
 .. _service-creation-unit-label:
@@ -1294,8 +1452,8 @@ Operate on business data
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Refer to the following for the examples of data (Entity) fetch and update.
 
-* When using MyBatis3, \ :doc:`../ArchitectureInDetail/DataAccessMyBatis3`\ 
-* When using JPA, \ :doc:`../ArchitectureInDetail/DataAccessJpa`\ 
+* When using MyBatis3, \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`\ 
+* When using JPA, \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\ 
 
 
 .. _service-return-message-label:
@@ -1304,7 +1462,7 @@ Returning messages
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Warning message and business error message are the two type of messages which must be resolved in Service (refer to the figure in red broken line below).
 | Other messages should be resolved in application layer.
-| Refer to \ :doc:`../ArchitectureInDetail/MessageManagement`\  for message types and message pattern.
+| Refer to \ :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`\  for message types and message pattern.
 
  .. figure:: images/service_target-resolving-message.png
    :alt: target of resolving message
@@ -1441,7 +1599,7 @@ Notifying business error
    * - | (1)
      - Business exception is thrown since reservation date is past the deadline at the time of making reservation.
 
-Refer to \ :doc:`../ArchitectureInDetail/ExceptionHandling`\  for details of entire exception handling.
+Refer to \ :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`\  for details of entire exception handling.
 
 .. _service-return-systemerrormessage-label:
 
@@ -1514,7 +1672,7 @@ Example that throws system exception while catching IO exception while copying t
     \ ``org.springframework.dao.DataAccessException``\  and thrown.
     Error can be handled in application layer instead of catching in business logic.
     However, some errors like unique constraints violation error should be handled in business logic as per business requirements.
-    Refer to \ :doc:`../ArchitectureInDetail/DataAccessCommon`\  for details.
+    Refer to \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`\  for details.
 
 .. _service_transaction_management:
 
@@ -1611,7 +1769,7 @@ Information required for "Declarative transaction management"
         | Isolates transactions completely.
         |
         | Isolation level of transaction is considered as the parameter related to exclusion control.
-        | Refer to \ :doc:`./../ArchitectureInDetail/ExclusionControl`\  for exclusion control.
+        | Refer to \ :doc:`../ArchitectureInDetail/DataAccessDetail/ExclusionControl`\  for exclusion control.
     * - 3
       - timeout
       - | Specify timeout of transaction (seconds).
@@ -1794,6 +1952,7 @@ Way of calling the method which is under transaction control
    hence it is recommended to use the default "proxy" for AOP mode.
 
 .. _service_enable_transaction_management:
+.. _DomainLayerAppendixTransactionManagement:
 
 Settings for using transaction management
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1886,6 +2045,28 @@ Settings for enabling @Transactional
     * - | (1)
       - With use of <tx:annotation-driven> element in XML (bean definition file), transaction control gets enabled at the locations where \ ``@Transactional``\  annotation is used.
 
+ .. note:: **Regarding drawbacks of transaction management**
+
+	There is a description regarding "Understanding drawbacks of transaction" in IBM DeveloperWorks.
+	Read this article about pitfalls of transaction management and pitfalls while using @Transactional of Spring Framework.
+	Refer to \ `Article on IBM DeveloperWorks <http://www.ibm.com/developerworks/java/library/j-ts1/index.html>`_\ for details.
+
+    !! Since the article of IBM DeveloperWorks is an old article (year 2009), some of the content is different than the behavior when using Spring Framework 4.1.
+
+    Specifically, the contents of "Listing 7. Using read-only with REQUIRED propagation mode - JPA".
+
+    From Spring Framework 4.1, when Hibernate ORM 4.2 or higher version is used as JPA provider,
+    it has been improved so that instruction can be given to run the SQL under "Read-only transactions" for JDBC driver (\ `SPR-8959 <https://jira.spring.io/browse/SPR-8959>`_\ ).
+
+    The way of handling read-only transactions depends on the implementation of JDBC driver; hence, confirm the specifications of JDBC driver to be used.
+
+
+ .. note:: **Programmatic transaction management**
+
+	In this guideline, "Declarative transaction management" is recommended. However, programmatic transaction management is also possible.
+	Refer to \ `Spring Reference Document -Transaction Management(Programmatic transaction management)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/transaction.html#transaction-programmatic>`_\  for details.
+
+
 Regarding attributes of <tx:annotation-driven> element
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -1932,201 +2113,6 @@ Various attributes can be specified in <tx:annotation-driven> and default behavi
 
 |
 
-Appendix
---------------------------------------------------------------------------------
-
-.. _DomainLayerAppendixTransactionManagement:
-
-Regarding drawbacks of transaction management
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-| There is a description regarding "Understanding drawbacks of transaction" in IBM DeveloperWorks.
-| Read this article about pitfalls of transaction management and pitfalls while using @Transactional of Spring Framework.
-  Refer to \ `Article on IBM DeveloperWorks <http://www.ibm.com/developerworks/java/library/j-ts1/index.html>`_\ for details.
-
-.. note::
-
-    Since the article of IBM DeveloperWorks is an old article (year 2009), some of the content is different than the behavior when using Spring Framework 4.1.
-
-    Specifically, the contents of "Listing 7. Using read-only with REQUIRED propagation mode - JPA".
-
-    From Spring Framework 4.1, when Hibernate ORM 4.2 or higher version is used as JPA provider,
-    it has been improved so that instruction can be given to run the SQL under "Read-only transactions" for JDBC driver (\ `SPR-8959 <https://jira.spring.io/browse/SPR-8959>`_\ ).
-
-    The way of handling read-only transactions depends on the implementation of JDBC driver; hence, confirm the specifications of JDBC driver to be used.
-
-
-Programmatic transaction management
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-In this guideline, "Declarative transaction management" is recommended. However, programmatic transaction management is also possible.
-Refer to \ `Spring Reference Document -Transaction Management(Programmatic transaction management)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/transaction.html#transaction-programmatic>`_\  for details.
-
-.. _domainlayer_appendix_blogic:
-
-
-Sample of implementation of interface and base classes to limit signature
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- Interface to limit signature
-
- .. code-block:: java
-
-    // (1)
-    public interface BLogic<I, O> {
-      O execute(I input);
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (1)
-      - | Interface to limit signature of implementation method of business logic.
-        | In the above example, it is defined as generic type of input (I) and output (O) information having one method (execute) for executing business logic.
-        | In this guideline, the above interface is called BLogic interface.
-
-- Controller
-
- .. code-block:: java
-
-    // (2)
-    @Inject
-    XxxBLogic<XxxInput, XxxOutput> xxxBLogic;
-
-    public String reserve(XxxForm form, RedirectAttributes redirectAttributes) {
-
-        XxxInput input = new XxxInput();
-        // omitted
-
-        // (3)
-        XxxOutput output = xxxBlogic.execute(input);
-
-        // omitted
-
-        redirectAttributes.addFlashAttribute(output.getTourReservation());
-        return "redirect:/xxx?complete";
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (2)
-      - | Controller injects calling BLogic interface.
-    * - | (3)
-      - | Controller calls execute method of BLogic interface and executes business logic.
-
-To standardize process flow of business logic when a fixed common process is included in Service, base classes are created to limit signature of method.
-
-- Base classes to limit signature
-
- .. code-block:: java
-
-
-    public abstract class AbstractBLogic<I, O> implements BLogic<I, O> {
-
-        public O execute(I input){
-          try{
-
-              // omitted
-
-              // (4)
-              preExecute(input);
-
-              // (5)
-              O output = doExecute(input);
-
-              // omitted
-
-              return output;
-          } finally {
-              // omitted
-          }
-
-        }
-
-        protected abstract void preExecute(I input);
-
-        protected abstract O doExecute(I input);
-
-    }
-
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (4)
-      - | Call the method to perform pre-processing before executing business logic from base classes.
-        | In the preExecute method, business rules are checked.
-    * - | (5)
-      - | Call the method executing business logic from the base classes.
-
-
-Sample of extending base classes to limit signature is shown below.
-
-
-- BLogic class (Service)
-
- .. code-block:: java
-
-    public class XxxBLogic extends AbstractBLogic<XxxInput, XxxOutput> {
-
-        // (6)
-        protected void preExecute(XxxInput input) {
-
-            // omitted
-            Tour tour = tourRepository.findOne(input.getTourId());
-            Date reservationLimitDate = tour.reservationLimitDate();
-            if(input.getReservationDate().after(reservationLimitDate)){
-                throw new BusinessException(ResultMessages.error().add("e.xx.xx.0001"));
-            }
-
-        }
-
-        // (7)
-        protected XxxOutput doExecute(XxxInput input) {
-            TourReservation tourReservation = new TourReservation();
-
-            // omitted
-
-            tourReservationRepository.save(tourReservation);
-            XxxOutput output = new XxxOutput();
-            output.setTourReservation(tourReservation);
-
-            // omitted
-            return output;
-        }
-
-    }
-
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - Sr. No.
-      - Description
-    * - | (6)
-      - | Implement pre-process before executing business logic.
-        | Business rules are checked.
-    * - | (7)
-      - | Implement business logic.
-        | Logic is implemented to satisfy business rules.
-
-|
-
 Tips
 --------------------------------------------------------------------------------
 
@@ -2137,7 +2123,7 @@ Method of dealing with violation of business rules as field error
 
 | When it is necessary to output the error of business rules for each field, the mechanism of (Bean Validation or Spring Validator) on the Controller side should be used.
 | In this case, It is recommended to implement check logic as Service class and then to call the method of Service class from Bean Validation or Spring Validator.
-| Refer to \ :doc:`../ArchitectureInDetail/Validation`\  business logic approach for details.
+| Refer to \ :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`\  business logic approach for details.
 
 
 .. raw:: latex

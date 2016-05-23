@@ -97,7 +97,7 @@ Validation
 
 * For correlated items check, \ `BeanValidation <http://download.oracle.com/otn-pub/jcp/bean_validation-1_1-fr-eval-spec/bean-validation-specification.pdf>`_\  or \ `Spring Validation <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/validation.html>`_  is used.
 
-  * Refer to \ :doc:`../ArchitectureInDetail/Validation`\  for determining the proper use. 
+  * Refer to \ :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`\  for determining the proper use. 
 
 
 
@@ -697,7 +697,7 @@ terasoluna-gfw-common provide following components.
     * - Classification
       - Component Name
       - Description
-    * - :doc:`../ArchitectureInDetail/ExceptionHandling`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
       - Exception Class
       - Provide general exception classes.
     * -
@@ -709,13 +709,13 @@ terasoluna-gfw-common provide following components.
     * -
       - Exception Logging Interceptor
       - Provide interceptor class of AOP for logging the exception that occurred in domain layer.
-    * - :doc:`../ArchitectureInDetail/SystemDate`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/SystemDate`
       - System Date Time Factory
       - Provide classes for retrieving the system date time.
-    * - :doc:`../ArchitectureInDetail/Codelist`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - CodeList
       - Provide classes for generating CodeList.
-    * - :doc:`../ArchitectureInDetail/DataAccessCommon`
+    * - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`
       - Query Escape
       - Provide class for escape processing of value to bind into the SQL and JPQL.
     * -
@@ -735,7 +735,7 @@ terasoluna-gfw-string provides following components.
     * - Classification
       - Component Name
       - Description
-    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/StringProcessing`
       - Half width to full width conversion
       - Provide a class which carries out a process wherein half width character of input string is converted to full width and a process wherein full width character is converted to half width based on mapping table of half width string and full width string.
 
@@ -753,10 +753,10 @@ terasoluna-gfw-codepoints provides following components.
     * - Classification
       - Component Name
       - Description
-    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/StringProcessing`
       - Codepoint check
       - Provide a class which checks whether the codepoint constituting target string is incorporated in the codepoint set.
-    * - :doc:`../ArchitectureInDetail/Validation`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
       - Bean validation constraint annotation for codepoint check
       - Provide constraint annotation to carry out Bean validation for codepoint check.
 
@@ -774,7 +774,7 @@ terasoluna-gfw-validator provides following components.
     * - Classification
       - Component name
       - Description
-    * - :doc:`../ArchitectureInDetail/Validation`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
       - Bean Validation constraint annotation for byte length check
       - Provide a constraint annotation to check whether the byte length in the character code of input value is less than or equal to specified maximum value, and greater than or equal to specified minimum value, using Bean Validation.
     * -
@@ -794,7 +794,7 @@ terasoluna-gfw-jodatime provide following components.
     * - Classification
       - Component Name
       - Description
-    * - :doc:`../ArchitectureInDetail/SystemDate`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/SystemDate`
       - System Date Time Factory for Joda Time
       - Provide classes for retrieving the system date time using the Joda Time API.
 
@@ -813,22 +813,22 @@ terasoluna-gfw-web provide following components.
     * - Classification
       - Component Name
       - Description
-    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection`
       - Transaction Token Check
       - Provide mechanism (classes) for protecting Web Application from double submitting of request.
-    * - :doc:`../ArchitectureInDetail/ExceptionHandling`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
       - Exception Handler
       - Provide exception handler class(sub class of class that provided by Spring MVC) for integrating with exception handling components that provided from common library.
     * -
       - Exception Logging Interceptor
       - Provide interceptor class of AOP for logging the exception that handled by Spring MVC.
-    * - :doc:`../ArchitectureInDetail/Codelist`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - Populate CodeList interceptor
       - Provide interceptor class of Spring MVC for storing CodeList information into request scope, for the purpose of retrieving CodeList from View.
-    * - :doc:`../ArchitectureInDetail/FileDownload`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`
       - General Download View
       - Provide abstract class for retrieving data from input stream and writing to stream for download.
-    * - :doc:`../ArchitectureInDetail/Logging`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
       - ServletFilter for storing Tracking ID
       - Provide Servlet Filter class for setting Tracking ID into MDC(Mapped Diagnostic Context) and request scope and response header, for the purpose of improving traceability.
         (If does not exist a Tracking ID in request header, generate a Tracking ID by this component)
@@ -852,13 +852,13 @@ terasoluna-gfw-web-jsp provides following components.
     * - Classification
       - Component name
       - Description
-    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection`
       - JSP tag for transaction token output
       - Provide a JSP tag library to output transaction tokens as hidden items.
-    * - :doc:`../ArchitectureInDetail/Pagination`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination`
       - JSP Tag for displaying Pagination Links
       - Provide JSP Tag Library for displaying Pagination Links using classes that provided by Spring Data Commons.
-    * - :doc:`../ArchitectureInDetail/MessageManagement`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`
       - JSP Tag for displaying Result Messages
       - Provide JSP Tag Library for displaying Result Messages.
     * - :ref:`TagLibAndELFunctionsOverviewELFunctions`
@@ -887,7 +887,7 @@ terasoluna-gfw-security-web provide following components.
     * - Classification
       - Component Name
       - Description
-    * - :doc:`../ArchitectureInDetail/Logging`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
       - ServletFilter for storing name of authenticated user
       - Provide ServletFilter class for setting name of authenticated user into MDC, for the purpose of improving traceability.
 

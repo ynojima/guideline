@@ -41,7 +41,7 @@ When using MyBatis3, an application developer creates:
 
 
 | An example of creating Repository interface and mapping file is given below.
-| For details on how to use MyBatis3, refer to: \ :doc:`../ArchitectureInDetail/DataAccessMyBatis3`\ .
+| For details on how to use MyBatis3, refer to: \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`\ .
 
 - An example of creating Repository interface (Mapper interface)
 
@@ -139,11 +139,11 @@ Implementing Repository using JPA
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | When JPA is to be used as persistence API with relational database, Repository can be very easily created if  \ ``org.springframework.data.jpa.repository.JpaRepository``\  of Spring Data JPA is used.
-| For details on how to use Spring Data JPA, refer to \ :doc:`../ArchitectureInDetail/DataAccessJpa`\ .
+| For details on how to use Spring Data JPA, refer to \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\ .
 
 | When Spring Data JPA is used, only an interface with inherited JpaRepository is required to be created for basic CRUD operations. In other words, RepositoryImpl is not required.
 | However, RepositoryImpl is needed for using dynamic query (JPQL).
-| Refer to \ :doc:`../ArchitectureInDetail/DataAccessJpa`\  for implementing RepositoryImpl when using Spring Data JPA.
+| Refer to \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\  for implementing RepositoryImpl when using Spring Data JPA.
 
 - TodoRepository.java
 

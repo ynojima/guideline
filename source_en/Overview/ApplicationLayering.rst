@@ -82,7 +82,7 @@ In Spring MVC, all this is done by ``View`` class.
     If use the JSON or XML format output results for the REST API or Ajax request,
     \ ``HttpMessageConverter``\  class plays View's responsibility.
 
-    Details refer to ":doc:`../ArchitectureInDetail/REST`".
+    Details refer to ":doc:`../ArchitectureInDetail/WebServiceDetail/REST`".
 
 |
 
@@ -108,7 +108,7 @@ In Spring MVC, form object are the POJO class that store request parameters. It 
     recommend to perform of either or both of the following measures and keep Controller's source code in simple state.
 
     * Create helper class and delegate conversion logic to helper classes.
-    * Use the :doc:`Dozer <../ArchitectureInDetail/Utilities/Dozer>`.
+    * Use the :doc:`Dozer <../ArchitectureInDetail/GeneralFuncDetail/Dozer>`.
 
 
 .. tip::
@@ -117,7 +117,7 @@ In Spring MVC, form object are the POJO class that store request parameters. It 
     \ ``Resource``\  class plays Form's responsibility.
     Also, \ ``HttpMessageConverter``\  class plays responsibility to convert JSON or XML input data into \ ``Resource``\  class.
 
-    Details refer to ":doc:`../ArchitectureInDetail/REST`".
+    Details refer to ":doc:`../ArchitectureInDetail/WebServiceDetail/REST`".
 
 |
 
@@ -685,9 +685,6 @@ The recommended structure of [projectName]-env project is below:
     
     If the above point is not considered, contents of configuration files have to changed according to the target environment and the project has to be re-build.
   
-    For further details regarding significance of creating a separate project for environment dependent files, refer to \ :doc:`../Appendix/EnvironmentIndependency`\ .
-
-
 .. raw:: latex
 
    \newpage

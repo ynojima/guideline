@@ -94,7 +94,7 @@ Thereby, it is required to use different viewResolver based on the type of the V
 | When ``View`` of multiple types is to be handled, multiple definitions of ``ViewResolver`` are required.
 | A typical example of using multiple ``ViewResolver`` is the screen application for which file download process exists.
 | For screen (JSP), ``View`` is resolved using  ``InternalResourceViewResolver`` and for File download ``View`` is resolved using ``BeanNameViewResolver``.
-| For details, refer :doc:`../ArchitectureInDetail/FileDownload`.
+| For details, refer :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`.
 
 
 Implementation of View
@@ -107,7 +107,7 @@ Classes that implement ``View`` provided by Spring framework and its dependent l
 
 ``View`` changes with the type of response to be returned. When JSP is to be returned, ``org.springframework.web.servlet.view.JstlView`` is used.
 When ``View`` not provided by Spring framework and its dependent libraries are to be handled, it is necessary to extend the class in which ``View`` interface is implemented.
-For details, refer :doc:`../ArchitectureInDetail/FileDownload`.
+For details, refer :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`.
 
 
 .. raw:: latex

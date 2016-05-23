@@ -70,7 +70,6 @@ Spring Framework Comprehension Check
 
 #. Fill (1)-(3) of the following Bean definition such that contents in \ ``com.example.domain``\  package becomes target of component scan.
 
-
     .. code-block:: xml
     
         <context:(1) (2)="(3)" />

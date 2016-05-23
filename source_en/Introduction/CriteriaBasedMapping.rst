@@ -21,13 +21,13 @@ links to explanation of functionalities related to security have been given
      - Corresponding Guideline
    * - A1
      - `Injection <https://www.owasp.org/index.php/Top_10_2013-A1-Injection>`_ SQL Injection
-     - * \ :doc:`../ArchitectureInDetail/DataAccessMyBatis3`\
-       * \ :doc:`../ArchitectureInDetail/DataAccessJpa`\
+     - * \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`\
+       * \ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\
 
        (Details about using bind variable at the time of placeholders for query parameters)
    * - A1
      - `Injection <https://www.owasp.org/index.php/Top_10_2013-A1-Injection>`_ XXE(XML External Entity) Injection
-     - * \ :doc:`../ArchitectureInDetail/Ajax`\ 
+     - * \ :doc:`../ArchitectureInDetail/WebApplicationDetail/Ajax`\ 
    * - A2
      - `Broken Authentication and Session Management <https://www.owasp.org/index.php/Top_10_2013-A2-Broken_Authentication_and_Session_Management>`_
      - * \ :doc:`../Security/Authentication`\ 
@@ -40,11 +40,11 @@ links to explanation of functionalities related to security have been given
      - No mention in particular
    * - A5
      - `Security Misconfiguration <https://www.owasp.org/index.php/Top_10_2013-A5-Security_Misconfiguration>`_
-     - * \ :doc:`../ArchitectureInDetail/Logging`\ (Mention about message contents of log)
+     - * \ :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`\ (Mention about message contents of log)
        * \ :ref:`exception-handling-how-to-use-codingpoint-jsp-exceptioncode-label`\ (Mention about message output at the time of system exception)
    * - A6
      - `Sensitive Data Exposure <https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure>`_
-     - * \ :doc:`../ArchitectureInDetail/PropertyManagement`\ 
+     - * \ :doc:`../ArchitectureInDetail/GeneralFuncDetail/PropertyManagement`\ 
        * \ :ref:`SpringSecurityAuthenticationPasswordHashing`\  (Mention about password hash only)
    * - A7
      - `Missing Function Level Access Control <https://www.owasp.org/index.php/Top_10_2013-A7-Missing_Function_Level_Access_Control>`_

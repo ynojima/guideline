@@ -12,6 +12,41 @@ In this section, how to create a web application development project is describe
 In this guideline, it is recommended to adopt multi-project configuration.
 For description of the recommended multi-project configuration, refer [:ref:`application-layering_project-structure`].
 
+.. _CreateProjectFromBlankTypes:
+
+Types of Blank Project
+--------------------------------------------------------------------------------
+
+Following two types of blank projects are provided depending on usage.
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 70
+
+    * - Type
+      - Usage
+    * - | `Blank project of multi-project structure <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_
+      - This should be used when developing a real application that is to be released in commercial environment.
+
+        Following types of project templates are provided as Archetype of Maven.
+
+        * Template that includes settings for MyBatis3
+        * Template that includes settings for JPA (Spring Data JPA)
+
+        **This guideline recommends using a project having multi-project structure.**
+    * - | `Blank project of single-project structure <https://github.com/terasolunaorg/terasoluna-gfw-web-blank>`_
+      - This should be used when creating simple applications such as POC (Proof Of Concept), prototype, sample, etc.
+
+        Following types of project templates are provided as Archetype of Maven.
+        (Projects for Eclipse WTP are also provided; however, their description is omitted in this chapter)
+
+        * Template that includes settings for MyBatis3
+        * Template that includes settings for JPA (Spring Data JPA)
+        * Template that does not depend on O/R Mapper
+
+        This guideline follows a procedure wherein various tutorials are performed using a single project.
+
 .. _CreateWebApplicationProject:
 
 Create development project
@@ -163,286 +198,6 @@ For detail description of the project that you have created in the Maven Archety
 
 |
 
-
-.. _CreateWebApplicationProjectBuild:
-
-Build development project
---------------------------------------------------------------------------------
-
-The method to create a war file to be deployed on application server and a jar file of env module (module to store the file environment dependent file) is described below.
-
-In case of a project created using Maven Archetype, the following 2 methods are provided as methods to create a war file.
-
-* :ref:`CreateWebApplicationProjectBuildWarExcludeEnvJar` (**recommended**)
-* :ref:`CreateWebApplicationProjectBuildWarIncludeEnvJar`
-
-
-.. note:: **About the recommended build method**
-
-    This guideline recommends :ref:`CreateWebApplicationProjectBuildWarExcludeEnvJar`. 
-    For reasons why this method is recommended, refer to :doc:`../Appendix/EnvironmentIndependency`.
-    Other build method apart from those mentioned here can also be used.
-
-    However, **the war file and jar file to be released in test environment and production environment should not be created using the functionality provided by IDE such as Eclipse.**
-    In some of the IDE functionalities like Eclipse, class files are created using an independent compiler which has been optimized for development,
-    hence there could be a risk of unexpected error during the application execution due to difference in the compiler.
-
-
-.. warning:: **About build environment**
-
-    In the example below, Windows environment is used for the build. However, you can use your own environment for doing the build.
-    This guideline **recommends that you should do the build using the same OS and JDK version as that of the application execution environment.**
-
-|
-
-| When build is done using Maven, confirm whether home directory of JDK which is used during compilation in the environment variable JAVA_HOME, has been specified.
-| If the environment variable is not set or the home directory of JDK having different version has been specified, an appropriate home directory should be specified in environment variable.
-
-**[In case of Windows]**
-
-.. code-block:: console
-
-    echo %JAVA_HOME%
-    set JAVA_HOME={Please set home directory of JDK}
-
-
-**[In case of Linux]**
-
-.. code-block:: console
-
-    echo $JAVA_HOME
-    JAVA_HOME={Please set home directory of JDK}
-
-.. note::
-
-    It is advisable to set the environment variable JAVA_HOME in the user environment variable of OS user wherein build is to be done.
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJar:
-
-Build method wherein jar file of env module is not included in war file
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepWar:
-
-Create war file
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Open the root directory of development project.
-
-.. code-block:: console
-
-    cd C:\work\todo
-
-|
-
-| Specify \ ``warpack``\  in Maven profile (\ ``-P``\  parameter) and run Maven install.
-
-.. code-block:: console
-
-    mvn -P warpack clean install
-
-| If the Maven package is run successfully, a war file that does not include jar file of env module is created in the target directory of web module.
-| (Example: \ ``C:\work\todo\todo-web\target\todo-web.war``\ )
-
-.. note:: **About the goal to be specified**
-
-    In the above example, \ ``install``\  is specified in goal and war file is installed in local repository, however it is advisable to specify
-
-     * \ ``package``\  in goal when only creating a war file
-     * \ ``deploy``\  in goal when deploying in remote repository like Nexus
-
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepEnvJar:
-
-Create jar file of env module
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Open env module directory.
-
-.. code-block:: console
-
-    cd C:\work\todo\todo-env
-
-|
-
-Specify \ **Profile ID to identify environment**\  in Maven profile (\ ``-P``\  parameter) and run Maven package.
-
-.. code-block:: console
-
-    mvn -P test-server clean package
-
-| If Maven package is run successfully, jar file for the specified environment is created in target directory of env module.
-| (Example: \ ``C:\work\todo\todo-env\target\todo-env-1.0.0-SNAPSHOT-test-server.jar``\ )
-
-.. note:: **About profile ID to identify environment**
-
-    In case of a project created using Maven Archetype, following profile IDs are defined by default.
-
-     * \ ``local``\ : Profile for local environment of the developer (for IDE development environment) (default profile)
-     * \ ``test-server``\ : Profile for test environment
-     * \ ``production-server``\ : Profile for production environment
-
-    The above 3 profiles are provided by default; however you can add or modify them as per the environment configuration of the system to be developed.
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepDeployToTomcat:
-
-Deploy on Tomcat
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Deployment method (procedure) when Tomcat is used as an application server is given below.
-
-* Copy the jar file of env module to a predefined external directory.
-* Deploy the war file on Tomcat.
-
-.. note::
-
-  * For method to manage a jar file of env module in external directory, refer to :ref:`EnvironmentIndependencyDeployTomcat` of Appendix.
-  * For method to deploy a war file on Tomcat, refer to Tomcat manual.
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepDeployToOtherServer:
-
-Deploy on application server other than Tomcat
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Deployment method (procedure) when server other than Tomcat is used as an application server is given below.
-
-* Embed the jar file of env module in war file.
-* Deploy the war file in which jar file of env module is embedded on application server.
-
-.. note::
-
-    For a method to deploy a war file on application server, refer to the manual of application server to be used
-
-|
-
-Here, a method to embed the jar file of env module in war file using jar command is given.
-
-| Open the working directory.
-| Here the in the example below, work is performed in env project.
-
-.. code-block:: console
-
-    cd C:\work\todo\todo-env
-
-|
-
-| Copy the created war file to the working directory.
-| Here in the example below, war file is fetched from Maven repository. (war file is required to be \ ``installed``\  or \ ``deployed``\ .)
-
-.. code-block:: console
-
-    mvn org.apache.maven.plugins:maven-dependency-plugin:2.5:get^
-     -DgroupId=com.example.todo^
-     -DartifactId=todo-web^
-     -Dversion=1.0.0-SNAPSHOT^
-     -Dpackaging=war^
-     -Ddest=target/todo-web.war
-
-| If the command is run successfully, the specified war file is copied to the target directory of env module.
-| (Example: \ ``C:\work\todo\todo-env\target\todo-web.war``\ )
-
-.. note::
-
-    * An appropriate value should be specified in \ ``-DgroupId``\ , \ ``-DartifactId``\ , \ ``-Dversion``\ , \ ``-Ddest``\ . 
-    * When run on Linux, \ ``^``\  at the end of the line should be read as \ ``\``\  . 
-
-|
-
-Copy the created jar file to working directory (\ ``target\WEB-INF\lib``\ ) once and add it to the war file.
-
-**[In case of Windows]**
-
-.. code-block:: console
-
-    mkdir target\WEB-INF\lib
-    copy target\todo-env-1.0.0-SNAPSHOT-test-server.jar target\WEB-INF\lib\.
-    cd target
-    jar -uvf todo-web.war WEB-INF\lib
-
-**[In case of Linux]**
-
-.. code-block:: console
-
-    mkdir -p target/WEB-INF/lib
-    cp target/todo-env-1.0.0-SNAPSHOT-test-server.jar target/WEB-INF/lib/.
-    cd target
-    jar -uvf todo-web.war WEB-INF/lib
-
-.. note:: **Measures to be taken when jar command is not found**
-
-    The problem when jar command is not found can be resolved using either of the following measures.
-
-    * Add \ ``JAVA_HOME/bin``\  to environment variable "PATH". 
-    * Specify the jar command with full path. In case of Windows, \ ``%JAVA_HOME%\bin\jar``\  and in case of Linux, \ ``${JAVA_HOME}/bin/jar``\  can be specified.
-
-
-|
-
-.. _CreateWebApplicationProjectBuildWarIncludeEnvJar:
-
-Build method wherein jar file of env module is included in war file
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _CreateWebApplicationProjectBuildWarIncludeEnvJarWar:
-
-Create war file
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-.. warning:: **Points to be noted when including a jar file of env module in war file**
-
-    When jar file of env module is included in war file, the war file cannot be deployed in other environment; 
-    hence war file should be managed so that it is not deployed to other environment (especially in production environment) by mistake.
-
-    Moreover, when using a method in which war file is created for each environment and released in each environment, 
-    it should be noted that war file released in production environment can never be the war file for which testing is complete.
-    This is for the re-compilation at the time of creating war file for the production environment.
-    When creating the war file and releasing the same for each environment, it is especially important to use the 
-    VCS (Version Control System) functionality (Tag functionality etc.) like Git or Subversion and to establish a mechanism to create a war file
-    which is to be released in production environment and various test environments, through the use of tested source files.
-
-|
-
-Open the root directory of development project.
-
-.. code-block:: console
-
-    cd C:\work\todo
-
-|
-
-| In Maven profile (\ ``-P``\  parameter), specify \ **Profile ID to identify environment**\ defined in env module and \ ``warpack-with-env``\ , and then run the Maven package.
-
-.. code-block:: console
-
-    mvn -P warpack-with-env,test-server clean package
-
-| If Maven package is run successfully, war file which includes jar file of env module is created in target directory of web module.
-| (Example: \ ``C:\work\todo\todo-web\target\todo-web.war``\ )
-
-|
-
-.. _CreateWebApplicationProjectBuildWarIncludeEnvJarDeploy:
-
-Deploy
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Deploy the created war file on application server.
-
-.. note::
-
-    For a method to deploy a war file on application server, refer to the manual of Application Server to be used.
-
-|
-
-
 .. _CreateWebApplicationProjectCustomize:
 
 Customization of development project
@@ -465,11 +220,11 @@ The customization required locations are described below.
     The customization points other than the above are,
 
     * Settings of :doc:`../Security/Authentication`・:doc:`../Security/Authorization`
-    * Settings to enable :doc:`../ArchitectureInDetail/FileUpload`
-    * Setting to activate :doc:`../ArchitectureInDetail/Internationalization`
-    * Definition of :doc:`../ArchitectureInDetail/Logging`
-    * Definition of :doc:`../ArchitectureInDetail/ExceptionHandling`
-    * Apply settings of :doc:`../ArchitectureInDetail/REST`
+    * Settings to enable :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload`
+    * Setting to activate :doc:`../ArchitectureInDetail/WebApplicationDetail/Internationalization`
+    * Definition of :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
+    * Definition of :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
+    * Apply settings of :doc:`../ArchitectureInDetail/WebServiceDetail/REST`
 
     For these customizations, Refer to "How to use" of each section and customize if required.
 
@@ -585,7 +340,7 @@ Actual point-of-use (sampling) indicated below.
 |
 
 The \ ``x.xx.fw.9999`` \ format message ID is
-a message ID system that is introduced in [:doc:`../ArchitectureInDetail/MessageManagement`] of this guideline but,
+a message ID system that is introduced in [:doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`] of this guideline but,
 the value of the project division is in the state of provisional value [\ ``xx``\].
 
 .. note::
@@ -735,7 +490,7 @@ Customization method and customization targeted files are indicated below.
         ``artifactId/artifactId-web/src/main/webapp/WEB-INF/views/common/error/*.jsp``
       - Modify depending upon the application requirements (such as UI terms).
 
-        Refer [:ref:`exception-handling-how-to-use-codingpoint-jsp-label` of :doc:`../ArchitectureInDetail/ExceptionHandling`] for customizing the JSP to display an error screen.
+        Refer [:ref:`exception-handling-how-to-use-codingpoint-jsp-label` of :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`] for customizing the JSP to display an error screen.
     * - 2.
       - HTML for the error screen
 
@@ -910,7 +665,7 @@ Therefore it is necessary to change the DataSource settings for accessing the ac
     Again there are some cases where Apache Commons DBCP is used on development environment and 
     DataSource provided by the application server is used on test as well as production environment.
 
-    For how to set-up the DataSource, Refer [:ref:`data-access-common_howtouse_datasource` of :doc:`../ArchitectureInDetail/DataAccessCommon`].
+    For how to set-up the DataSource, Refer [:ref:`data-access-common_howtouse_datasource` of :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`].
 
 |
 
@@ -955,7 +710,7 @@ Customization method and customization targeted files are indicated below.
         ``artifactId/artifactId-env/src/main/resources/META-INF/spring/artifactId-env.xml``
       - If DataSource provided by the application server is used, change the configuration to use the DataSource that is obtained via JNDI.
 
-        For how to set-up the DataSource, Refer [:ref:`data-access-common_howtouse_datasource` of :doc:`../ArchitectureInDetail/DataAccessCommon`].
+        For how to set-up the DataSource, Refer [:ref:`data-access-common_howtouse_datasource` of :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`].
 
 .. note:: **About the database property of the property file for defining environment dependent setting**
 
@@ -1057,7 +812,7 @@ etc are provided.
 
     Therefore, unnecessary setting exists in building a REST API for handling JSON or XML.
     If you want to create a project for building REST API, 
-    need to apply the REST API related settings by referring to the [:ref:`RESTHowToUseApplicationSettings` of :doc:`../ArchitectureInDetail/REST`].
+    need to apply the REST API related settings by referring to the [:ref:`RESTHowToUseApplicationSettings` of :doc:`../ArchitectureInDetail/WebServiceDetail/REST`].
 
 .. note::
 
@@ -1160,7 +915,67 @@ Initially entire multi-project structure is explained.
 
     This is supplement that the multi-module and multi-project is being used as the same meaning in this guideline.
 
-|
+.. note:: **The project structure of development project "bar" where 2 Web applications and 1 common library are required is as follows**
+
+	* bar-parent
+	* bar-initdb
+	* bar-common
+	* bar-common-web
+	* bar-domain-a
+	* bar-domain-b
+	* bar-web-a
+	* bar-web-b
+	* bar-env
+	* bar-web-a-selenium
+	* bar-web-b-selenium
+
+	The details of each project are as follows:
+
+	* bar-parent
+
+	  (same as foo-parent)
+
+	* bar-initdb
+
+	  (same as foo-initdb)
+
+	* bar-common
+
+	 Stores common library in the project. This is web independent and web related classes are placed under bar-common-web.
+
+	* bar-common-web
+
+	 Stores common web library in the project.
+
+	* bar-domain
+
+	 Stores java classes and unit test cases of domain layer of Domain 'a'. Finally \*.jar file is created.
+
+	* bar-domain
+
+	 Class of domain layer of Domain 'b'.
+
+	* bar-web-a
+
+	 Stores application layer java classes, jsps, configuration files, unit test cases etc. Finally \*.war file is created as the Web application.
+	 bar-web-a has dependency on bar-common and bar-env.
+
+	* bar-web-b
+
+	 This is a Web application as one more subsystem. Its structure is same as the bar-web-a.
+
+	* bar-env
+
+	 Collects only the configuration files having environment dependency.
+
+	* bar-web-a-selenium
+
+	 Stores test cases using `Selenium WebDriver <http://seleniumhq.org/projects/webdriver/>`_ for web-a project.
+
+	* bar-web-b-selenium
+
+	 Stores test cases using `Selenium WebDriver <http://seleniumhq.org/projects/webdriver/>`_ for web-b project.
+
 
 .. _CreateWebApplicationProjectConfigurationWeb:
 
@@ -1233,7 +1048,7 @@ Module that manages the application layer (Web layer) components are explained.
       - The controller class for receiving a request to display the Welcome page.
     * - | (4)
       - The directory in which a mapping definition file of Dozer (Bean Mapper) is stored, 
-        Refer to [:doc:`../ArchitectureInDetail/Utilities/Dozer`] for Dozer.
+        Refer to [:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer`] for Dozer.
 
         It is an empty directory at the time of creation. 
         If the mapping file is required (if high mapping is required), 
@@ -1286,7 +1101,7 @@ Module that manages the application layer (Web layer) components are explained.
         .. note::
 
             **Messages should be modified according to the application requirements (Such as message Terms).**
-            For the message definition, Refer [:doc:`../ArchitectureInDetail/MessageManagement`].
+            For the message definition, Refer [:doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`].
 
 .. note::
 
@@ -1336,7 +1151,7 @@ Module that manages the application layer (Web layer) components are explained.
       - | Description
     * - | (12)
       - Directory that contains the Tiles configuration files.
-        Refer [:doc:`../ArchitectureInDetail/TilesLayout`] for the Tiles configuration files.
+        Refer [:doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout`] for the Tiles configuration files.
     * - | (13)
       - Directory that contains the View generation templates (jsp etc).
     * - | (14)
@@ -1356,7 +1171,7 @@ Module that manages the application layer (Web layer) components are explained.
         Refer [:ref:`view_jsp_include-label`] for common JSP files for include.
     * - | (16)
       - Directory that contains the JSP files for the Tiles layout.
-        Refer [:doc:`../ArchitectureInDetail/TilesLayout`] for JSP files for the Tiles layout.
+        Refer [:doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout`] for JSP files for the Tiles layout.
     * - | (17)
       - JSP file that displays the Welcome page.
     * - | (18)
@@ -1438,7 +1253,7 @@ Module that manages the domain layer components are explained.
       - Package for storing the  domain layer classes.
     * - | (3)
       - The directory in which a mapping definition file of Dozer (Bean Mapper) is stored, 
-        Refer to [:doc:`../ArchitectureInDetail/Utilities/Dozer`] for Dozer.
+        Refer to [:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer`] for Dozer.
 
         It is an empty directory at the time of creation. 
         If the mapping file is required (if high mapping is required), 
@@ -1641,7 +1456,7 @@ Module that manages the environment dependent configuration files are explained.
         At the time of creation, new line character related setting are specified for those SQLs which are going to be printed in log.
     * - | (10)
       - Configuration file of the Logback (log output).
-        For the log output refer [:doc:`../ArchitectureInDetail/Logging`].
+        For the log output refer [:doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`].
 
 |
 
