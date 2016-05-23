@@ -1,4 +1,4 @@
-ExternalSystem linkage function
+Message linkage function
 ================================================================================
 
 .. toctree::
