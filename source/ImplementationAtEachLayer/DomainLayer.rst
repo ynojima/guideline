@@ -782,8 +782,164 @@ Serviceクラスから、別のServiceクラスの呼び出しを禁止する理
 
 \
 
-| Appendixに、シグネチャを限定するようなインタフェースと規定クラスを作成するの、サンプルを示す。
-| 詳細は、\ :ref:`domainlayer_appendix_blogic`\ を参照されたい。
+
+ .. note:: **シグネチャを制限するインタフェースおよび基底クラスの実装サンプル**
+    - シグネチャを限定するようなインタフェース
+
+     .. code-block:: java
+
+        // (1)
+        public interface BLogic<I, O> {
+          O execute(I input);
+        }
+
+     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+     .. list-table::
+        :header-rows: 1
+        :widths: 10 90
+
+        * - 項番
+          - 説明
+        * - | (1)
+          - | 業務ロジックの実装メソッドのシグニチャを制限するためのインタフェース。
+            | 上記例では、入力情報(I)と出力情報(O)の総称型として定義されており、 業務ロジックを実行するためのメソッド(execute)を一つもつ。
+            | 本ガイドラインでは、上記のようなインタフェースを、BLogicインタフェースと呼ぶ。
+
+    - Controller
+
+     .. code-block:: java
+
+        // (2)
+        @Inject
+        XxxBLogic<XxxInput, XxxOutput> xxxBLogic;
+
+        public String reserve(XxxForm form, RedirectAttributes redirectAttributes) {
+
+            XxxInput input = new XxxInput();
+            // omitted
+
+            // (3)
+            XxxOutput output = xxxBlogic.execute(input);
+
+            // omitted
+
+            redirectAttributes.addFlashAttribute(output.getTourReservation());
+            return "redirect:/xxx?complete";
+        }
+
+     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+     .. list-table::
+        :header-rows: 1
+        :widths: 10 90
+
+        * - 項番
+          - 説明
+        * - | (2)
+          - | Controllerは、呼び出すBLogicインタフェースをInjectする。
+        * - | (3)
+          - | Controllerは、BLogicインタフェースのexecuteメソッドを呼び出し、業務ロジックを実行する。
+
+    定型的な共通処理をServiceに盛り込む場合、ビジネスロジックの処理フローを統一したい場合に、メソッドのシグネチャを限定するような基底クラスを作成することがある。
+
+    - シグネチャを限定するような基底クラス
+
+     .. code-block:: java
+
+
+        public abstract class AbstractBLogic<I, O> implements BLogic<I, O> {
+
+            public O execute(I input){
+              try{
+
+                  // omitted
+
+                  // (4)
+                  preExecute(input);
+
+                  // (5)
+                  O output = doExecute(input);
+
+                  // omitted
+
+                  return output;
+              } finally {
+                  // omitted
+              }
+
+            }
+
+            protected abstract void preExecute(I input);
+
+            protected abstract O doExecute(I input);
+
+        }
+
+
+     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+     .. list-table::
+        :header-rows: 1
+        :widths: 10 90
+
+        * - 項番
+          - 説明
+        * - | (4)
+          - | 基底クラスより、業務ロジックを実行する前の、事前処理を行うメソッドを呼び出す。
+            | 上記のような事前処理を行うメソッドでは、ビジネスルールのチェックなどを実装することになる。
+        * - | (5)
+          - | 基底クラスより、業務ロジックを実行するメソッドを呼び出す。
+
+
+    以下に、シグネチャを限定するような、基底クラスを継承する場合の、サンプルを示す。
+
+
+    - BLogicクラス(Service)
+
+     .. code-block:: java
+
+        public class XxxBLogic extends AbstractBLogic<XxxInput, XxxOutput> {
+
+            // (6)
+            protected void preExecute(XxxInput input) {
+
+                // omitted
+                Tour tour = tourRepository.findOne(input.getTourId());
+                Date reservationLimitDate = tour.reservationLimitDate();
+                if(input.getReservationDate().after(reservationLimitDate)){
+                    throw new BusinessException(ResultMessages.error().add("e.xx.xx.0001"));
+                }
+
+            }
+
+            // (7)
+            protected XxxOutput doExecute(XxxInput input) {
+                TourReservation tourReservation = new TourReservation();
+
+                // omitted
+
+                tourReservationRepository.save(tourReservation);
+                XxxOutput output = new XxxOutput();
+                output.setTourReservation(tourReservation);
+
+                // omitted
+                return output;
+            }
+
+        }
+
+
+     .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+     .. list-table::
+        :header-rows: 1
+        :widths: 10 90
+
+        * - 項番
+          - 説明
+        * - | (6)
+          - | 業務ロジックを実行する前の事前処理を実装する。
+            | ビジネスルールのチェックなどを実装する事になる。
+        * - | (7)
+          - | 業務ロジックを実装する。
+            | ビジネスルールを充たすために、ロジックを実装する事になる。
 
 
 .. _service-creation-unit-label:
@@ -1280,8 +1436,8 @@ ServiceおよびSharedServiceでは、アプリケーションで使用する業
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 業務データ(Entity)の取得、更新の実装例については、
 
-* MyBatis3を使う場合は、\ :doc:`../ArchitectureInDetail/DataAccessMyBatis3`\
-* JPAを使う場合は、\ :doc:`../ArchitectureInDetail/DataAccessJpa`\
+* MyBatis3を使う場合は、\ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessMyBatis3`\
+* JPAを使う場合は、\ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessJpa`\
 
 を参照されたい。
 
@@ -1292,7 +1448,7 @@ ServiceおよびSharedServiceでは、アプリケーションで使用する業
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 | Serviceで解決すべきメッセージは、警告メッセージ、業務エラーメッセージの２つとなる(下図赤破線部参照)。
 | それ以外のメッセージは、アプリケーション層で解決される。
-| メッセージの種類とメッセージのパターンについては、\ :doc:`../ArchitectureInDetail/MessageManagement`\ を参照されたい。
+| メッセージの種類とメッセージのパターンについては、\ :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`\ を参照されたい。
 
  .. figure:: images/service_target-resolving-message.png
    :alt: target of resolving message
@@ -1427,7 +1583,7 @@ ServiceおよびSharedServiceでは、アプリケーションで使用する業
    * - | (1)
      - 旅行を予約する際に、予約日が期限を過ぎているので、ビジネス例外をスローしている。
 
-例外ハンドリング全体の詳細は、\ :doc:`../ArchitectureInDetail/ExceptionHandling`\ を参照されたい。
+例外ハンドリング全体の詳細は、\ :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`\ を参照されたい。
 
 .. _service-return-systemerrormessage-label:
 
@@ -1499,7 +1655,7 @@ ServiceおよびSharedServiceでは、アプリケーションで使用する業
     業務ロジック実行中に、RepositoryやO/R Mapperでデータアクセスエラーが発生した場合、\ ``org.springframework.dao.DataAccessException``\ のサブクラスに変換されてスローされる。
     基本的には、業務ロジックではキャッチせず、アプリケーション層でエラーハンドリングすればよいが、
     一意制約違反などの一部のエラーについては、業務要件によっては、業務ロジックでハンドリングする必要がある。
-    詳細は、\ :doc:`../ArchitectureInDetail/DataAccessCommon`\ を参照されたい。
+    詳細は、\ :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`\ を参照されたい。
 
 .. _service_transaction_management:
 
@@ -1597,7 +1753,7 @@ Spring Frameworkから提供されている「宣言型トランザクション�
         | トランザクションを完全に独立させる。
         |
         | トランザクションの独立レベルは、排他制御に関連するパラメータとなる。
-        | 排他制御については、\ :doc:`./../ArchitectureInDetail/ExclusionControl`\ を参照されたい。
+        | 排他制御については、\ :doc:`../ArchitectureInDetail/DataAccessDetail/ExclusionControl`\ を参照されたい。
     * - 3
       - timeout
       - | トランザクションのタイムアウト時間(秒)を指定する。
@@ -1780,6 +1936,7 @@ Spring Frameworkから提供されている「宣言型トランザクション�
    基本的にはAOPモードはデフォルトの\ ``"proxy"``\ を使用することを推奨する。
 
 .. _service_enable_transaction_management:
+.. _DomainLayerAppendixTransactionManagement:
 
 トランザクション管理を使うための設定について
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1872,6 +2029,28 @@ PlatformTransactionManagerの設定
     * - | (1)
       - <tx:annotation-driven>要素をXML（bean定義ファイル）に追加することで、\ ``@Transactional``\ アノテーションを使ったトランザクション境界の指定が有効となる。
 
+ .. note:: **トランザクション管理の落とし穴について**
+
+    IBM DeveloperWorksに「トランザクションの落とし穴を理解する」という記事がある。
+    この記事ではトランザクション管理で注意しなくてはいけないことや、Spring Frameworkの@Transactionalを使う場合の注意点がまとめられているので、ぜひ一読してほしい。
+    詳細は、\ `IBM DeveloperWorksの記事 <http://www.ibm.com/developerworks/java/library/j-ts1/index.html>`_\ を参照されたい。
+
+    ※IBM DeveloperWorksの記事は2009年の記事のため(古いため)、一部の内容がSpring Framework 4.1使用時の動作と異なる部分がある。
+
+    具体的には、「Listing 7. Using read-only with REQUIRED propagation mode — JPA」の内容である。
+
+    Spring Framework 4.1より、JPAのプロバイダとしてHibernate ORM 4.2以上を使用している場合は、
+    JDBCドライバに対して「読み取り専用のトランザクション」のもとでSQLを実行するように指示することが出来るように改善(\ `SPR-8959 <https://jira.spring.io/browse/SPR-8959>`_\ )されている。
+
+    読み取り専用のトランザクションの扱い方は、JDBCドライバの実装に依存するため、使用するJDBCドライバの仕様を確認されたい。
+
+
+ .. note:: **プログラマティックにトランザクションを管理する方法**
+
+    本ガイドラインでは、「宣言型トランザクション管理」を推奨しているが、プログラマティックにトランザクションを管理することもできる。
+    詳細については、\ `Spring Reference Document -Transaction Management(Programmatic transaction management)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/transaction.html#transaction-programmatic>`_\ を参照されたい。
+
+
 <tx:annotation-driven>要素の属性について
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -1918,201 +2097,6 @@ PlatformTransactionManagerの設定
 
 |
 
-Appendix
---------------------------------------------------------------------------------
-
-.. _DomainLayerAppendixTransactionManagement:
-
-トランザクション管理の落とし穴について
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-| IBM DeveloperWorksに「トランザクションの落とし穴を理解する」という記事がある。
-| この記事ではトランザクション管理で注意しなくてはいけないことや、Spring Frameworkの@Transactionalを使う場合の注意点がまとめられているので、ぜひ一読してほしい。
-| 詳細は、\ `IBM DeveloperWorksの記事 <http://www.ibm.com/developerworks/java/library/j-ts1/index.html>`_\ を参照されたい。
-
-.. note::
-
-    IBM DeveloperWorksの記事は2009年の記事のため(古いため)、一部の内容がSpring Framework 4.1使用時の動作と異なる部分がある。
-
-    具体的には、「Listing 7. Using read-only with REQUIRED propagation mode — JPA」の内容である。
-
-    Spring Framework 4.1より、JPAのプロバイダとしてHibernate ORM 4.2以上を使用している場合は、
-    JDBCドライバに対して「読み取り専用のトランザクション」のもとでSQLを実行するように指示することが出来るように改善(\ `SPR-8959 <https://jira.spring.io/browse/SPR-8959>`_\ )されている。
-
-    読み取り専用のトランザクションの扱い方は、JDBCドライバの実装に依存するため、使用するJDBCドライバの仕様を確認されたい。
-
-
-プログラマティックにトランザクションを管理する方法
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-本ガイドラインでは、「宣言型トランザクション管理」を推奨しているが、プログラマティックにトランザクションを管理することもできる。
-詳細については、\ `Spring Reference Document -Transaction Management(Programmatic transaction management)- <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/transaction.html#transaction-programmatic>`_\ を参照されたい。
-
-.. _domainlayer_appendix_blogic:
-
-
-シグネチャを制限するインタフェースおよび基底クラスの実装サンプル
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- シグネチャを限定するようなインタフェース
-
- .. code-block:: java
-
-    // (1)
-    public interface BLogic<I, O> {
-      O execute(I input);
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (1)
-      - | 業務ロジックの実装メソッドのシグニチャを制限するためのインタフェース。
-        | 上記例では、入力情報(I)と出力情報(O)の総称型として定義されており、 業務ロジックを実行するためのメソッド(execute)を一つもつ。
-        | 本ガイドラインでは、上記のようなインタフェースを、BLogicインタフェースと呼ぶ。
-
-- Controller
-
- .. code-block:: java
-
-    // (2)
-    @Inject
-    XxxBLogic<XxxInput, XxxOutput> xxxBLogic;
-
-    public String reserve(XxxForm form, RedirectAttributes redirectAttributes) {
-
-        XxxInput input = new XxxInput();
-        // omitted
-
-        // (3)
-        XxxOutput output = xxxBlogic.execute(input);
-
-        // omitted
-
-        redirectAttributes.addFlashAttribute(output.getTourReservation());
-        return "redirect:/xxx?complete";
-    }
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (2)
-      - | Controllerは、呼び出すBLogicインタフェースをInjectする。
-    * - | (3)
-      - | Controllerは、BLogicインタフェースのexecuteメソッドを呼び出し、業務ロジックを実行する。
-
-定型的な共通処理をServiceに盛り込む場合、ビジネスロジックの処理フローを統一したい場合に、メソッドのシグネチャを限定するような基底クラスを作成することがある。
-
-- シグネチャを限定するような基底クラス
-
- .. code-block:: java
-
-
-    public abstract class AbstractBLogic<I, O> implements BLogic<I, O> {
-
-        public O execute(I input){
-          try{
-
-              // omitted
-
-              // (4)
-              preExecute(input);
-
-              // (5)
-              O output = doExecute(input);
-
-              // omitted
-
-              return output;
-          } finally {
-              // omitted
-          }
-
-        }
-
-        protected abstract void preExecute(I input);
-
-        protected abstract O doExecute(I input);
-
-    }
-
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (4)
-      - | 基底クラスより、業務ロジックを実行する前の、事前処理を行うメソッドを呼び出す。
-        | 上記のような事前処理を行うメソッドでは、ビジネスルールのチェックなどを実装することになる。
-    * - | (5)
-      - | 基底クラスより、業務ロジックを実行するメソッドを呼び出す。
-
-
-以下に、シグネチャを限定するような、基底クラスを継承する場合の、サンプルを示す。
-
-
-- BLogicクラス(Service)
-
- .. code-block:: java
-
-    public class XxxBLogic extends AbstractBLogic<XxxInput, XxxOutput> {
-
-        // (6)
-        protected void preExecute(XxxInput input) {
-
-            // omitted
-            Tour tour = tourRepository.findOne(input.getTourId());
-            Date reservationLimitDate = tour.reservationLimitDate();
-            if(input.getReservationDate().after(reservationLimitDate)){
-                throw new BusinessException(ResultMessages.error().add("e.xx.xx.0001"));
-            }
-
-        }
-
-        // (7)
-        protected XxxOutput doExecute(XxxInput input) {
-            TourReservation tourReservation = new TourReservation();
-
-            // omitted
-
-            tourReservationRepository.save(tourReservation);
-            XxxOutput output = new XxxOutput();
-            output.setTourReservation(tourReservation);
-
-            // omitted
-            return output;
-        }
-
-    }
-
-
- .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
- .. list-table::
-    :header-rows: 1
-    :widths: 10 90
-
-    * - 項番
-      - 説明
-    * - | (6)
-      - | 業務ロジックを実行する前の事前処理を実装する。
-        | ビジネスルールのチェックなどを実装する事になる。
-    * - | (7)
-      - | 業務ロジックを実装する。
-        | ビジネスルールを充たすために、ロジックを実装する事になる。
-
-|
-
 Tips
 --------------------------------------------------------------------------------
 
@@ -2123,7 +2107,7 @@ Tips
 
 | ビジネスルールのエラーをフィールド毎に出力する必要がある場合、Controller側(Bean ValidationまたはSpring Validator)の仕組みを利用する必要がある。
 | このケースの場合、チェックロジック自体はServiceとして実装し、Bean ValidationまたはSpring ValidatorからServiceのメソッドを呼び出す方式で実現することを推奨する。
-| 詳細は、\ :doc:`../ArchitectureInDetail/Validation`\ の業務ロジックチェックを参照されたい。
+| 詳細は、\ :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`\ の業務ロジックチェックを参照されたい。
 
 .. raw:: latex
 

@@ -1,17 +1,11 @@
-========
-Appendix
-========
+========================
+Appendix(Know How)
+========================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   ../TutorialSession/index
-   ../TutorialREST/index
-   CreateProjectFromBlank
-   TagLibAndELFunctions
    Nexus
-   ../Appendix/EnvironmentIndependency
-   ../Appendix/ProjectStructureStandard.rst
    Lombok
    ReferenceBooks
    SpringComprehensionCheck

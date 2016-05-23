@@ -99,7 +99,7 @@ Springおよび依存ライブラリから提供されている\ ``ViewResolver`
 | 複数の\ ``ViewResolver``\ を使う代表的な例として、ファイルのダウンロード処理が存在する画面アプリケーションが挙げられる。
 | 画面(JSP)は、\ ``InternalResourceViewResolver``\ で\ ``View``\ を解決し、
 | ファイルダウンロードは、\ ``BeanNameViewResolver``\ などを使って\ ``View``\ を解決する。
-| 詳細は\ :doc:`../ArchitectureInDetail/FileDownload`\ を参照されたい。
+| 詳細は\ :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`\ を参照されたい。
 
 
 Implementaion of View
@@ -114,7 +114,7 @@ Springおよび依存ライブラリから提供されている\ ``View``\ の�
 | JSPを返す場合、\ ``org.springframework.web.servlet.view.JstlView``\ が使用される。
 
 | Springおよび依存ライブラリから提供されていない\ ``View``\ を扱いたい場合、\ ``View``\ インタフェースを実装したクラスを拡張する必要がある。
-| 詳細は\ :doc:`../ArchitectureInDetail/FileDownload`\ を参照されたい。
+| 詳細は\ :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`\ を参照されたい。
 
 .. raw:: latex
 

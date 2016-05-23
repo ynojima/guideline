@@ -31,14 +31,14 @@ Spring Frameworkに関して、本ドキュメントを読むための基礎知�
 
 * \ :doc:`../Overview/index`\ 
     Spring MVCの概要や、TERASOLUNA Server Framework for Java (5.x)の基本的な考え方を説明する。
-* \ :doc:`../TutorialTodo/index`\ 
-    簡単なアプリケーション開発を通して、TERASOLUNA Server Framework for Java (5.x)によるアプリケーション開発を体験する。
 * \ :doc:`../ImplementationAtEachLayer/index`\ 
     TERASOLUNA Server Framework for Java (5.x)を利用してアプリケーション開発する上で必ず押さえておかなくてはならない知識や作法について説明する。
 * \ :doc:`../ArchitectureInDetail/index`\
     一般的にアプリケーション開発で必要となる機能をTERASOLUNA Server Framework for Java (5.x)を利用してどう実装するか、何に気を付けるべきかを機能ごとに説明する。
-* \ :doc:`../Security/index`\  
+* \ :doc:`../Security/index`\
     Spring Securityを中心としたセキュリティ対策について説明する。
+* \ :doc:`../Tutorial/index`\
+    簡単なアプリケーション開発を通して、TERASOLUNA Server Framework for Java (5.x)によるアプリケーション開発を体験する。
 * \ :doc:`../Appendix/index`\
     TERASOLUNA Server Framework for Java (5.x)を利用する場合の付加情報を説明する。
 
@@ -49,19 +49,19 @@ Spring Frameworkに関して、本ドキュメントを読むための基礎知�
 から読み進めていただきたい。特にSpring MVCの経験がない場合は"\ :doc:`../Overview/FirstApplication`\ "を実施すること。
 "\ :doc:`../Overview/ApplicationLayering`\ "は本ガイドラインで共通する用語と概念の説明を行っているため、必ず一読されたい。
 
-次に"\ :doc:`../TutorialTodo/index`\ "に進む。
+次に"\ :doc:`../Tutorial/index`\ "に進む。
 このチュートリアルでは"習うより慣れろ"を目的として、
 詳細な説明の前にまず手を動かして、TERASOLUNA Server Framework for Java (5.x)によるアプリケーション開発を体感していただきたい。
 
 チュートリアルを実践したのちに、"\ :doc:`../ImplementationAtEachLayer/index`\ "でアプリケーション開発の詳細を学ぶ。
 特に"\ :doc:`../ImplementationAtEachLayer/ApplicationLayer`\ "でSpring MVCによる開発のノウハウを凝集して説明しているため、
 何度も読み返すことを推奨する。
-本章を読み終えた後にもう一度"\ :doc:`../TutorialTodo/index`\ "を振り返るとより理解が深まる。
+本章を読み終えた後にもう一度"\ :doc:`../Tutorial/index`\ "を振り返るとより理解が深まる。
 
 **ここまではTERASOLUNA Server Framework for Java (5.x)を使用するすべての開発者が読むことを強く推奨する。**
 
 "\ :doc:`../ArchitectureInDetail/index`\ "、"\ :doc:`../Security/index`\ "については
-目的に応じて必要なタイミングで参照すればよい。ただし、":doc:`../ArchitectureInDetail/Validation`"はアプリケーション開発で通常は必要となるため、基本的には読んでおくこと。
+目的に応じて必要なタイミングで参照すればよい。ただし、":doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`"はアプリケーション開発で通常は必要となるため、基本的には読んでおくこと。
 
 テクニカルリーダーはこれらをすべて読み内容を把握した上で
 プロジェクトにおいて、どのような方針を定めるか検討していただきたい。
@@ -73,10 +73,10 @@ Spring Frameworkに関して、本ドキュメントを読むための基礎知�
     
     #. \ :doc:`../Overview/FirstApplication`\ 
     #. \ :doc:`../Overview/ApplicationLayering`\ 
-    #. \ :doc:`../TutorialTodo/index`\ 
+    #. \ :doc:`../Tutorial/TutorialTodo`\ 
     #. \ :doc:`../ImplementationAtEachLayer/index`\ 
-    #. \ :doc:`../TutorialTodo/index`\ 
-    #. \ :doc:`../ArchitectureInDetail/Validation`\ 
+    #. \ :doc:`../Tutorial/TutorialTodo`\ 
+    #. \ :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`\ 
     
     を読むとよい。
 

@@ -1,4 +1,4 @@
-TERASOLUNA Server Framework for Java (5.x)によるアプリケーション開発
+アプリケーション開発
 ================================================================================
 TERASOLUNA Server Framework for Java (5.x)を使用する上での各種ルールや推奨実装方法を記述する。
 
@@ -11,6 +11,7 @@ TERASOLUNA Server Framework for Java (5.x)を使用する上での各種ルー�
    DomainLayer
    InfrastructureLayer
    ApplicationLayer
+   CreateProject
 
 レイヤ定義については、 :doc:`アプリケーションのレイヤ化 <../Overview/ApplicationLayering>` を参照。
 

@@ -97,7 +97,7 @@ Viewのレイアウトを共通化する場合は、
 
 * 相関チェックには\ `Bean Validation <http://download.oracle.com/otn-pub/jcp/bean_validation-1_1-fr-eval-spec/bean-validation-specification.pdf>`_\ 、もしくは\ `Spring Validation <http://docs.spring.io/spring/docs/4.2.4.RELEASE/spring-framework-reference/html/validation.html#validator>`_\ を利用する。
 
-  * 使い分けについては\ :doc:`../ArchitectureInDetail/Validation`\ を参照されたい。
+  * 使い分けについては\ :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`\ を参照されたい。
 
 
 
@@ -696,7 +696,7 @@ terasoluna-gfw-commonは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/ExceptionHandling`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
       - 例外クラス
       - 汎用的に使用できる例外クラスを提供する。
     * -
@@ -708,13 +708,13 @@ terasoluna-gfw-commonは以下の部品を提供している。
     * -
       - 例外ログ出力インターセプタ
       - ドメイン層で発生した例外をログ出力するためのインターセプタクラス(AOP)を提供する。
-    * - :doc:`../ArchitectureInDetail/SystemDate`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/SystemDate`
       - システム時刻ファクトリ
       - システム時刻を取得するためのクラスを提供する。
-    * - :doc:`../ArchitectureInDetail/Codelist`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - コードリスト
       - コードリストを生成するためのクラスを提供する。
-    * - :doc:`../ArchitectureInDetail/DataAccessCommon`
+    * - :doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon`
       - クエリエスケープ
       - SQL及びJPQLにバインドする値のエスケープ処理を行うクラスを提供する。
     * -
@@ -734,7 +734,7 @@ terasoluna-gfw-stringは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/StringProcessing`
       - 半角全角変換
       - 半角文字列と全角文字列のマッピングテーブルに基づき、入力文字列の半角文字を全角に変換する処理と全角文字を半角に変換する処理を行うクラスを提供する。
 
@@ -752,10 +752,10 @@ terasoluna-gfw-codepointsは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/Utilities/StringProcessing`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/StringProcessing`
       - コードポイントチェック
       - 対象の文字列を構成するコードポイントが、定義されたコードポイント集合に含まれることをチェックするクラスを提供する。
-    * - :doc:`../ArchitectureInDetail/Validation`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
       - コードポイントチェック用Bean Validation制約アノテーション
       - コードポイントチェックをBean Validationで行うための制約アノテーションを提供する。
 
@@ -773,7 +773,7 @@ terasoluna-gfw-validatorは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/Validation`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Validation`
       - バイト長チェック用Bean Validation制約アノテーション
       - 入力文字列の文字コードにおけるバイト長が、指定した最大値以下であること、最小値以上であることのチェックをBean Validationで行うための制約アノテーションを提供する。
     * -
@@ -793,7 +793,7 @@ terasoluna-gfw-jodatimeは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/SystemDate`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/SystemDate`
       - Joda Time用システム時刻ファクトリ
       - Joda TimeのAPIを利用してシステム時刻を取得するためのクラスを提供する。
 
@@ -811,22 +811,22 @@ terasoluna-gfw-webは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection`
       - トランザクショントークンチェック
       - リクエストの二重送信からWebアプリケーションを守るための仕組み(クラス)を提供する。
-    * - :doc:`../ArchitectureInDetail/ExceptionHandling`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling`
       - 例外ハンドラ
       - 共通ライブラリが提供する例外ハンドリングの部品と連携するための例外ハンドラクラス(Spring MVC提供のクラスのサブクラス)を提供する。
     * -
       - 例外ログ出力インターセプタ
       - Spring MVCの例外ハンドラがハンドリングした例外をログ出力するためのインターセプタクラス(AOP)を提供する。
-    * - :doc:`../ArchitectureInDetail/Codelist`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Codelist`
       - コードリスト埋込インターセプタ
       - Viewからコードリストを取得できるようにするために、コードリストの情報をリクエストスコープに格納するためのインターセプタクラス(Spring MVC Interceptor)を提供する。
-    * - :doc:`../ArchitectureInDetail/FileDownload`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/FileDownload`
       - 汎用ダウンロードView
       - ストリームから取得したデータを、ダウンロード用のストリームに出力するための抽象クラスを提供する。
-    * - :doc:`../ArchitectureInDetail/Logging`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
       - トラッキングID格納用サーブレットフィルタ
       - トレーサビリティを向上させるために、
         クライアントから指定されたトラッキングIDを、ロガーのMDC(Mapped Diagnostic Context)、リクエストスコープ、レスポンスヘッダに設定するためのサーブレットフィルタクラスを提供する。
@@ -851,13 +851,13 @@ terasoluna-gfw-web-jspは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/DoubleSubmitProtection`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/DoubleSubmitProtection`
       - トランザクショントークン出力用のJSPタグ
       - トランザクショントークンをhidden項目として出力するためのJSPタグライブラリを提供する。
-    * - :doc:`../ArchitectureInDetail/Pagination`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/Pagination`
       - ページネーションリンク表示用のJSPタグ
       - Spring Data Commons提供のクラスと連携してページネーションリンクを表示するためのJSPタグライブラリを提供する。
-    * - :doc:`../ArchitectureInDetail/MessageManagement`
+    * - :doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`
       - 結果メッセージ表示用のJSPタグ
       - 処理結果を表示するためのJSPタグライブラリを提供する。
     * - :ref:`TagLibAndELFunctionsOverviewELFunctions`
@@ -886,7 +886,7 @@ terasoluna-gfw-security-webは以下の部品を提供している。
     * - 分類
       - 部品名
       - 説明
-    * - :doc:`../ArchitectureInDetail/Logging`
+    * - :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`
       - 認証ユーザ名格納用サーブレットフィルタ
       - トレーサビリティを向上させるために、
         認証ユーザ名をロガーのMDCに設定するためのサーブレットフィルタクラスを提供する。

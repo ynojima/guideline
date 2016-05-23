@@ -12,6 +12,41 @@ Webアプリケーション向け開発プロジェクトの作成
 本ガイドラインでは、マルチプロジェクト構成を採用することを推奨している。
 推奨するマルチプロジェクト構成の説明については、「:ref:`application-layering_project-structure`」を参照されたい。
 
+.. _CreateProjectFromBlankTypes:
+
+ブランクプロジェクトの種類
+--------------------------------------------------------------------------------
+
+ブランクプロジェクトは、使用用途に応じて以下の２種類を提供している。
+
+.. tabularcolumns:: |p{0.20\linewidth}|p{0.80\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 20 70
+
+    * - 種別
+      - 使用用途
+    * - | `マルチプロジェクト構成のブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_
+      - 商用環境にリリースするような本格的なアプリケーションを開発する際に使用する。
+
+        プロジェクトの雛形は、MavenのArchetypeとして、以下の3種類を用意している。
+
+        * MyBatis3用の設定が盛り込まれた雛形
+        * JPA(Spring Data JPA)用の設定が盛り込まれた雛形
+
+        **本ガイドラインでは、マルチプロジェクト構成のプロジェクトを使用する事を推奨している。**
+    * - | `シングルプロジェクト構成のブランクプロジェクト <https://github.com/terasolunaorg/terasoluna-gfw-web-blank>`_
+      - POC(Proof Of Concept)、プロトタイプ、サンプルなどの簡易的なアプリケーションを作成する際に使用する。
+
+        プロジェクトの雛形は、MavenのArchetypeとして、以下の4種類を用意している。
+        (EclipseのWTP用のプロジェクトも用意しているが、本節では説明は割愛する)
+
+        * MyBatis3用の設定が盛り込まれた雛形
+        * JPA(Spring Data JPA)用の設定が盛り込まれた雛形
+        * O/R Mapperに依存しない雛形
+
+        本ガイドラインでは、各種チュートリアルをシングルプロジェクトを使用して行う手順となっている。
+
 .. _CreateWebApplicationProject:
 
 開発プロジェクトの作成
@@ -166,286 +201,6 @@ Maven Archetypeで作成したプロジェクトの詳細な説明について�
 
 .. _CreateWebApplicationProjectBuild:
 
-開発プロジェクトのビルド
---------------------------------------------------------------------------------
-
-アプリケーションサーバにデプロイするためのwarファイル、envモジュール(ファイル環境依存ファイルを格納するモジュール)のjarファイルを作成する方法を紹介する。
-
-Maven Archetypeで作成したプロジェクトでは、warファイルを作成する方法として以下の２つの方法を提供している。
-
-* :ref:`CreateWebApplicationProjectBuildWarExcludeEnvJar` (**推奨**)
-* :ref:`CreateWebApplicationProjectBuildWarIncludeEnvJar`
-
-
-.. note:: **推奨するビルド方法について**
-
-    本ガイドラインでは、:ref:`CreateWebApplicationProjectBuildWarExcludeEnvJar` を推奨している。
-    推奨理由は、:doc:`../Appendix/EnvironmentIndependency` を参照されたい。
-    なお、ここで紹介するビルド方法は選択肢の一つであり、他のビルド方法を採用してもよい。
-
-    ただし、**試験環境や商用環境にリリースするwarファイルとjarファイルは、EclipseなどのIDEが提供している機能を使って作成しないようにすること。**
-    Eclipseなどの一部のIDEでは、開発用に最適化された独自のコンパイラを使ってクラスファイルを作成しており、
-    コンパイラの違いが原因でアプリケーション実行時に予期しないエラーが発生するリスクが生まれる。
-
-
-.. warning:: **ビルド環境について**
-
-    ここではWindows環境でビルドする例になっているが、Windows環境でビルドすることを推奨しているわけではない。
-    本ガイドラインでは、**アプリケーションの実行環境と同じOSとJDKのバージョンを使ってビルドすることを推奨する。**
-
-|
-
-| Mavenを使ってビルドする場合は、環境変数「JAVA_HOME」にコンパイル時に使用するJDKのホームディレクトリが指定されていることを確認されたい。
-| 環境変数が設定されていない場合や異なるバージョンのJDKのホームディレクトリが指定されている場合は、環境変数に適切なホームディレクトリを指定すること。
-
-**[Windowsの場合]**
-
-.. code-block:: console
-
-    echo %JAVA_HOME%
-    set JAVA_HOME={Please set home directory of JDK}
-
-
-**[Linux系の場合]**
-
-.. code-block:: console
-
-    echo $JAVA_HOME
-    JAVA_HOME={Please set home directory of JDK}
-
-.. note::
-
-    環境変数「JAVA_HOME」は、ビルドを実行するOSユーザーのユーザー環境変数に設定しておくとよい。
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJar:
-
-envモジュールのjarファイルをwarファイルに含めないビルド方法
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepWar:
-
-warファイルの作成
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-開発プロジェクトのルートディレクトリへ移動する。
-
-.. code-block:: console
-
-    cd C:\work\todo
-
-|
-
-| Mavenのプロファイル(\ ``-P``\ パラメータ)に\ ``warpack``\ を指定して、Maven installを実行する。
-
-.. code-block:: console
-
-    mvn -P warpack clean install
-
-| Maven packageの実行が成功すると、webモジュールのtargetディレクトリの中に、envモジュールのjarファイルが含まれていないwarファイルが作成される。
-| (例：\ ``C:\work\todo\todo-web\target\todo-web.war``\ )
-
-.. note:: **指定するゴールについて**
-
-    上記例ではゴールに\ ``install``\ を指定してwarファイルをローカルリポジトリへインストールしているが、
-
-     * warファイルの作成のみ行う場合はゴールに\ ``package``\
-     * Nexusなどのリモートリポジトリへデプロイする場合はゴールに\ ``deploy``\
-
-    を指定すればよい。
-
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepEnvJar:
-
-envモジュールのjarファイルの作成
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-envモジュールのディレクトリへ移動する。
-
-.. code-block:: console
-
-    cd C:\work\todo\todo-env
-
-|
-
-Mavenのプロファイル(\ ``-P``\ パラメータ)に\ **環境を識別するプロファイルID**\ を指定して、Maven packageを実行する。
-
-.. code-block:: console
-
-    mvn -P test-server clean package
-
-| Maven packageの実行が成功すると、envモジュールのtargetディレクトリの中に、指定した環境用のjarファイルが作成される。
-| (例：\ ``C:\work\todo\todo-env\target\todo-env-1.0.0-SNAPSHOT-test-server.jar``\ )
-
-.. note:: **環境を識別するプロファイルIDについて**
-
-    Maven Archetypeで作成したプロジェクトでは、以下のプロファイルIDがデフォルトで定義されている。
-
-     * \ ``local``\  : 開発者のローカル環境向け(IDE開発環境向け)のプロファイル (デフォルトのプロファイル)
-     * \ ``test-server``\  : 試験環境向けのプロファイル
-     * \ ``production-server``\  : 商用環境向けのプロファイル
-
-    デフォルトで用意しているプロファイルは上記の3つだが、開発するシステムの環境構成にあわせて追加及び修正されたい。
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepDeployToTomcat:
-
-Tomcatへのデプロイ
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-アプリケーションサーバとしてTomcatを使用する際のデプロイ方法(手順)を紹介する。
-
-* envモジュールのjarファイルを所定の外部ディレクトリへコピーする。
-* warファイルをTomcatへデプロイする。
-
-.. note::
-
-  * envモジュールのjarファイルを外部ディレクトリで管理する方法は、Appendixの :ref:`EnvironmentIndependencyDeployTomcat` を参照されたい。
-  * warファイルをTomcatへデプロイする方法は、Tomcatのマニュアルを参照されたい。
-
-|
-
-.. _CreateWebApplicationProjectBuildWarExcludeEnvJarStepDeployToOtherServer:
-
-Tomcat以外のアプリケーションサーバへのデプロイ
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-アプリケーションサーバとしてTomcat以外のサーバを使用する際のデプロイ方法(手順)を紹介する。
-
-* envモジュールのjarファイルをwarファイルに組み込む。
-* envモジュールのjarファイルを組み込んだwarファイルをアプリケーションサーバへデプロイする。
-
-.. note::
-
-    warファイルをアプリケーションサーバへデプロイする方法は、使用するアプリケーションサーバのマニュアルを参照されたい。
-
-|
-
-ここでは、jarコマンドを使用して、envモジュールのjarファイルをwarファイルに組み込む方法(手順)を紹介する。
-
-| 作業ディレクトリへ移動する。
-| ここでは、envプロジェクトで作業を行う例になっている。
-
-.. code-block:: console
-
-    cd C:\work\todo\todo-env
-
-|
-
-| 作成したwarファイルを作業ディレクトリへコピーする。
-| ここでは、Mavenリポジトリからwarファイルを取得する例になっている。(warファイルを\ ``install``\ または\ ``deploy``\ している前提とする)
-
-.. code-block:: console
-
-    mvn org.apache.maven.plugins:maven-dependency-plugin:2.5:get^
-     -DgroupId=com.example.todo^
-     -DartifactId=todo-web^
-     -Dversion=1.0.0-SNAPSHOT^
-     -Dpackaging=war^
-     -Ddest=target/todo-web.war
-
-| コマンドの実行が成功すると、envモジュールのtargetディレクトリの中に、指定したwarファイルがコピーされる。
-| (例：\ ``C:\work\todo\todo-env\target\todo-web.war``\ )
-
-.. note::
-
-    * \ ``-DgroupId``\ 、\ ``-DartifactId``\ 、\ ``-Dversion``\ 、\ ``-Ddest``\ には、適切な値を指定すること。
-    * Linux系で実行する場合は、行末の \ ``^``\  を \ ``\``\  に読み替えること。
-
-|
-
-作成したjarファイルを作業ディレクト(\ ``target\WEB-INF\lib``\ )へ一旦コピーし、warファイルの中に追加する。
-
-**[Windowsの場合]**
-
-.. code-block:: console
-
-    mkdir target\WEB-INF\lib
-    copy target\todo-env-1.0.0-SNAPSHOT-test-server.jar target\WEB-INF\lib\.
-    cd target
-    jar -uvf todo-web.war WEB-INF\lib
-
-**[Linux系の場合]**
-
-.. code-block:: console
-
-    mkdir -p target/WEB-INF/lib
-    cp target/todo-env-1.0.0-SNAPSHOT-test-server.jar target/WEB-INF/lib/.
-    cd target
-    jar -uvf todo-web.war WEB-INF/lib
-
-.. note:: **jarコマンドが見つからない場合の対処**
-
-    jarコマンドが見つからない場合は、以下のいずれかの対処を行うことで解決することができる。
-
-    * \ ``JAVA_HOME/bin``\ を環境変数「PATH」に追加する。
-    * jarコマンドをフルパスで指定する。Windowの場合は\ ``%JAVA_HOME%\bin\jar``\ 、Linux系の場合は\ ``${JAVA_HOME}/bin/jar``\ を指定すればよい。
-
-
-|
-
-.. _CreateWebApplicationProjectBuildWarIncludeEnvJar:
-
-envモジュールのjarファイルをwarファイルに含めるビルド方法
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _CreateWebApplicationProjectBuildWarIncludeEnvJarWar:
-
-warファイルの作成
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-.. warning:: **envモジュールのjarファイルをwarファイルに含める場合の注意点**
-
-    envモジュールのjarファイルをwarファイルに含めた場合、warファイルを他の環境にデプロイすることができないため、
-    間違って他の環境(特に商用環境)にデプロイされないようにwarファイルを管理すること。
-
-    また、環境毎にwarファイルを作成して各環境へリリースする方法を採用した場合、
-    商用環境へリリースされるwarファイルが厳密にいうとテスト済みのwarファイルではないという点を意識してほしい。
-    これは、商用環境用のwarファイルを作成する際にコンパイルをしなおすためである。
-    warファイルを環境毎に作成してリリースする場合は、GitやSubversionなどのVCS(Version Control System)の機能(タグ機能など)を活用し、
-    テスト済みのソースファイルを使用して商用環境や各種テスト環境へリリースするwarファイルを作成する仕組みを確立することが特に重要である。
-
-|
-
-開発プロジェクトのルートディレクトリへ移動する。
-
-.. code-block:: console
-
-    cd C:\work\todo
-
-|
-
-| Mavenのプロファイル(\ ``-P``\ パラメータ)に\ ``warpack-with-env``\ とenvモジュールの中で定義している\ **環境を識別するプロファイルID**\ を指定して、Maven packageを実行する。
-
-.. code-block:: console
-
-    mvn -P warpack-with-env,test-server clean package
-
-| Maven packageの実行が成功すると、webモジュールのtargetディレクトリの中に、envモジュールのjarファイルを含んだwarファイルが作成される。
-| (例：\ ``C:\work\todo\todo-web\target\todo-web.war``\ )
-
-|
-
-.. _CreateWebApplicationProjectBuildWarIncludeEnvJarDeploy:
-
-デプロイ
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-作成したwarファイルをアプリケーションサーバへデプロイする。
-
-.. note::
-
-    warファイルをアプリケーションサーバへデプロイする方法は、使用するアプリケーションサーバのマニュアルを参照されたい。
-
-|
-
-
-.. _CreateWebApplicationProjectCustomize:
-
 開発プロジェクトのカスタマイズ
 --------------------------------------------------------------------------------
 
@@ -466,11 +221,11 @@ Maven Archetypeで作成したプロジェクトには、アプリケーショ�
     上記以外のカスタマイズポイントとしては、
 
     * :doc:`../Security/Authentication`・:doc:`../Security/Authorization` の設定
-    * :doc:`../ArchitectureInDetail/FileUpload` を有効化するための設定
-    * :doc:`../ArchitectureInDetail/Internationalization` を有効化するための設定
-    * :doc:`../ArchitectureInDetail/Logging` の定義
-    * :doc:`../ArchitectureInDetail/ExceptionHandling` の定義
-    * :doc:`../ArchitectureInDetail/REST` 向けの設定の適用
+    * :doc:`../ArchitectureInDetail/WebApplicationDetail/FileUpload` を有効化するための設定
+    * :doc:`../ArchitectureInDetail/WebApplicationDetail/Internationalization` を有効化するための設定
+    * :doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging` の定義
+    * :doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling` の定義
+    * :doc:`../ArchitectureInDetail/WebServiceDetail/REST` 向けの設定の適用
 
     などがある。
 
@@ -588,7 +343,7 @@ Maven Archetypeで作成したプロジェクトでは、\ ``x.xx.fw.9999``\ 形
 |
 
 \ ``x.xx.fw.9999``\ 形式のメッセージIDは、
-本ガイドラインの「:doc:`../ArchitectureInDetail/MessageManagement`」で紹介しているメッセージID体系であるが、
+本ガイドラインの「:doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`」で紹介しているメッセージID体系であるが、
 プロジェクト区分の値が暫定値「\ ``xx``\ 」の状態になっている。
 
 .. note::
@@ -738,7 +493,7 @@ Maven Archetypeで作成したプロジェクトでは、エラーの種類毎�
         ``artifactId/artifactId-web/src/main/webapp/WEB-INF/views/common/error/*.jsp``
       - アプリケーション要件(UI規約など)に合わせて修正する。
 
-        エラー画面を表示するJSPをカスタマイズする際は、「:doc:`../ArchitectureInDetail/ExceptionHandling` の :ref:`exception-handling-how-to-use-codingpoint-jsp-label`」を参照されたい。
+        エラー画面を表示するJSPをカスタマイズする際は、「:doc:`../ArchitectureInDetail/WebApplicationDetail/ExceptionHandling` の :ref:`exception-handling-how-to-use-codingpoint-jsp-label`」を参照されたい。
     * - 2.
       - エラー画面用のHTML
 
@@ -914,7 +669,7 @@ Maven Archetypeで作成したプロジェクトでは、インメモリデー�
     開発環境ではApache Commons DBCPのデータソースを使用して、
     テスト環境及び商用環境ではアプリケーションサーバから提供されているデータソースを使用するといった使い分けを行うケースもある。
 
-    データソースの設定方法については、「:doc:`../ArchitectureInDetail/DataAccessCommon` の :ref:`data-access-common_howtouse_datasource`」を参照されたい。
+    データソースの設定方法については、「:doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon` の :ref:`data-access-common_howtouse_datasource`」を参照されたい。
 
 |
 
@@ -959,7 +714,7 @@ Maven Archetypeで作成したプロジェクトでは、インメモリデー�
         ``artifactId/artifactId-env/src/main/resources/META-INF/spring/artifactId-env.xml``
       - アプリケーションサーバから提供されているデータソースを使用する場合は、JNDI経由で取得したデータソースを使用するように設定を変更する。
 
-        データソースの設定方法については、「:doc:`../ArchitectureInDetail/DataAccessCommon` の :ref:`data-access-common_howtouse_datasource`」を参照されたい。
+        データソースの設定方法については、「:doc:`../ArchitectureInDetail/DataAccessDetail/DataAccessCommon` の :ref:`data-access-common_howtouse_datasource`」を参照されたい。
 
 .. note:: **環境依存する設定値を定義するプロパティファイルのdatabaseプロパティについて**
 
@@ -1059,7 +814,7 @@ Maven Archetypeで作成したプロジェクトは、以下の構成になっ�
     伝統的なWebアプリケーション(リクエストパラメータを受け取ってHTMLを応答するアプリケーション)を構築する際に必要となる推奨設定が行われている。
 
     そのため、JSONやXMLを扱うREST APIを構築する際には不要な設定が存在する。
-    REST APIを構築するためのプロジェクトを作成する場合は、「:doc:`../ArchitectureInDetail/REST` の :ref:`RESTHowToUseApplicationSettings`」を参照し、
+    REST APIを構築するためのプロジェクトを作成する場合は、「:doc:`../ArchitectureInDetail/WebServiceDetail/REST` の :ref:`RESTHowToUseApplicationSettings`」を参照し、
     REST API向けの設定を適用してほしい。
 
 .. note::
@@ -1162,7 +917,73 @@ Maven Archetypeで作成したプロジェクトは、以下の構成になっ�
 
     本ガイドラインでは、マルチモジュールとマルチプロジェクトを同じ意味で使用していることを補足しておく。
 
-|
+
+.. note:: **２つのWebアプリケーションと１つの共通ライブラリが必要となる開発プロジェクトについて**
+
+    * bar-parent
+    * bar-initdb
+    * bar-common
+    * bar-common-web
+    * bar-domain-a
+    * bar-domain-b
+    * bar-web-a
+    * bar-web-b
+    * bar-env
+    * bar-web-a-selenium
+    * bar-web-b-selenium
+    
+    それぞれのプロジェクトの内容は下記のようになる。
+    
+    * bar-parent
+    
+      parent-pom（親POM）と呼ばれるプロジェクト。pom.xmlファイルだけを持ち、
+      その他のソースコードや設定ファイルは一切持たない、シンプルなプロジェクト。
+      他のプロジェクトのpom上で、このbar-parentプロジェクトを<parent>タグに指定することによって、
+      親POMに指定された共通設定情報を自身に反映させることができる。
+    
+    * bar-initdb
+    
+     RDBMSのテーブル定義(DDL)と初期データをINSERTするためのSQL文を格納する。
+     これもmavenプロジェクトとして管理する。pom.xmlに `sql-maven-plugin <http://mojo.codehaus.org/sql-maven-plugin/>`_ 
+     の設定を定義することにより、ビルドライフサイクルの過程で任意のRDBMSに対するDDL文や初期データINSERT文の実行を自動化することができる。
+    
+    * bar-common
+    
+      プロジェクト共通ライブラリを格納する。ここはweb非依存にし、webに関わるクラスはbar-common-webに配置する。
+    
+    * bar-common-web
+    
+      プロジェクト共通webライブラリを格納する
+    
+    * bar-domain-a
+    
+      aドメインに関わるドメイン層のjavaクラス、単体テストケース等を格納するプロジェクト。最終的に*.jarファイル化する。
+    
+    * bar-domain-b
+    
+      bドメインに関わるドメイン層のクラス。
+    
+    * bar-web-a
+    
+      アプリケーション層のjavaクラス、jsp、設定ファイル、単体テストケース等を格納するプロジェクト。最終的にWebアプリケーションとして*.warファイル化する。
+      bar-web-aは、bar-commonとbar-envへの依存性を持つ。
+    
+    * bar-web-b
+    
+      もう一つのサブシステムとしてのWebアプリケーション。構造はbar-web-aと同じ。
+    
+    * bar-env
+    
+      環境依存性のある設定ファイルだけを集めるプロジェクト。
+    
+    * bar-web-a-selenium
+    
+      web-aプロジェクトのための、`Selenium WebDriver <http://seleniumhq.org/projects/webdriver/>`_ によるテストケースを格納するプロジェクト。
+    
+    * bar-web-b-selenium
+    
+      web-bプロジェクトのための、`Selenium WebDriver <http://seleniumhq.org/projects/webdriver/>`_ によるテストケースを格納するプロジェクト。
+
 
 .. _CreateWebApplicationProjectConfigurationWeb:
 
@@ -1235,7 +1056,7 @@ webモジュールの構成
       - Welcomeページを表示するためのリクエストを受け取るためのControllerクラス。
     * - | (4)
       - Dozer(Bean Mapper)のマッピング定義ファイルを格納するディレクトリ。
-        Dozerについては、「:doc:`../ArchitectureInDetail/Utilities/Dozer`」を参照されたい。
+        Dozerについては、「:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer`」を参照されたい。
 
         作成時点では空のディレクトリである。
         マッピングファイルが必要になった場合(高度なマッピングが必要になった場合)は、
@@ -1288,7 +1109,7 @@ webモジュールの構成
         .. note::
 
             **メッセージについては、アプリケーションの要件(メッセージ規約など)にあわせて必ず修正すること。**
-            メッセージ定義については、「:doc:`../ArchitectureInDetail/MessageManagement`」を参照されたい。
+            メッセージ定義については、「:doc:`../ArchitectureInDetail/WebApplicationDetail/MessageManagement`」を参照されたい。
 
 .. note::
 
@@ -1339,7 +1160,7 @@ webモジュールの構成
       - | 説明
     * - | (12)
       - Tilesの設定ファイルを格納するディレクトリ。
-        Tilesの設定ファイルについては、「:doc:`../ArchitectureInDetail/TilesLayout`」を参照されたい。
+        Tilesの設定ファイルについては、「:doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout`」を参照されたい。
     * - | (13)
       - Viewを構築するテンプレートファイル(JSPなど)を格納するディレクトリ。
     * - | (14)
@@ -1359,7 +1180,7 @@ webモジュールの構成
         インクルード用の共通JSPファイルについては、「:ref:`view_jsp_include-label`」を参照されたい。
     * - | (16)
       - Tilesのレイアウト用のJSPファイルを格納するディレクトリ。
-        Tilesのレイアウト用のJSPファイルについては、「:doc:`../ArchitectureInDetail/TilesLayout`」を参照されたい。
+        Tilesのレイアウト用のJSPファイルについては、「:doc:`../ArchitectureInDetail/WebApplicationDetail/TilesLayout`」を参照されたい。
     * - | (17)
       - Welcomeページを表示するJSPファイル。
     * - | (18)
@@ -1442,7 +1263,7 @@ domainモジュールの構成
       - ドメイン層のクラスを格納するためのパッケージ。
     * - | (3)
       - Dozer(Bean Mapper)のマッピング定義ファイルを格納するディレクトリ。
-        Dozerについては、「:doc:`../ArchitectureInDetail/Utilities/Dozer`」を参照されたい。
+        Dozerについては、「:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer`」を参照されたい。
 
         作成時点では空のディレクトリである。
         マッピングファイルが必要になった場合(高度なマッピングが必要になった場合)は、
@@ -1637,7 +1458,7 @@ envモジュールの構成
         **実際のアプリケーション開発で使用することは想定していないので、基本的にはこのディレクトリは削除すること。**
     * - | (8)
       - Dozer(Bean Mapper)のグローバル設定を行うためのプロパティファイル。
-        Dozerについては、「:doc:`../ArchitectureInDetail/Utilities/Dozer`」を参照されたい。
+        Dozerについては、「:doc:`../ArchitectureInDetail/GeneralFuncDetail/Dozer`」を参照されたい。
 
         作成時点では、空のファイルである。(ファイルがないと起動時に警告ログが出力されるため、これを防ぐために空のファイルを用意している)
     * - | (9)
@@ -1647,7 +1468,7 @@ envモジュールの構成
         作成時点では、ログに出力するSQLの改行に関する設定のみ指定されている。
     * - | (10)
       - Logback(ログ出力)の設定ファイル。
-        ログ出力については、「:doc:`../ArchitectureInDetail/Logging`」を参照されたい。
+        ログ出力については、「:doc:`../ArchitectureInDetail/GeneralFuncDetail/Logging`」を参照されたい。
 
 |
 
