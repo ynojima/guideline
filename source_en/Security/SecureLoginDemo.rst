@@ -3481,7 +3481,7 @@ The code implemented according to the above implementation method is described s
 * Send a mail for URL of password reissue screen
 
   The implementation of the process to create URL of password reissue screen from the authentication information for password reissue screen and send it by e-mail is shown below.
-  Refer to :doc:`../ArchitectureInDetail/ExternalSystemDetail/Email` for more information about how to add dependent libraries and how to fetch an e-mail session.
+  Refer to :doc:`../ArchitectureInDetail/MessagingDetail/Email` for more information about how to add dependent libraries and how to fetch an e-mail session.
 
   .. code-block:: java
 

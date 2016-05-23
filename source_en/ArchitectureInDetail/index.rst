@@ -12,7 +12,7 @@ The architecture adopted in this guideline is explained in detail here.
    ./WebServiceDetail/index
    ./DataAccessDetail/index
    ./GeneralFuncDetail/index
-   ./ExternalSystemDetail/index
+   ./MessagingDetail/index
 
 .. raw:: latex
 

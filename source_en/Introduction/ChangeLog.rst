@@ -193,7 +193,7 @@ Change Log
         * Source example which use \ ``com.lowagie:itext:4.2.1``\  modified to a format which uses \ ``com.lowagie:itext:2.1.7``\  for the specification change of the iText
 
     * -
-      - :doc:`../ArchitectureInDetail/ExternalSystemDetail/Email`
+      - :doc:`../ArchitectureInDetail/MessagingDetail/Email`
       - Added new
 
         *  E-mail sending (SMTP) added (\ `guideline#1165 <https://github.com/terasolunaorg/guideline/issues/1165>`_\ )
