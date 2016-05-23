@@ -193,7 +193,7 @@
         * iTextの仕様変更のため、\ ``com.lowagie:itext:4.2.1``\を利用したソース例を\ ``com.lowagie:itext:2.1.7``\を利用する形に修正
 
     * -
-      - :doc:`../ArchitectureInDetail/ExternalSystemDetail/Email`
+      - :doc:`../ArchitectureInDetail/MessagingDetail/Email`
       - 新規追加
 
         *  E-mail送信(SMTP)を追加(\ `guideline#1165 <https://github.com/terasolunaorg/guideline/issues/1165>`_\ )

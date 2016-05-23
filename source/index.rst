@@ -16,7 +16,7 @@ TERASOLUNA Server Framework for Java (5.x) Development Guideline
    ./ArchitectureInDetail/WebServiceDetail/index
    ./ArchitectureInDetail/DataAccessDetail/index
    ./ArchitectureInDetail/GeneralFuncDetail/index
-   ./ArchitectureInDetail/ExternalSystemDetail/index
+   ./ArchitectureInDetail/MessagingDetail/index
    ./Security/index
    ./Tutorial/index
    ./Appendix/index

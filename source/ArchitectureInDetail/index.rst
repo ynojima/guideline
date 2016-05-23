@@ -12,7 +12,7 @@
    ./WebServiceDetail/index
    ./DataAccessDetail/index
    ./GeneralFuncDetail/index
-   ./ExternalSystemDetail/index
+   ./MessagingDetail/index
 
 .. raw:: latex
 

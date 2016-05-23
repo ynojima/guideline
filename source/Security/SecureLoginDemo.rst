@@ -3481,7 +3481,7 @@ ER図
 * パスワード再発行画面のURLのメール送付
 
   パスワード再発行用の認証情報からパスワード再発行画面のURLを作成し、メール送付する処理の実装を以下に示す。
-  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/ExternalSystemDetail/Email` を参照。
+  依存ライブラリの追加方法やメールセッションの取得方法等の詳細については、:doc:`../ArchitectureInDetail/MessagingDetail/Email` を参照。
 
   .. code-block:: java
 
