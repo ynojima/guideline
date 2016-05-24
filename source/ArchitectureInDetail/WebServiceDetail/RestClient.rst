@@ -2000,6 +2000,8 @@ HTTP Proxyサーバの資格情報の指定方法
 
 HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパスワード)が必要な場合は、\ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を使用し資格情報を設定する。
 
+\ ``BasicCredentialsProvider``\ の\ ``setCredentials``\ メソッドが引数を2つ取るため、セッターインジェクションを利用してBeanを生成することができない。このため、\ ``org.springframework.beans.factory.FactoryBean``\ を利用してBeanを生成する。
+
 **FactoryBeanクラス**
 
 .. code-block:: java
