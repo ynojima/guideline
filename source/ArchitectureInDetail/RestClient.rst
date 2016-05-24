@@ -1908,27 +1908,28 @@ Appendix
 HTTP Proxyサーバの設定方法
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-サーバへアクセスする際にHTTP Proxyサーバを経由する必要がある場は、以下のような実装となる。
+サーバへアクセスする際にHTTP Proxyサーバを経由する必要がある場合は、システムプロパティやJVM起動引数、または\ ``RestTemplate``\ の\ ``RequestFactory``\ プロパティにHTTP Proxyサーバの設定が必要となる。
+
+システムプロパティやJVM起動引数に設定した場合、アプリケーション全体に影響を与えてしまうため、\ ``RestTemplate``\ 毎にHTTP Proxyサーバの設定を行うことのできる\ ``RequestFactory``\ プロパティに設定を行う例を紹介する。
+また、\ ``RequestFactory``\ プロパティには、HTTP Proxyサーバの資格情報が不要な場合、\ ``RestTemplate``\ でデフォルトで使用されている\ ``SimpleClientHttpRequestFactory``\ を使用することもできるが、
+例では、資格情報が必要な場合に使用することができる\ ``HttpComponentsClientHttpRequestFactory``\ と、その内部で使用する\ ``Apache HTTP Client``\ を使用する方法を紹介する。
+
 
 HTTP Proxyサーバの指定方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-HTTP Proxyサーバの指定は、システムプロパティに指定する。
+HTTP Proxyサーバの接続先の指定は、\ ``RestTemplate``\ に対して、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を使用し指定する。
 
-**プログラム内でHTTP Proxyサーバを指定する場合の実装例**
+**pom.xml**
 
-.. code-block:: java
+.. code-block:: xml
 
-    @Value("${api.proxy.host}")
-    String proxyHost;
+    <!-- (1) -->
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+    </dependency>
 
-    @Value("${api.proxy.portNum}")
-    String proxyPort;
-  
-    //...
-
-    System.setProperty("http.proxyHost", proxyHost); // (1)
-    System.setProperty("http.proxyPort", proxyPort); // (2)
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
 .. list-table::
@@ -1938,41 +1939,125 @@ HTTP Proxyサーバの指定は、システムプロパティに指定する。
     * - 項番
       - 説明
     * - | (1)
-      - | システムプロパティ「\ ``"http.proxyHost"``\ 」にHTTP Proxyサーバのホスト名又はIPアドレスを設定する。
+      - | \ ``HttpComponentsClientHttpRequestFactory``\ 内で使用する\ ``Apache HTTP Client``\ を使用するために、\ ``Apache HttpComponents Client``\ を :file:`pom.xml` の依存ライブラリに追加する。
+        | なお、\ ``Apache HttpComponents Client``\ のバージョンは、 Spring IO Platform にて管理されているため、ここで\ ``Apache HttpComponents Client``\ のバージョンを定義する必要はない。
+
+
+**Bean定義ファイル**
+
+.. code-block:: xml
+
+    <!-- (1) -->
+    <bean id="proxyHttpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create" >
+        <!-- (2) -->
+        <property name="proxy">
+            <bean class="org.apache.http.HttpHost" >
+                <constructor-arg index="0" value="${rscl.http.proxyHost}" />    <!-- (3) -->
+                <constructor-arg index="1" value="${rscl.http.proxyPort}" />    <!-- (4) -->
+            </bean>
+        </property>
+    </bean>
+
+    <!-- (5) -->
+    <bean id="proxyRestTemplate" class="org.springframework.web.client.RestTemplate" >
+        <constructor-arg>
+            <!-- (6) -->
+            <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+                <!-- (7) -->
+                <constructor-arg>
+                    <bean factory-bean="proxyHttpClientBuilder" factory-method="build" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``org.apache.http.impl.client.HttpClientBuilder``\ を使用し、\ ``org.apache.http.client.HttpClient``\ の設定を行う。
     * - | (2)
-      - | システムプロパティ「\ ``"http.proxyPort"``\ 」にHTTP Proxyサーバのポート番号を設定する。
-        | HTTP Proxyサーバのポート番号
-
-**JVMの起動パラメータでHTTP Proxyサーバを指定する場合の指定例**
-
-.. code-block:: console
-
-    java -Dhttps.proxyHost={host name or ip address} -Dhttps.proxyPort={port number} ...
+      - | \ ``HttpClientBuilder``\ の\ ``proxy``\ プロパティに、\ HTTP Proxyサーバの設定を行った\ ``org.apache.http.HttpHost``\ を設定する。
+    * - | (3)
+      - | \ ``HttpHost``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として設定する。
+    * - | (4)
+      - | \ ``HttpHost``\ のコンストラクタの引数に、プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として設定する。
+    * - | (5)
+      - | \ ``RestTemplate``\ のBean定義を行う。
+    * - | (6)
+      - | \ ``RestTemplate``\ のコンストラクタの引数に、\ ``org.springframework.http.client.HttpComponentsClientHttpRequestFactory``\ を設定することで、コンストラクタ内で、\ ``RequestFactory``\ プロパティに設定される。
+    * - | (7)
+      - | \ ``HttpComponentsClientHttpRequestFactory``\ のコンストラクタの引数に、\ ``HttpClientBuilder``\ から生成した\ ``HttpClient``\ オブジェクトを設定する。
 
 
 HTTP Proxyサーバの資格情報の指定方法
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-HTTP Proxyサーバにアクセスする際に資格情報(ユーザー名とパスワード)が必要な場合は、\ ``java.net.Authenticator``\ に資格情報を設定する。
+HTTP Proxyサーバにアクセスする際に資格情報(ユーザ名とパスワード)が必要な場合は、\ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を使用し資格情報を設定する。
 
-**HTTP Proxyサーバの資格情報の指定例**
+\ ``BasicCredentialsProvider``\ の\ ``setCredentials``\ メソッドが引数を2つ取るため、セッターインジェクションを利用してBeanを生成することができない。このため、\ ``org.springframework.beans.factory.FactoryBean``\ を利用してBeanを生成する。
+
+**FactoryBeanクラス**
 
 .. code-block:: java
 
-    @Value("${api.auth.userid}")
-    String userid;
+    import org.apache.http.auth.AuthScope;
+    import org.apache.http.auth.UsernamePasswordCredentials;
+    import org.apache.http.impl.client.BasicCredentialsProvider;
+    import org.springframework.beans.factory.FactoryBean;
+    import org.springframework.beans.factory.annotation.Value;
 
-    @Value("${api.auth.password}")
-    char[] password;
+    // (1)
+    public class BasicCredentialsProviderFactoryBean implements FactoryBean<BasicCredentialsProvider> {
 
-    //...
-  
-    Authenticator.setDefault(new Authenticator() { // (1)
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(userid, password); // (2)
-                }
-    });
+        // (2)
+        @Value("${rscl.http.proxyHost}")
+        String host;
+
+        // (3)
+        @Value("${rscl.http.proxyPort}")
+        int port;
+
+        // (4)
+        @Value("${rscl.http.proxyUserName}")
+        String userName;
+
+        // (5)
+        @Value("${rscl.http.proxyPassword}")
+        String password;
+
+        @Override
+        public BasicCredentialsProvider getObject() throws Exception {
+
+            // (6)
+            AuthScope authScope = new AuthScope(this.host, this.port);
+
+            // (7)
+            UsernamePasswordCredentials usernamePasswordCredentials =
+                    new UsernamePasswordCredentials(this.userName, this.password);
+
+            // (8)
+            BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(authScope, usernamePasswordCredentials);
+
+            return credentialsProvider;
+        }
+
+        @Override
+        public Class<?> getObjectType() {
+            return BasicCredentialsProvider.class;
+        }
+
+        @Override
+        public boolean isSingleton() {
+            return true;
+        }
+    }
 
 
 .. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
@@ -1983,6 +2068,59 @@ HTTP Proxyサーバにアクセスする際に資格情報(ユーザー名とパ
     * - 項番
       - 説明
     * - | (1)
-      - | \ ``Authenticator``\ の\ ``setDefault``\ メソッドを呼び出し、HTTP Proxyサーバの資格情報を返却する\ ``Authenticator``\ オブジェクトを設定する。
+      - | \ ``org.springframework.beans.factory.FactoryBean``\ を実装した\ ``BasicCredentialsProviderFactoryBean``\ クラスを定義する。
+        | Beanの型に\ ``BasicCredentialsProvider``\ を設定する。
     * - | (2)
-      - | \ ``getPasswordAuthentication``\ メソッドの返り値として、HTTP Proxyサーバの資格情報(ユーザー名とパスワード)を返却する。
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyHost``\ の値をHTTP Proxyサーバのホスト名として、インスタンス変数に設定する。
+    * - | (3)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyPort``\ の値をHTTP Proxyサーバのポート番号として、インスタンス変数に設定する。
+    * - | (4)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyUserName``\ の値をHTTP Proxyサーバのユーザ名として、インスタンス変数に設定する。
+    * - | (5)
+      - | プロパティファイルに設定されたキー\ ``rscl.http.proxyPassword``\ の値をHTTP Proxyサーバのパスワードとして、インスタンス変数に設定する。
+    * - | (6)
+      - | \ ``org.apache.http.auth.AuthScope`` \ を作成し資格情報のスコープを設定する。この例は、HTTP Proxyサーバのホスト名とポート番号を指定したものである。その他の設定方法については、\ `AuthScope (Apache HttpClient API) <https://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/org/apache/http/auth/AuthScope.html>`_\ を参照されたい。
+    * - | (7)
+      - | \ ``org.apache.http.auth.UsernamePasswordCredentials`` \ を作成し資格情報を設定する。
+    * - | (8)
+      - | \ ``org.apache.http.impl.client.BasicCredentialsProvider``\ を作成し、\ ``setCredentials``\ メソッドを使用し、資格情報のスコープと資格情報を設定する。
+
+
+**Bean定義ファイル**
+
+.. code-block:: xml
+
+    <bean id="proxyHttpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+        <!-- (1) -->
+        <property name="defaultCredentialsProvider">
+            <bean class="com.example.restclient.BasicCredentialsProviderFactoryBean" />
+        </property>
+        <property name="proxy">
+            <bean id="proxyHost" class="org.apache.http.HttpHost">
+                <constructor-arg index="0" value="${rscl.http.proxyHost}" />
+                <constructor-arg index="1" value="${rscl.http.proxyPort}" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="proxyRestTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg>
+            <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+                <constructor-arg>
+                    <bean factory-bean="proxyHttpClientBuilder" factory-method="build" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+
+.. tabularcolumns:: |p{0.10\linewidth}|p{0.90\linewidth}|
+.. list-table::
+    :header-rows: 1
+    :widths: 10 90
+
+    * - 項番
+      - 説明
+    * - | (1)
+      - | \ ``HttpClientBuilder``\ の\ ``defaultCredentialsProvider``\ プロパティに、\ ``BasicCredentialsProvider``\ を設定する。
+        | \ ``BasicCredentialsProvider``\ は、\ ``FactoryBean``\ を実装した\ ``BasicCredentialsProviderFactoryBean``\ を使用しBeanを作成する。
