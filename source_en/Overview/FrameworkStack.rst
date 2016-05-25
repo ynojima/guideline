@@ -608,72 +608,107 @@ Building blocks of Common Library
 
 \ `Common Library <https://github.com/terasolunaorg/terasoluna-gfw>`_\  includes ``+ alpha`` functionalities which are not available in Spring Ecosystem or other dependent libraries included in TERASOLUNA Server Framework for Java (5.x).
 Basically, application development is possible using TERASOLUNA Server Framework for Java (5.x) without this library but "convenient to have" kind of existence.
+With the default settings, provided two blank projects, \ `Blank project of multi-project <https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank>`_\  and \ `Blank project of single-project <https://github.com/terasolunaorg/terasoluna-gfw-web-blank>`_\ , contains built-in Common Library as shown in the following listing. 
 
 .. tabularcolumns:: |p{0.05\linewidth}|p{0.30\linewidth}|p{0.45\linewidth}|p{0.20\linewidth}|
 .. list-table::
     :header-rows: 1
-    :widths: 5 30 45 20
+    :widths: 5 30 45 15 14 15
 
     * - No.
       - Project Name
       - Summary
       - Java source-code availability
+      - Blank project of multi-project built-in
+      - Blank project of single-project built-in
     * - \ (1)
       - terasoluna-gfw-common
       - Provide general-purpose functionalities and dependency definitions irrespective of Web.
+      - Yes
+      - Yes
       - Yes
     * - \ (2)
       - terasoluna-gfw-string
       - Provide function related to string processing. (Add from 5.1.0)
       - Yes
+      - No
+      - No
     * - \ (3)
       - terasoluna-gfw-codepoints
       - Provide function to check whether the code point constituting target string is incorporated in the codepoint set.(Add from 5.1.0)
       - Yes
+      - No
+      - No
     * - \ (4)
       - terasoluna-gfw-validator
       - Provide by adding a constraint annotation of generic Bean validation. (Add from 5.1.0)
       - Yes
+      - No
+      - No
     * - \ (5)
       - terasoluna-gfw-jodatime
       - Provide function that depends on Joda Time and dependency relation definition. (Add from 5.0.0)
+      - Yes
+      - Yes
       - Yes
     * - \ (6)
       - terasoluna-gfw-web
       - Provide function to be used while creating a Web application and dependency relation definition. Function not dependent on View and dependency relation definition are consolidated.
       - Yes
+      - Yes
+      - Yes
     * - \ (7)
       - terasoluna-gfw-web-jsp
       - Provide function and dependency relation definition to be used while creating a Web application which adopts JSP in View.
+      - Yes
+      - Yes
       - Yes
     * - \ (8)
       - terasoluna-gfw-mybatis3
       - Provide dependency definitions for using MyBatis3.
       - No
+      - Yes*1
+      - Yes*1
     * - \ (9)
       - terasoluna-gfw-jpa
       - Provide dependency definitions for using JPA.
       - No
+      - Yes*2
+      - Yes*2
     * - \ (10)
       - terasoluna-gfw-security-core
       - Provide dependency definitions for using Spring Security (other than Web).
       - No
+      - Yes
+      - Yes
     * - \ (11)
       - terasoluna-gfw-security-web
       - Provide dependency definitions for using Spring Security (related to Web) and extended classes of Spring Security.
+      - Yes
+      - Yes
       - Yes
     * - \ (12)
       - terasoluna-gfw-recommended-dependencies
       - Provide dependency definitions of recommended libraries that doesn't depends on web.
       - No
+      - Yes
+      - Yes
     * - \ (13)
       - terasoluna-gfw-recommended-web-dependencies
       - Provide dependency definitions of recommended libraries that depends on web.
       - No
+      - Yes
+      - Yes
     * - \ (14)
       - terasoluna-gfw-parent
       - Provide dependency libraries management and recommended settings of build plugins.
       - No
+      - Yes*3
+      - Yes*3
+
+#. | With the default settings of Common Library, when MyBatis3 is used for data access.
+#. | With the default settings of Common Library, when JPA is used for data access.
+#. | terasoluna-gfw-parent is not built-in as a \ ``<dependency>``\ , but a \ ``<parent>``\ .
 
 The project which does not contain the Java source code, only defines library dependencies.
 
